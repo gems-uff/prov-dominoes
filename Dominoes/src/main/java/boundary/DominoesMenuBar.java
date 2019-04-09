@@ -39,6 +39,8 @@ public class DominoesMenuBar extends MenuBar {
 
     private final MenuItem mDominoes_new;
     private final MenuItem mDominoes_loadAll;
+    private final MenuItem mEdit_Undo;
+    private final MenuItem mEdit_Redo;
     private final MenuItem mDominoes_exit;
     private final MenuItem mDominoes_exitAndSave;
     private final Menu mDominoes_save;
@@ -105,13 +107,18 @@ public class DominoesMenuBar extends MenuBar {
 
 //        this.mEdit_editMatrix.getItems().addAll(this.mEdit_editMatrix_mcMatrixColor);
         
+        this.mEdit_Undo = new MenuItem("Undo");
+        this.mEdit_Undo.setDisable(true);
+        this.mEdit_Redo = new MenuItem("Redo");
+        this.mEdit_Redo.setDisable(true);
+        
         this.mEdit_showHistoric = new CheckMenuItem("Show Historic");
         this.mEdit_showHistoric.setSelected(Configuration.visibilityHistoric);
 
         mEdit_showType = new CheckMenuItem("Show Type");
         mEdit_showType.setSelected(Configuration.visibilityType);
         
-        this.mEdit.getItems().addAll(this.mEdit_showHistoric, this.mEdit_showType);
+        this.mEdit.getItems().addAll(this.mEdit_Undo, this.mEdit_Redo, this.mEdit_showHistoric, this.mEdit_showType);
 //        this.mEdit.getItems().addAll(this.mEdit_editMatrix, this.mEdit_showHistoric, this.mEdit_showType);
 
 //------CONFIGURATION MENU ITENS------------------------------------------------
