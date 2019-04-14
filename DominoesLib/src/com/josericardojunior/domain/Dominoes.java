@@ -10,7 +10,6 @@ import javafx.scene.text.Text;
 import com.josericardojunior.arch.IMatrix2D;
 import com.josericardojunior.arch.Matrix2D;
 
-@SuppressWarnings("restriction")
 public final class Dominoes {
     public final static double GRAPH_WIDTH = 100;
     public final static double GRAPH_HEIGHT = 50;

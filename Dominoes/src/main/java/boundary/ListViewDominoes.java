@@ -3,6 +3,8 @@ package boundary;
 import domain.Configuration;
 import com.josericardojunior.domain.Dominoes;
 
+import command.CommandFactory;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -20,7 +22,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Shape;
 
-@SuppressWarnings("restriction")
 public class ListViewDominoes extends ListView<Group> {
 
     private ObservableList<Group> pieces;
@@ -145,7 +146,8 @@ public class ListViewDominoes extends ListView<Group> {
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                     if (mouseEvent.getClickCount() == 2) {
                         //System.out.println("copy to area move");
-                        copyFromListToAreaMove(group);
+                        //copyFromListToAreaMove(group);
+                        App.getCommandManager().invokeCommand(new CommandFactory().add(group));
                     }
                 }
             }
@@ -166,7 +168,7 @@ public class ListViewDominoes extends ListView<Group> {
                 // choise menu item multiply
                 if (((MenuItem) event.getTarget()).getText().equals(menuItemToAreaMove.getText())) {
                    // System.out.println("copy to area move");
-                    copyFromListToAreaMove(group);
+                    App.getCommandManager().invokeCommand(new CommandFactory().add(group));
                 } else if (((MenuItem) event.getTarget()).getText().equals(menuItemRemove.getText())) {
                     System.out.println("removing");
                     try {
@@ -241,19 +243,6 @@ public class ListViewDominoes extends ListView<Group> {
         }
         this.pieces.removeAll(this.pieces);
         this.dominoes.removeAll(this.dominoes);
-    }
-
-    /**
-     * This Function copy from this list, to area move, a domino.
-     *
-     * @param group domino to copy
-     */
-    private void copyFromListToAreaMove(Group group) {
-
-        Dominoes auxDomino = this.dominoes.get(this.pieces.indexOf(group));
-
-        // adding in area move
-        App.copyToArea(auxDomino.cloneNoMatrix());
     }
 
     /**
@@ -372,5 +361,21 @@ public class ListViewDominoes extends ListView<Group> {
     private boolean removeFromListAndArea(Group group) throws IOException {
         return App.removeMatrix(this.dominoes.get(pieces.indexOf(group)), group);
     }
+
+	public ObservableList<Group> getPieces() {
+		return pieces;
+	}
+
+	public void setPieces(ObservableList<Group> pieces) {
+		this.pieces = pieces;
+	}
+
+	public ArrayList<Dominoes> getDominoes() {
+		return dominoes;
+	}
+
+	public void setDominoes(ArrayList<Dominoes> dominoes) {
+		this.dominoes = dominoes;
+	}
 
 }
