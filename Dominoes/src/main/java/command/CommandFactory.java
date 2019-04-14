@@ -1,17 +1,44 @@
 package command;
 
-import java.util.ArrayList;
-
-import boundary.MoveData;
-import domain.Configuration;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 public class CommandFactory {
-	
-	public TransposeCommand createTranspose(Group piece,MoveData data) {
-		return new TransposeCommand(piece, data);
+
+	public UndoCommand undo() {
+		return new UndoCommand();
 	}
 
+	public RedoCommand redo() {
+		return new RedoCommand();
+	}
+
+	public AbstractCommand add(Group piece) {
+		return new AddCommand(piece);
+	}
+
+	public AbstractCommand remove(Group piece) {
+		return new RemoveCommand(piece);
+	}
+
+	public TransposeCommand transpose(Group piece) {
+		return new TransposeCommand(piece);
+	}
+
+	/*public CompoundCommand compound(Group piece) {
+		return new TransposeCommand(piece);
+	}
+	
+	public AggregateRowCommand aggRow(Group piece) {
+		return new AggregateRowCommand(piece);
+	}
+	public AggregateColumnCommand aggColumn(Group piece) {
+		return new AggregateColumnCommand(piece);
+	}
+	public ConfidenceCommand confidence(Group piece) {
+		return new ConfidenceCommand(piece);
+	}
+	public ZScoreCommand zscore(Group piece) {
+		return new ZScoreCommand(piece);
+	}
+	*/
 }

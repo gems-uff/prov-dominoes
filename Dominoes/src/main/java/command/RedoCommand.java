@@ -2,7 +2,7 @@ package command;
 
 import javafx.scene.Group;
 
-public class UndoCommand extends AbstractCommand implements Undo {
+public class RedoCommand extends AbstractCommand implements Redo {
 	
 	public boolean doIt() {
 		throw new NoSuchMethodError();
