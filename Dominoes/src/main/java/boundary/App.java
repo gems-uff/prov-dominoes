@@ -1,17 +1,19 @@
 package boundary;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
+import com.josericardojunior.domain.Dominoes;
+
+import command.CommandManager;
+import control.Controller;
+import domain.Configuration;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -23,20 +25,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import javax.swing.JFrame;
-
-import control.Controller;
-import com.josericardojunior.dao.DominoesSQLDao;
-import domain.Configuration;
-import com.josericardojunior.domain.Dominoes;
-
 // Information fragment // opened question
 
-@SuppressWarnings("restriction")
 public class App extends Application {
 
 	private static ListViewDominoes list;
 	private static AreaMove area;
+	private static CommandManager commandManager;
 	private static DominoesMenuBar menu;
 	public static TimePane time;
 	private static Visual visual;
@@ -56,8 +51,6 @@ public class App extends Application {
 	private static double width = Configuration.width;
 	private static double height = Configuration.height;
 
-	private static ArrayList<Dominoes> array = null;
-
 	private static GUIManager manager;
 
 	@Override
@@ -71,7 +64,7 @@ public class App extends Application {
 			App.stage.setResizable(Configuration.resizable);
 
 			App.menu = new DominoesMenuBar();
-
+			App.commandManager = new CommandManager(menu);
 			App.stage.show();
 			App.time = new TimePane();
 
@@ -86,7 +79,6 @@ public class App extends Application {
 						App.menu.load(Configuration.beginDate, Configuration.endDate);
 						App.setTimelime();
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -103,7 +95,6 @@ public class App extends Application {
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
-		 
 
 		time.setButtomOnAction(new EventHandler<ActionEvent>() {
 
@@ -163,17 +154,22 @@ public class App extends Application {
 
 	public static void setTimelime() {
 
-		double min = 0, max = 0, unit = 0;
+		double min = 0, max = 0;
 
 		try {
-			min = Configuration.beginDate.getYear() * 12;
-			min += Configuration.beginDate.getMonth();
+			Calendar beginCalendar = Calendar.getInstance();
+			beginCalendar.setTime(Configuration.beginDate);
 
-			max = Configuration.endDate.getYear() * 12;
-			max += Configuration.endDate.getMonth();
+			Calendar endCalendar = Calendar.getInstance();
+			endCalendar.setTime(Configuration.endDate);
+
+			min = beginCalendar.get(Calendar.YEAR) * 12;
+			min += beginCalendar.get(Calendar.MONTH);
+
+			max = endCalendar.get(Calendar.YEAR) * 12;
+			max += endCalendar.get(Calendar.MONTH);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		max = max - min;
@@ -187,7 +183,6 @@ public class App extends Application {
 				App.time.setVisible(true);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -201,7 +196,6 @@ public class App extends Application {
 						try {
 							App.menu.load(Configuration.beginDate, Configuration.endDate);
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -211,12 +205,12 @@ public class App extends Application {
 	}
 
 	public static void LoadDominoesPieces() {
-		
+
 		if (Configuration.projName != null && Configuration.projName.length() > 0) {
 			control.Controller.loadAllMatrices(Configuration.beginDate, Configuration.endDate, Configuration.projName);
 			App.list.Configure(Controller.resultLoadMatrices);
 		}
-		
+
 		/*manager = GUIManager.getInstance(); JFXPanel pane = new JFXPanel();
 		  pane.setScene(stage.getScene()); JFrame window = new JFrame();
 		  window.add(pane); window.setAlwaysOnTop(true);
@@ -281,8 +275,6 @@ public class App extends Application {
 		// App.stage.show();
 
 		App.setFullscreen(Configuration.fullscreen);
-		
-		
 
 	}
 
@@ -335,8 +327,8 @@ public class App extends Application {
 	 * @param dominoes
 	 *            the matrix to be added
 	 */
-	public static void copyToArea(Dominoes dominoes) {
-		App.area.add(dominoes);
+	public static Group copyToArea(Dominoes dominoes) {
+		return App.area.add(dominoes);
 	}
 
 	/**
@@ -426,5 +418,29 @@ public class App extends Application {
 
 	static Stage getStage() {
 		return App.stage;
+	}
+
+	public static CommandManager getCommandManager() {
+		return commandManager;
+	}
+
+	public static void setCommandManager(CommandManager commandManager) {
+		App.commandManager = commandManager;
+	}
+
+	public static ListViewDominoes getList() {
+		return list;
+	}
+
+	public static void setList(ListViewDominoes list) {
+		App.list = list;
+	}
+
+	public static AreaMove getArea() {
+		return area;
+	}
+
+	public static void setArea(AreaMove area) {
+		App.area = area;
 	}
 }

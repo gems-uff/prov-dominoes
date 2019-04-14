@@ -2,6 +2,7 @@ package command;
 
 import com.josericardojunior.domain.Dominoes;
 
+import boundary.App;
 import boundary.MoveData;
 import javafx.animation.FillTransition;
 import javafx.animation.ParallelTransition;
@@ -20,33 +21,16 @@ import javafx.util.Duration;
 public class TransposeCommand extends AbstractCommand {
 
 	private Group piece;
-	private MoveData data;
 
-	public TransposeCommand(Group piece, MoveData data) {
+	public TransposeCommand(Group piece) {
 		super();
 		this.piece = piece;
-		this.data = data;
-	}
-
-	public Group getPiece() {
-		return piece;
-	}
-
-	public void setPiece(Group piece) {
-		this.piece = piece;
-	}
-
-	public MoveData getData() {
-		return data;
-	}
-
-	public void setData(MoveData data) {
-		this.data = data;
 	}
 
 	@Override
 	protected boolean doIt() {
 		boolean success = true;
+		MoveData data = App.getArea().getData();
 		try {
 			data.setTransposing(true);
 
@@ -60,7 +44,7 @@ public class TransposeCommand extends AbstractCommand {
 			data.getMenuItemAggregateCol().set(index, swapMenu);
 
 			Dominoes domino = control.Controller
-					.tranposeDominoes(this.data.getDominoes().get(this.data.getPieces().indexOf(piece)));
+					.tranposeDominoes(data.getDominoes().get(data.getPieces().indexOf(piece)));
 			Group swap = domino.drawDominoes();
 
 			double swapFontSize = ((Text) piece.getChildren().get(Dominoes.GRAPH_ID_COL)).getFont().getSize();
@@ -207,6 +191,14 @@ public class TransposeCommand extends AbstractCommand {
 	@Override
 	protected boolean undoIt() {
 		return doIt();
+	}
+
+	public Group getPiece() {
+		return piece;
+	}
+
+	public void setPiece(Group piece) {
+		this.piece = piece;
 	}
 
 }
