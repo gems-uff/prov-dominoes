@@ -49,7 +49,7 @@ public class MatrixProcessor {
 	
 	
 	static {
-		JNILoadLib.loadCUDART();
-		JNILoadLib.loadLibrary("MatrixProcessor");
+		//JNILoadLib.loadCUDART();
+		//JNILoadLib.loadLibrary("MatrixProcessor");
 	}
 }
