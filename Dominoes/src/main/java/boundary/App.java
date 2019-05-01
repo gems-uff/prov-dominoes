@@ -1,17 +1,21 @@
 package boundary;
 
+import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import com.josericardojunior.domain.Dominoes;
+
+import control.Controller;
+import convertion.ProvMatrixFactory;
+import domain.Configuration;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -21,18 +25,13 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import javax.swing.JFrame;
-
-import control.Controller;
-import com.josericardojunior.dao.DominoesSQLDao;
-import domain.Configuration;
-import com.josericardojunior.domain.Dominoes;
+import model.ProvMatrix;
+import util.Prov2DominoesUtil;
 
 // Information fragment // opened question
 
-@SuppressWarnings("restriction")
 public class App extends Application {
 
 	private static ListViewDominoes list;
@@ -55,8 +54,6 @@ public class App extends Application {
 
 	private static double width = Configuration.width;
 	private static double height = Configuration.height;
-
-	private static ArrayList<Dominoes> array = null;
 
 	private static GUIManager manager;
 
@@ -86,7 +83,6 @@ public class App extends Application {
 						App.menu.load(Configuration.beginDate, Configuration.endDate);
 						App.setTimelime();
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -103,7 +99,6 @@ public class App extends Application {
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
-		 
 
 		time.setButtomOnAction(new EventHandler<ActionEvent>() {
 
@@ -163,17 +158,21 @@ public class App extends Application {
 
 	public static void setTimelime() {
 
-		double min = 0, max = 0, unit = 0;
+		double min = 0, max = 0;
+
+		Calendar beginDate = Calendar.getInstance();
+		beginDate.setTime(Configuration.beginDate);
+		Calendar endDate = Calendar.getInstance();
+		endDate.setTime(Configuration.endDate);
 
 		try {
-			min = Configuration.beginDate.getYear() * 12;
-			min += Configuration.beginDate.getMonth();
+			min = beginDate.get(Calendar.YEAR) * 12;
+			min += beginDate.get(Calendar.MONTH);
 
-			max = Configuration.endDate.getYear() * 12;
-			max += Configuration.endDate.getMonth();
+			max = endDate.get(Calendar.YEAR) * 12;
+			max += endDate.get(Calendar.MONTH);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		max = max - min;
@@ -187,7 +186,6 @@ public class App extends Application {
 				App.time.setVisible(true);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -201,7 +199,6 @@ public class App extends Application {
 						try {
 							App.menu.load(Configuration.beginDate, Configuration.endDate);
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -211,12 +208,12 @@ public class App extends Application {
 	}
 
 	public static void LoadDominoesPieces() {
-		
+
 		if (Configuration.projName != null && Configuration.projName.length() > 0) {
 			control.Controller.loadAllMatrices(Configuration.beginDate, Configuration.endDate, Configuration.projName);
 			App.list.Configure(Controller.resultLoadMatrices);
 		}
-		
+
 		/*manager = GUIManager.getInstance(); JFXPanel pane = new JFXPanel();
 		  pane.setScene(stage.getScene()); JFrame window = new JFrame();
 		  window.add(pane); window.setAlwaysOnTop(true);
@@ -281,8 +278,6 @@ public class App extends Application {
 		// App.stage.show();
 
 		App.setFullscreen(Configuration.fullscreen);
-		
-		
 
 	}
 
@@ -397,6 +392,24 @@ public class App extends Application {
 		App.vSP_head_TimePane.setVisible(Configuration.visibilityTimePane);
 	}
 
+	public static void openProv() {
+		try {
+			FileChooser fileChooser = new FileChooser();
+			File file = fileChooser.showOpenDialog(stage);
+			if (file != null) {
+				String provFilePath = file.getAbsolutePath();
+				ProvMatrixFactory provFactory = new ProvMatrixFactory(provFilePath);
+				List<ProvMatrix> provMatrixList = provFactory.buildMatrices();
+				List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList);
+				Controller.resultLoadMatrices = dominoesList;
+				list.Configure(Controller.resultLoadMatrices);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	/**
 	*
 	*/
@@ -427,4 +440,9 @@ public class App extends Application {
 	static Stage getStage() {
 		return App.stage;
 	}
+
+	public static void setStage(Stage stage) {
+		App.stage = stage;
+	}
+
 }
