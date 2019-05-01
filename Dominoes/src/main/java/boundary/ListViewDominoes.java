@@ -1,11 +1,12 @@
 package boundary;
 
-import domain.Configuration;
-import com.josericardojunior.domain.Dominoes;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.josericardojunior.domain.Dominoes;
+
+import domain.Configuration;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,7 +37,7 @@ public class ListViewDominoes extends ListView<Group> {
      *
      * @param array Values to initialize this list and your array
      */
-    public ListViewDominoes(ArrayList<Dominoes> array) {
+    public ListViewDominoes(List<Dominoes> array) {
         this.visibilityHistoric = true;
 
         this.pieces = FXCollections.observableList(new ArrayList<Group>());
@@ -45,7 +46,7 @@ public class ListViewDominoes extends ListView<Group> {
         this.Configure(array);
     }
     
-    public void Configure(ArrayList<Dominoes> array){
+    public void Configure(List<Dominoes> array){
     	this.clear();
     	
     	if (array != null) {
