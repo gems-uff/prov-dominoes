@@ -134,7 +134,8 @@ public class ProjectInfoPane extends Pane {
 				
 				FXMLLoader loader = new FXMLLoader();
 				
-				URL url = getClass().getResource("/resources/ImporterView.fxml");
+				URL url = getClass().getResource("/ImporterView.fxml");
+				//URL url = getClass().getResource("/resources/ImporterView.fxml");
 				System.out.println(url);
 				loader.setLocation(url);
 	
