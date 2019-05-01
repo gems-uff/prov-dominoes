@@ -1,23 +1,22 @@
 package control;
 
-import java.awt.Frame;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JFrame;
 
-import boundary.App;
+import com.josericardojunior.dao.DominoesSQLDao;
+import com.josericardojunior.domain.Dominoes;
+
+import domain.Configuration;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import util.ConfigurationFile;
-import com.josericardojunior.dao.DominoesDao;
-import com.josericardojunior.dao.DominoesSQLDao;
-import domain.Configuration;
-import com.josericardojunior.domain.Dominoes;
 
 public class Controller {
 	
@@ -30,7 +29,7 @@ public class Controller {
 	
 	public static String message = "";
 	
-	public static ArrayList<Dominoes> resultLoadMatrices;
+	public static List<Dominoes> resultLoadMatrices;
 	
 	public static int indexTileSelected = -1;
 	
