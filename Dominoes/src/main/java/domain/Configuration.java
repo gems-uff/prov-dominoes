@@ -23,7 +23,8 @@ public class Configuration {
     public static double listWidth = 130.0f;
     
     public static String accessMode = "SQL";
-    public static String processingUnit =  MatrixProcessor.isGPUEnabled() ? GPU_DEVICE : CPU_DEVICE;
+    //public static String processingUnit =  MatrixProcessor.isGPUEnabled() ? GPU_DEVICE : CPU_DEVICE;
+    public static String processingUnit =  CPU_DEVICE;
     public static String database = "db/gitdataminer.sqlite";
     public static String projName = "";
     
