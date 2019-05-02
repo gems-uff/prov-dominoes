@@ -310,8 +310,9 @@ public class App extends Application {
 	 * This function remove all parts in this area move
 	 */
 	public static void clear() {
-		App.list.clear();
-		App.area.clear();
+		list.clear();
+		area.clear();
+		visual.ClearTabs();
 	}
 
 	/**
@@ -401,6 +402,7 @@ public class App extends Application {
 				ProvMatrixFactory provFactory = new ProvMatrixFactory(provFilePath);
 				List<ProvMatrix> provMatrixList = provFactory.buildMatrices();
 				List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList);
+				clear();
 				Controller.resultLoadMatrices = dominoesList;
 				list.Configure(Controller.resultLoadMatrices);
 			}
