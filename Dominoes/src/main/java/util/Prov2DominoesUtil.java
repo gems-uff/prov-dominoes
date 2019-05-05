@@ -22,7 +22,8 @@ public class Prov2DominoesUtil {
 			MatrixDescriptor descriptor = new MatrixDescriptor(provMatrix.getRowDimentionAbbreviate(),
 					provMatrix.getColumnDimentionAbbreviate());
 			System.out.println("Convertendo: " + provMatrix.getRowDimentionAbbreviate() + " | "
-					+ provMatrix.getColumnDimentionAbbreviate() + " : " + provMatrix.getRelation().getDescription()+" ...");
+					+ provMatrix.getColumnDimentionAbbreviate() + " : " + provMatrix.getRelation().getDescription()
+					+ " ...");
 			System.out.println(provMatrix.getRowDescriptors());
 			System.out.println(provMatrix.getColumnDescriptors());
 			descriptor.setRowsDesc(provMatrix.getRowDescriptors());
@@ -31,7 +32,8 @@ public class Prov2DominoesUtil {
 			mat.setData(matrix2Cells(provMatrix.getMatrix()));
 			System.out.println(mat);
 			Dominoes dom = new Dominoes(provMatrix.getRowDimentionAbbreviate(),
-					provMatrix.getColumnDimentionAbbreviate(), mat, Configuration.CPU_DEVICE);
+					provMatrix.getColumnDimentionAbbreviate(), provMatrix.getRelation().getDescription(), mat,
+					Configuration.CPU_DEVICE);
 
 			dominoesList.add(dom);
 
