@@ -32,7 +32,7 @@ public class Prov2DominoesUtil {
 			mat.setData(matrix2Cells(provMatrix.getMatrix()));
 			System.out.println(mat);
 			Dominoes dom = new Dominoes(provMatrix.getRowDimentionAbbreviate(),
-					provMatrix.getColumnDimentionAbbreviate(), provMatrix.getRelation().getDescription(), mat,
+					provMatrix.getColumnDimentionAbbreviate(), provMatrix.getRelation(), mat,
 					Configuration.CPU_DEVICE);
 
 			dominoesList.add(dom);

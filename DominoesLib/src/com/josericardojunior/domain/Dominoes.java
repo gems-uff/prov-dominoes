@@ -7,6 +7,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import model.ProvMatrix.Relation;
+
 import com.josericardojunior.arch.IMatrix2D;
 import com.josericardojunior.arch.Matrix2D;
 
@@ -80,7 +82,7 @@ public final class Dominoes {
 
 	private boolean rowIsAggragatable = false;
 	private boolean colIsAggragatable = false;
-	private String relation;
+	private Relation relation;
 	private String idRow;
 	private String idCol;
 	private Historic historic;
@@ -116,7 +118,7 @@ public final class Dominoes {
 		this.currentDevice = _device;
 	}
 
-	public Dominoes(String idRow, String idCol, String relation, IMatrix2D mat, String _device)
+	public Dominoes(String idRow, String idCol, Relation relation, IMatrix2D mat, String _device)
 			throws IllegalArgumentException {
 		this(idRow, idCol, mat, _device);
 		this.relation = relation;
@@ -222,6 +224,28 @@ public final class Dominoes {
 		line.setArcHeight(Dominoes.GRAPH_ARC);
 		line.setArcWidth(Dominoes.GRAPH_ARC);
 
+		Text relationText = null;
+		Text arrowText = null;
+		//
+		if (this.relation != null) {
+			arrowText = new Text("\u21D2");
+			arrowText.setFill(Dominoes.COLOR_NORMAL_FONT);
+			arrowText.setFont(new Font("Times", 10));
+			arrowText.toFront();
+			arrowText.setX(GRAPH_WIDTH / 2 - 12);
+			arrowText.setY(border.getHeight() - back.getHeight() + 10);
+
+			relationText = new Text(this.relation.getAbbreviate());
+			relationText.setFill(Dominoes.COLOR_NORMAL_FONT);
+			relationText.setFont(new Font("Times", 10));
+			relationText.toFront();
+			relationText.setX(GRAPH_WIDTH / 2 - 20);
+			relationText.setY(border.getHeight() - back.getHeight() + 33);
+			relationText.setRotate(90);
+			System.out.println(this.getIdRow()+" ("+this.relation.getDescription()+") "+this.getIdCol());
+			System.out.println("x= "+relationText.getX()+" y= "+relationText.getY());
+		}
+
 		Text idRow = new Text(this.getIdRow());
 		idRow.setFill(Dominoes.COLOR_NORMAL_FONT);
 		idRow.setX(5);
@@ -313,8 +337,16 @@ public final class Dominoes {
 		groupType.setTranslateY((radius + circlePadding));
 		groupType.setAutoSizeChildren(true);
 
-		Group domino = new Group(border, back, line, historic, groupType, idRow, idCol);
-		Tooltip.install(domino, new Tooltip(this.idRow + "x" + this.getIdCol()));
+		Group domino = null;
+		if (this.relation == null) {
+			domino = new Group(border, back, line, historic, groupType, idRow, idCol);
+			Tooltip.install(domino, new Tooltip(this.idRow + "x" + this.getIdCol()));
+		} else {
+			domino = new Group(border, back, line, historic, groupType, idRow, idCol, relationText, arrowText);
+			Tooltip.install(domino,
+					new Tooltip(this.idRow +  " (" + this.relation.getDescription() + ") " + this.getIdCol()));
+		}
+
 		return domino;
 	}
 
@@ -526,7 +558,7 @@ public final class Dominoes {
 	}
 
 	public Dominoes cloneNoMatrix() {
-		Dominoes cloned = new Dominoes(getIdRow(), getIdCol(), getMat(), getDevice());
+		Dominoes cloned = new Dominoes(getIdRow(), getIdCol(), getRelation(), getMat(), getDevice());
 
 		return cloned;
 	}
@@ -535,11 +567,11 @@ public final class Dominoes {
 		return currentDevice;
 	}
 
-	public String getRelation() {
+	public Relation getRelation() {
 		return relation;
 	}
 
-	public void setRelation(String relation) {
+	public void setRelation(Relation relation) {
 		this.relation = relation;
 	}
 
