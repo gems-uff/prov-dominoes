@@ -84,7 +84,7 @@ public class ListViewDominoes extends ListView<Group> {
 		Group group = domino.drawDominoes();
 		group.getChildren().get(Dominoes.GRAPH_HISTORIC).setVisible(visibilityHistoric);
 
-		Tooltip tooltip = new Tooltip(domino.getMat().getMatrixDescriptor().getRowType() + " x "
+		Tooltip tooltip = new Tooltip(domino.getMat().getMatrixDescriptor().getRowType() + " ("+domino.getRelation().getDescription()+") "
 				+ domino.getMat().getMatrixDescriptor().getColType() + " : "
 				+ domino.getMat().getMatrixDescriptor().getNumRows() + " x "
 				+ domino.getMat().getMatrixDescriptor().getNumCols());
