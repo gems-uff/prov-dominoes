@@ -1,13 +1,13 @@
 package boundary;
 
-import domain.Configuration;
 import com.josericardojunior.domain.Dominoes;
+
+import domain.Configuration;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 
-@SuppressWarnings("restriction")
 public class Visual extends BorderPane {
 
     private double padding = Configuration.width;
@@ -37,6 +37,16 @@ public class Visual extends BorderPane {
         GraphPane graphPane = new GraphPane(domino);
         
         tab.setContent(graphPane);
+        Tooltip.install(tab.getGraphic(), new Tooltip(domino.getHistoric().toString()));
+        
+        this.tabPane.getTabs().add(tab);       
+    }
+    
+    public void addTabCentralityGraph(Dominoes domino){
+        Tab tab = new Tab("Centrality Graph: " + domino.getIdRow() + "x" + domino.getIdCol() + " " + this.tabPane.getTabs().size());
+        GraphCentralityPane graphCentralityPane = new GraphCentralityPane(domino);
+        
+        tab.setContent(graphCentralityPane);
         Tooltip.install(tab.getGraphic(), new Tooltip(domino.getHistoric().toString()));
         
         this.tabPane.getTabs().add(tab);       

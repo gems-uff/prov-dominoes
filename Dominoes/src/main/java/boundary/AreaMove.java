@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.text.Font;
+import com.josericardojunior.domain.Dominoes;
+
+import domain.Configuration;
 import javafx.animation.FillTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
@@ -23,10 +25,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import domain.Configuration;
-import com.josericardojunior.domain.Dominoes;
 
 @SuppressWarnings("restriction")
 public class AreaMove extends Pane {
@@ -98,6 +99,7 @@ public class AreaMove extends Pane {
 		MenuItem menuItemZScore = new MenuItem("Z-Score");
         MenuItem menuItemSaveInList = new MenuItem("Save");
         MenuItem menuItemViewGraph = new MenuItem("Graph");
+        MenuItem menuItemViewEigenCentrality = new MenuItem("Centrality Graph");
         MenuItem menuItemViewMatrix = new MenuItem("Matrix");
         MenuItem menuItemViewChart = new MenuItem("Bar Chart");
         MenuItem menuItemViewLineChart = new MenuItem("Line Chart");
@@ -341,6 +343,8 @@ public class AreaMove extends Pane {
             public void handle(ActionEvent event) {
                 if (((MenuItem) event.getTarget()).getText().equals(menuItemViewGraph.getText())) {
                     drawGraph(domino);
+                } else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewEigenCentrality.getText())) {
+                	drawCentralityGraph(domino);
                 } else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewMatrix.getText())) {
                     drawMatrix(domino);
                 } else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewChart.getText())) {
@@ -357,7 +361,7 @@ public class AreaMove extends Pane {
         menuOperate.getItems().addAll(menuItemTranspose, menuItemAggregateRow.get(index),
         		menuItemAggregateCol.get(index), menuItemConfidence, menuItemZScore);
         menuView.getItems().addAll(menuItemViewChart, /*menuItemViewLineChart,*/ 
-        		menuItemViewGraph, menuItemViewMatrix/*, menuItemViewTree*/);
+        		menuItemViewGraph,menuItemViewEigenCentrality, menuItemViewMatrix/*, menuItemViewTree*/);
         minimenu.getItems().addAll(menuOperate, menuView, menuItemSaveInList, menuItemClose);
     }
 
@@ -922,6 +926,9 @@ public class AreaMove extends Pane {
 
     private void drawGraph(Dominoes domino) {
         App.drawGraph(domino);
+    }
+    private void drawCentralityGraph(Dominoes domino) {
+        App.drawCentralityGraph(domino);
     }
 
     private void drawMatrix(Dominoes domino) {
