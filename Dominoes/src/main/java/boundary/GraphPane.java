@@ -15,6 +15,7 @@ import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.SpringLayout;
+import edu.uci.ics.jung.algorithms.scoring.EigenvectorCentrality;
 import edu.uci.ics.jung.graph.AbstractTypedGraph;
 import edu.uci.ics.jung.graph.DelegateForest;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
@@ -102,9 +103,8 @@ import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 /**
  *
- * @author Daniel
+ * @author Victor
  */
-@SuppressWarnings("restriction")
 public class GraphPane extends BorderPane {
 
     /**
@@ -128,7 +128,6 @@ public class GraphPane extends BorderPane {
     //CircleLayout<String, Integer> treeLayout;
 
     public GraphPane(Dominoes domino) {
-    	
         // create a simple graph for the demo
         graph = new DelegateForest<String, String>();
     	
