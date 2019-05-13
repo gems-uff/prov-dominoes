@@ -35,7 +35,7 @@ public class Visual extends BorderPane {
     
     public void addTabGraph(Dominoes domino){
         Tab tab = new Tab("Graph: " + domino.getIdRow() + "x" + domino.getIdCol() + " " + this.tabPane.getTabs().size());
-        GraphPane graphPane = new GraphPane(domino);
+        GraphCentralityPane graphPane = new GraphCentralityPane(domino);
         
         tab.setContent(graphPane);
         Tooltip.install(tab.getGraphic(), new Tooltip(domino.getHistoric().toString()));
