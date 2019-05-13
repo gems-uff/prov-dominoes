@@ -8,7 +8,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 
-@SuppressWarnings("restriction")
 public class Visual extends BorderPane {
 
     private double padding = Configuration.width;
