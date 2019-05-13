@@ -1,5 +1,7 @@
+JNIGPUMatrix/target
 Interface/target
 gitdataminer/target
+Dominoes/.classpath
 .metadata
 .recommenders
 JNIGPUMatrix/kernel.o

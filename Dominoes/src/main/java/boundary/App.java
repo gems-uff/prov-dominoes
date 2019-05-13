@@ -422,6 +422,10 @@ public class App extends Application {
 	static void drawGraph(Dominoes domino) {
 		visual.addTabGraph(domino);
 	}
+	
+	static void drawCentralityGraph(Dominoes domino) {
+		visual.addTabCentralityGraph(domino);
+	}
 
 	static void drawMatrix(Dominoes domino) {
 		visual.addTabMatrix(domino);
