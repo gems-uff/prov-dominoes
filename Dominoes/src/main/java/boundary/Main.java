@@ -1,16 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package boundary;
 
-import util.ConfigurationFile;
-import control.Controller;
-import com.josericardojunior.dao.DominoesSQLDao;
-import domain.Configuration;
 import com.josericardojunior.arch.Session;
+import com.josericardojunior.dao.DominoesSQLDao;
+
+import control.Controller;
+import domain.Configuration;
 
 /**
  *
