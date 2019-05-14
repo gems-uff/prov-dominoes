@@ -1,12 +1,8 @@
 package command;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 import boundary.DominoesMenuBar;
-import javafx.scene.Group;
 
 public class CommandManager {
 
@@ -14,6 +10,7 @@ public class CommandManager {
 
 	private LinkedList<AbstractCommand> history;
 	private LinkedList<AbstractCommand> redoList;
+	private AbstractCommand lastCommand;
 	private DominoesMenuBar menu;
 
 	public CommandManager() {
@@ -28,36 +25,35 @@ public class CommandManager {
 	}
 
 	public void invokeCommand(AbstractCommand command) {
+		boolean result = false;
 		if (command instanceof Undo) {
 			undo();
 		} else if (command instanceof Redo) {
 			redo();
-		} else if (command instanceof RemoveCommand) {
-			Group pieceToRemove = ((RemoveCommand) command).getPiece();
-			List<AbstractCommand> cpyHistory = new ArrayList<>(history);
-			for (Iterator<AbstractCommand> iterator = cpyHistory.iterator(); iterator.hasNext();) {
-				AbstractCommand comm = (AbstractCommand) iterator.next();
-				if (comm.getPiece() == pieceToRemove) {
-					history.remove(comm);
-				}
-			}
-			List<AbstractCommand> cpyRedoList = new ArrayList<>(redoList);
-			for (Iterator<AbstractCommand> iterator = cpyRedoList.iterator(); iterator.hasNext();) {
-				AbstractCommand comm = (AbstractCommand) iterator.next();
-				if (comm.getPiece() == pieceToRemove) {
-					redoList.remove(comm);
-				}
-			}
-			command.doIt();
-		} else if (!(command instanceof RemoveCommand) && command.doIt()) {
-			addToHistory(command);
 		} else {
-			history.clear();
+			if (lastCommand instanceof Undo) {
+				this.redoList.clear();
+			}
+			if (command instanceof MultiplyCommand) {
+				result = command.doIt();
+				if (result) {
+					addToHistory(command);
+					this.uptadeMenu();
+					return;
+				} else {
+					return;
+				}
+			} else if (command.doIt()) {
+				addToHistory(command);
+			} else {
+				history.clear();
+			}
 		}
 		this.uptadeMenu();
+		this.lastCommand=command;
 	}
 
-	private void uptadeMenu() {
+	public void uptadeMenu() {
 		if (history.size() == 0) {
 			menu.getMenuEditUndo().setDisable(true);
 		} else {
@@ -81,11 +77,7 @@ public class CommandManager {
 		if (history.size() > 0) {
 			AbstractCommand undoCommand = (AbstractCommand) history.removeFirst();
 			undoCommand.undoIt();
-			if (!(undoCommand instanceof RemoveCommand) && !(undoCommand instanceof AddCommand)) {
-				redoList.addFirst(undoCommand);
-			} else {
-				redoList.clear();
-			}
+			redoList.addFirst(undoCommand);
 		}
 	}
 
