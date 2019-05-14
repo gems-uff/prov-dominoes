@@ -7,39 +7,43 @@ import javafx.scene.Group;
 
 public class RemoveCommand extends AbstractCommand {
 
-	private Group piece;
+	private int pieceIndex;
+	private int sourceIndex;
 
 	public RemoveCommand() {
 
 	}
 
-	public RemoveCommand(Group group) {
+	public RemoveCommand(int pieceIndex) {
 		super();
-		this.piece = group;
+		this.pieceIndex = pieceIndex;
 	}
 
 	public Group getPiece() {
-		return piece;
+		return App.getArea().getData().getPieces().get(pieceIndex);
 	}
 
-	public void setPiece(Group piece) {
-		this.piece = piece;
+	public void setPieceIndex(int pieceIndex) {
+		this.pieceIndex = pieceIndex;
 	}
 
 	@Override
 	protected boolean doIt() {
-		return App.getArea().closePiece(this.piece);
-	}
-
-	protected boolean doIt(Dominoes d) {
-		int indexPieceToRemove = App.getArea().getData().getDominoes().indexOf(d);
-		Group p = App.getArea().getData().getPieces().get(indexPieceToRemove);
-		return App.getArea().closePiece(p);
+		this.sourceIndex = App.getArea().getData().getDominoes().get(pieceIndex).getSourceIndex();
+		return App.getArea().closePiece(this.getPiece());
 	}
 
 	@Override
 	protected boolean undoIt() {
-		throw new NoSuchMethodError();
+		boolean success = true;
+		try {
+			Dominoes auxDomino = App.getList().getDominoes().get(sourceIndex);
+			App.copyToArea(auxDomino.cloneNoMatrix(), pieceIndex);			
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			success = false;
+		}
+		return success;
 	}
 
 }

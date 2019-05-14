@@ -21,16 +21,18 @@ import javafx.util.Duration;
 public class TransposeCommand extends AbstractCommand {
 
 	private Group piece;
+	private int pieceIndex;
 
-	public TransposeCommand(Group piece) {
-		super();
-		this.piece = piece;
+	public TransposeCommand(int pieceIndex) {
+		super();		
+		this.pieceIndex = pieceIndex;
 	}
 
 	@Override
 	protected boolean doIt() {
 		boolean success = true;
 		MoveData data = App.getArea().getData();
+		this.piece = App.getArea().getData().getPieces().get(pieceIndex);
 		try {
 			data.setTransposing(true);
 
@@ -38,10 +40,9 @@ public class TransposeCommand extends AbstractCommand {
 
 			double startAngle = piece.getRotate();
 
-			int index = data.getPieces().indexOf(piece);
-			MenuItem swapMenu = data.getMenuItemAggregateRow().get(index);
-			data.getMenuItemAggregateRow().set(index, data.getMenuItemAggregateCol().get(index));
-			data.getMenuItemAggregateCol().set(index, swapMenu);
+			MenuItem swapMenu = data.getMenuItemAggregateRow().get(pieceIndex);
+			data.getMenuItemAggregateRow().set(pieceIndex, data.getMenuItemAggregateCol().get(pieceIndex));
+			data.getMenuItemAggregateCol().set(pieceIndex, swapMenu);
 
 			Dominoes domino = control.Controller
 					.tranposeDominoes(data.getDominoes().get(data.getPieces().indexOf(piece)));
