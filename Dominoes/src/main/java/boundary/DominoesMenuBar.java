@@ -34,6 +34,7 @@ public class DominoesMenuBar extends MenuBar {
 	private final MenuItem mDominoes_loadAll;
 	private final MenuItem menuEditUndo;
 	private final MenuItem menuEditRedo;
+	private final MenuItem menuEditLimpar;
 	private final MenuItem mDominoes_exit;
 	private final MenuItem mDominoes_exitAndSave;
 	private final Menu mDominoes_save;
@@ -93,6 +94,7 @@ public class DominoesMenuBar extends MenuBar {
 		this.menuEditUndo = new MenuItem("Undo");
 		this.menuEditUndo.setDisable(true);
 		this.menuEditRedo = new MenuItem("Redo");
+		this.menuEditLimpar = new MenuItem("Clear");
 		this.menuEditRedo.setDisable(true);
 
 		this.mEdit_showHistoric = new CheckMenuItem("Show Historic");
@@ -101,7 +103,7 @@ public class DominoesMenuBar extends MenuBar {
 		mEdit_showType = new CheckMenuItem("Show Type");
 		mEdit_showType.setSelected(Configuration.visibilityType);
 
-		this.mEdit.getItems().addAll(this.menuEditUndo, this.menuEditRedo, this.mEdit_showHistoric, this.mEdit_showType);
+		this.mEdit.getItems().addAll(this.menuEditUndo, this.menuEditRedo, this.menuEditLimpar,this.mEdit_showHistoric, this.mEdit_showType);
 		//        this.mEdit.getItems().addAll(this.mEdit_editMatrix, this.mEdit_showHistoric, this.mEdit_showType);
 
 		//------CONFIGURATION MENU ITENS------------------------------------------------
@@ -215,6 +217,17 @@ public class DominoesMenuBar extends MenuBar {
 			@Override
 			public void handle(ActionEvent event) {
 				App.getCommandManager().invokeCommand(new CommandFactory().redo());
+			}
+		});
+		
+		this.menuEditLimpar.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.getCommandManager().getRedoList().clear();
+				App.getCommandManager().getHistory().clear();
+				App.getCommandManager().uptadeMenu();
+				App.getArea().clear();
 			}
 		});
 

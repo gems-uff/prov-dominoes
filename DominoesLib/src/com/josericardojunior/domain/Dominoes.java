@@ -85,6 +85,7 @@ public final class Dominoes {
     private Historic historic;
     private int type;
     private IMatrix2D mat = null;
+    private int sourceIndex;
     private String currentDevice = DEVICE_CPU;
 
     public Dominoes(String _device) {
@@ -539,6 +540,14 @@ public final class Dominoes {
     public String getDevice(){
     	return currentDevice;
     }
+
+	public int getSourceIndex() {
+		return sourceIndex;
+	}
+
+	public void setSourceIndex(int sourceIndex) {
+		this.sourceIndex = sourceIndex;
+	}
     
     
 }

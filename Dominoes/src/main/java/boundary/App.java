@@ -29,7 +29,9 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
+	// Lista de peças carregadas/salvas
 	private static ListViewDominoes list;
+	// Área de trabalho de peças
 	private static AreaMove area;
 	private static CommandManager commandManager;
 	private static DominoesMenuBar menu;
@@ -130,12 +132,12 @@ public class App extends Application {
 				if (result) {
 					return true;
 				} else {
-					App.area.add(dominoes);
+					App.area.add(dominoes,-1);
 					App.list.add(dominoes);
 					return false;
 				}
 			} else {
-				App.area.add(dominoes);
+				App.area.add(dominoes,-1);
 				return false;
 			}
 		}
@@ -327,8 +329,8 @@ public class App extends Application {
 	 * @param dominoes
 	 *            the matrix to be added
 	 */
-	public static Group copyToArea(Dominoes dominoes) {
-		return App.area.add(dominoes);
+	public static Group copyToArea(Dominoes dominoes,int index) {
+		return App.area.add(dominoes,index);
 	}
 
 	/**
