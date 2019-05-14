@@ -15,16 +15,8 @@ public class AddCommand extends AbstractCommand {
 		this.index = -1;
 	}
 
-	public AddCommand(Group group) {
-		super();
-		this.piece = group;
-	}
-
-	public Group getPiece() {
-		return piece;
-	}
-
-	public void setPiece(Group piece) {
+	public AddCommand(Group piece) {
+		this();
 		this.piece = piece;
 	}
 
@@ -36,16 +28,16 @@ public class AddCommand extends AbstractCommand {
 				Dominoes auxDomino = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece));
 				this.addedDominoes = auxDomino.cloneNoMatrix();
 				this.addedDominoes.setSourceIndex(App.getList().getPieces().indexOf(piece));
-				this.piece = App.copyToArea(addedDominoes, index);
-				this.index = App.getArea().getData().getPieces().indexOf(piece);
+				Group newPiece = App.copyToArea(addedDominoes, index);
+				this.index = App.getArea().getData().getPieces().indexOf(newPiece);
 			} else {
 				Dominoes auxDomino = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece));
 				this.addedDominoes = auxDomino.cloneNoMatrix();
 				this.addedDominoes.setSourceIndex(App.getList().getPieces().indexOf(piece));
-				App.getArea().add(addedDominoes, index);
+				App.getArea().add(addedDominoes, this.index);
 			}
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 			success = false;
 		}
 
@@ -54,8 +46,13 @@ public class AddCommand extends AbstractCommand {
 
 	@Override
 	protected boolean undoIt() {
-		Group p = App.getArea().getData().getPieces().get(index);
+		Group p = App.getArea().getData().getPieces().get(this.index);
 		return App.getArea().closePiece(p);
+	}
+
+	@Override
+	protected String getName() {
+		return ADD_COMMAND+"("+this.index+","+this.addedDominoes.getIdRow()+"|"+this.addedDominoes.getIdCol()+")";
 	}
 
 }

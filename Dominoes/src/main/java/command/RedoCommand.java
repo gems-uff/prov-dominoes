@@ -1,7 +1,5 @@
 package command;
 
-import javafx.scene.Group;
-
 public class RedoCommand extends AbstractCommand implements Redo {
 	
 	public boolean doIt() {
@@ -13,8 +11,8 @@ public class RedoCommand extends AbstractCommand implements Redo {
 	}
 
 	@Override
-	protected Group getPiece() {
-		throw new NoSuchMethodError();
+	protected String getName() {
+	return REDO_COMMAND;
 	}
 
 }

@@ -97,20 +97,26 @@ public class MultiplyCommand extends AbstractCommand {
 	protected boolean undoIt() {
 		boolean result = false;
 		App.getArea().remove(App.getArea().getData().getPieces().get(indexResultDominoes));
-		if(indexLeftDominoes<indexRightDominoes) {
+		if (indexLeftDominoes < indexRightDominoes) {
 			App.getArea().add(leftDominoes, xLeftDominoes, yLeftDominoes, indexLeftDominoes);
 			App.getArea().add(rightDominoes, xRightDominoes, yRightDominoes, indexRightDominoes);
 		} else {
-			App.getArea().add(rightDominoes, xRightDominoes, yRightDominoes, indexRightDominoes);	
+			App.getArea().add(rightDominoes, xRightDominoes, yRightDominoes, indexRightDominoes);
 			App.getArea().add(leftDominoes, xLeftDominoes, yLeftDominoes, indexLeftDominoes);
 		}
 		result = true;
 		return result;
 	}
 
-	@Override
 	protected Group getPiece() {
 		return this.resultPiece;
+	}
+
+	@Override
+	protected String getName() {
+		return MULTIPLY_COMMAND + "(" + indexResultDominoes + "," + leftDominoes.getIdRow() + "|"
+				+ leftDominoes.getIdCol() + ", " + rightDominoes.getIdRow() + "|" + rightDominoes.getIdCol()
+				+ ")";
 	}
 
 }

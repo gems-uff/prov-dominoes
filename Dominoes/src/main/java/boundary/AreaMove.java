@@ -49,7 +49,7 @@ public class AreaMove extends Pane {
 	 *
 	 * @param domino The Domino information
 	 */
-	public Group add(Dominoes domino,int index) {
+	public Group add(Dominoes domino, int index) {
 		return this.add(domino, 0, 0, index);
 
 	}
@@ -69,10 +69,14 @@ public class AreaMove extends Pane {
 
 		MenuItem menuItemTranspose = new MenuItem("Transpose");
 
-		data.getMenuItemAggregateRow()
-				.add(new MenuItem("Aggregate by " + domino.getMat().getMatrixDescriptor().getRowType()));
-		data.getMenuItemAggregateCol()
-				.add(new MenuItem("Aggregate by " + domino.getMat().getMatrixDescriptor().getColType()));
+		MenuItem aggByRow = new MenuItem("Aggregate by " + domino.getMat().getMatrixDescriptor().getRowType());
+		if (!data.getMenuItemAggregateRow().contains(aggByRow)) {
+			data.getMenuItemAggregateRow().add(aggByRow);
+		}
+		MenuItem aggByCol = new MenuItem("Aggregate by " + domino.getMat().getMatrixDescriptor().getColType());
+		if (!data.getMenuItemAggregateCol().contains(aggByCol)) {
+			data.getMenuItemAggregateCol().add(aggByCol);
+		}
 		MenuItem menuItemConfidence = new MenuItem("Confidence");
 
 		MenuItem menuItemZScore = new MenuItem("Z-Score");
@@ -230,7 +234,6 @@ public class AreaMove extends Pane {
 
 					if (mouseEvent.getClickCount() == 2) {
 						if (!data.isTransposing()) {
-							System.out.println("transposing");
 							App.getCommandManager().invokeCommand(new CommandFactory().transpose(group));
 						}
 					}
@@ -259,7 +262,6 @@ public class AreaMove extends Pane {
 			@Override
 			public void handle(ActionEvent event) {
 				if (((MenuItem) event.getTarget()).getText().equals(menuItemSaveInList.getText())) {
-					System.out.println("saving");
 					try {
 						saveAndSendToList(group);
 						close(group);
@@ -267,7 +269,6 @@ public class AreaMove extends Pane {
 						System.out.println(ex.getMessage());
 					}
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemClose.getText())) {
-					System.out.println("closing");
 					App.getCommandManager().invokeCommand(new CommandFactory().remove(group));
 				}
 			}
@@ -278,7 +279,6 @@ public class AreaMove extends Pane {
 			public void handle(ActionEvent event) {
 				if (((MenuItem) event.getTarget()).getText().equals(menuItemTranspose.getText())) {
 					if (!data.isTransposing()) {
-						System.out.println("transposing");
 						App.getCommandManager().invokeCommand(new CommandFactory().transpose(group));
 					}
 				} else if (((MenuItem) event.getTarget()).getText()
@@ -323,8 +323,7 @@ public class AreaMove extends Pane {
 			}
 		});
 
-		menuOperate.getItems().addAll(menuItemTranspose, data.getMenuItemAggregateRow().get(index),
-				data.getMenuItemAggregateCol().get(index), menuItemConfidence, menuItemZScore);
+		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore);
 		menuView.getItems().addAll(menuItemViewChart, /* menuItemViewLineChart, */
 				menuItemViewGraph, menuItemViewMatrix/* , menuItemViewTree */);
 		minimenu.getItems().addAll(menuOperate, menuView, menuItemSaveInList, menuItemClose);
@@ -520,7 +519,6 @@ public class AreaMove extends Pane {
 
 		return false;
 	}
-
 
 	/**
 	 * This function remove the matrix, in the piece and dominoes array, by the

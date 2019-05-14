@@ -1,7 +1,5 @@
 package command;
 
-import javafx.scene.Group;
-
 public class UndoCommand extends AbstractCommand implements Undo {
 	
 	public boolean doIt() {
@@ -13,8 +11,9 @@ public class UndoCommand extends AbstractCommand implements Undo {
 	}
 
 	@Override
-	protected Group getPiece() {
-		throw new NoSuchMethodError();
+	protected String getName() {
+		return UNDO_COMMAND;
 	}
+
 
 }
