@@ -49,8 +49,8 @@ public class AreaMove extends Pane {
 	 *
 	 * @param domino The Domino information
 	 */
-	public Group add(Dominoes domino) {
-		return this.add(domino, 0, 0);
+	public Group add(Dominoes domino,int index) {
+		return this.add(domino, 0, 0, index);
 
 	}
 
@@ -61,7 +61,7 @@ public class AreaMove extends Pane {
 	 * @param x      The coordinate X of this new Domino
 	 * @param y      The coordinate Y of this new Domino
 	 */
-	public Group add(Dominoes domino, double x, double y) {
+	public Group add(Dominoes domino, double x, double y, int indexList) {
 		double thisTranslateX = x;
 		double thisTranslateY = y;
 
@@ -124,9 +124,7 @@ public class AreaMove extends Pane {
 			group.setTranslateX(thisTranslateX);
 		}
 
-		this.data.getPieces().add(group);
-		this.data.getDominoes().add(domino);
-		this.getChildren().add(group);
+		addOnLists(domino, group, indexList);
 
 		// if (!domino.getIdRow().equals(domino.getIdCol())) {
 		// menuItemViewGraph.setDisable(true);
@@ -215,11 +213,9 @@ public class AreaMove extends Pane {
 			@Override
 			public void handle(MouseEvent event) {
 				cursorProperty().set(Cursor.OPEN_HAND);
-				try {
-					multiply();
-				} catch (IOException ex) {
-					System.err.println(ex.getMessage());
-				}
+				// TODO: Substituir comando!
+				App.getCommandManager().invokeCommand(new CommandFactory().multiply());
+				//multiply();
 			}
 		});
 		group.setOnMouseExited(new EventHandler<MouseEvent>() {
@@ -238,8 +234,7 @@ public class AreaMove extends Pane {
 						if (!data.isTransposing()) {
 							System.out.println("transposing");
 							// transpose(group);
-							App.getCommandManager().invokeCommand(new CommandFactory()
-									.transpose(group));
+							App.getCommandManager().invokeCommand(new CommandFactory().transpose(group));
 						}
 					}
 				}
@@ -289,8 +284,7 @@ public class AreaMove extends Pane {
 					if (!data.isTransposing()) {
 						System.out.println("transposing");
 						// transpose(group);
-						App.getCommandManager().invokeCommand(new CommandFactory()
-								.transpose(group));
+						App.getCommandManager().invokeCommand(new CommandFactory().transpose(group));
 					}
 				} else if (((MenuItem) event.getTarget()).getText()
 						.equals(data.getMenuItemAggregateRow().get(index).getText())) {
@@ -340,6 +334,17 @@ public class AreaMove extends Pane {
 				menuItemViewGraph, menuItemViewMatrix/* , menuItemViewTree */);
 		minimenu.getItems().addAll(menuOperate, menuView, menuItemSaveInList, menuItemClose);
 		return group;
+	}
+
+	private void addOnLists(Dominoes domino, Group group, int index) {
+		if (index == -1) {
+			this.data.getPieces().add(group);
+			this.data.getDominoes().add(domino);
+		} else {
+			this.data.getPieces().add(index, group);
+			this.data.getDominoes().add(index, domino);
+		}
+		this.getChildren().add(group);
 	}
 
 	/**
@@ -549,7 +554,7 @@ public class AreaMove extends Pane {
 					this.remove(this.data.getIndexSecondOperatorMultiplication());
 				}
 
-				this.add(resultOperation, x, y);
+				this.add(resultOperation, x, y, -1);
 				if (Configuration.autoSave) {
 					this.saveAndSendToList(data.getPieces().get(data.getDominoes().indexOf(resultOperation)));
 				}
@@ -619,7 +624,7 @@ public class AreaMove extends Pane {
 	 * @param group The matrix which will suffer with this operation
 	 * @throws IOException
 	 */
-	private void saveAndSendToList(Group group) throws IOException {
+	public void saveAndSendToList(Group group) throws IOException {
 		control.Controller.saveMatrix(this.data.getDominoes().get(this.data.getPieces().indexOf(group)));
 
 		// adding in list
@@ -744,7 +749,7 @@ public class AreaMove extends Pane {
 		Dominoes domino = control.Controller.confidence(toConfidence);
 
 		remove(index);
-		add(domino, piece.getTranslateX(), piece.getTranslateY());
+		add(domino, piece.getTranslateX(), piece.getTranslateY(), -1);
 
 		if (Configuration.autoSave) {
 			this.saveAndSendToList(piece);
@@ -779,4 +784,5 @@ public class AreaMove extends Pane {
 	public void setData(MoveData data) {
 		this.data = data;
 	}
+
 }

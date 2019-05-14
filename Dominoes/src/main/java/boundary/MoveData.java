@@ -10,7 +10,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.shape.Rectangle;
 
 public class MoveData {
-	
+
 	private ArrayList<Dominoes> dominoes;
 	private ArrayList<Group> pieces;
 	private Rectangle background;
@@ -27,12 +27,38 @@ public class MoveData {
 
 	public MoveData(int indexFirstOperatorMultiplication, int indexSecondOperatorMultiplication, double padding,
 			boolean transposing, List<MenuItem> menuItemAggregateRow, List<MenuItem> menuItemAggregateCol) {
+
 		this.indexFirstOperatorMultiplication = indexFirstOperatorMultiplication;
 		this.indexSecondOperatorMultiplication = indexSecondOperatorMultiplication;
 		this.padding = padding;
 		this.transposing = transposing;
 		this.menuItemAggregateRow = menuItemAggregateRow;
 		this.menuItemAggregateCol = menuItemAggregateCol;
+	}
+
+	public MoveData clone() {
+		MoveData clone = new MoveData(background, indexFirstOperatorMultiplication, indexSecondOperatorMultiplication,
+				padding, transposing, srcSceneX, srcSceneY, srcTranslateX, srcTranslateY);
+
+		this.dominoes = new ArrayList<>(dominoes);
+		this.pieces = new ArrayList<>(pieces);
+		this.menuItemAggregateRow = new ArrayList<>(menuItemAggregateRow);
+		this.menuItemAggregateCol = new ArrayList<>(menuItemAggregateCol);
+		return clone;
+	}
+
+	public MoveData(Rectangle background2, int indexFirstOperatorMultiplication2,
+			int indexSecondOperatorMultiplication2, double padding2, boolean transposing2, double srcSceneX2,
+			double srcSceneY2, double srcTranslateX2, double srcTranslateY2) {
+		this.background = background2;
+		this.indexFirstOperatorMultiplication = indexFirstOperatorMultiplication2;
+		this.indexSecondOperatorMultiplication = indexSecondOperatorMultiplication2;
+		this.padding = padding2;
+		this.transposing = transposing2;
+		this.srcSceneX = srcSceneX2;
+		this.srcSceneY = srcSceneY2;
+		this.srcTranslateX = srcTranslateX2;
+		this.srcTranslateY = srcTranslateY2;
 	}
 
 	public ArrayList<Dominoes> getDominoes() {

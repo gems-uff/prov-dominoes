@@ -1,5 +1,6 @@
 package command;
 
+import boundary.App;
 import javafx.scene.Group;
 
 public class CommandFactory {
@@ -17,17 +18,19 @@ public class CommandFactory {
 	}
 
 	public AbstractCommand remove(Group piece) {
-		return new RemoveCommand(piece);
+		return new RemoveCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
 	public TransposeCommand transpose(Group piece) {
-		return new TransposeCommand(piece);
+		return new TransposeCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
-	/*public CompoundCommand compound(Group piece) {
-		return new TransposeCommand(piece);
+	public AbstractCommand multiply() {
+		return new MultiplyCommand();
 	}
+
 	
+	/*
 	public AggregateRowCommand aggRow(Group piece) {
 		return new AggregateRowCommand(piece);
 	}
