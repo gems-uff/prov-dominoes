@@ -5,6 +5,7 @@ import javafx.scene.Group;
 public abstract class AbstractCommand {
 
 	public static final String TRANSPOSE_COMMAND = "TRANSPOSE";
+	public static final String MULTIPLY_COMMAND = "MULTIPLY";
 	public static final String ADD_COMMAND = "ADD";
 	public static final String REMOVE_COMMAND = "REMOVE";
 
