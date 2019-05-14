@@ -24,7 +24,7 @@ public class TransposeCommand extends AbstractCommand {
 	private int pieceIndex;
 
 	public TransposeCommand(int pieceIndex) {
-		super();		
+		super();
 		this.pieceIndex = pieceIndex;
 	}
 
@@ -200,6 +200,13 @@ public class TransposeCommand extends AbstractCommand {
 
 	public void setPiece(Group piece) {
 		this.piece = piece;
+	}
+
+	@Override
+	protected String getName() {
+		return TRANSPOSE_COMMAND + "(" + pieceIndex + ","
+				+ App.getArea().getData().getDominoes().get(pieceIndex).getIdRow() + "|"
+				+ App.getArea().getData().getDominoes().get(pieceIndex).getIdCol() + ")";
 	}
 
 }

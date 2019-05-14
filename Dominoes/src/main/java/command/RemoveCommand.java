@@ -7,6 +7,7 @@ import javafx.scene.Group;
 
 public class RemoveCommand extends AbstractCommand {
 
+	private Dominoes removedDominoes;
 	private int pieceIndex;
 	private int sourceIndex;
 
@@ -30,6 +31,7 @@ public class RemoveCommand extends AbstractCommand {
 	@Override
 	protected boolean doIt() {
 		this.sourceIndex = App.getArea().getData().getDominoes().get(pieceIndex).getSourceIndex();
+		this.removedDominoes = App.getArea().getData().getDominoes().get(pieceIndex);
 		return App.getArea().closePiece(this.getPiece());
 	}
 
@@ -38,12 +40,19 @@ public class RemoveCommand extends AbstractCommand {
 		boolean success = true;
 		try {
 			Dominoes auxDomino = App.getList().getDominoes().get(sourceIndex);
-			App.copyToArea(auxDomino.cloneNoMatrix(), pieceIndex);			
+			App.copyToArea(auxDomino.cloneNoMatrix(), pieceIndex);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			success = false;
 		}
 		return success;
+	}
+
+	@Override
+	protected String getName() {
+		return REMOVE_COMMAND + "(" + pieceIndex + ","
+				+ removedDominoes.getIdRow() + "|"
+				+ removedDominoes.getIdCol() + ")";
 	}
 
 }
