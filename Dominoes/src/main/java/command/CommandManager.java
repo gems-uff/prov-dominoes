@@ -37,6 +37,7 @@ public class CommandManager {
 			if (command instanceof MultiplyCommand) {
 				result = command.doIt();
 				if (result) {
+					System.out.println(command.getName());
 					addToHistory(command);
 					this.uptadeMenu();
 					return;
@@ -44,13 +45,14 @@ public class CommandManager {
 					return;
 				}
 			} else if (command.doIt()) {
+				System.out.println(command.getName());
 				addToHistory(command);
 			} else {
 				history.clear();
 			}
 		}
 		this.uptadeMenu();
-		this.lastCommand=command;
+		this.lastCommand = command;
 	}
 
 	public void uptadeMenu() {
@@ -76,6 +78,7 @@ public class CommandManager {
 	private void undo() {
 		if (history.size() > 0) {
 			AbstractCommand undoCommand = (AbstractCommand) history.removeFirst();
+			System.out.println("UNDO[" + undoCommand.getName() + "]");
 			undoCommand.undoIt();
 			redoList.addFirst(undoCommand);
 		}
@@ -84,10 +87,9 @@ public class CommandManager {
 	private void redo() {
 		if (redoList.size() > 0) {
 			AbstractCommand redoCommand = (AbstractCommand) redoList.removeFirst();
+			System.out.println("REDO[" + redoCommand.getName() + "]");
 			redoCommand.doIt();
-			if (!(redoCommand instanceof RemoveCommand)) {
-				addToHistory(redoCommand);
-			}
+			addToHistory(redoCommand);
 		}
 
 	}

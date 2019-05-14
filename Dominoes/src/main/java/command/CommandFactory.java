@@ -18,7 +18,7 @@ public class CommandFactory {
 	}
 
 	public AbstractCommand remove(Group piece) {
-		return new RemoveCommand(App.getArea().getData().getPieces().indexOf(piece));
+		return new RemoveCommand();
 	}
 
 	public TransposeCommand transpose(Group piece) {
