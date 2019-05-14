@@ -96,17 +96,12 @@ public class MultiplyCommand extends AbstractCommand {
 	@Override
 	protected boolean undoIt() {
 		boolean result = false;
-		// Remover result
 		App.getArea().remove(App.getArea().getData().getPieces().get(indexResultDominoes));
 		if(indexLeftDominoes<indexRightDominoes) {
-			// Inserir left
 			App.getArea().add(leftDominoes, xLeftDominoes, yLeftDominoes, indexLeftDominoes);
-			// Inserir right
 			App.getArea().add(rightDominoes, xRightDominoes, yRightDominoes, indexRightDominoes);
 		} else {
-			// Inserir right
 			App.getArea().add(rightDominoes, xRightDominoes, yRightDominoes, indexRightDominoes);	
-			// Inserir left
 			App.getArea().add(leftDominoes, xLeftDominoes, yLeftDominoes, indexLeftDominoes);
 		}
 		result = true;

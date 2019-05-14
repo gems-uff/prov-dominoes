@@ -213,9 +213,7 @@ public class AreaMove extends Pane {
 			@Override
 			public void handle(MouseEvent event) {
 				cursorProperty().set(Cursor.OPEN_HAND);
-				// TODO: Substituir comando!
 				App.getCommandManager().invokeCommand(new CommandFactory().multiply());
-				//multiply();
 			}
 		});
 		group.setOnMouseExited(new EventHandler<MouseEvent>() {
@@ -233,7 +231,6 @@ public class AreaMove extends Pane {
 					if (mouseEvent.getClickCount() == 2) {
 						if (!data.isTransposing()) {
 							System.out.println("transposing");
-							// transpose(group);
 							App.getCommandManager().invokeCommand(new CommandFactory().transpose(group));
 						}
 					}
@@ -271,7 +268,6 @@ public class AreaMove extends Pane {
 					}
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemClose.getText())) {
 					System.out.println("closing");
-					//closePiece(group);
 					App.getCommandManager().invokeCommand(new CommandFactory().remove(group));
 				}
 			}
@@ -283,7 +279,6 @@ public class AreaMove extends Pane {
 				if (((MenuItem) event.getTarget()).getText().equals(menuItemTranspose.getText())) {
 					if (!data.isTransposing()) {
 						System.out.println("transposing");
-						// transpose(group);
 						App.getCommandManager().invokeCommand(new CommandFactory().transpose(group));
 					}
 				} else if (((MenuItem) event.getTarget()).getText()
@@ -526,44 +521,6 @@ public class AreaMove extends Pane {
 		return false;
 	}
 
-	/**
-	 * This will make a multiplication
-	 */
-	private void multiply() throws IOException {
-
-		if (this.data.getIndexFirstOperatorMultiplication() != -1
-				&& this.data.getIndexSecondOperatorMultiplication() != -1) {
-
-			Dominoes d1 = this.data.getDominoes().get(this.data.getIndexFirstOperatorMultiplication());
-			Dominoes d2 = this.data.getDominoes().get(this.data.getIndexSecondOperatorMultiplication());
-
-			if (d1.getIdCol().equals(d2.getIdRow())) {
-
-				Dominoes resultOperation = control.Controller.MultiplyMatrices(d1, d2);
-
-				double x = (this.data.getPieces().get(this.data.getDominoes().indexOf(d1)).getTranslateX()
-						+ this.data.getPieces().get(this.data.getDominoes().indexOf(d2)).getTranslateX()) / 2;
-
-				double y = (this.data.getPieces().get(this.data.getDominoes().indexOf(d1)).getTranslateY()
-						+ this.data.getPieces().get(this.data.getDominoes().indexOf(d2)).getTranslateY()) / 2;
-
-				if (this.remove(this.data.getIndexFirstOperatorMultiplication()) && this.data
-						.getIndexSecondOperatorMultiplication() > this.data.getIndexFirstOperatorMultiplication()) {
-					this.remove(this.data.getIndexSecondOperatorMultiplication() - 1);
-				} else {
-					this.remove(this.data.getIndexSecondOperatorMultiplication());
-				}
-
-				this.add(resultOperation, x, y, -1);
-				if (Configuration.autoSave) {
-					this.saveAndSendToList(data.getPieces().get(data.getDominoes().indexOf(resultOperation)));
-				}
-			}
-			this.data.setIndexFirstOperatorMultiplication(-1);
-			this.data.setIndexSecondOperatorMultiplication(-1);
-		}
-
-	}
 
 	/**
 	 * This function remove the matrix, in the piece and dominoes array, by the
