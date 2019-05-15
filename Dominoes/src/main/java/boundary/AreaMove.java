@@ -20,12 +20,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class AreaMove extends Pane {
 
 	private MoveData data;
+	private CommandFactory commandFactory;
 
 	/**
 	 * Class builder with the dimension defined in parameters. here, will create too
@@ -42,6 +42,7 @@ public class AreaMove extends Pane {
 
 		this.data.setDominoes(new ArrayList<>());
 		this.data.setPieces(new ArrayList<>());
+		this.commandFactory = new CommandFactory();
 	}
 
 	/**
@@ -91,11 +92,11 @@ public class AreaMove extends Pane {
 		Menu menuOperate = new Menu("Operations");
 		Menu menuView = new Menu("Views");
 
-		Group group = domino.drawDominoes();
-		group.getChildren().get(Dominoes.GRAPH_HISTORIC).setVisible(Configuration.visibilityHistoric);
+		Group piece = domino.drawDominoes();
+		piece.getChildren().get(Dominoes.GRAPH_HISTORIC).setVisible(Configuration.visibilityHistoric);
 
-		group.setTranslateX(thisTranslateX);
-		group.setTranslateY(thisTranslateY);
+		piece.setTranslateX(thisTranslateX);
+		piece.setTranslateY(thisTranslateY);
 		if (!this.data.getPieces().isEmpty()) {
 			for (Group g : this.data.getPieces()) {
 
@@ -124,24 +125,24 @@ public class AreaMove extends Pane {
 					thisTranslateY = g.getTranslateY() + Dominoes.GRAPH_HEIGHT;
 				}
 			}
-			group.setTranslateY(thisTranslateY);
-			group.setTranslateX(thisTranslateX);
+			piece.setTranslateY(thisTranslateY);
+			piece.setTranslateX(thisTranslateX);
 		}
 
-		addOnLists(domino, group, indexList);
+		addOnLists(domino, piece, indexList);
 
 		// if (!domino.getIdRow().equals(domino.getIdCol())) {
 		// menuItemViewGraph.setDisable(true);
 		// }
 
-		group.setOnMouseEntered(new EventHandler<MouseEvent>() {
+		piece.setOnMouseEntered(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
 				cursorProperty().set(Cursor.OPEN_HAND);
 			}
 		});
-		group.setOnMouseDragged(new EventHandler<MouseEvent>() {
+		piece.setOnMouseDragged(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
@@ -184,7 +185,7 @@ public class AreaMove extends Pane {
 				}
 
 				// detect multiplication
-				int index = data.getPieces().indexOf(group);
+				int index = data.getPieces().indexOf(piece);
 
 				for (int j = 0; j < data.getPieces().size(); j++) {
 
@@ -198,7 +199,7 @@ public class AreaMove extends Pane {
 				}
 			}
 		});
-		group.setOnMousePressed(new EventHandler<MouseEvent>() {
+		piece.setOnMousePressed(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
@@ -208,43 +209,43 @@ public class AreaMove extends Pane {
 				data.setSrcTranslateX(((Group) (event.getSource())).getTranslateX());
 				data.setSrcTranslateY(((Group) (event.getSource())).getTranslateY());
 
-				group.toFront();
+				piece.toFront();
 				cursorProperty().set(Cursor.CLOSED_HAND);
 			}
 		});
-		group.setOnMouseReleased(new EventHandler<MouseEvent>() {
+		piece.setOnMouseReleased(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
 				cursorProperty().set(Cursor.OPEN_HAND);
-				App.getCommandManager().invokeCommand(new CommandFactory().multiply());
+				App.getCommandManager().invokeCommand(commandFactory.multiply());
 			}
 		});
-		group.setOnMouseExited(new EventHandler<MouseEvent>() {
+		piece.setOnMouseExited(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
 				cursorProperty().set(Cursor.DEFAULT);
 			}
 		});
-		group.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		piece.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouseEvent) {
 				if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
 
 					if (mouseEvent.getClickCount() == 2) {
 						if (!data.isTransposing()) {
-							App.getCommandManager().invokeCommand(new CommandFactory().transpose(group));
+							App.getCommandManager().invokeCommand(commandFactory.transpose(piece));
 						}
 					}
 				}
 			}
 		});
-		group.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+		piece.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				if (e.getButton() == MouseButton.SECONDARY) {
-					minimenu.show(group, e.getScreenX(), e.getScreenY());
+					minimenu.show(piece, e.getScreenX(), e.getScreenY());
 				} else {
 					minimenu.hide();
 				}
@@ -262,14 +263,9 @@ public class AreaMove extends Pane {
 			@Override
 			public void handle(ActionEvent event) {
 				if (((MenuItem) event.getTarget()).getText().equals(menuItemSaveInList.getText())) {
-					try {
-						saveAndSendToList(group);
-						close(group);
-					} catch (IOException ex) {
-						System.out.println(ex.getMessage());
-					}
+					App.getCommandManager().invokeCommand(commandFactory.save(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemClose.getText())) {
-					App.getCommandManager().invokeCommand(new CommandFactory().remove(group));
+					App.getCommandManager().invokeCommand(commandFactory.remove(piece));
 				}
 			}
 		});
@@ -279,30 +275,16 @@ public class AreaMove extends Pane {
 			public void handle(ActionEvent event) {
 				if (((MenuItem) event.getTarget()).getText().equals(menuItemTranspose.getText())) {
 					if (!data.isTransposing()) {
-						App.getCommandManager().invokeCommand(new CommandFactory().transpose(group));
+						App.getCommandManager().invokeCommand(commandFactory.transpose(piece));
 					}
 				} else if (((MenuItem) event.getTarget()).getText()
 						.equals(data.getMenuItemAggregateRow().get(index).getText())) {
-					try {
-						reduceColumns(group);
-					} catch (IOException ex) {
-						System.err.println(ex.getMessage());
-					}
-
+					App.getCommandManager().invokeCommand(commandFactory.aggLines(piece));
 				} else if (((MenuItem) event.getTarget()).getText()
 						.equals(data.getMenuItemAggregateCol().get(index).getText())) {
-					try {
-						reduceLines(group);
-					} catch (IOException ex) {
-						System.err.println(ex.getMessage());
-					}
-
+					App.getCommandManager().invokeCommand(commandFactory.aggColumns(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemConfidence.getText())) {
-					try {
-						confidence(group);
-					} catch (IOException e) {
-						System.err.println(e.getMessage());
-					}
+						App.getCommandManager().invokeCommand(commandFactory.confidence(piece));
 				}
 			}
 		});
@@ -327,10 +309,10 @@ public class AreaMove extends Pane {
 		menuView.getItems().addAll(menuItemViewChart, /* menuItemViewLineChart, */
 				menuItemViewGraph, menuItemViewMatrix/* , menuItemViewTree */);
 		minimenu.getItems().addAll(menuOperate, menuView, menuItemSaveInList, menuItemClose);
-		return group;
+		return piece;
 	}
 
-	private void addOnLists(Dominoes domino, Group group, int index) {
+	public void addOnLists(Dominoes domino, Group group, int index) {
 		if (index == -1) {
 			this.data.getPieces().add(group);
 			this.data.getDominoes().add(domino);
@@ -375,7 +357,7 @@ public class AreaMove extends Pane {
 	 *
 	 * @param group A specified element
 	 */
-	private void close(Group group) {
+	public void close(Group group) {
 		// removing in area move
 		this.remove(group);
 	}
@@ -629,88 +611,6 @@ public class AreaMove extends Pane {
 
 	}
 
-	/**
-	 * This function is responsible for summing up all lines in a column
-	 *
-	 * @param piece The piece to animate
-	 */
-	private void reduceLines(Group piece) throws IOException {
-
-		int index = this.data.getPieces().indexOf(piece);
-		Dominoes toReduce = this.data.getDominoes().get(index);
-		if (!toReduce.isRowAggregatable()) {
-			Dominoes domino = control.Controller.reduceDominoes(toReduce);
-			this.data.getDominoes().set(index, domino);
-
-			((Text) piece.getChildren().get(Dominoes.GRAPH_ID_ROW)).setText(domino.getIdRow());
-			((Text) piece.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFont(new Font(Dominoes.GRAPH_AGGREG_FONT_SIZE));
-
-			if (Configuration.autoSave) {
-				this.saveAndSendToList(piece);
-			}
-
-			this.data.getMenuItemAggregateRow().get(index).setDisable(true);
-
-		} else {
-			System.err.println(
-					"this domino is already aggregate by " + toReduce.getMat().getMatrixDescriptor().getRowType());
-		}
-
-	}
-
-	/**
-	 * This function is responsible for summing up all columns in a line
-	 *
-	 * @param piece The piece to animate
-	 */
-	private void reduceColumns(Group piece) throws IOException {
-
-		int index = this.data.getPieces().indexOf(piece);
-		Dominoes toReduce = this.data.getDominoes().get(index);
-
-		if (!toReduce.isColAggregatable()) {
-			toReduce.transpose();
-			Dominoes domino = control.Controller.reduceDominoes(toReduce);
-			domino.transpose();
-			this.data.getDominoes().set(index, domino);
-
-			domino.drawDominoes();
-
-			((Text) piece.getChildren().get(Dominoes.GRAPH_ID_COL)).setText(domino.getIdCol());
-			((Text) piece.getChildren().get(Dominoes.GRAPH_ID_COL)).setFont(new Font(Dominoes.GRAPH_AGGREG_FONT_SIZE));
-
-			if (Configuration.autoSave) {
-				this.saveAndSendToList(piece);
-			}
-
-			this.data.getMenuItemAggregateCol().get(index).setDisable(true);
-		} else {
-			System.err.println(
-					"this domino is already aggregate by " + toReduce.getMat().getMatrixDescriptor().getColType());
-		}
-
-	}
-
-	/**
-	 * This function is responsible for calculating the confidence on a matrix
-	 *
-	 * @param piece The piece to animate
-	 * @throws IOException
-	 */
-	private void confidence(Group piece) throws IOException {
-
-		int index = this.data.getPieces().indexOf(piece);
-		Dominoes toConfidence = this.data.getDominoes().get(index);
-		Dominoes domino = control.Controller.confidence(toConfidence);
-
-		remove(index);
-		add(domino, piece.getTranslateX(), piece.getTranslateY(), -1);
-
-		if (Configuration.autoSave) {
-			this.saveAndSendToList(piece);
-		}
-
-	}
 
 	private void drawGraph(Dominoes domino) {
 		App.drawGraph(domino);

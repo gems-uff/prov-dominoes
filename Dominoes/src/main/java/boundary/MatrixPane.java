@@ -54,8 +54,8 @@ public class MatrixPane extends Pane {
 		this.recCells = new ArrayList<>();
 		this.cells = new ArrayList<>();
 		
-        System.out.println("Rows: " + domino.getMat().getMatrixDescriptor().getNumRows() +
-        		" Cols: " + domino.getMat().getMatrixDescriptor().getNumCols());
+        /*System.out.println("Rows: " + domino.getMat().getMatrixDescriptor().getNumRows() +
+        		" Cols: " + domino.getMat().getMatrixDescriptor().getNumCols());*/
         
         Group group = new Group();
         MatrixDescriptor _descriptor = domino.getMat().getMatrixDescriptor();

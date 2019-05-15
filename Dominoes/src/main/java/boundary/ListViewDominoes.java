@@ -145,8 +145,6 @@ public class ListViewDominoes extends ListView<Group> {
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                     if (mouseEvent.getClickCount() == 2) {
-                        //System.out.println("copy to area move");
-                        //copyFromListToAreaMove(group);
                         App.getCommandManager().invokeCommand(new CommandFactory().add(group));
                     }
                 }
