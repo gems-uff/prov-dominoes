@@ -12,11 +12,10 @@ public class RemoveCommand extends AbstractCommand {
 	private int sourceIndex;
 
 	public RemoveCommand() {
-
+		this.pieceIndex = -1;
 	}
 
 	public RemoveCommand(int pieceIndex) {
-		super();
 		this.pieceIndex = pieceIndex;
 	}
 
@@ -50,9 +49,8 @@ public class RemoveCommand extends AbstractCommand {
 
 	@Override
 	protected String getName() {
-		return REMOVE_COMMAND + "(" + pieceIndex + ","
-				+ removedDominoes.getIdRow() + "|"
-				+ removedDominoes.getIdCol() + ")";
+		return REMOVE_COMMAND + "(" + pieceIndex + "," + removedDominoes.getIdRow() + "|" + removedDominoes.getIdCol()
+				+ ")";
 	}
 
 }

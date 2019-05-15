@@ -12,16 +12,20 @@ public class CommandFactory {
 	public RedoCommand redo() {
 		return new RedoCommand();
 	}
+	
+	public AbstractCommand save(Group piece) {
+		return new SaveCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
 
 	public AbstractCommand add(Group piece) {
 		return new AddCommand(piece);
 	}
 
 	public AbstractCommand remove(Group piece) {
-		return new RemoveCommand();
+		return new RemoveCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
-	public TransposeCommand transpose(Group piece) {
+	public AbstractCommand transpose(Group piece) {
 		return new TransposeCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
@@ -29,19 +33,20 @@ public class CommandFactory {
 		return new MultiplyCommand();
 	}
 
-	
-	/*
-	public AggregateRowCommand aggRow(Group piece) {
-		return new AggregateRowCommand(piece);
+	public AbstractCommand aggLines(Group piece) {
+		return new AggregateLinesCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
-	public AggregateColumnCommand aggColumn(Group piece) {
-		return new AggregateColumnCommand(piece);
+
+	public AbstractCommand aggColumns(Group piece) {
+		return new AggregateColumnsCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
-	public ConfidenceCommand confidence(Group piece) {
-		return new ConfidenceCommand(piece);
+
+	public AbstractCommand confidence(Group piece) {
+		return new ConfidenceCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
-	public ZScoreCommand zscore(Group piece) {
-		return new ZScoreCommand(piece);
+
+	public AbstractCommand zscore(Group piece) {
+		return new ZScoreCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
-	*/
+
 }

@@ -98,11 +98,11 @@ public class Matrix2DJava implements IMatrix2D {
 			Cell cell = cells.get(i);
 			
 			if (currentLine != cell.row ){
-				System.out.println();
+				//System.out.println();
 				currentLine = cell.row;
 			}
 			
-			System.out.print(cell.value + "\t");
+			//System.out.print(cell.value + "\t");
 		}
 	}
 	
