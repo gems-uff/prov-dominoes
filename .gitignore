@@ -1,22 +1,17 @@
 JNIGPUMatrix/target/
-JNIGPUMatrix/.settgings/
-JNIGPUMatrix/.classpath
-JNIGPUMatrix/.project
+JNIGPUMatrix/.settings/
 
 Dominoes/target/
-Dominoes/.settgings/
-Dominoes/.classpath
-Dominoes/.project
+Dominoes/.settings/
 
 DominoesLib/target/
-DominoesLib/.settgings/
-DominoesLib/.classpath
-DominoesLib/.project
+DominoesLib/.settings/
 
 gitdataminer/target/
-gitdataminer/.settgings/
-gitdataminer/.classpath
-gitdataminer/.project
+gitdataminer/.settings/
+
+.classpath
+.project
 
 .metadata
 .recommenders
