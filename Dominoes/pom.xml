@@ -24,6 +24,7 @@
     	<configuration>
        	 	<mainClass>boundary.Main</mainClass>
        	 	<jfxAppOutputDir>${basedir}/app</jfxAppOutputDir>
+    		<webXml>src\main\webapp\WEB-INF\web.xml</webXml>
     	</configuration>
 	  </plugin>
 	 <plugin>

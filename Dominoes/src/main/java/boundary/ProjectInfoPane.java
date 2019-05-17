@@ -1,9 +1,7 @@
 package boundary;
 
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.Instant;
@@ -14,9 +12,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.josericardojunior.RepositoryImporter.CommitNode;
 import com.josericardojunior.RepositoryImporter.RepositoryNode;
 import com.josericardojunior.dao.DominoesSQLDao;
+
 import domain.Configuration;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -24,14 +22,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -133,8 +129,11 @@ public class ProjectInfoPane extends Pane {
 			public void handle(ActionEvent event) {
 				
 				FXMLLoader loader = new FXMLLoader();
+				// Works on JWS Version
+				//URL url = getClass().getResource("/resources/ImporterView.fxml");
 				
-				URL url = getClass().getResource("/resources/ImporterView.fxml");
+				// Works on Stand alone app
+				URL url = getClass().getResource("/ImporterView.fxml");
 				System.out.println(url);
 				loader.setLocation(url);
 	
