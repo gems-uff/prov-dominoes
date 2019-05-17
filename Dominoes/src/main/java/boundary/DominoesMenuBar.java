@@ -31,6 +31,7 @@ public class DominoesMenuBar extends MenuBar {
 	private final Menu mDominoes;
 
 	private final MenuItem mDominoes_new;
+	private final MenuItem mDominoes_openProv;
 	private final MenuItem mDominoes_loadAll;
 	private final MenuItem menuEditUndo;
 	private final MenuItem menuEditRedo;
@@ -72,6 +73,7 @@ public class DominoesMenuBar extends MenuBar {
 		this.mDominoes = new Menu("Dominoes");
 
 		this.mDominoes_new = new MenuItem("New");
+		this.mDominoes_openProv = new MenuItem("Open Prov-N...");
 		this.mDominoes_loadAll = new MenuItem("Load All");
 		this.mDominoes_loadAll.setDisable(true);
 		this.mDominoes_save = new Menu("Save");
@@ -85,7 +87,7 @@ public class DominoesMenuBar extends MenuBar {
 
 		this.mDominoes_separator = new SeparatorMenuItem();
 
-		this.mDominoes.getItems().addAll(this.mDominoes_new, this.mDominoes_loadAll, this.mDominoes_save,
+		this.mDominoes.getItems().addAll(this.mDominoes_new, this.mDominoes_openProv,this.mDominoes_loadAll, this.mDominoes_save,
 				this.mDominoes_separator, mDominoes_exitAndSave, this.mDominoes_exit);
 
 		//------EDIT MENU ITENS---------------------------------------------------------
@@ -150,6 +152,13 @@ public class DominoesMenuBar extends MenuBar {
 				App.clear();
 				changeEnableDisble();
 
+			}
+		});
+		this.mDominoes_openProv.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.openProv();
 			}
 		});
 		this.mDominoes_loadAll.setOnAction(new EventHandler<ActionEvent>() {

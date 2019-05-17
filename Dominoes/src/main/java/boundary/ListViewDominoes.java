@@ -1,13 +1,13 @@
 package boundary;
 
-import domain.Configuration;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.josericardojunior.domain.Dominoes;
 
 import command.CommandFactory;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
+import domain.Configuration;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -46,7 +46,7 @@ public class ListViewDominoes extends ListView<Group> {
         this.Configure(array);
     }
     
-    public void Configure(ArrayList<Dominoes> array){
+    public void Configure(List<Dominoes> array){
     	this.clear();
     	
     	if (array != null) {
