@@ -482,6 +482,29 @@ public final class Dominoes {
 		IMatrix2D _newMat = mat.transpose();
 		setMat(_newMat);
 	}
+	
+	 public void standardScore() {
+        
+    	IMatrix2D _newMat = mat.standardScore(currentDevice.equalsIgnoreCase("GPU"));
+    	
+        if(!(this.type == Dominoes.TYPE_BASIC)){
+        	this.type = Dominoes.TYPE_DERIVED;
+        }
+        if (this.getIdRow().equals(this.getIdCol())) {
+            this.type = Dominoes.TYPE_SUPPORT;
+        }
+
+        this.getHistoric().reverse();
+        this.setIdRow(this.getHistoric().getFirstItem());
+        this.setIdCol(this.getHistoric().getLastItem());
+        
+        boolean swap = this.rowIsAggragatable;
+        this.rowIsAggragatable = this.colIsAggragatable;
+        this.colIsAggragatable = swap;
+        
+        //IMatrix2D _newMat = mat.transpose();
+        setMat(_newMat);
+    }
 
 	/**
 	 * This function just invert the Historic

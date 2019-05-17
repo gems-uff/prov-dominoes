@@ -246,12 +246,61 @@ public class Matrix2DJava implements IMatrix2D {
 
 		Matrix2DJava confidenceM = new Matrix2DJava(getMatrixDescriptor());
 		confidenceM.setData(newValues);
-
+		
 		return confidenceM;
 	}
 
 	@Override
 	public String toString() {
 		return this.data != null ? this.data.toString() : "";
+	}
+	
+	public static void main(String args[]) {
+		
+		ArrayList<Cell> cells1 = new ArrayList<>();
+		cells1.add(new Cell(0, 0, 1));
+		cells1.add(new Cell(0, 2, 5));
+		cells1.add(new Cell(1, 1, 8));
+		cells1.add(new Cell(1, 2, 9));
+		
+		
+		ArrayList<Cell> cells2 = new ArrayList<>();
+		cells2.add(new Cell(0, 0, 1));
+		cells2.add(new Cell(0, 1, 7));
+		cells2.add(new Cell(1, 0, 7));
+		cells2.add(new Cell(1, 1, 2));
+		cells2.add(new Cell(2, 0, 10));
+		cells2.add(new Cell(2, 1, 5));
+		
+
+		
+		MatrixDescriptor desc1 = new MatrixDescriptor("T1", "T2");
+		desc1.AddRowDesc("R1");
+		desc1.AddRowDesc("R2");
+		desc1.AddColDesc("C1");
+		desc1.AddColDesc("C2");
+		desc1.AddColDesc("C3");
+		
+		try {
+			Matrix2DJava mat1 = new Matrix2DJava(desc1);
+			mat1.setData(cells1);
+			mat1.Debug();
+		
+			MatrixDescriptor desc2 = new MatrixDescriptor("T1", "T2");
+			desc2.AddRowDesc("R1");
+			desc2.AddRowDesc("R2");
+			desc2.AddRowDesc("R3");
+			desc2.AddColDesc("C1");
+			desc2.AddColDesc("C2");
+			Matrix2DJava mat2 = new Matrix2DJava(desc2);
+			mat2.setData(cells2);
+			mat2.Debug();
+			
+			IMatrix2D meanstd = mat2.standardScore(false);
+			meanstd.Debug();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 }
