@@ -915,8 +915,6 @@ public class AreaMove extends Pane {
      * @throws IOException 
      */
     private void confidence(Group piece) throws IOException {
-
-        Color colorHistoric;
         int index = this.pieces.indexOf(piece);
         Dominoes toConfidence = this.dominoes.get(index);
         Dominoes domino = control.Controller.confidence(toConfidence);
@@ -932,7 +930,6 @@ public class AreaMove extends Pane {
     }
     
     private void standardScore(Group piece) throws IOException {
-        Color colorHistoric;
         int index = this.pieces.indexOf(piece);
         Dominoes toStandardScore = this.dominoes.get(index);
         Dominoes domino = control.Controller.standardScore(toStandardScore);

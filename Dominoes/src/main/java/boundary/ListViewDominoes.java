@@ -31,8 +31,8 @@ public class ListViewDominoes extends ListView<Group> {
 	private boolean visibilityHistoric;
 
 	/**
-	 * This class builder initialize this list and your arrays with values
-	 * defined in the parameter Array.
+	 * This class builder initialize this list and your arrays with values defined
+	 * in the parameter Array.
 	 *
 	 * @param array Values to initialize this list and your array
 	 */
@@ -84,7 +84,11 @@ public class ListViewDominoes extends ListView<Group> {
 		Group group = domino.drawDominoes();
 		group.getChildren().get(Dominoes.GRAPH_HISTORIC).setVisible(visibilityHistoric);
 
-		Tooltip tooltip = new Tooltip(domino.getMat().getMatrixDescriptor().getRowType() + " ("+domino.getRelation().getDescription()+") "
+		String relation = "";
+		if (domino.getRelation()!=null) {
+			relation=" ("+domino.getRelation().getDescription()+") ";
+		}
+		Tooltip tooltip = new Tooltip(domino.getMat().getMatrixDescriptor().getRowType() + relation
 				+ domino.getMat().getMatrixDescriptor().getColType() + " : "
 				+ domino.getMat().getMatrixDescriptor().getNumRows() + " x "
 				+ domino.getMat().getMatrixDescriptor().getNumCols());
@@ -208,10 +212,9 @@ public class ListViewDominoes extends ListView<Group> {
 			throw new IllegalArgumentException("list not initialized");
 		}
 		for (Dominoes d : this.dominoes) {
-			if (d.getIdRow().equals(domino.getIdRow()) && 
-				d.getIdCol().equals(domino.getIdCol()) &&
-				(d.getRelation() == null || 
-				(d.getRelation() != null && d.getRelation().equals(domino.getRelation())))
+			if (d.getIdRow().equals(domino.getIdRow()) && d.getIdCol().equals(domino.getIdCol())
+					&& (d.getRelation() == null
+							|| (d.getRelation() != null && d.getRelation().equals(domino.getRelation())))
 					&& domino.getHistoric().toString().equals(d.getHistoric().toString())) {
 				return true;
 			}
@@ -259,13 +262,13 @@ public class ListViewDominoes extends ListView<Group> {
 	/**
 	 * This function is used to move a selected domino in the list.
 	 *
-	 * @param indexSource The selected index. The dominoes in this position will
-	 * suffer a change in their position
+	 * @param indexSource         The selected index. The dominoes in this position
+	 *                            will suffer a change in their position
 	 * @param indexTargetRelative The position target.
 	 */
 	public void moveItems(int indexSource, int indexTargetRelative) {
 		int indexTarget = indexSource + indexTargetRelative;
-		//        int indexTarget = indexTargetRelative;
+		// int indexTarget = indexTargetRelative;
 
 		// catch index selected
 		if (this.pieces == null || this.dominoes == null) {

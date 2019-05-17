@@ -2,8 +2,6 @@ package domain;
 
 import java.util.Date;
 
-import com.josericardojunior.Native.MatrixProcessor;
-
 public class Configuration {
 	
 	public static final String GPU_DEVICE = "GPU";
