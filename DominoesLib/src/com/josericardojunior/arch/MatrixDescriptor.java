@@ -88,4 +88,20 @@ public class MatrixDescriptor {
 	public boolean hasCol(String col){
 		return columnsDesc.contains(col);
 	}
+
+	public List<String> getColumnsDesc() {
+		return columnsDesc;
+	}
+
+	public void setColumnsDesc(List<String> columnsDesc) {
+		this.columnsDesc = columnsDesc;
+	}
+
+	public List<String> getRowsDesc() {
+		return rowsDesc;
+	}
+
+	public void setRowsDesc(List<String> rowsDesc) {
+		this.rowsDesc = rowsDesc;
+	}
 }

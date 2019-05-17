@@ -1,14 +1,19 @@
 package boundary;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import com.josericardojunior.arch.Session;
+import com.josericardojunior.dao.DominoesSQLDao;
 import com.josericardojunior.domain.Dominoes;
 
 import command.CommandManager;
 import control.Controller;
+import convertion.ProvMatrixFactory;
 import domain.Configuration;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -23,7 +28,10 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.ProvMatrix;
+import util.Prov2DominoesUtil;
 
 // Information fragment // opened question
 
@@ -67,7 +75,6 @@ public class App extends Application {
 
 			App.menu = new DominoesMenuBar();
 			App.commandManager = new CommandManager(menu);
-			App.stage.show();
 			App.time = new TimePane();
 
 			App.set();
@@ -105,6 +112,8 @@ public class App extends Application {
 				App.load(Configuration.beginDate, Configuration.endDate);
 			}
 		});
+		
+		App.stage.show();
 
 	}
 
@@ -158,18 +167,17 @@ public class App extends Application {
 
 		double min = 0, max = 0;
 
+		Calendar beginDate = Calendar.getInstance();
+		beginDate.setTime(Configuration.beginDate);
+		Calendar endDate = Calendar.getInstance();
+		endDate.setTime(Configuration.endDate);
+
 		try {
-			Calendar beginCalendar = Calendar.getInstance();
-			beginCalendar.setTime(Configuration.beginDate);
+			min = beginDate.get(Calendar.YEAR) * 12;
+			min += beginDate.get(Calendar.MONTH);
 
-			Calendar endCalendar = Calendar.getInstance();
-			endCalendar.setTime(Configuration.endDate);
-
-			min = beginCalendar.get(Calendar.YEAR) * 12;
-			min += beginCalendar.get(Calendar.MONTH);
-
-			max = endCalendar.get(Calendar.YEAR) * 12;
-			max += endCalendar.get(Calendar.MONTH);
+			max = endDate.get(Calendar.YEAR) * 12;
+			max += endDate.get(Calendar.MONTH);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -309,8 +317,9 @@ public class App extends Application {
 	 * This function remove all parts in this area move
 	 */
 	public static void clear() {
-		App.list.clear();
-		App.area.clear();
+		list.clear();
+		area.clear();
+		visual.ClearTabs();
 	}
 
 	/**
@@ -391,6 +400,25 @@ public class App extends Application {
 		App.vSP_head_TimePane.setVisible(Configuration.visibilityTimePane);
 	}
 
+	public static void openProv() {
+		try {
+			FileChooser fileChooser = new FileChooser();
+			File file = fileChooser.showOpenDialog(stage);
+			if (file != null) {
+				String provFilePath = file.getAbsolutePath();
+				ProvMatrixFactory provFactory = new ProvMatrixFactory(provFilePath);
+				List<ProvMatrix> provMatrixList = provFactory.buildMatrices();
+				List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList);
+				clear();
+				Controller.resultLoadMatrices = dominoesList;
+				list.Configure(Controller.resultLoadMatrices);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	/**
 	*
 	*/
@@ -400,6 +428,10 @@ public class App extends Application {
 
 	static void drawGraph(Dominoes domino) {
 		visual.addTabGraph(domino);
+	}
+	
+	static void drawCentralityGraph(Dominoes domino) {
+		visual.addTabCentralityGraph(domino);
 	}
 
 	static void drawMatrix(Dominoes domino) {
@@ -421,6 +453,10 @@ public class App extends Application {
 	static Stage getStage() {
 		return App.stage;
 	}
+	
+	public static void setStage(Stage stage) {
+		App.stage = stage;
+	}	
 
 	public static CommandManager getCommandManager() {
 		return commandManager;
@@ -445,4 +481,28 @@ public class App extends Application {
 	public static void setArea(AreaMove area) {
 		App.area = area;
 	}
+	
+	
+    public static void main(String args[]){
+    	Controller.args = args;
+        
+    	try {
+            // read the configuration file
+            control.Controller.loadConfiguration();
+            
+            if (Configuration.processingUnit == Configuration.GPU_DEVICE)
+            	Session.startSession(Configuration.gpuDevice);
+            
+            DominoesSQLDao.openDatabase(Configuration.database);
+            // call Application.launch()
+            launch(args);
+           
+            if (Configuration.processingUnit == Configuration.GPU_DEVICE)
+            	Session.closeSection();
+            
+           // DominoesSQLDao.closeDatabase();
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
 }

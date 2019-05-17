@@ -83,6 +83,7 @@ public class AreaMove extends Pane {
 		MenuItem menuItemZScore = new MenuItem("Z-Score");
 		MenuItem menuItemSaveInList = new MenuItem("Save");
 		MenuItem menuItemViewGraph = new MenuItem("Graph");
+		MenuItem menuItemViewEigenCentrality = new MenuItem("Centrality Graph");
 		MenuItem menuItemViewMatrix = new MenuItem("Matrix");
 		MenuItem menuItemViewChart = new MenuItem("Bar Chart");
 		MenuItem menuItemViewLineChart = new MenuItem("Line Chart");
@@ -293,6 +294,8 @@ public class AreaMove extends Pane {
 			public void handle(ActionEvent event) {
 				if (((MenuItem) event.getTarget()).getText().equals(menuItemViewGraph.getText())) {
 					drawGraph(domino);
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewEigenCentrality.getText())) {
+                	drawCentralityGraph(domino);
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewMatrix.getText())) {
 					drawMatrix(domino);
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewChart.getText())) {
@@ -305,12 +308,12 @@ public class AreaMove extends Pane {
 			}
 		});
 
-		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore);
-		menuView.getItems().addAll(menuItemViewChart, /* menuItemViewLineChart, */
-				menuItemViewGraph, menuItemViewMatrix/* , menuItemViewTree */);
-		minimenu.getItems().addAll(menuOperate, menuView, menuItemSaveInList, menuItemClose);
-		return piece;
-	}
+        menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore);
+        menuView.getItems().addAll(menuItemViewChart, /*menuItemViewLineChart,*/ 
+        		menuItemViewGraph,menuItemViewEigenCentrality, menuItemViewMatrix/*, menuItemViewTree*/);
+        minimenu.getItems().addAll(menuOperate, menuView, menuItemSaveInList, menuItemClose);
+        return piece;
+    }
 
 	public void addOnLists(Dominoes domino, Group group, int index) {
 		if (index == -1) {
@@ -615,6 +618,10 @@ public class AreaMove extends Pane {
 	private void drawGraph(Dominoes domino) {
 		App.drawGraph(domino);
 	}
+	
+	private void drawCentralityGraph(Dominoes domino) {
+        App.drawCentralityGraph(domino);
+    }
 
 	private void drawMatrix(Dominoes domino) {
 		App.drawMatrix(domino);
