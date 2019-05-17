@@ -4,6 +4,9 @@ gitdataminer/target
 .recommenders
 JNIGPUMatrix/kernel.o
 JNIGPUMatrix/libMatrixProcessor.o
+RemoteSystemsTempFiles/
+.project
+.classpath
 *.log
 *.class
 *.sqlite
