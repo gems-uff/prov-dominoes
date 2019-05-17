@@ -5,6 +5,15 @@ import javafx.scene.Group;
 
 public class CommandFactory {
 
+	private static CommandFactory factory = null;
+
+	public static CommandFactory getInstance() {
+		if (factory == null) {
+			factory = new CommandFactory();
+		}
+		return factory;
+	}
+
 	public UndoCommand undo() {
 		return new UndoCommand();
 	}
@@ -12,7 +21,7 @@ public class CommandFactory {
 	public RedoCommand redo() {
 		return new RedoCommand();
 	}
-	
+
 	public AbstractCommand save(Group piece) {
 		return new SaveCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
