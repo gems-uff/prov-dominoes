@@ -4,6 +4,7 @@ gitdataminer/target
 Dominoes/.classpath
 .metadata
 .recommenders
+RemoteSystemsTempFiles
 JNIGPUMatrix/kernel.o
 JNIGPUMatrix/libMatrixProcessor.o
 JNIGPUMatrix/resources/
