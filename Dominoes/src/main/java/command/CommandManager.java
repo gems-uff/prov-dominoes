@@ -11,6 +11,7 @@ public class CommandManager {
 	private LinkedList<AbstractCommand> history;
 	private LinkedList<AbstractCommand> redoList;
 	private AbstractCommand lastCommand;
+	private AbstractCommand lastLastCommand;
 	private DominoesMenuBar menu;
 
 	public CommandManager() {
@@ -25,7 +26,6 @@ public class CommandManager {
 	}
 
 	public void invokeCommand(AbstractCommand command) {
-		boolean result = false;
 		if (command instanceof Undo) {
 			undo();
 		} else if (command instanceof Redo) {
@@ -35,16 +35,9 @@ public class CommandManager {
 				this.redoList.clear();
 			}
 			if (command instanceof MultiplyCommand) {
-				result = command.doIt();
-				if (result) {
-					System.out.println(command.getName());
-					addToHistory(command);
-					this.uptadeMenu();
-					return;
-				} else {
-					return;
-				}
-			} else if (command.doIt()) {
+				this.history.removeFirst();
+			} 
+			if (command.doIt()) {
 				System.out.println(command.getName());
 				addToHistory(command);
 			} else {
@@ -52,7 +45,24 @@ public class CommandManager {
 			}
 		}
 		this.uptadeMenu();
+		this.lastLastCommand = this.lastCommand;
 		this.lastCommand = command;
+	}
+
+	public AbstractCommand getLastLastCommand() {
+		return lastLastCommand;
+	}
+
+	public void setLastLastCommand(AbstractCommand lastLastCommand) {
+		this.lastLastCommand = lastLastCommand;
+	}
+
+	public AbstractCommand getLastCommand() {
+		return lastCommand;
+	}
+
+	public void setLastCommand(AbstractCommand lastCommand) {
+		this.lastCommand = lastCommand;
 	}
 
 	public void uptadeMenu() {

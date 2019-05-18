@@ -58,4 +58,8 @@ public class CommandFactory {
 		return new ZScoreCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
+	public MoveCommand move(Group piece) {
+		return new MoveCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+
 }
