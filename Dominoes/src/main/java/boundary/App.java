@@ -58,8 +58,6 @@ public class App extends Application {
 	private static Scene scene;
 	private static Stage stage;
 
-	private static double width = Configuration.width;
-	private static double height = Configuration.height;
 
 	private static GUIManager manager;
 
@@ -248,7 +246,8 @@ public class App extends Application {
 		vSP_body_hSplitPane.getItems().add(App.list);
 		vSP_body_hSplitPane.getItems().add(App.area);
 		vSP_body_hSplitPane.getItems().add(App.visual);
-
+		
+		
 		vSP_head_TimePane = new BorderPane();
 		vSP_head_TimePane.setTop(App.projectInfoPanel);
 		vSP_head_TimePane.setCenter(time);
@@ -262,13 +261,13 @@ public class App extends Application {
 					vSplitPane.getItems().add(vSP_head_TimePane);
 					vSplitPane.getItems().add(vSP_body_hSplitPane);
 
-					vSP_body_hSplitPane.setPrefHeight(App.height / 2);
-					vSP_head_TimePane.setPrefHeight(App.height / 2);
+					vSP_body_hSplitPane.setPrefHeight(Configuration.height / 2);
+					vSP_head_TimePane.setPrefHeight(Configuration.height / 2);
 
 				} else {
 
 					vSplitPane.getItems().remove(vSP_head_TimePane);
-					vSP_body_hSplitPane.setPrefHeight(App.height);
+					vSP_body_hSplitPane.setPrefHeight(Configuration.height);
 				}
 			}
 		});
@@ -382,15 +381,13 @@ public class App extends Application {
 			App.stage.centerOnScreen();
 		}
 
-		App.width = App.stage.getWidth();
-		App.height = App.stage.getHeight();
 
 		if (Configuration.visibilityTimePane) {
 			// App.time.definitionSlider(stage);
 		}
-		App.list.setSize(Configuration.listWidth, App.height - padding);
-		App.visual.setSize(App.width, App.height - padding);
-		App.area.setSize(App.width, App.height - padding);
+		App.list.setSize(Configuration.listWidth, App.stage.getHeight() - padding);
+		App.visual.setSize(300, App.stage.getHeight() - padding);
+		App.area.setSize(400, App.stage.getHeight() - padding);
 		stage.show();
 	}
 
