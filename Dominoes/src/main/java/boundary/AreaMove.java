@@ -5,7 +5,9 @@ import java.util.ArrayList;
 
 import com.josericardojunior.domain.Dominoes;
 
+import command.AbstractCommand;
 import command.CommandFactory;
+import command.MoveCommand;
 import domain.Configuration;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -143,11 +145,17 @@ public class AreaMove extends Pane {
 				cursorProperty().set(Cursor.OPEN_HAND);
 			}
 		});
+		piece.setOnDragDetected(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				App.getCommandManager().invokeCommand(CommandFactory.getInstance().move(piece));
+			}
+		});
+
 		piece.setOnMouseDragged(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-
 				double offsetX = event.getSceneX() - data.getSrcSceneX();
 				double offsetY = event.getSceneY() - data.getSrcSceneY();
 				double newTranslateX = data.getSrcTranslateX() + offsetX;
@@ -219,7 +227,17 @@ public class AreaMove extends Pane {
 			@Override
 			public void handle(MouseEvent event) {
 				cursorProperty().set(Cursor.OPEN_HAND);
+				if (App.getArea().getData().getIndexFirstOperatorMultiplication() != -1
+						&& App.getArea().getData().getIndexSecondOperatorMultiplication() != -1) {
 				App.getCommandManager().invokeCommand(commandFactory.multiply());
+				} else {
+					AbstractCommand command = App.getCommandManager().getLastCommand();
+					if (command!=null && command instanceof MoveCommand) {
+						MoveCommand move = (MoveCommand)command;
+						move.setX(piece.getTranslateX());
+						move.setY(piece.getTranslateY());
+					}
+				}
 			}
 		});
 		piece.setOnMouseExited(new EventHandler<MouseEvent>() {
@@ -285,7 +303,7 @@ public class AreaMove extends Pane {
 						.equals(data.getMenuItemAggregateCol().get(index).getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.aggColumns(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemConfidence.getText())) {
-						App.getCommandManager().invokeCommand(commandFactory.confidence(piece));
+					App.getCommandManager().invokeCommand(commandFactory.confidence(piece));
 				}
 			}
 		});
@@ -295,7 +313,7 @@ public class AreaMove extends Pane {
 				if (((MenuItem) event.getTarget()).getText().equals(menuItemViewGraph.getText())) {
 					drawGraph(domino);
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewEigenCentrality.getText())) {
-                	drawCentralityGraph(domino);
+					drawCentralityGraph(domino);
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewMatrix.getText())) {
 					drawMatrix(domino);
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewChart.getText())) {
@@ -308,12 +326,12 @@ public class AreaMove extends Pane {
 			}
 		});
 
-        menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore);
-        menuView.getItems().addAll(menuItemViewChart, /*menuItemViewLineChart,*/ 
-        		menuItemViewGraph,menuItemViewEigenCentrality, menuItemViewMatrix/*, menuItemViewTree*/);
-        minimenu.getItems().addAll(menuOperate, menuView, menuItemSaveInList, menuItemClose);
-        return piece;
-    }
+		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore);
+		menuView.getItems().addAll(menuItemViewChart, /* menuItemViewLineChart, */
+				menuItemViewGraph, menuItemViewEigenCentrality, menuItemViewMatrix/* , menuItemViewTree */);
+		minimenu.getItems().addAll(menuOperate, menuView, menuItemSaveInList, menuItemClose);
+		return piece;
+	}
 
 	public void addOnLists(Dominoes domino, Group group, int index) {
 		if (index == -1) {
@@ -579,10 +597,10 @@ public class AreaMove extends Pane {
 	 */
 	public void setSize(double width, double height) {
 
-		this.data.getBackground().setWidth(width + data.getPadding());
+		this.data.getBackground().setWidth(width+ data.getPadding());
 		this.data.getBackground().setHeight(height);
 
-		this.setMinWidth(width - data.getPadding());
+		this.setMinWidth(width);
 		this.setPrefWidth(width);
 		this.setMaxWidth(width + data.getPadding());
 		this.setPrefHeight(height);
@@ -614,14 +632,13 @@ public class AreaMove extends Pane {
 
 	}
 
-
 	private void drawGraph(Dominoes domino) {
 		App.drawGraph(domino);
 	}
-	
+
 	private void drawCentralityGraph(Dominoes domino) {
-        App.drawCentralityGraph(domino);
-    }
+		App.drawCentralityGraph(domino);
+	}
 
 	private void drawMatrix(Dominoes domino) {
 		App.drawMatrix(domino);

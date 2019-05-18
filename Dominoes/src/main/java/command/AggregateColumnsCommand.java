@@ -14,6 +14,8 @@ public class AggregateColumnsCommand extends AbstractCommand {
 
 	private Group piece;
 	private Dominoes oldDominoes;
+	private double x;
+	private double y;
 	private int index;
 
 	public AggregateColumnsCommand() {
@@ -29,6 +31,8 @@ public class AggregateColumnsCommand extends AbstractCommand {
 	protected boolean doIt() {
 		this.oldDominoes = App.getArea().getData().getDominoes().get(index).cloneNoMatrix();
 		this.piece = App.getArea().getData().getPieces().get(index);
+		this.x = this.piece.getTranslateX();
+		this.y = this.piece.getTranslateY();
 		Dominoes toReduce = App.getArea().getData().getDominoes().get(index);
 		boolean success = true;
 		try {
@@ -61,7 +65,7 @@ public class AggregateColumnsCommand extends AbstractCommand {
 		boolean result = false;
 		Group p = App.getArea().getData().getPieces().get(this.index);
 		App.getArea().closePiece(p);
-		App.getArea().add(this.oldDominoes, 0, 0, this.index);
+		App.getArea().add(this.oldDominoes, x, y, this.index);
 		result = true;
 		return result;
 	}

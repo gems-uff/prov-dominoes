@@ -56,6 +56,7 @@ public class MultiplyCommand extends AbstractCommand {
 							.get(App.getArea().getData().getDominoes().indexOf(d1)).getTranslateX();
 					xRightDominoes = App.getArea().getData().getPieces()
 							.get(App.getArea().getData().getDominoes().indexOf(d2)).getTranslateX();
+
 					double x = (xLeftDominoes + xRightDominoes) / 2;
 
 					yLeftDominoes = App.getArea().getData().getPieces()
@@ -96,6 +97,7 @@ public class MultiplyCommand extends AbstractCommand {
 	@Override
 	protected boolean undoIt() {
 		boolean result = false;
+		updateDraggedPieceLastPosition();
 		App.getArea().remove(App.getArea().getData().getPieces().get(indexResultDominoes));
 		if (indexLeftDominoes < indexRightDominoes) {
 			App.getArea().add(leftDominoes, xLeftDominoes, yLeftDominoes, indexLeftDominoes);
@@ -108,6 +110,23 @@ public class MultiplyCommand extends AbstractCommand {
 		return result;
 	}
 
+	private void updateDraggedPieceLastPosition() {
+		// Pega o comando anterior à multiplicação, o MoveCommand, e atualiza com a
+		// posição anterior
+		// ao arrasto da peça para multiplicação
+		AbstractCommand comm = App.getCommandManager().getLastLastCommand();
+		if (comm != null && comm instanceof MoveCommand) {
+			MoveCommand move = (MoveCommand) comm;
+			if (move.getIndex() == indexLeftDominoes) {
+				xLeftDominoes = move.getOldX();
+				yLeftDominoes = move.getOldY();
+			} else {
+				xRightDominoes = move.getOldX();
+				yRightDominoes = move.getOldY();
+			}
+		}
+	}
+
 	protected Group getPiece() {
 		return this.resultPiece;
 	}
@@ -115,8 +134,7 @@ public class MultiplyCommand extends AbstractCommand {
 	@Override
 	protected String getName() {
 		return MULTIPLY_COMMAND + "(" + indexResultDominoes + "," + leftDominoes.getIdRow() + "|"
-				+ leftDominoes.getIdCol() + ", " + rightDominoes.getIdRow() + "|" + rightDominoes.getIdCol()
-				+ ")";
+				+ leftDominoes.getIdCol() + ", " + rightDominoes.getIdRow() + "|" + rightDominoes.getIdCol() + ")";
 	}
 
 }

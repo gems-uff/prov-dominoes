@@ -16,9 +16,9 @@ public class Configuration {
     public static boolean automaticCheck = false;
     public static boolean resizableTimeOnFullScreen = false;
     
-    public static double width = 800.0f;
+    public static double width = 880.0f;
     public static double height = 600.0f;
-    public static double listWidth = 130.0f;
+    public static double listWidth = 150.0f;
     
     public static String accessMode = "SQL";
     public static String processingUnit =  CPU_DEVICE;
