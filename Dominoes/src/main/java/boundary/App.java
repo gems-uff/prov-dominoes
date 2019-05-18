@@ -7,8 +7,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.josericardojunior.arch.Session;
+import com.josericardojunior.dao.DominoesSQLDao;
 import com.josericardojunior.domain.Dominoes;
 
+import command.CommandManager;
 import control.Controller;
 import convertion.ProvMatrixFactory;
 import domain.Configuration;
@@ -30,22 +33,15 @@ import javafx.stage.Stage;
 import model.ProvMatrix;
 import util.Prov2DominoesUtil;
 
-
-import javax.swing.JFrame;
-
-import control.Controller;
-
-import com.josericardojunior.arch.Session;
-import com.josericardojunior.dao.DominoesSQLDao;
-import domain.Configuration;
-import com.josericardojunior.domain.Dominoes;
-
 // Information fragment // opened question
 
 public class App extends Application {
 
+	// Lista de peças carregadas/salvas
 	private static ListViewDominoes list;
+	// Área de trabalho de peças
 	private static AreaMove area;
+	private static CommandManager commandManager;
 	private static DominoesMenuBar menu;
 	public static TimePane time;
 	private static Visual visual;
@@ -62,8 +58,6 @@ public class App extends Application {
 	private static Scene scene;
 	private static Stage stage;
 
-	private static double width = Configuration.width;
-	private static double height = Configuration.height;
 
 	private static GUIManager manager;
 
@@ -78,7 +72,7 @@ public class App extends Application {
 			App.stage.setResizable(Configuration.resizable);
 
 			App.menu = new DominoesMenuBar();
-
+			App.commandManager = new CommandManager(menu);
 			App.time = new TimePane();
 
 			App.set();
@@ -145,12 +139,12 @@ public class App extends Application {
 				if (result) {
 					return true;
 				} else {
-					App.area.add(dominoes);
+					App.area.add(dominoes,-1);
 					App.list.add(dominoes);
 					return false;
 				}
 			} else {
-				App.area.add(dominoes);
+				App.area.add(dominoes,-1);
 				return false;
 			}
 		}
@@ -252,7 +246,8 @@ public class App extends Application {
 		vSP_body_hSplitPane.getItems().add(App.list);
 		vSP_body_hSplitPane.getItems().add(App.area);
 		vSP_body_hSplitPane.getItems().add(App.visual);
-
+		
+		
 		vSP_head_TimePane = new BorderPane();
 		vSP_head_TimePane.setTop(App.projectInfoPanel);
 		vSP_head_TimePane.setCenter(time);
@@ -266,13 +261,13 @@ public class App extends Application {
 					vSplitPane.getItems().add(vSP_head_TimePane);
 					vSplitPane.getItems().add(vSP_body_hSplitPane);
 
-					vSP_body_hSplitPane.setPrefHeight(App.height / 2);
-					vSP_head_TimePane.setPrefHeight(App.height / 2);
+					vSP_body_hSplitPane.setPrefHeight(Configuration.height / 2);
+					vSP_head_TimePane.setPrefHeight(Configuration.height / 2);
 
 				} else {
 
 					vSplitPane.getItems().remove(vSP_head_TimePane);
-					vSP_body_hSplitPane.setPrefHeight(App.height);
+					vSP_body_hSplitPane.setPrefHeight(Configuration.height);
 				}
 			}
 		});
@@ -342,8 +337,8 @@ public class App extends Application {
 	 * @param dominoes
 	 *            the matrix to be added
 	 */
-	public static void copyToArea(Dominoes dominoes) {
-		App.area.add(dominoes);
+	public static Group copyToArea(Dominoes dominoes,int index) {
+		return App.area.add(dominoes,index);
 	}
 
 	/**
@@ -386,15 +381,13 @@ public class App extends Application {
 			App.stage.centerOnScreen();
 		}
 
-		App.width = App.stage.getWidth();
-		App.height = App.stage.getHeight();
 
 		if (Configuration.visibilityTimePane) {
 			// App.time.definitionSlider(stage);
 		}
-		App.list.setSize(Configuration.listWidth, App.height - padding);
-		App.visual.setSize(App.width, App.height - padding);
-		App.area.setSize(App.width, App.height - padding);
+		App.list.setSize(Configuration.listWidth, App.stage.getHeight() - padding);
+		App.visual.setSize(300, App.stage.getHeight() - padding);
+		App.area.setSize(400, App.stage.getHeight() - padding);
 		stage.show();
 	}
 
@@ -457,11 +450,35 @@ public class App extends Application {
 	static Stage getStage() {
 		return App.stage;
 	}
-
+	
 	public static void setStage(Stage stage) {
 		App.stage = stage;
+	}	
+
+	public static CommandManager getCommandManager() {
+		return commandManager;
 	}
 
+	public static void setCommandManager(CommandManager commandManager) {
+		App.commandManager = commandManager;
+	}
+
+	public static ListViewDominoes getList() {
+		return list;
+	}
+
+	public static void setList(ListViewDominoes list) {
+		App.list = list;
+	}
+
+	public static AreaMove getArea() {
+		return area;
+	}
+
+	public static void setArea(AreaMove area) {
+		App.area = area;
+	}
+	
 	
     public static void main(String args[]){
     	Controller.args = args;
