@@ -229,11 +229,11 @@ public class AreaMove extends Pane {
 				cursorProperty().set(Cursor.OPEN_HAND);
 				if (App.getArea().getData().getIndexFirstOperatorMultiplication() != -1
 						&& App.getArea().getData().getIndexSecondOperatorMultiplication() != -1) {
-				App.getCommandManager().invokeCommand(commandFactory.multiply());
+					App.getCommandManager().invokeCommand(commandFactory.multiply());
 				} else {
 					AbstractCommand command = App.getCommandManager().getLastCommand();
-					if (command!=null && command instanceof MoveCommand) {
-						MoveCommand move = (MoveCommand)command;
+					if (command != null && command instanceof MoveCommand) {
+						MoveCommand move = (MoveCommand) command;
 						move.setX(piece.getTranslateX());
 						move.setY(piece.getTranslateY());
 					}
@@ -304,9 +304,12 @@ public class AreaMove extends Pane {
 					App.getCommandManager().invokeCommand(commandFactory.aggColumns(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemConfidence.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.confidence(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemZScore.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.zscore(piece));
 				}
 			}
 		});
+
 		menuView.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -597,7 +600,7 @@ public class AreaMove extends Pane {
 	 */
 	public void setSize(double width, double height) {
 
-		this.data.getBackground().setWidth(width+ data.getPadding());
+		this.data.getBackground().setWidth(width + data.getPadding());
 		this.data.getBackground().setHeight(height);
 
 		this.setMinWidth(width);
