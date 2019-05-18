@@ -1,6 +1,6 @@
 # About
 
-Prov-Dominoes is fork/extension that includes support for Provenance on the Dominoes tool, an approach for analyzing software repositories with thousands of artifacts by considering multiple perspectives of the software development data. We model the data extracted from software repositories and its relationships as matrices, making possible to efficiently process them with a GPUs (Graphics Processing Unit) based architectures.
+Prov-Dominoes is fork/extension that includes support for Provenance on the [Dominoes](https://github.com/gems-uff/dominoes) tool, an approach for analyzing software repositories with thousands of artifacts by considering multiple perspectives of the software development data. We model the data extracted from software repositories and its relationships as matrices, making possible to efficiently process them with a GPUs (Graphics Processing Unit) based architectures.
 
 Prov-Dominoes can support automated exploration of different relationships of the [Provenance Data-Model](https://www.w3.org/TR/prov-dm/).
 
