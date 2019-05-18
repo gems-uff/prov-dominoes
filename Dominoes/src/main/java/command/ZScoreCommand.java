@@ -3,12 +3,15 @@ package command;
 import com.josericardojunior.domain.Dominoes;
 
 import boundary.App;
+import domain.Configuration;
 import javafx.scene.Group;
 
 public class ZScoreCommand extends AbstractCommand {
 
 	private Group piece;
-	private Dominoes addedDominoes;
+	private Dominoes oldDominoes;
+	private double x;
+	private double y;
 	private int index;
 
 	public ZScoreCommand() {
@@ -23,18 +26,19 @@ public class ZScoreCommand extends AbstractCommand {
 	@Override
 	protected boolean doIt() {
 		boolean success = true;
+		this.oldDominoes = App.getArea().getData().getDominoes().get(index).cloneNoMatrix();
+		this.piece = App.getArea().getData().getPieces().get(index);
+		x = this.piece.getTranslateX();
+		y = this.piece.getTranslateY();
 		try {
-			if (index == -1) {
-				Dominoes auxDomino = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece));
-				this.addedDominoes = auxDomino.cloneNoMatrix();
-				this.addedDominoes.setSourceIndex(App.getList().getPieces().indexOf(piece));
-				Group newPiece = App.copyToArea(addedDominoes, index);
-				this.index = App.getArea().getData().getPieces().indexOf(newPiece);
-			} else {
-				Dominoes auxDomino = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece));
-				this.addedDominoes = auxDomino.cloneNoMatrix();
-				this.addedDominoes.setSourceIndex(App.getList().getPieces().indexOf(piece));
-				App.getArea().add(addedDominoes, this.index);
+			Dominoes toStandardScore = App.getArea().getData().getDominoes().get(index);
+			Dominoes domino = control.Controller.standardScore(toStandardScore);
+
+			App.getArea().remove(index);
+			App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
+
+			if (Configuration.autoSave) {
+				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -46,13 +50,18 @@ public class ZScoreCommand extends AbstractCommand {
 
 	@Override
 	protected boolean undoIt() {
+		boolean result = false;
 		Group p = App.getArea().getData().getPieces().get(this.index);
-		return App.getArea().closePiece(p);
+		App.getArea().closePiece(p);
+		App.getArea().add(this.oldDominoes, x, y, this.index);
+		result = true;
+		return result;
 	}
 
 	@Override
 	protected String getName() {
-		return ADD_COMMAND+"("+this.index+","+this.addedDominoes.getIdRow()+"|"+this.addedDominoes.getIdCol()+")";
+		return ZSCORE_COMMAND + "(" + this.index + "," + this.oldDominoes.getIdRow() + "|" + this.oldDominoes.getIdCol()
+				+ ")";
 	}
 
 }
