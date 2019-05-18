@@ -88,6 +88,7 @@ public final class Dominoes {
 	private Historic historic;
 	private int type;
 	private IMatrix2D mat = null;
+	private int sourceIndex;
 	private String currentDevice = DEVICE_CPU;
 
 	public Dominoes(String _device) {
@@ -274,7 +275,7 @@ public final class Dominoes {
 			historic = new Text(auxHistoric.substring(0, 24) + "...");
 		}
 
-		historic.setFont(new Font("Arial", 10));
+    	historic.setFont(new Font("Arial", 10));
 		historic.setFill(Dominoes.COLOR_HISTORIC);
 		historic.setX(2);
 		historic.setY(3 * Dominoes.GRAPH_HEIGHT / 5);
@@ -567,8 +568,7 @@ public final class Dominoes {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		domResult.historic = new Historic(this.getHistoric(), dom.getHistoric());
+      	domResult.historic = new Historic(this.getHistoric(), dom.getHistoric());
 
 		domResult.setIdRow(getIdRow());
 		domResult.setIdCol(dom.getIdCol());
@@ -597,5 +597,12 @@ public final class Dominoes {
 	public void setRelation(Relation relation) {
 		this.relation = relation;
 	}
+	
+	public int getSourceIndex() {
+		return sourceIndex;
+	}
 
+	public void setSourceIndex(int sourceIndex) {
+		this.sourceIndex = sourceIndex;
+	}
 }

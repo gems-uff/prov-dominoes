@@ -2,7 +2,6 @@ package boundary;
 
 import com.josericardojunior.domain.Dominoes;
 
-import domain.Configuration;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
@@ -10,7 +9,7 @@ import javafx.scene.layout.BorderPane;
 
 public class Visual extends BorderPane {
 
-    private double padding = Configuration.width;
+    private double padding = 200;
     private TabPane tabPane;
     public Visual() {
         tabPane = new TabPane();
@@ -26,7 +25,7 @@ public class Visual extends BorderPane {
      * @param height
      */
     public void setSize(double width, double height) {
-        this.setMinWidth(width - padding);
+        this.setMinWidth(width);
         this.setPrefWidth(width);
         this.setMaxWidth(width + padding);
         this.setPrefHeight(height);
