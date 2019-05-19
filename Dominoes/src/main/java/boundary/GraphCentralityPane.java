@@ -92,25 +92,27 @@ public class GraphCentralityPane extends BorderPane {
 		centrality.acceptDisconnectedGraph(true);
 		centrality.evaluate();
 		double max = 0;
-		for (String vv : graph.getVertices()) {
-			if (centrality.getVertexScore(vv) > max) {
-				max = centrality.getVertexScore(vv);
+		for (String vertex : graph.getVertices()) {
+			if (centrality.getVertexScore(vertex) > max) {
+				max = centrality.getVertexScore(vertex);
 			}
 		}
-		for (String vv : graph.getVertices()) {
-			System.out.println(nodes.get(vv).getUserData() + " : " + centrality.getVertexScore(vv));
-			Double d = centrality.getVertexScore(vv);
+		for (String vertex : graph.getVertices()) {
+			NodeInfo node = nodes.get(vertex);
+			System.out.println(node.getUserData() + " : " + centrality.getVertexScore(vertex));
+			Double d = centrality.getVertexScore(vertex);
 			System.out.println(d);
-			Double relativeScore = (centrality.getVertexScore(vv) / max);
+			Double relativeScore = (centrality.getVertexScore(vertex) / max);
 			int tone = Math.round(255 * (1 - relativeScore.floatValue()));
 			System.out.println(tone);
-			nodes.get(vv).setColor(new Color(0, tone, 0));
+			nodes.get(vertex).setColor(new Color(0, tone, 0));
 		}
 
 		treeLayout = new FRLayout<>(graph);
 		//treeLayout = new CircleLayout(graph);
 
 		vv = new VisualizationViewer<String, String>(treeLayout, new Dimension(400, 400));
+		
 
 		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<String, Paint>() {
 
@@ -123,8 +125,8 @@ public class GraphCentralityPane extends BorderPane {
 		vv.getRenderContext().setVertexLabelTransformer(new Transformer<String, String>() {
 
 			@Override
-			public String transform(String arg0) {
-				return "";
+			public String transform(String vertex) {
+				return nodes.get(vertex).getUserData();
 			}
 		});
 
@@ -135,7 +137,6 @@ public class GraphCentralityPane extends BorderPane {
 				return "";
 			}
 		});
-
 		vv.getRenderContext().setEdgeDrawPaintTransformer(new Transformer<String, Paint>() {
 
 			@Override
@@ -166,8 +167,8 @@ public class GraphCentralityPane extends BorderPane {
 		vv.setVertexToolTipTransformer(new Transformer<String, String>() {
 
 			@Override
-			public String transform(String arg0) {
-				return nodes.get(arg0).getUserData();
+			public String transform(String vertex) {
+				return "Score: "+centrality.getVertexScore(vertex);
 			}
 		});
 		//vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.lightGray));
@@ -183,7 +184,7 @@ public class GraphCentralityPane extends BorderPane {
 		vv.getRenderContext().setEdgeIncludePredicate(edgePredicate);
 
 		vv.getRenderContext().setVertexIncludePredicate(vertexPredicate);
-
+		
 		SwingNode s = new SwingNode();
 		s.setContent(panel);
 
