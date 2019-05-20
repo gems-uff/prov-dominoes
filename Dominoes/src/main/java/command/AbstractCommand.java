@@ -14,6 +14,7 @@ public abstract class AbstractCommand {
 	public static final String AGGREGATE_COLUMNS_COMMAND = "AGG_COLUMNS";
 	public static final String CONFIDENCE_COMMAND = "CONFIDENCE";
 	public static final String ZSCORE_COMMAND = "ZSCORE";
+	public static final String TRANSITIVE_CLOSURE_COMMAND = "TRANSITIVE_CLOSURE";
 	
 
 	protected abstract String getName();

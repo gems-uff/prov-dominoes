@@ -83,6 +83,7 @@ public class AreaMove extends Pane {
 		MenuItem menuItemConfidence = new MenuItem("Confidence");
 
 		MenuItem menuItemZScore = new MenuItem("Z-Score");
+		MenuItem menuItemTransitiveClosure = new MenuItem("Transitive Closure");
 		MenuItem menuItemSaveInList = new MenuItem("Save");
 		MenuItem menuItemViewGraph = new MenuItem("Graph");
 		MenuItem menuItemViewEigenCentrality = new MenuItem("Centrality Graph");
@@ -306,7 +307,9 @@ public class AreaMove extends Pane {
 					App.getCommandManager().invokeCommand(commandFactory.confidence(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemZScore.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.zscore(piece));
-				}
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemTransitiveClosure.getText())) {
+				App.getCommandManager().invokeCommand(commandFactory.transitiveClosure(piece));
+			}
 			}
 		});
 
@@ -329,7 +332,7 @@ public class AreaMove extends Pane {
 			}
 		});
 
-		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore);
+		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore,menuItemTransitiveClosure);
 		menuView.getItems().addAll(menuItemViewChart, /* menuItemViewLineChart, */
 				menuItemViewGraph, menuItemViewEigenCentrality, menuItemViewMatrix/* , menuItemViewTree */);
 		minimenu.getItems().addAll(menuOperate, menuView, menuItemSaveInList, menuItemClose);

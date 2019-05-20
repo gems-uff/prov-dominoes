@@ -48,7 +48,6 @@ public class Prov2DominoesUtil {
 				cells.add(new Cell(i, j, (float) matrix.get(i, j)));
 			}
 		}
-		System.out.println(cells);
 		return cells;
 	}
 
