@@ -9,8 +9,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.ProvMatrix.Relation;
 
-import com.josericardojunior.arch.IMatrix2D;
-import com.josericardojunior.arch.Matrix2D;
+import com.josericardojunior.arch.MatrixOperations;
+import com.josericardojunior.arch.MatrixOperationsGPU;
 
 public final class Dominoes {
 	public final static double GRAPH_WIDTH = 100;
@@ -87,7 +87,7 @@ public final class Dominoes {
 	private String idCol;
 	private Historic historic;
 	private int type;
-	private IMatrix2D mat = null;
+	private MatrixOperations mat = null;
 	private int sourceIndex;
 	private String currentDevice = DEVICE_CPU;
 
@@ -105,7 +105,7 @@ public final class Dominoes {
 	 * @param mat - matrix2D
 	 * @throws IllegalArgumentException - in case of invalid parameters
 	 */
-	public Dominoes(String idRow, String idCol, IMatrix2D mat, String _device) throws IllegalArgumentException {
+	public Dominoes(String idRow, String idCol, MatrixOperations mat, String _device) throws IllegalArgumentException {
 		this.rowIsAggragatable = false;
 		this.colIsAggragatable = false;
 		this.setIdRow(idRow);
@@ -119,7 +119,7 @@ public final class Dominoes {
 		this.currentDevice = _device;
 	}
 
-	public Dominoes(String idRow, String idCol, Relation relation, IMatrix2D mat, String _device)
+	public Dominoes(String idRow, String idCol, Relation relation, MatrixOperations mat, String _device)
 			throws IllegalArgumentException {
 		this(idRow, idCol, mat, _device);
 		this.relation = relation;
@@ -135,7 +135,7 @@ public final class Dominoes {
 	 * @param mat - matrix2D
 	 * @throws IllegalArgumentException - in case of invalid parameters
 	 */
-	public Dominoes(int type, String idRow, String idCol, Historic historic, Matrix2D mat, String _device)
+	public Dominoes(int type, String idRow, String idCol, Historic historic, MatrixOperationsGPU mat, String _device)
 			throws IllegalArgumentException {
 		this.rowIsAggragatable = false;
 		this.colIsAggragatable = false;
@@ -383,7 +383,7 @@ public final class Dominoes {
 	 *
 	 * @return Return the Matrix value
 	 */
-	public IMatrix2D getMat() {
+	public MatrixOperations getMat() {
 		return this.mat;
 	}
 
@@ -450,7 +450,7 @@ public final class Dominoes {
 	 * @param mat The Matrix value
 	 * @throws IllegalArgumentException
 	 */
-	public void setMat(IMatrix2D mat) {
+	public void setMat(MatrixOperations mat) {
 		if (mat == null) {
 			throw new IllegalArgumentException("Invalid argument.\nThe Mat attribute is null");
 		}
@@ -480,13 +480,13 @@ public final class Dominoes {
 		this.rowIsAggragatable = this.colIsAggragatable;
 		this.colIsAggragatable = swap;
 
-		IMatrix2D _newMat = mat.transpose();
+		MatrixOperations _newMat = mat.transpose();
 		setMat(_newMat);
 	}
 	
 	 public void standardScore() {
         
-    	IMatrix2D _newMat = mat.standardScore(currentDevice.equalsIgnoreCase("GPU"));
+    	MatrixOperations _newMat = mat.standardScore(currentDevice.equalsIgnoreCase("GPU"));
     	
         if(!(this.type == Dominoes.TYPE_BASIC)){
         	this.type = Dominoes.TYPE_DERIVED;
@@ -513,7 +513,7 @@ public final class Dominoes {
 	 * @return the historic invert
 	 */
 	public void confidence() {
-		IMatrix2D _newMat = mat.confidence(currentDevice.equalsIgnoreCase("GPU"));
+		MatrixOperations _newMat = mat.confidence(currentDevice.equalsIgnoreCase("GPU"));
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_CONFIDENCE;
 	}
@@ -545,7 +545,7 @@ public final class Dominoes {
 
 		//this.historic = new Historic("SUM", this.getIdCol());
 
-		IMatrix2D _newMat = mat.reduceRows(currentDevice.equalsIgnoreCase("GPU"));
+		MatrixOperations _newMat = mat.reduceRows(currentDevice.equalsIgnoreCase("GPU"));
 		setMat(_newMat);
 
 		_newMat.Debug();

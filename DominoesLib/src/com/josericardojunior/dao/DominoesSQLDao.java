@@ -2,13 +2,11 @@ package com.josericardojunior.dao;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
@@ -20,11 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javafx.scene.input.KeyCode;
-
 import org.apache.commons.lang.time.StopWatch;
-
-import javax.xml.ws.handler.MessageContext;
 
 import com.josericardojunior.RepositoryImporter.ClassNode;
 import com.josericardojunior.RepositoryImporter.CommitNode;
@@ -33,8 +27,8 @@ import com.josericardojunior.RepositoryImporter.FunctionNode;
 import com.josericardojunior.RepositoryImporter.RepositoryNode;
 import com.josericardojunior.RepositoryImporter.UserNode;
 import com.josericardojunior.arch.Cell;
-import com.josericardojunior.arch.IMatrix2D;
-import com.josericardojunior.arch.Matrix2DFactory;
+import com.josericardojunior.arch.MatrixOperations;
+import com.josericardojunior.arch.MatrixOperationsFactory;
 import com.josericardojunior.arch.MatrixDescriptor;
 import com.josericardojunior.domain.Dominoes;
 
@@ -342,7 +336,7 @@ public class DominoesSQLDao {
 			String bugId = extractBugId(message, repository.getBugPrefix());
 			
 			if (bugId != null){
-				Map.Entry<String,String> pair = new AbstractMap.SimpleEntry(bugId, hashCode);
+				Map.Entry<String,String> pair = new AbstractMap.SimpleEntry<>(bugId, hashCode);
 				
 				bugCommit.add(pair);
 			}
@@ -487,7 +481,7 @@ public class DominoesSQLDao {
 				String _row_ab = rs.getString("row_abbreviate");
 				String _col_ab = rs.getString("column_abbreviate");
 				
-				IMatrix2D _mat = loadMatrixFromDatabase(_id, _row_name, _col_name, _device, _begin, _end, _project);
+				MatrixOperations _mat = loadMatrixFromDatabase(_id, _row_name, _col_name, _device, _begin, _end, _project);
 				
 				if (_mat != null){
 					Dominoes _dom = new Dominoes(_row_ab, _col_ab, _mat, _device);
@@ -501,10 +495,10 @@ public class DominoesSQLDao {
     	return _dominoesList;
     }
 
-    private static IMatrix2D loadMatrixFromDatabase(int id, String row_name, String col_name,
+    private static MatrixOperations loadMatrixFromDatabase(int id, String row_name, String col_name,
     		String _device, Date _begin, Date _end, String _project) throws Exception{
     	
-    	IMatrix2D result = null;
+    	MatrixOperations result = null;
     	
     	switch (id){
     	case Developer_Commit:
@@ -543,7 +537,7 @@ public class DominoesSQLDao {
     	return result;
     }
     
-    private static IMatrix2D loadCommitFile(String row, String col, String 
+    private static MatrixOperations loadCommitFile(String row, String col, String 
     		_device, Date _begin, Date _end, String _project) throws Exception {
     	String sql;
 		MatrixDescriptor descriptor = new MatrixDescriptor(row, col);
@@ -608,7 +602,7 @@ public class DominoesSQLDao {
 			cells.add(c);
 		}
 		
-		IMatrix2D mat = Matrix2DFactory.getMatrix2D(_device, descriptor);
+		MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(_device, descriptor);
 		mat.setData(cells);
 		stopWatch.stop();
 		System.out.println("**Building matriz (ms): " + stopWatch.getTime());
@@ -620,7 +614,7 @@ public class DominoesSQLDao {
 		return mat;
     }
      
-    private static IMatrix2D loadDeveloperCommit(String row, String col, String _device, 
+    private static MatrixOperations loadDeveloperCommit(String row, String col, String _device, 
     		Date _begin, Date _end, String _project) throws Exception{
 		String sql;
 		MatrixDescriptor descriptor = new MatrixDescriptor(row, col);
@@ -686,7 +680,7 @@ public class DominoesSQLDao {
 
 		
 		// Build Matrix
-		IMatrix2D mat = Matrix2DFactory.getMatrix2D(_device, descriptor);
+		MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(_device, descriptor);
 		mat.setData(cells);
 		
 		stopWatch.stop();
@@ -699,7 +693,7 @@ public class DominoesSQLDao {
 		return mat;
 	}
     
-    private static IMatrix2D loadPackageFile(String row, String col, String _device, 
+    private static MatrixOperations loadPackageFile(String row, String col, String _device, 
     		Date _begin, Date _end, String _project) throws Exception {
     	String sql;
 		MatrixDescriptor descriptor = new MatrixDescriptor(row, col);
@@ -772,7 +766,7 @@ public class DominoesSQLDao {
 
 
 		// Build Matrix
-		IMatrix2D mat = Matrix2DFactory.getMatrix2D(_device, descriptor);
+		MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(_device, descriptor);
 		mat.setData(cells);
 		
 		stopWatch.stop();
@@ -785,7 +779,7 @@ public class DominoesSQLDao {
 		return mat;
     }
 
-    private static IMatrix2D loadFileMethod(String row, String col, String _device, 
+    private static MatrixOperations loadFileMethod(String row, String col, String _device, 
     		Date _begin, Date _end, String _project) throws Exception {
     	String sql;
 		MatrixDescriptor descriptor = new MatrixDescriptor(row, col);
@@ -859,7 +853,7 @@ public class DominoesSQLDao {
 		System.out.println("File x Method Size: " + descriptor.getNumRows() + " x " + descriptor.getNumCols());
 		
 		// Build Matrix
-		IMatrix2D mat = Matrix2DFactory.getMatrix2D(_device, descriptor);
+		MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(_device, descriptor);
 		mat.setData(cells);
 		
 		stopWatch.stop();
@@ -873,7 +867,7 @@ public class DominoesSQLDao {
     }
     
     
-    private static IMatrix2D loadFileClass(String row, String col, String _device, 
+    private static MatrixOperations loadFileClass(String row, String col, String _device, 
     		Date _begin, Date _end, String _project) throws Exception {
     	String sql;
 		MatrixDescriptor descriptor = new MatrixDescriptor(row, col);
@@ -944,7 +938,7 @@ public class DominoesSQLDao {
 		System.out.println("File x Class Size: " + descriptor.getNumRows() + " x " + descriptor.getNumCols());
 		
 		// Build Matrix
-		IMatrix2D mat = Matrix2DFactory.getMatrix2D(_device, descriptor);
+		MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(_device, descriptor);
 		mat.setData(cells);
 		
 		stopWatch.stop();
@@ -957,7 +951,7 @@ public class DominoesSQLDao {
 		return mat;
     }
     
-    private static IMatrix2D loadClassMethod(String row, String col, String _device, 
+    private static MatrixOperations loadClassMethod(String row, String col, String _device, 
     		Date _begin, Date _end, String _project) throws Exception {
     	String sql;
 		MatrixDescriptor descriptor = new MatrixDescriptor(row, col);
@@ -1034,7 +1028,7 @@ public class DominoesSQLDao {
 		System.out.println("Class x Method Size: " + descriptor.getNumRows() + " x " + descriptor.getNumCols());
 		
 		// Build Matrix
-		IMatrix2D mat = Matrix2DFactory.getMatrix2D(_device, descriptor);
+		MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(_device, descriptor);
 		mat.setData(cells);
 		
 		stopWatch.stop();
@@ -1047,7 +1041,7 @@ public class DominoesSQLDao {
 		return mat;
     }
     
-    private static IMatrix2D loadCommitMethod(String row, String col, String _device, 
+    private static MatrixOperations loadCommitMethod(String row, String col, String _device, 
     		Date _begin, Date _end, String _project) throws Exception {
 		String sql;
 		MatrixDescriptor descriptor = new MatrixDescriptor(row, col);
@@ -1122,7 +1116,7 @@ public class DominoesSQLDao {
 		}
 		
 		// Build Matrix
-		IMatrix2D mat = Matrix2DFactory.getMatrix2D(_device, descriptor);
+		MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(_device, descriptor);
 		mat.setData(cells);
 		
 		stopWatch.stop();
@@ -1135,7 +1129,7 @@ public class DominoesSQLDao {
 		return mat;
     }
     
-    private static IMatrix2D loadBugCommit(String row, String col, String _device, 
+    private static MatrixOperations loadBugCommit(String row, String col, String _device, 
     		Date _begin, Date _end, String _project) throws Exception {
     	String sql;
 		MatrixDescriptor descriptor = new MatrixDescriptor(row, col);
@@ -1213,7 +1207,7 @@ public class DominoesSQLDao {
 		System.out.println("Bug x Commit Size: " + descriptor.getNumRows() + " x " + descriptor.getNumCols()); 
 		
 		// Build Matrix
-		IMatrix2D mat = Matrix2DFactory.getMatrix2D(_device, descriptor);
+		MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(_device, descriptor);
 		mat.setData(cells);
 		
 		stopWatch.stop();
