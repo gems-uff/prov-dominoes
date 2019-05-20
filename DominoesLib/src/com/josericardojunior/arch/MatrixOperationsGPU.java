@@ -2,7 +2,8 @@ package com.josericardojunior.arch;
 
 import java.util.ArrayList;
 
-import com.josericardojunior.Native.*;
+import com.josericardojunior.Native.MatrixProcessor;
+import com.josericardojunior.Native.java_to_c_info;
 
 
 public class MatrixOperationsGPU implements MatrixOperations {	
@@ -323,7 +324,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		
-		MatrixOperationsGPU meanSD = null;
+		//MatrixOperationsGPU meanSD = null;
 		
 	//	try {
 			// T
@@ -339,6 +340,12 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	@Override
 	public MatrixOperations standardScore(boolean useGPU) {
 		// TODO Implement standardScore
+		return null;
+	}
+
+	@Override
+	public MatrixOperations transitiveClosure(boolean useGPU) {
+		// TODO Implement transitiveClosure
 		return null;
 	}		
 }

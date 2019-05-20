@@ -72,11 +72,13 @@ public final class Dominoes {
 	public final static int TYPE_SUPPORT = 2;
 	public final static int TYPE_CONFIDENCE = 3;
 	public final static int TYPE_LIFT = 4;
+	private static final int TYPE_TRANSITIVE_CLOSURE = 5;
 	public final static String TYPE_BASIC_CODE = "B";
 	public final static String TYPE_DERIVED_CODE = "D";
 	public final static String TYPE_SUPPORT_CODE = "S";
 	public final static String TYPE_CONFIDENCE_CODE = "C";
 	public final static String TYPE_LIFT_CODE = "L";
+	public final static String TYPE_TRANSITIVE_CLOSURE_CODE = "T";
 
 	public final static String AGGREG_TEXT = "/SUM ";
 
@@ -146,7 +148,7 @@ public final class Dominoes {
 
 		this.setHistoric(historic);
 		if (type == Dominoes.TYPE_BASIC || (type != Dominoes.TYPE_DERIVED && type != Dominoes.TYPE_CONFIDENCE
-				&& type != Dominoes.TYPE_SUPPORT && type != Dominoes.TYPE_LIFT)) {
+				&& type != Dominoes.TYPE_SUPPORT && type != Dominoes.TYPE_LIFT && type != Dominoes.TYPE_TRANSITIVE_CLOSURE)) {
 			throw new IllegalArgumentException("Invalid argument.\nThe Type attribute not is defined or not is valid");
 		}
 		this.type = type;
@@ -327,6 +329,9 @@ public final class Dominoes {
 			break;
 		case Dominoes.TYPE_LIFT:
 			type.setText(Dominoes.TYPE_LIFT_CODE);
+			break;
+		case Dominoes.TYPE_TRANSITIVE_CLOSURE:
+			type.setText(Dominoes.TYPE_TRANSITIVE_CLOSURE_CODE);
 			break;
 		}
 
@@ -516,6 +521,12 @@ public final class Dominoes {
 		MatrixOperations _newMat = mat.confidence(currentDevice.equalsIgnoreCase("GPU"));
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_CONFIDENCE;
+	}
+	
+	public void transitiveClosure() {
+		MatrixOperations _newMat = mat.transitiveClosure(currentDevice.equalsIgnoreCase("GPU"));
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_TRANSITIVE_CLOSURE;
 	}
 
 	/**

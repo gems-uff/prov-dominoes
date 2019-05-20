@@ -22,16 +22,19 @@ public class CommandFactory {
 		return new RedoCommand();
 	}
 
-	public AbstractCommand save(Group piece) {
-		return new SaveCommand(App.getArea().getData().getPieces().indexOf(piece));
-	}
-
 	public AbstractCommand add(Group piece) {
 		return new AddCommand(piece);
+	}
+	public MoveCommand move(Group piece) {
+		return new MoveCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
 	public AbstractCommand remove(Group piece) {
 		return new RemoveCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+
+	public AbstractCommand save(Group piece) {
+		return new SaveCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
 	public AbstractCommand transpose(Group piece) {
@@ -58,8 +61,8 @@ public class CommandFactory {
 		return new ZScoreCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
-	public MoveCommand move(Group piece) {
-		return new MoveCommand(App.getArea().getData().getPieces().indexOf(piece));
+	public AbstractCommand transitiveClosure(Group piece) {
+		return new TransitiveClosureCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
 }

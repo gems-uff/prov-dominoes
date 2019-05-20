@@ -26,6 +26,8 @@ public interface MatrixOperations {
 	
 	public MatrixOperations standardScore(boolean useGPU);
 	
+	public MatrixOperations transitiveClosure(boolean useGPU);
+	
 	public void Debug();
 	
 	public void ExportCSV(String filename);
