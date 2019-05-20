@@ -1,10 +1,5 @@
 package com.josericardojunior.Native;
 
-import java.lang.annotation.Native;
-import java.util.Map;
-
-import org.omg.CORBA.Environment;
-
 //import com.josericardojunior.Native.JNILoadLib.Architecture;
 
 public class MatrixProcessor {

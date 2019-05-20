@@ -7,7 +7,7 @@ import org.la4j.matrix.functor.MatrixProcedure;
 import org.la4j.matrix.sparse.CRSMatrix;
 
 
-public class Matrix2DJava implements IMatrix2D {	
+public class MatrixOperationsCPU implements MatrixOperations {	
 
 	private CRSMatrix data;
 	
@@ -17,7 +17,7 @@ public class Matrix2DJava implements IMatrix2D {
 		return matrixDescriptor;
 	}
 
-	public Matrix2DJava(MatrixDescriptor _matrixDescriptor){
+	public MatrixOperationsCPU(MatrixDescriptor _matrixDescriptor){
 		
 		matrixDescriptor = _matrixDescriptor;
 		
@@ -42,7 +42,7 @@ public class Matrix2DJava implements IMatrix2D {
 		return rowData[_colIndex];
 	}*/
 	
-	public IMatrix2D multiply(IMatrix2D other, boolean useGPU) throws Exception{
+	public MatrixOperations multiply(MatrixOperations other, boolean useGPU) throws Exception{
 		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
 		
 		if (matrixDescriptor.getNumCols() != otherDescriptor.getNumRows())
@@ -60,9 +60,9 @@ public class Matrix2DJava implements IMatrix2D {
 			resultDesc.AddColDesc(
 					otherDescriptor.getColumnAt(i));
 		
-		Matrix2DJava result = new Matrix2DJava(resultDesc);
+		MatrixOperationsCPU result = new MatrixOperationsCPU(resultDesc);
 		
-		Matrix2DJava otherJava = (Matrix2DJava)other; 
+		MatrixOperationsCPU otherJava = (MatrixOperationsCPU)other; 
 		
 		result.data = (CRSMatrix) data.multiply(otherJava.data);
 		
@@ -70,7 +70,7 @@ public class Matrix2DJava implements IMatrix2D {
 		return result;
 	}
 	
-	public Matrix2DJava transpose(){
+	public MatrixOperationsCPU transpose(){
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(
 				this.matrixDescriptor.getColType(), 
 				this.matrixDescriptor.getRowType());
@@ -81,7 +81,7 @@ public class Matrix2DJava implements IMatrix2D {
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getRowAt(i));
 		
-		Matrix2DJava transpose = new Matrix2DJava(_newDescriptor);
+		MatrixOperationsCPU transpose = new MatrixOperationsCPU(_newDescriptor);
 		transpose.data = (CRSMatrix) data.transpose();
 		
 		return transpose;
@@ -206,7 +206,7 @@ public class Matrix2DJava implements IMatrix2D {
 	}
 
 	@Override
-	public IMatrix2D reduceRows(boolean useGPU) {
+	public MatrixOperations reduceRows(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(
 				this.matrixDescriptor.getColType(), 
 				this.matrixDescriptor.getRowType());
@@ -217,7 +217,7 @@ public class Matrix2DJava implements IMatrix2D {
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		
-		Matrix2DJava reduced = new Matrix2DJava(_newDescriptor);
+		MatrixOperationsCPU reduced = new MatrixOperationsCPU(_newDescriptor);
 		
 		float []rowSum = new float[this.matrixDescriptor.getNumCols()];
 		ArrayList<Cell> nz = getNonZeroData();
@@ -239,7 +239,7 @@ public class Matrix2DJava implements IMatrix2D {
 	}
 
 	@Override
-	public IMatrix2D confidence(boolean useGPU) {
+	public MatrixOperations confidence(boolean useGPU) {
 		List<Cell> nonZeros = getNonZeroData();
 		
 		ArrayList<Cell> newValues = new ArrayList<Cell>();
@@ -257,14 +257,14 @@ public class Matrix2DJava implements IMatrix2D {
 			newValues.add(c);
 		}
 		
-		Matrix2DJava confidenceM = new Matrix2DJava(getMatrixDescriptor());
+		MatrixOperationsCPU confidenceM = new MatrixOperationsCPU(getMatrixDescriptor());
 		confidenceM.setData(newValues);
 		
 		return confidenceM;
 	}
 
 	@Override
-	public IMatrix2D meanAndSD(boolean useGPU) {
+	public MatrixOperations meanAndSD(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(
 				this.matrixDescriptor.getColType(), 
 				this.matrixDescriptor.getRowType());
@@ -276,7 +276,7 @@ public class Matrix2DJava implements IMatrix2D {
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		
 		
-		Matrix2DJava meanSD = new Matrix2DJava(_newDescriptor);
+		MatrixOperationsCPU meanSD = new MatrixOperationsCPU(_newDescriptor);
 		
 		float meanCol[] = new float[meanSD.getMatrixDescriptor().getNumCols()];
 		float sdCol[] = new float[meanSD.getMatrixDescriptor().getNumCols()];
@@ -324,7 +324,7 @@ public class Matrix2DJava implements IMatrix2D {
 	
 
 	@Override
-	public IMatrix2D standardScore(boolean useGPU) {
+	public MatrixOperations standardScore(boolean useGPU) {
 		
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(
 				this.matrixDescriptor.getColType(), 
@@ -336,7 +336,7 @@ public class Matrix2DJava implements IMatrix2D {
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
 			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
 		
-		Matrix2DJava _standardScore = new Matrix2DJava(_newDescriptor);
+		MatrixOperationsCPU _standardScore = new MatrixOperationsCPU(_newDescriptor);
 		
 		
 		float meanCol[] = new float[_standardScore.getMatrixDescriptor().getNumCols()];
@@ -418,7 +418,7 @@ public class Matrix2DJava implements IMatrix2D {
 		desc1.AddColDesc("C3");
 		
 		try {
-			Matrix2DJava mat1 = new Matrix2DJava(desc1);
+			MatrixOperationsCPU mat1 = new MatrixOperationsCPU(desc1);
 			mat1.setData(cells1);
 			mat1.Debug();
 		
@@ -428,11 +428,11 @@ public class Matrix2DJava implements IMatrix2D {
 			desc2.AddRowDesc("R3");
 			desc2.AddColDesc("C1");
 			desc2.AddColDesc("C2");
-			Matrix2DJava mat2 = new Matrix2DJava(desc2);
+			MatrixOperationsCPU mat2 = new MatrixOperationsCPU(desc2);
 			mat2.setData(cells2);
 			mat2.Debug();
 			
-			IMatrix2D meanstd = mat2.standardScore(false);
+			MatrixOperations meanstd = mat2.standardScore(false);
 			meanstd.Debug();
 		} catch (Exception e) {
 			e.printStackTrace();

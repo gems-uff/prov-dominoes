@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.josericardojunior.Native.*;
 
 
-public class Matrix2D implements IMatrix2D {	
+public class MatrixOperationsGPU implements MatrixOperations {	
 
 	private long matPointer = 0;
 	
@@ -20,7 +20,7 @@ public class Matrix2D implements IMatrix2D {
 		return matrixDescriptor.getNumCols() * matrixDescriptor.getNumRows() * (Float.SIZE / 8);
 	}
 
-	public Matrix2D(MatrixDescriptor _matrixDescriptor) throws Exception{
+	public MatrixOperationsGPU(MatrixDescriptor _matrixDescriptor) throws Exception{
 		
 		if (!Session.isSessionStarted())
 			throw new Exception("Session is not started");
@@ -42,7 +42,7 @@ public class Matrix2D implements IMatrix2D {
 	
 	
 	
-	public IMatrix2D multiply(IMatrix2D other, boolean useGPU) throws Exception{
+	public MatrixOperations multiply(MatrixOperations other, boolean useGPU) throws Exception{
 		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
 		
 		if (matrixDescriptor.getNumCols() != otherDescriptor.getNumRows())
@@ -69,19 +69,19 @@ public class Matrix2D implements IMatrix2D {
 		System.out.println("1) Operation: Multiplication - Using " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
 		
 		
-		Matrix2D result = new Matrix2D(resultDesc);
+		MatrixOperationsGPU result = new MatrixOperationsGPU(resultDesc);
 	
 		
 		System.out.println("2) Operation: Multiplication - Using " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
 		
-		MatrixProcessor.multiply(matPointer, ((Matrix2D)other).matPointer,
+		MatrixProcessor.multiply(matPointer, ((MatrixOperationsGPU)other).matPointer,
 				result.matPointer, useGPU);
 		System.out.println("Releasing " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
 		
 		return result;
 	}
 	
-	public Matrix2D transpose(){
+	public MatrixOperationsGPU transpose(){
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(
 				this.matrixDescriptor.getColType(), 
 				this.matrixDescriptor.getRowType());
@@ -92,10 +92,10 @@ public class Matrix2D implements IMatrix2D {
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getRowAt(i));
 		
-		Matrix2D transpose = null;
+		MatrixOperationsGPU transpose = null;
 		
 		try {
-			transpose = new Matrix2D(_newDescriptor);
+			transpose = new MatrixOperationsGPU(_newDescriptor);
 			System.out.println("Operation: Transposing - Using " + getMemUsed() + " KB of GPU Memory.");
 			MatrixProcessor.transpose(matPointer, transpose.matPointer);
 			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
@@ -269,7 +269,7 @@ public class Matrix2D implements IMatrix2D {
 	}
 
 	@Override
-	public IMatrix2D reduceRows(boolean useGPU) {
+	public MatrixOperations reduceRows(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(
 				this.matrixDescriptor.getColType(), 
 				this.matrixDescriptor.getRowType());
@@ -279,10 +279,10 @@ public class Matrix2D implements IMatrix2D {
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		
-		Matrix2D reduced = null;
+		MatrixOperationsGPU reduced = null;
 		
 		try {
-			reduced = new Matrix2D(_newDescriptor);
+			reduced = new MatrixOperationsGPU(_newDescriptor);
 			System.out.println("Operation: Reduction - Using " + getMemUsed() + " KB of GPU Memory.");
 			MatrixProcessor.reduceRow(matPointer, reduced.matPointer, useGPU);
 			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
@@ -294,14 +294,14 @@ public class Matrix2D implements IMatrix2D {
 	}
 
 	@Override
-	public IMatrix2D confidence(boolean useGPU) {
+	public MatrixOperations confidence(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
 		
-		Matrix2D confidence = null;
+		MatrixOperationsGPU confidence = null;
 		
 		try {
 			System.out.println("Operation: Confidence - Using " + getMemUsed() + " KB of GPU Memory.");
-			confidence = new Matrix2D(_newDescriptor);
+			confidence = new MatrixOperationsGPU(_newDescriptor);
 			MatrixProcessor.confidence(matPointer, confidence.matPointer, useGPU);
 			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
 		} catch (Exception ex){
@@ -312,7 +312,7 @@ public class Matrix2D implements IMatrix2D {
 	}
 
 	@Override
-	public IMatrix2D meanAndSD(boolean useGPU) {
+	public MatrixOperations meanAndSD(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(
 				this.matrixDescriptor.getColType(), 
 				this.matrixDescriptor.getRowType());
@@ -323,7 +323,7 @@ public class Matrix2D implements IMatrix2D {
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		
-		Matrix2D meanSD = null;
+		MatrixOperationsGPU meanSD = null;
 		
 	//	try {
 			// T
@@ -337,7 +337,7 @@ public class Matrix2D implements IMatrix2D {
 	}
 
 	@Override
-	public IMatrix2D standardScore(boolean useGPU) {
+	public MatrixOperations standardScore(boolean useGPU) {
 		// TODO Implement standardScore
 		return null;
 	}		
