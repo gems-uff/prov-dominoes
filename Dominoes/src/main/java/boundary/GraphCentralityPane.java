@@ -92,9 +92,13 @@ public class GraphCentralityPane extends BorderPane {
 		centrality.acceptDisconnectedGraph(true);
 		centrality.evaluate();
 		double max = 0;
+		double min = 1;
 		for (String vertex : graph.getVertices()) {
 			if (centrality.getVertexScore(vertex) > max) {
 				max = centrality.getVertexScore(vertex);
+			}
+			if (centrality.getVertexScore(vertex) < min) {
+				min = centrality.getVertexScore(vertex);
 			}
 		}
 		for (String vertex : graph.getVertices()) {
@@ -102,10 +106,12 @@ public class GraphCentralityPane extends BorderPane {
 			System.out.println(node.getUserData() + " : " + centrality.getVertexScore(vertex));
 			Double d = centrality.getVertexScore(vertex);
 			System.out.println(d);
-			Double relativeScore = (centrality.getVertexScore(vertex) / max);
-			int tone = Math.round(255 * (1 - relativeScore.floatValue()));
-			System.out.println(tone);
-			nodes.get(vertex).setColor(new Color(tone, tone, tone));
+			Double relativeScoreMax = (centrality.getVertexScore(vertex) / max);
+			Double relativeScoreMin = (min / centrality.getVertexScore(vertex));
+			int toneMax = Math.round(255 * (1 - relativeScoreMax.floatValue()));
+			int toneMin = Math.round(255 * (1 - relativeScoreMin.floatValue()));
+			System.out.println(toneMax);
+			nodes.get(vertex).setColor(new Color(toneMin, toneMax, 0));
 		}
 
 		treeLayout = new FRLayout<>(graph);
