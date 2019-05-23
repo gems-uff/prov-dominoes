@@ -1,8 +1,8 @@
-JNIGPUMatrix/target
-Interface/target
-gitdataminer/target
-Dominoes/.classpath
+target/
+.classpath
+.project
 .metadata
+.settings
 .recommenders
 JNIGPUMatrix/kernel.o
 JNIGPUMatrix/libMatrixProcessor.o
