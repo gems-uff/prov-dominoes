@@ -1,5 +1,6 @@
 JNIGPUMatrix/target/
 JNIGPUMatrix/.settings/
+JNIGPUMatrix/bin/
 
 Dominoes/target/
 Dominoes/.settings/
@@ -9,6 +10,7 @@ DominoesLib/.settings/
 
 gitdataminer/target/
 gitdataminer/.settings/
+gitdataminer/bin/
 
 .classpath
 .project
