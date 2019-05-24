@@ -9,8 +9,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.ProvMatrix.Relation;
 
-import com.josericardojunior.arch.IMatrix2D;
-import com.josericardojunior.arch.Matrix2D;
+import com.josericardojunior.arch.MatrixOperations;
+import com.josericardojunior.arch.MatrixOperationsGPU;
 
 public final class Dominoes {
 	public final static double GRAPH_WIDTH = 100;
@@ -72,11 +72,13 @@ public final class Dominoes {
 	public final static int TYPE_SUPPORT = 2;
 	public final static int TYPE_CONFIDENCE = 3;
 	public final static int TYPE_LIFT = 4;
+	private static final int TYPE_TRANSITIVE_CLOSURE = 5;
 	public final static String TYPE_BASIC_CODE = "B";
 	public final static String TYPE_DERIVED_CODE = "D";
 	public final static String TYPE_SUPPORT_CODE = "S";
 	public final static String TYPE_CONFIDENCE_CODE = "C";
 	public final static String TYPE_LIFT_CODE = "L";
+	public final static String TYPE_TRANSITIVE_CLOSURE_CODE = "T";
 
 	public final static String AGGREG_TEXT = "/SUM ";
 
@@ -87,7 +89,8 @@ public final class Dominoes {
 	private String idCol;
 	private Historic historic;
 	private int type;
-	private IMatrix2D mat = null;
+	private MatrixOperations mat = null;
+	private int sourceIndex;
 	private String currentDevice = DEVICE_CPU;
 
 	public Dominoes(String _device) {
@@ -104,7 +107,7 @@ public final class Dominoes {
 	 * @param mat - matrix2D
 	 * @throws IllegalArgumentException - in case of invalid parameters
 	 */
-	public Dominoes(String idRow, String idCol, IMatrix2D mat, String _device) throws IllegalArgumentException {
+	public Dominoes(String idRow, String idCol, MatrixOperations mat, String _device) throws IllegalArgumentException {
 		this.rowIsAggragatable = false;
 		this.colIsAggragatable = false;
 		this.setIdRow(idRow);
@@ -118,7 +121,7 @@ public final class Dominoes {
 		this.currentDevice = _device;
 	}
 
-	public Dominoes(String idRow, String idCol, Relation relation, IMatrix2D mat, String _device)
+	public Dominoes(String idRow, String idCol, Relation relation, MatrixOperations mat, String _device)
 			throws IllegalArgumentException {
 		this(idRow, idCol, mat, _device);
 		this.relation = relation;
@@ -134,7 +137,7 @@ public final class Dominoes {
 	 * @param mat - matrix2D
 	 * @throws IllegalArgumentException - in case of invalid parameters
 	 */
-	public Dominoes(int type, String idRow, String idCol, Historic historic, Matrix2D mat, String _device)
+	public Dominoes(int type, String idRow, String idCol, Historic historic, MatrixOperationsGPU mat, String _device)
 			throws IllegalArgumentException {
 		this.rowIsAggragatable = false;
 		this.colIsAggragatable = false;
@@ -145,7 +148,7 @@ public final class Dominoes {
 
 		this.setHistoric(historic);
 		if (type == Dominoes.TYPE_BASIC || (type != Dominoes.TYPE_DERIVED && type != Dominoes.TYPE_CONFIDENCE
-				&& type != Dominoes.TYPE_SUPPORT && type != Dominoes.TYPE_LIFT)) {
+				&& type != Dominoes.TYPE_SUPPORT && type != Dominoes.TYPE_LIFT && type != Dominoes.TYPE_TRANSITIVE_CLOSURE)) {
 			throw new IllegalArgumentException("Invalid argument.\nThe Type attribute not is defined or not is valid");
 		}
 		this.type = type;
@@ -274,7 +277,7 @@ public final class Dominoes {
 			historic = new Text(auxHistoric.substring(0, 24) + "...");
 		}
 
-		historic.setFont(new Font("Arial", 10));
+    	historic.setFont(new Font("Arial", 10));
 		historic.setFill(Dominoes.COLOR_HISTORIC);
 		historic.setX(2);
 		historic.setY(3 * Dominoes.GRAPH_HEIGHT / 5);
@@ -326,6 +329,9 @@ public final class Dominoes {
 			break;
 		case Dominoes.TYPE_LIFT:
 			type.setText(Dominoes.TYPE_LIFT_CODE);
+			break;
+		case Dominoes.TYPE_TRANSITIVE_CLOSURE:
+			type.setText(Dominoes.TYPE_TRANSITIVE_CLOSURE_CODE);
 			break;
 		}
 
@@ -382,7 +388,7 @@ public final class Dominoes {
 	 *
 	 * @return Return the Matrix value
 	 */
-	public IMatrix2D getMat() {
+	public MatrixOperations getMat() {
 		return this.mat;
 	}
 
@@ -449,7 +455,7 @@ public final class Dominoes {
 	 * @param mat The Matrix value
 	 * @throws IllegalArgumentException
 	 */
-	public void setMat(IMatrix2D mat) {
+	public void setMat(MatrixOperations mat) {
 		if (mat == null) {
 			throw new IllegalArgumentException("Invalid argument.\nThe Mat attribute is null");
 		}
@@ -479,9 +485,32 @@ public final class Dominoes {
 		this.rowIsAggragatable = this.colIsAggragatable;
 		this.colIsAggragatable = swap;
 
-		IMatrix2D _newMat = mat.transpose();
+		MatrixOperations _newMat = mat.transpose();
 		setMat(_newMat);
 	}
+	
+	 public void standardScore() {
+        
+    	MatrixOperations _newMat = mat.standardScore(currentDevice.equalsIgnoreCase("GPU"));
+    	
+        if(!(this.type == Dominoes.TYPE_BASIC)){
+        	this.type = Dominoes.TYPE_DERIVED;
+        }
+        if (this.getIdRow().equals(this.getIdCol())) {
+            this.type = Dominoes.TYPE_SUPPORT;
+        }
+
+        this.getHistoric().reverse();
+        this.setIdRow(this.getHistoric().getFirstItem());
+        this.setIdCol(this.getHistoric().getLastItem());
+        
+        boolean swap = this.rowIsAggragatable;
+        this.rowIsAggragatable = this.colIsAggragatable;
+        this.colIsAggragatable = swap;
+        
+        //IMatrix2D _newMat = mat.transpose();
+        setMat(_newMat);
+    }
 
 	/**
 	 * This function just invert the Historic
@@ -489,9 +518,15 @@ public final class Dominoes {
 	 * @return the historic invert
 	 */
 	public void confidence() {
-		IMatrix2D _newMat = mat.confidence(currentDevice.equalsIgnoreCase("GPU"));
+		MatrixOperations _newMat = mat.confidence(currentDevice.equalsIgnoreCase("GPU"));
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_CONFIDENCE;
+	}
+	
+	public void transitiveClosure() {
+		MatrixOperations _newMat = mat.transitiveClosure(currentDevice.equalsIgnoreCase("GPU"));
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_TRANSITIVE_CLOSURE;
 	}
 
 	/**
@@ -521,7 +556,7 @@ public final class Dominoes {
 
 		//this.historic = new Historic("SUM", this.getIdCol());
 
-		IMatrix2D _newMat = mat.reduceRows(currentDevice.equalsIgnoreCase("GPU"));
+		MatrixOperations _newMat = mat.reduceRows(currentDevice.equalsIgnoreCase("GPU"));
 		setMat(_newMat);
 
 		_newMat.Debug();
@@ -544,8 +579,7 @@ public final class Dominoes {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		domResult.historic = new Historic(this.getHistoric(), dom.getHistoric());
+      	domResult.historic = new Historic(this.getHistoric(), dom.getHistoric());
 
 		domResult.setIdRow(getIdRow());
 		domResult.setIdCol(dom.getIdCol());
@@ -574,5 +608,12 @@ public final class Dominoes {
 	public void setRelation(Relation relation) {
 		this.relation = relation;
 	}
+	
+	public int getSourceIndex() {
+		return sourceIndex;
+	}
 
+	public void setSourceIndex(int sourceIndex) {
+		this.sourceIndex = sourceIndex;
+	}
 }

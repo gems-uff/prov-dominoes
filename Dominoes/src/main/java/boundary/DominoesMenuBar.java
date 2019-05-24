@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 
+import command.CommandFactory;
 import domain.Configuration;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -32,6 +33,9 @@ public class DominoesMenuBar extends MenuBar {
 	private final MenuItem mDominoes_new;
 	private final MenuItem mDominoes_openProv;
 	private final MenuItem mDominoes_loadAll;
+	private final MenuItem menuEditUndo;
+	private final MenuItem menuEditRedo;
+	private final MenuItem menuEditLimpar;
 	private final MenuItem mDominoes_exit;
 	private final MenuItem mDominoes_exitAndSave;
 	private final Menu mDominoes_save;
@@ -42,6 +46,7 @@ public class DominoesMenuBar extends MenuBar {
 	//------EDIT MENU ITENS---------------------------------------------------------
 	private final Menu mEdit;
 
+	//    private final MenuColor mEdit_editMatrix_mcMatrixColor;
 	private final CheckMenuItem mEdit_showHistoric;
 	private final CheckMenuItem mEdit_showType;
 
@@ -88,6 +93,11 @@ public class DominoesMenuBar extends MenuBar {
 		//------EDIT MENU ITENS---------------------------------------------------------
 		this.mEdit = new Menu("Edit");
 
+		this.menuEditUndo = new MenuItem("Undo");
+		this.menuEditUndo.setDisable(true);
+		this.menuEditRedo = new MenuItem("Redo");
+		this.menuEditLimpar = new MenuItem("Clear");
+		this.menuEditRedo.setDisable(true);
 
 		this.mEdit_showHistoric = new CheckMenuItem("Show Historic");
 		this.mEdit_showHistoric.setSelected(Configuration.visibilityHistoric);
@@ -95,7 +105,8 @@ public class DominoesMenuBar extends MenuBar {
 		mEdit_showType = new CheckMenuItem("Show Type");
 		mEdit_showType.setSelected(Configuration.visibilityType);
 
-		this.mEdit.getItems().addAll(this.mEdit_showHistoric, this.mEdit_showType);
+		this.mEdit.getItems().addAll(this.menuEditUndo, this.menuEditRedo, this.menuEditLimpar,this.mEdit_showHistoric, this.mEdit_showType);
+		//        this.mEdit.getItems().addAll(this.mEdit_editMatrix, this.mEdit_showHistoric, this.mEdit_showType);
 
 		//------CONFIGURATION MENU ITENS------------------------------------------------
 		this.mConfiguration = new Menu("Configuration");
@@ -126,6 +137,7 @@ public class DominoesMenuBar extends MenuBar {
 
 		//------MENU ITENS--------------------------------------------------------------
 		this.getMenus().addAll(this.mDominoes, this.mEdit, this.mConfiguration, mTimeline);
+		//        this.getMenus().addAll(this.mDominoes, this.mEdit, this.mConfiguration);
 
 		if (!Configuration.automaticCheck || Configuration.endDate.compareTo(Configuration.beginDate) <= 0) {
 			this.changeEnableDisble();
@@ -201,6 +213,33 @@ public class DominoesMenuBar extends MenuBar {
 
 		//----------EDIT MENU ITENS-----------------------------------------------------
 
+		this.menuEditUndo.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.getCommandManager().invokeCommand(CommandFactory.getInstance().undo());
+			}
+		});
+
+		this.menuEditRedo.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.getCommandManager().invokeCommand(CommandFactory.getInstance().redo());
+			}
+		});
+		
+		this.menuEditLimpar.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.getCommandManager().getRedoList().clear();
+				App.getCommandManager().getHistory().clear();
+				App.getCommandManager().uptadeMenu();
+				App.getArea().clear();
+			}
+		});
+
 		this.mEdit_showHistoric.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -261,6 +300,14 @@ public class DominoesMenuBar extends MenuBar {
 		//App.checkout(begin, end);
 		App.LoadDominoesPieces();
 
+	}
+
+	public MenuItem getMenuEditUndo() {
+		return menuEditUndo;
+	}
+
+	public MenuItem getMenuEditRedo() {
+		return menuEditRedo;
 	}
 
 }
