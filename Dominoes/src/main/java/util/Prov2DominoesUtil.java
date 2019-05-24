@@ -6,8 +6,8 @@ import java.util.List;
 import org.la4j.matrix.sparse.CRSMatrix;
 
 import com.josericardojunior.arch.Cell;
-import com.josericardojunior.arch.IMatrix2D;
-import com.josericardojunior.arch.Matrix2DFactory;
+import com.josericardojunior.arch.MatrixOperations;
+import com.josericardojunior.arch.MatrixOperationsFactory;
 import com.josericardojunior.arch.MatrixDescriptor;
 import com.josericardojunior.domain.Dominoes;
 
@@ -28,7 +28,7 @@ public class Prov2DominoesUtil {
 			System.out.println(provMatrix.getColumnDescriptors());
 			descriptor.setRowsDesc(provMatrix.getRowDescriptors());
 			descriptor.setColumnsDesc(provMatrix.getColumnDescriptors());
-			IMatrix2D mat = Matrix2DFactory.getMatrix2D(Configuration.CPU_DEVICE, descriptor);
+			MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(Configuration.CPU_DEVICE, descriptor);
 			mat.setData(matrix2Cells(provMatrix.getMatrix()));
 			System.out.println(mat);
 			Dominoes dom = new Dominoes(provMatrix.getRowDimentionAbbreviate(),
@@ -48,7 +48,6 @@ public class Prov2DominoesUtil {
 				cells.add(new Cell(i, j, (float) matrix.get(i, j)));
 			}
 		}
-		System.out.println(cells);
 		return cells;
 	}
 
