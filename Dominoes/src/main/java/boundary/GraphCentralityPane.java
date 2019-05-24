@@ -65,7 +65,7 @@ public class GraphCentralityPane extends BorderPane {
 	private ArrayList<NodeInfo> nodesHighlighted = new ArrayList<>();
 	private DirectionDisplayPredicate edgePredicate;
 	private VertexDisplayPredicate vertexPredicate;
-	//private Forest<String, String> graph;
+	// private Forest<String, String> graph;
 	private Graph<String, String> graph;
 
 	/**
@@ -75,7 +75,7 @@ public class GraphCentralityPane extends BorderPane {
 
 	FRLayout<String, String> treeLayout;
 	// ISOMLayout<String, String> treeLayout;
-	//CircleLayout<String, Integer> treeLayout;
+	// CircleLayout<String, Integer> treeLayout;
 
 	public GraphCentralityPane(Dominoes domino) {
 
@@ -92,23 +92,30 @@ public class GraphCentralityPane extends BorderPane {
 		centrality.acceptDisconnectedGraph(true);
 		centrality.evaluate();
 		double max = 0;
-		for (String vv : graph.getVertices()) {
-			if (centrality.getVertexScore(vv) > max) {
-				max = centrality.getVertexScore(vv);
+		double min = 1;
+		for (String vertex : graph.getVertices()) {
+			if (centrality.getVertexScore(vertex) > max) {
+				max = centrality.getVertexScore(vertex);
+			}
+			if (centrality.getVertexScore(vertex) < min) {
+				min = centrality.getVertexScore(vertex);
 			}
 		}
-		for (String vv : graph.getVertices()) {
-			System.out.println(nodes.get(vv).getUserData() + " : " + centrality.getVertexScore(vv));
-			Double d = centrality.getVertexScore(vv);
+		for (String vertex : graph.getVertices()) {
+			NodeInfo node = nodes.get(vertex);
+			System.out.println(node.getUserData() + " : " + centrality.getVertexScore(vertex));
+			Double d = centrality.getVertexScore(vertex);
 			System.out.println(d);
-			Double relativeScore = (centrality.getVertexScore(vv) / max);
-			int tone = Math.round(255 * (1 - relativeScore.floatValue()));
-			System.out.println(tone);
-			nodes.get(vv).setColor(new Color(0, tone, 0));
+			Double relativeScoreMax = (centrality.getVertexScore(vertex) / max);
+			Double relativeScoreMin = (min / centrality.getVertexScore(vertex));
+			int toneMax = Math.round(255 * (1 - relativeScoreMax.floatValue()));
+			int toneMin = Math.round(255 * (1 - relativeScoreMin.floatValue()));
+			System.out.println(toneMax);
+			nodes.get(vertex).setColor(new Color(toneMin, toneMax, 0));
 		}
 
 		treeLayout = new FRLayout<>(graph);
-		//treeLayout = new CircleLayout(graph);
+		// treeLayout = new CircleLayout(graph);
 
 		vv = new VisualizationViewer<String, String>(treeLayout, new Dimension(400, 400));
 
@@ -123,8 +130,8 @@ public class GraphCentralityPane extends BorderPane {
 		vv.getRenderContext().setVertexLabelTransformer(new Transformer<String, String>() {
 
 			@Override
-			public String transform(String arg0) {
-				return "";
+			public String transform(String vertex) {
+				return nodes.get(vertex).getUserData();
 			}
 		});
 
@@ -135,7 +142,6 @@ public class GraphCentralityPane extends BorderPane {
 				return "";
 			}
 		});
-
 		vv.getRenderContext().setEdgeDrawPaintTransformer(new Transformer<String, Paint>() {
 
 			@Override
@@ -161,20 +167,21 @@ public class GraphCentralityPane extends BorderPane {
 		});
 
 		vv.setBackground(Color.white);
-		vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line());
+		vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line<String, String>());
 		// add a listener for ToolTips
 		vv.setVertexToolTipTransformer(new Transformer<String, String>() {
 
 			@Override
-			public String transform(String arg0) {
-				return nodes.get(arg0).getUserData();
+			public String transform(String vertex) {
+				return "Score: " + centrality.getVertexScore(vertex);
 			}
 		});
-		//vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.lightGray));
+		// vv.getRenderContext().setArrowFillPaintTransformer(new
+		// ConstantTransformer(Color.lightGray));
 
 		final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
 
-		final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
+		final DefaultModalGraphMouse<String, String> graphMouse = new DefaultModalGraphMouse<String, String>();
 		vv.setGraphMouse(graphMouse);
 		vv.addKeyListener(graphMouse.getModeKeyListener());
 		;
@@ -190,7 +197,7 @@ public class GraphCentralityPane extends BorderPane {
 		this.setTop(addTransformingModeOptions());
 		this.setBottom(addThresholdSlider(domino.getMat().findMinValue(), domino.getMat().findMaxValue()));
 		this.setCenter(s);
-		//this.getChildren().add(borderPane);  
+		// this.getChildren().add(borderPane);
 	}
 
 	private Node addThresholdSlider(float min, float max) {
@@ -340,7 +347,9 @@ public class GraphCentralityPane extends BorderPane {
 			@Override
 			public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
 				if (optionGroup.getSelectedToggle() != null) {
-					DefaultModalGraphMouse dmg = (DefaultModalGraphMouse) vv.getGraphMouse();
+					@SuppressWarnings("unchecked")
+					DefaultModalGraphMouse<String, String> dmg = (DefaultModalGraphMouse<String, String>) vv
+							.getGraphMouse();
 
 					if (optionGroup.getSelectedToggle().getUserData().equals("T")) {
 						dmg.setMode(Mode.TRANSFORMING);
@@ -456,10 +465,6 @@ public class GraphCentralityPane extends BorderPane {
 
 	}
 
-	private boolean isAValidDomino(Dominoes domino) {
-		return ((domino.isSquare()) && (domino.getIdRow().equals(domino.getIdCol())));
-	}
-
 	private final static class VertexDisplayPredicate implements Predicate<Context<Graph<String, String>, String>> {
 
 		private float threshold = 0;
@@ -490,26 +495,16 @@ public class GraphCentralityPane extends BorderPane {
 	private final static class DirectionDisplayPredicate implements Predicate<Context<Graph<String, String>, String>> {
 
 		private float threshold = 0;
-		private Map<String, NodeInfo> nodes;
 		private Map<String, NodeLink> links;
 
 		public DirectionDisplayPredicate(Map<String, NodeInfo> nodes, Map<String, NodeLink> links) {
-			this.nodes = nodes;
 			this.links = links;
 		}
 
 		@Override
 		public boolean evaluate(Context<Graph<String, String>, String> context) {
-
-			Graph<String, String> g = context.graph;
-
 			String e = context.element;
-
 			return links.get(e).getWediht() >= threshold;
-		}
-
-		public float getThreshold() {
-			return threshold;
 		}
 
 		public void setThreshold(float threshold) {

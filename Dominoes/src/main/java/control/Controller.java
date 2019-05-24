@@ -161,6 +161,29 @@ public class Controller {
 
     }
     
+    /**This function has begin when the user want calculate the transitive closure
+     * 
+     * @param transitive closure domino Matrix to be calculated
+     * @return Return the transitive closure
+     */
+    public static Dominoes transitiveClosure(Dominoes domino) {        
+    	domino.transitiveClosure();    	
+        return domino;
+    }
+    
+    /**This function has begin when the user want calculate the Statandard Score
+     * 
+     * @param support domino Matrix to be calculated
+     * @return Return the confidence of the support matrix
+     */
+    public static Dominoes standardScore(Dominoes domino) {
+        
+    	domino.standardScore();
+    	
+        return domino;
+
+    }
+    
     /**This function has begin when the user want to reduce a matrix.
      * 
      * @param domino Matrix to be reduced
