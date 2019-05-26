@@ -27,6 +27,11 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	public int getMemUsed() {
 		return matrixDescriptor.getNumCols() * matrixDescriptor.getNumRows() * (Float.SIZE / 8);
 	}
+	
+	@Override
+	public String toString() {
+		return this.data.toString();
+	}
 
 	public void finalize() {
 	}
@@ -461,5 +466,11 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public boolean isEmpty() {
+		System.out.println(matrixDescriptor.getRowType()+":"+matrixDescriptor.getColType()+" density = "+data.density());
+		return data.density()==0;
 	}
 }
