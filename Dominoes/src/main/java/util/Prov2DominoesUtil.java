@@ -30,7 +30,7 @@ public class Prov2DominoesUtil {
 			descriptor.setColumnsDesc(provMatrix.getColumnDescriptors());
 			MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(Configuration.CPU_DEVICE, descriptor);
 			mat.setData(matrix2Cells(provMatrix.getMatrix()));
-			System.out.println(mat);
+			//System.out.println(mat);
 			Dominoes dom = new Dominoes(provMatrix.getRowDimentionAbbreviate(),
 					provMatrix.getColumnDimentionAbbreviate(), provMatrix.getRelation(), mat,
 					Configuration.CPU_DEVICE);
