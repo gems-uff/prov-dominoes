@@ -51,7 +51,9 @@ public class ListViewDominoes extends ListView<Group> {
     	
     	if (array != null) {
             for (Dominoes dom : array) {
-                this.add(dom);
+            	if (!dom.getMat().isEmpty()) {
+            		this.add(dom);
+            	}
             }
 
         }
@@ -210,9 +212,9 @@ public class ListViewDominoes extends ListView<Group> {
             throw new IllegalArgumentException("list not initialized");
         }
         for (Dominoes d : this.dominoes) {
-            if (d.getIdRow().equals(domino.getIdRow())
+            if ((d.getIdRow().equals(domino.getIdRow())
                     && d.getIdCol().equals(domino.getIdCol())
-                    && domino.getHistoric().toString().equals(d.getHistoric().toString())) {
+                    && domino.getHistoric().toString().equals(d.getHistoric().toString()) && domino.getRelation()==d.getRelation())) {
                 return true;
             }
         }

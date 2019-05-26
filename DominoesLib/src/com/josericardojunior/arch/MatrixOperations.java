@@ -38,5 +38,8 @@ public interface MatrixOperations {
 	
 	public float findMaxValue();
 	
+	public String toString();
+	public boolean isEmpty();
+	
 	
 }
