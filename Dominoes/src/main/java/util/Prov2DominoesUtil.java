@@ -19,23 +19,26 @@ public class Prov2DominoesUtil {
 	public static List<Dominoes> convert(List<ProvMatrix> matrices) throws Exception {
 		List<Dominoes> dominoesList = new ArrayList<>();
 		for (ProvMatrix provMatrix : matrices) {
-			MatrixDescriptor descriptor = new MatrixDescriptor(provMatrix.getRowDimentionAbbreviate(),
-					provMatrix.getColumnDimentionAbbreviate());
-			System.out.println("Convertendo: " + provMatrix.getRowDimentionAbbreviate() + " | "
-					+ provMatrix.getColumnDimentionAbbreviate() + " : " + provMatrix.getRelation().getDescription()
-					+ " ...");
-			System.out.println(provMatrix.getRowDescriptors());
-			System.out.println(provMatrix.getColumnDescriptors());
-			descriptor.setRowsDesc(provMatrix.getRowDescriptors());
-			descriptor.setColumnsDesc(provMatrix.getColumnDescriptors());
-			MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(Configuration.CPU_DEVICE, descriptor);
-			mat.setData(matrix2Cells(provMatrix.getMatrix()));
-			//System.out.println(mat);
-			Dominoes dom = new Dominoes(provMatrix.getRowDimentionAbbreviate(),
-					provMatrix.getColumnDimentionAbbreviate(), provMatrix.getRelation(), mat,
-					Configuration.CPU_DEVICE);
+			if (provMatrix != null && provMatrix.getRelation() != null && !provMatrix.getRowDescriptors().isEmpty()
+					&& !provMatrix.getColumnDescriptors().isEmpty()) {
+				MatrixDescriptor descriptor = new MatrixDescriptor(provMatrix.getRowDimentionAbbreviate(),
+						provMatrix.getColumnDimentionAbbreviate());
+				System.out.println("Convertendo: " + provMatrix.getRowDimentionAbbreviate() + " | "
+						+ provMatrix.getColumnDimentionAbbreviate() + " : " + provMatrix.getRelation().getDescription()
+						+ " ...");
+				System.out.println(provMatrix.getRowDescriptors());
+				System.out.println(provMatrix.getColumnDescriptors());
+				descriptor.setRowsDesc(provMatrix.getRowDescriptors());
+				descriptor.setColumnsDesc(provMatrix.getColumnDescriptors());
+				MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(Configuration.CPU_DEVICE, descriptor);
+				mat.setData(matrix2Cells(provMatrix.getMatrix()));
+				// System.out.println(mat);
+				Dominoes dom = new Dominoes(provMatrix.getRowDimentionAbbreviate(),
+						provMatrix.getColumnDimentionAbbreviate(), provMatrix.getRelation(), mat,
+						Configuration.CPU_DEVICE);
 
-			dominoesList.add(dom);
+				dominoesList.add(dom);
+			}
 
 		}
 		return dominoesList;
