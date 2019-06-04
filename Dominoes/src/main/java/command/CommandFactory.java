@@ -65,4 +65,24 @@ public class CommandFactory {
 		return new TransitiveClosureCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
+	public AbstractCommand filterBinarize(Group piece) {
+		return new BinarizeCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+
+	public AbstractCommand filterInvert(Group piece) {
+		return new InvertCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+
+	public AbstractCommand filterDiagonal(Group piece) {
+		return new DiagonalizeCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+
+	public AbstractCommand filterUpperDiagonal(Group piece) {
+		return new UpperDiagonalCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+
+	public AbstractCommand filterLowerDiagonal(Group piece) {
+		return new LowerDiagonalCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+
 }
