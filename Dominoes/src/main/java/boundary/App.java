@@ -13,7 +13,7 @@ import com.josericardojunior.domain.Dominoes;
 
 import command.CommandManager;
 import control.Controller;
-import convertion.ProvMatrixGameFactory;
+import convertion.ProvMatrixFactory;
 import domain.Configuration;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -403,7 +403,7 @@ public class App extends Application {
 			File file = fileChooser.showOpenDialog(stage);
 			if (file != null) {
 				String provFilePath = file.getAbsolutePath();
-				ProvMatrixGameFactory provFactory = new ProvMatrixGameFactory(provFilePath);
+				ProvMatrixFactory provFactory = new ProvMatrixFactory(provFilePath);
 				List<ProvMatrix> provMatrixList = provFactory.buildMatrices();
 				List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList);
 				clear();
