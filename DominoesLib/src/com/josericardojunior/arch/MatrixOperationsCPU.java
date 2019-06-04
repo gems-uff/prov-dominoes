@@ -27,7 +27,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	public int getMemUsed() {
 		return matrixDescriptor.getNumCols() * matrixDescriptor.getNumRows() * (Float.SIZE / 8);
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.data.toString();
@@ -67,7 +67,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return result;
 	}
 
-	public MatrixOperationsCPU transpose() {
+	public MatrixOperations transpose() {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 
@@ -204,7 +204,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 
-		MatrixOperationsCPU reduced = new MatrixOperationsCPU(_newDescriptor);
+		MatrixOperations reduced = new MatrixOperationsCPU(_newDescriptor);
 
 		float[] rowSum = new float[this.matrixDescriptor.getNumCols()];
 		ArrayList<Cell> nz = getNonZeroData();
@@ -244,7 +244,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			newValues.add(c);
 		}
 
-		MatrixOperationsCPU confidenceM = new MatrixOperationsCPU(getMatrixDescriptor());
+		MatrixOperations confidenceM = new MatrixOperationsCPU(getMatrixDescriptor());
 		confidenceM.setData(newValues);
 
 		return confidenceM;
@@ -261,7 +261,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 
-		MatrixOperationsCPU meanSD = new MatrixOperationsCPU(_newDescriptor);
+		MatrixOperations meanSD = new MatrixOperationsCPU(_newDescriptor);
 
 		float meanCol[] = new float[meanSD.getMatrixDescriptor().getNumCols()];
 		float sdCol[] = new float[meanSD.getMatrixDescriptor().getNumCols()];
@@ -316,7 +316,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
 			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
 
-		MatrixOperationsCPU _standardScore = new MatrixOperationsCPU(_newDescriptor);
+		MatrixOperations _standardScore = new MatrixOperationsCPU(_newDescriptor);
 
 		float meanCol[] = new float[_standardScore.getMatrixDescriptor().getNumCols()];
 		float sdCol[] = new float[_standardScore.getMatrixDescriptor().getNumCols()];
@@ -366,24 +366,130 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return _standardScore;
 	}
 
-	// Transitive closure of graph[][] using Floyd Warshall algorithm
-	public MatrixOperations transitiveClosure(boolean useGPU) {
-
+	public MatrixOperations binarize(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
-
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
-
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
 			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
+		MatrixOperationsCPU _binarizeFilter = new MatrixOperationsCPU(_newDescriptor);
 
+		int V = data.rows();
+		double[][] filterMatrix = new double[V][V];
+		for (int i = 0; i < filterMatrix.length; i++) {
+			for (int j = 0; j < filterMatrix.length; j++) {
+				if (data.get(i, j) > 0) {
+					filterMatrix[i][j] = 1.00;
+				} else {
+					filterMatrix[i][j] = 0.00;
+				}
+			}
+		}
+
+		_binarizeFilter.setData(new CRSMatrix(filterMatrix));
+		return _binarizeFilter;
+	}
+
+	public MatrixOperations invert(boolean useGPU) {
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
+				this.matrixDescriptor.getRowType());
+		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
+			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
+			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
+		MatrixOperationsCPU _binarizeFilter = new MatrixOperationsCPU(_newDescriptor);
+		int V = data.rows();
+		double[][] filterMatrix = new double[V][V];
+		for (int i = 0; i < filterMatrix.length; i++) {
+			for (int j = 0; j < filterMatrix.length; j++) {
+				if (data.get(i, j) > 0) {
+					filterMatrix[i][j] = 0.00;
+				} else {
+					filterMatrix[i][j] = 1.00;
+				}
+			}
+		}
+		_binarizeFilter.setData(new CRSMatrix(filterMatrix));
+		return _binarizeFilter;
+	}
+
+	public MatrixOperations diagonalize(boolean useGPU) {
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
+				this.matrixDescriptor.getRowType());
+		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
+			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
+			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
+		MatrixOperationsCPU _diagonalizeFilter = new MatrixOperationsCPU(_newDescriptor);
+		double[][] filterMatrix = new double[data.rows()][data.columns()];
+		for (int i = 0; i < data.rows(); i++) {
+			for (int j = 0; j < data.columns(); j++) {
+				if (i == j && data.get(i, j) > 0) {
+					filterMatrix[i][j] = data.get(i, j);
+				} else {
+					filterMatrix[i][j] = 0.00;
+				}
+			}
+		}
+		_diagonalizeFilter.setData(new CRSMatrix(filterMatrix));
+		return _diagonalizeFilter;
+	}
+	
+	@Override
+	public MatrixOperations upperDiagonal(boolean useGPU) {
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
+				this.matrixDescriptor.getRowType());
+		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
+			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
+			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
+		MatrixOperationsCPU _upperDiagonal = new MatrixOperationsCPU(_newDescriptor);
+		double[][] filterMatrix = new double[data.rows()][data.columns()];
+		for (int i = 0; i < data.rows(); i++) {
+			for (int j = i; j < data.columns(); j++) {
+					filterMatrix[i][j] = data.get(i, j);
+			}
+		}
+		_upperDiagonal.setData(new CRSMatrix(filterMatrix));
+		return _upperDiagonal;
+	}
+	
+	@Override
+	public MatrixOperations lowerDiagonal(boolean useGPU) {
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
+				this.matrixDescriptor.getRowType());
+		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
+			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
+			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
+		MatrixOperationsCPU _upperDiagonal = new MatrixOperationsCPU(_newDescriptor);
+		double[][] filterMatrix = new double[data.rows()][data.columns()];
+		for (int j = 0; j < data.columns(); j++) {
+			for (int i = j; i < data.rows(); i++) {
+					filterMatrix[i][j] = data.get(i, j);
+			}
+		}
+		_upperDiagonal.setData(new CRSMatrix(filterMatrix));
+		return _upperDiagonal;
+	}
+
+  
+	// Transitive closure of graph[][] using Floyd Warshall algorithm
+	public MatrixOperations transitiveClosure(boolean useGPU) {
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
+				this.matrixDescriptor.getRowType());
+		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
+			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
+			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
 		MatrixOperationsCPU _transitiveClosure = new MatrixOperationsCPU(_newDescriptor);
 		/*
 		 * reach[][] will be the output matrix that will finally have the shortest
 		 * distances between every pair of vertices
 		 */
 		int V = data.rows();
+		double steps[][] = new double[V][V];
 		double reach[][] = new double[V][V];
 		int i, j, k;
 
@@ -393,8 +499,14 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		 * no intermediate vertex.
 		 */
 		for (i = 0; i < V; i++)
-			for (j = 0; j < V; j++)
-				reach[i][j] = data.get(i, j);
+			for (j = 0; j < V; j++) {
+				steps[i][j] = data.get(i, j) > 0 ? 1.00 : 0.00;
+				reach[i][j] = data.get(i, j) > 0 ? 1.00 : 0.00;
+				if (i == j) {
+					steps[i][j] = 1.00;
+					reach[i][j] = 1.00;
+				}
+			}
 
 		/*
 		 * Add all vertices one by one to the set of intermediate vertices. ---> Before
@@ -412,56 +524,208 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				for (j = 0; j < V; j++) {
 					// If vertex k is on a path from i to j,
 					// then make sure that the value of reach[i][j] is 1
-					reach[i][j] = (reach[i][j] != 0) || ((reach[i][k] != 0) && (reach[k][j] != 0)) ? 1 : 0;
+					if ((steps[i][j] != 0) || ((steps[i][k] != 0) && (steps[k][j] != 0))) {
+						if ((steps[i][j] == 0.00)) {
+							if (i != j && (steps[i][k] != 0) && (steps[k][j] != 0)) {
+								double v = (i == k ? 0 : steps[i][k]) + (k == j ? 0 : steps[k][j]);
+								steps[i][j] = v != 0.00 ? v : steps[i][j];
+							}
+						}
+					}
+					if (steps[i][j] > 0.00)
+						reach[i][j] = 1.00 / steps[i][j];
 				}
 			}
 		}
+
 		_transitiveClosure.setData(new CRSMatrix(reach));
 		return _transitiveClosure;
 	}
 
-	// This code is contributed by Aakash Hasija
-
 	public static void main(String args[]) {
 
 		ArrayList<Cell> cells1 = new ArrayList<>();
-		cells1.add(new Cell(0, 0, 1));
-		cells1.add(new Cell(0, 2, 5));
-		cells1.add(new Cell(1, 1, 8));
-		cells1.add(new Cell(1, 2, 9));
+		cells1.add(new Cell(0, 0, 0));
+		cells1.add(new Cell(0, 1, 1));
+		cells1.add(new Cell(0, 2, 0));
+		cells1.add(new Cell(0, 3, 0));
+		cells1.add(new Cell(1, 0, 0));
+		cells1.add(new Cell(1, 1, 0));
+		cells1.add(new Cell(1, 2, 0));
+		cells1.add(new Cell(1, 3, 1));
+		cells1.add(new Cell(2, 0, 0));
+		cells1.add(new Cell(2, 1, 0));
+		cells1.add(new Cell(2, 2, 0));
+		cells1.add(new Cell(2, 3, 0));
+		cells1.add(new Cell(3, 0, 1));
+		cells1.add(new Cell(3, 1, 0));
+		cells1.add(new Cell(3, 2, 1));
+		cells1.add(new Cell(3, 3, 0));
 
 		ArrayList<Cell> cells2 = new ArrayList<>();
 		cells2.add(new Cell(0, 0, 1));
-		cells2.add(new Cell(0, 1, 7));
-		cells2.add(new Cell(1, 0, 7));
-		cells2.add(new Cell(1, 1, 2));
-		cells2.add(new Cell(2, 0, 10));
-		cells2.add(new Cell(2, 1, 5));
+		cells2.add(new Cell(0, 1, 0));
+		cells2.add(new Cell(0, 2, 0));
+		cells2.add(new Cell(0, 3, 1));
+		cells2.add(new Cell(1, 0, 1));
+		cells2.add(new Cell(1, 1, 0));
+		cells2.add(new Cell(1, 2, 0));
+		cells2.add(new Cell(1, 3, 1));
+		cells2.add(new Cell(2, 0, 1));
+		cells2.add(new Cell(2, 1, 0));
+		cells2.add(new Cell(2, 2, 0));
+		cells2.add(new Cell(2, 3, 0));
+		cells2.add(new Cell(3, 0, 0));
+		cells2.add(new Cell(3, 1, 0));
+		cells2.add(new Cell(3, 2, 0));
+		cells2.add(new Cell(3, 3, 1));
+
+		ArrayList<Cell> cells3 = new ArrayList<>();
+		cells3.add(new Cell(0, 0, 1));
+		cells3.add(new Cell(1, 0, 0));
+		cells3.add(new Cell(2, 0, 0));
+		cells3.add(new Cell(3, 0, 0));
+		cells3.add(new Cell(4, 0, 0));
+		cells3.add(new Cell(5, 0, 0));
+		cells3.add(new Cell(6, 0, 1));
+		cells3.add(new Cell(7, 0, 0));
+		cells3.add(new Cell(8, 0, 0));
+
+		cells3.add(new Cell(0, 0, 0));
+		cells3.add(new Cell(1, 1, 0));
+		cells3.add(new Cell(2, 1, 0));
+		cells3.add(new Cell(3, 1, 1));
+		cells3.add(new Cell(4, 1, 0));
+		cells3.add(new Cell(5, 1, 0));
+		cells3.add(new Cell(6, 1, 0));
+		cells3.add(new Cell(7, 1, 0));
+		cells3.add(new Cell(8, 1, 0));
+
+		cells3.add(new Cell(0, 2, 1));
+		cells3.add(new Cell(1, 2, 0));
+		cells3.add(new Cell(2, 2, 0));
+		cells3.add(new Cell(3, 2, 0));
+		cells3.add(new Cell(4, 2, 0));
+		cells3.add(new Cell(5, 2, 0));
+		cells3.add(new Cell(6, 2, 0));
+		cells3.add(new Cell(7, 2, 0));
+		cells3.add(new Cell(8, 2, 0));
+
+		cells3.add(new Cell(0, 3, 0));
+		cells3.add(new Cell(1, 3, 0));
+		cells3.add(new Cell(2, 3, 0));
+		cells3.add(new Cell(3, 3, 1));
+		cells3.add(new Cell(4, 3, 0));
+		cells3.add(new Cell(5, 3, 0));
+		cells3.add(new Cell(6, 3, 0));
+		cells3.add(new Cell(7, 3, 0));
+		cells3.add(new Cell(8, 3, 0));
+
+		cells3.add(new Cell(0, 4, 0));
+		cells3.add(new Cell(1, 4, 0));
+		cells3.add(new Cell(2, 4, 1));
+		cells3.add(new Cell(3, 4, 0));
+		cells3.add(new Cell(4, 4, 1));
+		cells3.add(new Cell(5, 4, 0));
+		cells3.add(new Cell(6, 4, 0));
+		cells3.add(new Cell(7, 4, 0));
+		cells3.add(new Cell(8, 4, 0));
+
+		cells3.add(new Cell(0, 5, 0));
+		cells3.add(new Cell(1, 5, 1));
+		cells3.add(new Cell(2, 5, 0));
+		cells3.add(new Cell(3, 5, 0));
+		cells3.add(new Cell(4, 5, 0));
+		cells3.add(new Cell(5, 5, 1));
+		cells3.add(new Cell(6, 5, 0));
+		cells3.add(new Cell(7, 5, 0));
+		cells3.add(new Cell(8, 5, 0));
+
+		cells3.add(new Cell(0, 6, 0));
+		cells3.add(new Cell(1, 6, 0));
+		cells3.add(new Cell(2, 6, 0));
+		cells3.add(new Cell(3, 6, 0));
+		cells3.add(new Cell(4, 6, 0));
+		cells3.add(new Cell(5, 6, 0));
+		cells3.add(new Cell(6, 6, 1));
+		cells3.add(new Cell(7, 6, 0));
+		cells3.add(new Cell(8, 6, 1));
+
+		cells3.add(new Cell(0, 7, 0));
+		cells3.add(new Cell(1, 7, 0));
+		cells3.add(new Cell(2, 7, 1));
+		cells3.add(new Cell(3, 7, 0));
+		cells3.add(new Cell(4, 7, 0));
+		cells3.add(new Cell(5, 7, 1));
+		cells3.add(new Cell(6, 7, 0));
+		cells3.add(new Cell(7, 7, 1));
+		cells3.add(new Cell(8, 7, 0));
+
+		cells3.add(new Cell(0, 8, 1));
+		cells3.add(new Cell(1, 8, 0));
+		cells3.add(new Cell(2, 8, 0));
+		cells3.add(new Cell(3, 8, 0));
+		cells3.add(new Cell(4, 8, 0));
+		cells3.add(new Cell(5, 8, 0));
+		cells3.add(new Cell(6, 8, 0));
+		cells3.add(new Cell(7, 8, 1));
+		cells3.add(new Cell(8, 8, 1));
 
 		MatrixDescriptor desc1 = new MatrixDescriptor("T1", "T2");
 		desc1.AddRowDesc("R1");
 		desc1.AddRowDesc("R2");
+		desc1.AddRowDesc("R3");
+		desc1.AddRowDesc("R4");
 		desc1.AddColDesc("C1");
 		desc1.AddColDesc("C2");
 		desc1.AddColDesc("C3");
+		desc1.AddColDesc("C4");
+
+		MatrixDescriptor desc3 = new MatrixDescriptor("T1", "T2");
+		desc3.AddRowDesc("R1");
+		desc3.AddRowDesc("R2");
+		desc3.AddRowDesc("R3");
+		desc3.AddRowDesc("R4");
+		desc3.AddRowDesc("R5");
+		desc3.AddRowDesc("R6");
+		desc3.AddRowDesc("R7");
+		desc3.AddRowDesc("R8");
+		desc3.AddRowDesc("R9");
+		desc3.AddColDesc("C1");
+		desc3.AddColDesc("C2");
+		desc3.AddColDesc("C3");
+		desc3.AddColDesc("C4");
+		desc3.AddColDesc("C5");
+		desc3.AddColDesc("C6");
+		desc3.AddColDesc("C7");
+		desc3.AddColDesc("C8");
+		desc3.AddColDesc("C9");
 
 		try {
-			MatrixOperationsCPU mat1 = new MatrixOperationsCPU(desc1);
+			MatrixOperations mat1 = new MatrixOperationsCPU(desc1);
 			mat1.setData(cells1);
-			mat1.Debug();
+			// mat1.Debug();
 
 			MatrixDescriptor desc2 = new MatrixDescriptor("T1", "T2");
 			desc2.AddRowDesc("R1");
 			desc2.AddRowDesc("R2");
 			desc2.AddRowDesc("R3");
+			desc2.AddRowDesc("R4");
 			desc2.AddColDesc("C1");
 			desc2.AddColDesc("C2");
-			MatrixOperationsCPU mat2 = new MatrixOperationsCPU(desc2);
+			desc2.AddColDesc("C3");
+			desc2.AddColDesc("C4");
+			MatrixOperations mat2 = new MatrixOperationsCPU(desc2);
 			mat2.setData(cells2);
-			mat2.Debug();
+			// mat2.Debug();
 
-			MatrixOperations meanstd = mat2.standardScore(false);
-			meanstd.Debug();
+			MatrixOperations mat3 = new MatrixOperationsCPU(desc3);
+			mat3.setData(cells3);
+
+			// MatrixOperations meanstd = mat2.standardScore(false);
+			// meanstd.Debug();
+			System.out.println(mat3);
+			System.out.println(mat3.transitiveClosure(false));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -470,7 +734,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 	@Override
 	public boolean isEmpty() {
-		System.out.println(matrixDescriptor.getRowType()+":"+matrixDescriptor.getColType()+" density = "+data.density());
-		return data.density()==0;
+		System.out.println(
+				matrixDescriptor.getRowType() + ":" + matrixDescriptor.getColType() + " density = " + data.density());
+		return data.density() == 0;
 	}
 }

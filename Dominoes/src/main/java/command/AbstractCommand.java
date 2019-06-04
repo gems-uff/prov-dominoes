@@ -15,6 +15,11 @@ public abstract class AbstractCommand {
 	public static final String CONFIDENCE_COMMAND = "CONFIDENCE";
 	public static final String ZSCORE_COMMAND = "ZSCORE";
 	public static final String TRANSITIVE_CLOSURE_COMMAND = "TRANSITIVE_CLOSURE";
+	public static final String BINARIZE_COMMAND = "BINARIZE";
+	public static final String INVERT_COMMAND = "INVERT";
+	public static final String DIAGONALIZE_COMMAND = "DIAGONALIZE";
+	public static final String UPPER_DIAGONAL_COMMAND = "UPPER_DIAGONAL";
+	public static final String LOWER_DIAGONAL_COMMAND = "LOWER_DIAGONAL";
 	
 
 	protected abstract String getName();
