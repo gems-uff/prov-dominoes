@@ -302,4 +302,34 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	public boolean isEmpty() {
 		return matPointer == 0;
 	}
+
+	@Override
+	public MatrixOperations binarize(boolean useGPU) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MatrixOperations invert(boolean useGPU) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MatrixOperations lowerDiagonal(boolean useGPU) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MatrixOperations upperDiagonal(boolean useGPU) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MatrixOperations diagonalize(boolean useGPU) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
