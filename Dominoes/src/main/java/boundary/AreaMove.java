@@ -93,7 +93,14 @@ public class AreaMove extends Pane {
 		MenuItem menuItemViewTree = new MenuItem("Tree");
 		MenuItem menuItemClose = new MenuItem("Close");
 
+		MenuItem menuItemBinarizeFilter = new MenuItem("Binarize");
+		MenuItem menuItemInvertFilter = new MenuItem("Invert");
+		MenuItem menuItemDiagonalFilter = new MenuItem("Diagonalize");
+		MenuItem menuItemUpperDiagonalFilter = new MenuItem("Upper Diagonal");
+		MenuItem menuItemLowerDiagonalFilter = new MenuItem("Lower Diagonal");
+
 		Menu menuOperate = new Menu("Operations");
+		Menu menuFilters = new Menu("Filters");
 		Menu menuView = new Menu("Views");
 
 		Group piece = domino.drawDominoes();
@@ -308,8 +315,25 @@ public class AreaMove extends Pane {
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemZScore.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.zscore(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemTransitiveClosure.getText())) {
-				App.getCommandManager().invokeCommand(commandFactory.transitiveClosure(piece));
+					App.getCommandManager().invokeCommand(commandFactory.transitiveClosure(piece));
+				}
 			}
+		});
+
+		menuFilters.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if (((MenuItem) event.getTarget()).getText().equals(menuItemBinarizeFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterBinarize(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemInvertFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterInvert(piece));				
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemDiagonalFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterDiagonal(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemUpperDiagonalFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterUpperDiagonal(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemLowerDiagonalFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterLowerDiagonal(piece));
+				}
 			}
 		});
 
@@ -332,10 +356,14 @@ public class AreaMove extends Pane {
 			}
 		});
 
-		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore,menuItemTransitiveClosure);
+		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore,
+				menuItemTransitiveClosure);
+		menuFilters.getItems().addAll(menuItemBinarizeFilter, menuItemInvertFilter, menuItemDiagonalFilter,
+				menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter);
 		menuView.getItems().addAll(menuItemViewChart, /* menuItemViewLineChart, */
 				menuItemViewGraph, menuItemViewEigenCentrality, menuItemViewMatrix/* , menuItemViewTree */);
-		minimenu.getItems().addAll(menuOperate, menuView, menuItemSaveInList, menuItemClose);
+		minimenu.getItems().addAll(menuOperate, menuFilters, menuView, menuItemSaveInList, menuItemClose);
+		this.setVisibleType();
 		return piece;
 	}
 
