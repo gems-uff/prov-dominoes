@@ -106,12 +106,11 @@ public class GraphCentralityPane extends BorderPane {
 			System.out.println(node.getUserData() + " : " + centrality.getVertexScore(vertex));
 			Double d = centrality.getVertexScore(vertex);
 			System.out.println(d);
-			Double relativeScoreMax = (centrality.getVertexScore(vertex) / max);
-			Double relativeScoreMin = (min / centrality.getVertexScore(vertex));
-			int toneMax = Math.round(255 * (1 - relativeScoreMax.floatValue()));
-			int toneMin = Math.round(255 * (1 - relativeScoreMin.floatValue()));
-			System.out.println(toneMax);
-			nodes.get(vertex).setColor(new Color(toneMin, toneMax, 0));
+			javafx.scene.paint.Color cellColor = new javafx.scene.paint.Color(0, 0, 1.0f, 1.0f);
+			javafx.scene.paint.Color c = new javafx.scene.paint.Color(cellColor.getRed(), cellColor.getGreen(),
+					cellColor.getBlue(), (d - min) / (max - min));
+			nodes.get(vertex).setColor(new java.awt.Color((float) c.getRed(), (float) c.getGreen(), (float) c.getBlue(),
+					(float) c.getOpacity()));
 		}
 
 		treeLayout = new FRLayout<>(graph);
