@@ -10,6 +10,8 @@ import javafx.scene.Group;
 
 public class MultiplyCommand extends AbstractCommand {
 
+	private String id;
+	private String key;
 	private Dominoes leftDominoes;
 	private int indexLeftDominoes;
 	private double xLeftDominoes;
@@ -51,6 +53,7 @@ public class MultiplyCommand extends AbstractCommand {
 				if (d1.getIdCol().equals(d2.getIdRow())) {
 					Dominoes resultOperation = control.Controller.MultiplyMatrices(d1, d2);
 					this.resultDominoes = resultOperation;
+					this.resultDominoes.setId(key);
 
 					xLeftDominoes = App.getArea().getData().getPieces()
 							.get(App.getArea().getData().getDominoes().indexOf(d1)).getTranslateX();
@@ -114,7 +117,7 @@ public class MultiplyCommand extends AbstractCommand {
 		// Pega o comando anterior à multiplicação, o MoveCommand, e atualiza com a
 		// posição anterior
 		// ao arrasto da peça para multiplicação
-		AbstractCommand comm = App.getCommandManager().getLastLastCommand();
+		AbstractCommand comm = App.getCommandManager().getPreviousCommand();
 		if (comm != null && comm instanceof MoveCommand) {
 			MoveCommand move = (MoveCommand) comm;
 			if (move.getIndex() == indexLeftDominoes) {
@@ -130,11 +133,31 @@ public class MultiplyCommand extends AbstractCommand {
 	protected Group getPiece() {
 		return this.resultPiece;
 	}
+	
+	@Override
+	public String getId() {
+		return id;
+	}
 
 	@Override
-	protected String getName() {
-		return MULTIPLY_COMMAND + "(" + indexResultDominoes + "," + leftDominoes.getIdRow() + "|"
-				+ leftDominoes.getIdCol() + ", " + rightDominoes.getIdRow() + "|" + rightDominoes.getIdCol() + ")";
+	public void setId(String id) {
+		this.id = id;
 	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	@Override
+	public String getName() {
+		String base = MULTIPLY_COMMAND + "(" + leftDominoes.getId() + ", " + rightDominoes.getId() + ")";
+		return key + " = " + base;
+	}
+
+	
 
 }

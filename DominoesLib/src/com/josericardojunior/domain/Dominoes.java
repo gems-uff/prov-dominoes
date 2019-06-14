@@ -95,6 +95,7 @@ public final class Dominoes {
 	private boolean rowIsAggragatable = false;
 	private boolean colIsAggragatable = false;
 	private Relation relation;
+	private String id;
 	private String idRow;
 	private String idCol;
 	private Historic historic;
@@ -259,7 +260,6 @@ public final class Dominoes {
 			relationText.setX(GRAPH_WIDTH / 2 - 20);
 			relationText.setY(border.getHeight() - back.getHeight() + 33);
 			relationText.setRotate(90);
-			System.out.println(this.getIdRow() + " (" + this.relation.getDescription() + ") " + this.getIdCol());
 		}
 
 		Text idRow = new Text(this.getIdRow());
@@ -666,6 +666,7 @@ public final class Dominoes {
 		if (getHistoric() != null) {
 			cloned.setHistoric(getHistoric().clone());
 		}
+		cloned.setId(this.id);
 		return cloned;
 	}
 
@@ -749,5 +750,13 @@ public final class Dominoes {
 
 	public void setCurrentDevice(String currentDevice) {
 		this.currentDevice = currentDevice;
+	}
+
+	public String getId() {
+		return this.id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

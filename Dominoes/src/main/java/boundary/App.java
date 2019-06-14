@@ -26,7 +26,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -37,23 +36,22 @@ import util.Prov2DominoesUtil;
 
 public class App extends Application {
 
-	// Lista de peças carregadas/salvas
-	private static ListViewDominoes list;
-	// Área de trabalho de peças
-	private static AreaMove area;
 	private static CommandManager commandManager;
-	private static DominoesMenuBar menu;
-	public static TimePane time;
-	private static Visual visual;
-	private static ProjectInfoPane projectInfoPanel;
 
 	public static Visual getVisual() {
-		return visual;
+		return tabbedMatrixGraphPane;
 	}
 
-	private static SplitPane vSplitPane;
-	private static SplitPane vSP_body_hSplitPane;
-	private static BorderPane vSP_head_TimePane;
+	private static SplitPane mainPane;
+
+	private static ActionHistoryGraphPane topPane;
+	private static DominoesMenuBar menu;
+	public static TimePane time;
+
+	private static SplitPane bottomPane;
+	private static ListViewDominoes pieceSelectorList;
+	private static AreaMove movementCanvas;
+	private static Visual tabbedMatrixGraphPane;
 
 	private static Scene scene;
 	private static Stage stage;
@@ -134,17 +132,17 @@ public class App extends Application {
 		boolean result = control.Controller.removeMatrix(dominoes);
 
 		// if not removed both, then we have which resultMultiplication
-		if (App.area.remove(group)) {
-			if (App.list.remove(group)) {
+		if (App.movementCanvas.remove(group)) {
+			if (App.pieceSelectorList.remove(group)) {
 				if (result) {
 					return true;
 				} else {
-					App.area.add(dominoes,-1);
-					App.list.add(dominoes);
+					App.movementCanvas.add(dominoes,-1);
+					App.pieceSelectorList.add(dominoes);
 					return false;
 				}
 			} else {
-				App.area.add(dominoes,-1);
+				App.movementCanvas.add(dominoes,-1);
 				return false;
 			}
 		}
@@ -158,7 +156,7 @@ public class App extends Application {
 	 * @throws IOException
 	 */
 	public static void saveAll() throws IOException {
-		App.area.saveAllAndSendToList();
+		App.movementCanvas.saveAllAndSendToList();
 	}
 
 	public static void setTimelime() {
@@ -216,7 +214,7 @@ public class App extends Application {
 
 		if (Configuration.projName != null && Configuration.projName.length() > 0) {
 			control.Controller.loadAllMatrices(Configuration.beginDate, Configuration.endDate, Configuration.projName);
-			App.list.Configure(Controller.resultLoadMatrices);
+			App.pieceSelectorList.Configure(Controller.resultLoadMatrices);
 		}
 
 		/*manager = GUIManager.getInstance(); JFXPanel pane = new JFXPanel();
@@ -230,54 +228,53 @@ public class App extends Application {
 	 * Set the basic configuration of this Application
 	 */
 	public static void set() {
-		App.list = new ListViewDominoes(null);
-		App.visual = new Visual();
-		App.area = new AreaMove();
-		App.projectInfoPanel = new ProjectInfoPane();
+		App.pieceSelectorList = new ListViewDominoes(null);
+		App.tabbedMatrixGraphPane = new Visual();
+		App.movementCanvas = new AreaMove();
 
 		App.scene = null;
 		App.scene = new Scene(new Group());
 		VBox back = new VBox();
 
-		vSplitPane = new SplitPane();
-		vSplitPane.setOrientation(Orientation.VERTICAL);
+		mainPane = new SplitPane();
+		mainPane.setOrientation(Orientation.VERTICAL);
 
-		vSP_body_hSplitPane = new SplitPane();
-		vSP_body_hSplitPane.getItems().add(App.list);
-		vSP_body_hSplitPane.getItems().add(App.area);
-		vSP_body_hSplitPane.getItems().add(App.visual);
+		bottomPane = new SplitPane();
+		bottomPane.getItems().add(App.pieceSelectorList);
+		bottomPane.getItems().add(App.movementCanvas);
+		bottomPane.getItems().add(App.tabbedMatrixGraphPane);
 		
 		
-		vSP_head_TimePane = new BorderPane();
-		vSP_head_TimePane.setTop(App.projectInfoPanel);
-		vSP_head_TimePane.setCenter(time);
-		vSP_head_TimePane.visibleProperty().addListener(new ChangeListener<Boolean>() {
+		topPane = new ActionHistoryGraphPane();
+		//topPane.setTop(App.projectInfoPanel);
+		//topPane.setCenter(time);
+		topPane.visibleProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
-				if (vSP_head_TimePane.isVisible()) {
-					vSplitPane.getItems().remove(vSP_body_hSplitPane);
+				if (topPane.isVisible()) {
+					mainPane.getItems().remove(bottomPane);
 
-					vSplitPane.getItems().add(vSP_head_TimePane);
-					vSplitPane.getItems().add(vSP_body_hSplitPane);
+					mainPane.getItems().add(topPane);
+					mainPane.getItems().add(bottomPane);
 
-					vSP_body_hSplitPane.setPrefHeight(Configuration.height / 2);
-					vSP_head_TimePane.setPrefHeight(Configuration.height / 2);
+					bottomPane.setPrefHeight(Configuration.height / 2);
+					topPane.setPrefHeight(Configuration.height / 2);
 
 				} else {
 
-					vSplitPane.getItems().remove(vSP_head_TimePane);
-					vSP_body_hSplitPane.setPrefHeight(Configuration.height);
+					mainPane.getItems().remove(topPane);
+					bottomPane.setPrefHeight(Configuration.height);
 				}
 			}
 		});
 
 		if (Configuration.visibilityTimePane)
-			vSplitPane.getItems().add(vSP_head_TimePane);
+			mainPane.getItems().add(topPane);
 
-		vSplitPane.getItems().add(vSP_body_hSplitPane);
+		mainPane.getItems().add(bottomPane);
 
-		back.getChildren().addAll(menu, vSplitPane);
+		back.getChildren().addAll(menu, mainPane);
 
 		App.scene.setRoot(back);
 		App.stage.setScene(App.scene);
@@ -308,17 +305,17 @@ public class App extends Application {
 	 * This function is called to change the parts color
 	 */
 	static void changeColor() {
-		App.list.changeColor();
-		App.area.changeColor();
+		App.pieceSelectorList.changeColor();
+		App.movementCanvas.changeColor();
 	}
 
 	/**
 	 * This function remove all parts in this area move
 	 */
 	public static void clear() {
-		list.clear();
-		area.clear();
-		visual.ClearTabs();
+		pieceSelectorList.clear();
+		movementCanvas.clear();
+		tabbedMatrixGraphPane.ClearTabs();
 	}
 
 	/**
@@ -328,7 +325,7 @@ public class App extends Application {
 	 *            the matrix to be added
 	 */
 	public static void CopyToList(Dominoes dominoes) {
-		App.list.add(dominoes);
+		App.pieceSelectorList.add(dominoes);
 	}
 
 	/**
@@ -338,7 +335,7 @@ public class App extends Application {
 	 *            the matrix to be added
 	 */
 	public static Group copyToArea(Dominoes dominoes,int index) {
-		return App.area.add(dominoes,index);
+		return App.movementCanvas.add(dominoes,index);
 	}
 
 	/**
@@ -348,8 +345,8 @@ public class App extends Application {
 	 *            True to define visible the historic
 	 */
 	public static void setVisibleHistoric() {
-		area.setVisibleHistoric();
-		list.setVisibleHistoric();
+		movementCanvas.setVisibleHistoric();
+		pieceSelectorList.setVisibleHistoric();
 	}
 
 	/**
@@ -359,8 +356,8 @@ public class App extends Application {
 	 *            True to define visible the type
 	 */
 	public static void setVisibleType() {
-		area.setVisibleType();
-		list.setVisibleType();
+		movementCanvas.setVisibleType();
+		pieceSelectorList.setVisibleType();
 	}
 
 	/**
@@ -385,16 +382,16 @@ public class App extends Application {
 		if (Configuration.visibilityTimePane) {
 			// App.time.definitionSlider(stage);
 		}
-		App.list.setSize(Configuration.listWidth, App.stage.getHeight() - padding);
-		App.visual.setSize(300, App.stage.getHeight() - padding);
-		App.area.setSize(400, App.stage.getHeight() - padding);
+		App.pieceSelectorList.setSize(Configuration.listWidth, App.stage.getHeight() - padding);
+		App.tabbedMatrixGraphPane.setSize(300, App.stage.getHeight() - padding);
+		App.movementCanvas.setSize(400, App.stage.getHeight() - padding);
 		stage.show();
 	}
 
 	static void changeVisibleTimePane() {
 		Configuration.visibilityTimePane = !Configuration.visibilityTimePane;
 		App.time.setVisible(Configuration.visibilityTimePane);
-		App.vSP_head_TimePane.setVisible(Configuration.visibilityTimePane);
+		App.topPane.setVisible(Configuration.visibilityTimePane);
 	}
 
 	public static void openProv() {
@@ -408,7 +405,7 @@ public class App extends Application {
 				List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList);
 				clear();
 				Controller.resultLoadMatrices = dominoesList;
-				list.Configure(Controller.resultLoadMatrices);
+				pieceSelectorList.Configure(Controller.resultLoadMatrices);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -424,27 +421,27 @@ public class App extends Application {
 	}
 
 	static void drawGraph(Dominoes domino) {
-		visual.addTabGraph(domino);
+		tabbedMatrixGraphPane.addTabGraph(domino);
 	}
 	
 	static void drawCentralityGraph(Dominoes domino) {
-		visual.addTabCentralityGraph(domino);
+		tabbedMatrixGraphPane.addTabCentralityGraph(domino);
 	}
 
 	static void drawMatrix(Dominoes domino) {
-		visual.addTabMatrix(domino);
+		tabbedMatrixGraphPane.addTabMatrix(domino);
 	}
 
 	static void drawChart(Dominoes domino) {
-		visual.addTabChart(domino);
+		tabbedMatrixGraphPane.addTabChart(domino);
 	}
 
 	static void drawLineChart(Dominoes domino) {
-		visual.addTabLineChart(domino);
+		tabbedMatrixGraphPane.addTabLineChart(domino);
 	}
 
 	static void drawTree(Dominoes domino) {
-		visual.addTabTree(domino);
+		tabbedMatrixGraphPane.addTabTree(domino);
 	}
 
 	static Stage getStage() {
@@ -464,19 +461,19 @@ public class App extends Application {
 	}
 
 	public static ListViewDominoes getList() {
-		return list;
+		return pieceSelectorList;
 	}
 
 	public static void setList(ListViewDominoes list) {
-		App.list = list;
+		App.pieceSelectorList = list;
 	}
 
 	public static AreaMove getArea() {
-		return area;
+		return movementCanvas;
 	}
 
 	public static void setArea(AreaMove area) {
-		App.area = area;
+		App.movementCanvas = area;
 	}
 	
 	
@@ -502,4 +499,12 @@ public class App extends Application {
             System.err.println(ex.getMessage());
         }
     }
+
+	public static ActionHistoryGraphPane getTopPane() {
+		return topPane;
+	}
+
+	public static void setTopPane(ActionHistoryGraphPane topPane) {
+		App.topPane = topPane;
+	}
 }

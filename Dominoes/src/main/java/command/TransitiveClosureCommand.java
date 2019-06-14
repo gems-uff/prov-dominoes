@@ -8,6 +8,7 @@ import javafx.scene.Group;
 
 public class TransitiveClosureCommand extends AbstractCommand {
 
+	private String id;
 	private Group piece;
 	private double x;
 	private double y;
@@ -59,9 +60,18 @@ public class TransitiveClosureCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected String getName() {
-		return TRANSITIVE_CLOSURE_COMMAND + "(" + this.index + "," + this.oldDominoes.getIdRow() + "|"
-				+ this.oldDominoes.getIdCol() + ")";
+	public String getName() {
+		return TRANSITIVE_CLOSURE_COMMAND + "(" + this.oldDominoes.getId() + ")";
+	}
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

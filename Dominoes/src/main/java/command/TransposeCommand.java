@@ -203,10 +203,20 @@ public class TransposeCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected String getName() {
-		return TRANSPOSE_COMMAND + "(" + pieceIndex + ","
-				+ App.getArea().getData().getDominoes().get(pieceIndex).getIdRow() + "|"
-				+ App.getArea().getData().getDominoes().get(pieceIndex).getIdCol() + ")";
+	public String getName() {
+		return TRANSPOSE_COMMAND + "(" + App.getArea().getData().getDominoes().get(pieceIndex).getId() + ")";
+	}
+
+	private String id;
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

@@ -6,6 +6,7 @@ import javafx.scene.Group;
 public class CommandFactory {
 
 	private static CommandFactory factory = null;
+	private int pieceCounter = 1;
 
 	public static CommandFactory getInstance() {
 		if (factory == null) {
@@ -23,8 +24,11 @@ public class CommandFactory {
 	}
 
 	public AbstractCommand add(Group piece) {
-		return new AddCommand(piece);
+		AddCommand add = new AddCommand(piece);
+		add.setKey("p" + getInstance().getPieceCounter());
+		return add;
 	}
+
 	public MoveCommand move(Group piece) {
 		return new MoveCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
@@ -42,7 +46,9 @@ public class CommandFactory {
 	}
 
 	public AbstractCommand multiply() {
-		return new MultiplyCommand();
+		MultiplyCommand mul = new MultiplyCommand();
+		mul.setKey("p" + getInstance().getPieceCounter());
+		return mul;
 	}
 
 	public AbstractCommand aggLines(Group piece) {
@@ -83,6 +89,14 @@ public class CommandFactory {
 
 	public AbstractCommand filterLowerDiagonal(Group piece) {
 		return new LowerDiagonalCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+
+	public int getPieceCounter() {
+		return pieceCounter++;
+	}
+
+	public void setPieceCounter(int pieceCounter) {
+		this.pieceCounter = pieceCounter;
 	}
 
 }

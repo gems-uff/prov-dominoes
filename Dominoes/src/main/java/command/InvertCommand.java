@@ -59,9 +59,19 @@ public class InvertCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected String getName() {
-		return INVERT_COMMAND + "(" + this.index + "," + this.oldDominoes.getIdRow() + "|"
-				+ this.oldDominoes.getIdCol() + ")";
+	public String getName() {
+		return INVERT_COMMAND + "(" + this.oldDominoes.getId() + ")";
+	}
+	private String id;
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

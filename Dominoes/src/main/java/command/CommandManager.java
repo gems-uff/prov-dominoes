@@ -2,6 +2,7 @@ package command;
 
 import java.util.LinkedList;
 
+import boundary.App;
 import boundary.DominoesMenuBar;
 
 public class CommandManager {
@@ -11,7 +12,7 @@ public class CommandManager {
 	private LinkedList<AbstractCommand> history;
 	private LinkedList<AbstractCommand> redoList;
 	private AbstractCommand lastCommand;
-	private AbstractCommand lastLastCommand;
+	private AbstractCommand previousCommand;
 	private DominoesMenuBar menu;
 
 	public CommandManager() {
@@ -26,35 +27,43 @@ public class CommandManager {
 	}
 
 	public void invokeCommand(AbstractCommand command) {
-		if (command instanceof Undo) {
+		invokeCommand(command, false);
+	}
+
+	public void invokeCommand(AbstractCommand newCommand, boolean reproducing) {
+		if (newCommand instanceof Undo) {
 			undo();
-		} else if (command instanceof Redo) {
+		} else if (newCommand instanceof Redo) {
 			redo();
 		} else {
 			if (lastCommand instanceof Undo) {
 				this.redoList.clear();
 			}
-			if (command instanceof MultiplyCommand) {
+			if (newCommand instanceof MultiplyCommand) {
 				this.history.removeFirst();
-			} 
-			if (command.doIt()) {
-				System.out.println(command.getName());
-				addToHistory(command);
+			}
+			if (newCommand.doIt()) {
+				System.out.println(newCommand.getName());
+				addToHistory(newCommand);
 			} else {
 				history.clear();
 			}
 		}
 		this.uptadeMenu();
-		this.lastLastCommand = this.lastCommand;
-		this.lastCommand = command;
+		this.previousCommand = this.lastCommand;
+		this.lastCommand = newCommand;
+		if (!reproducing) {
+			String id = App.getTopPane().addCommand(newCommand);
+			this.lastCommand.setId(id);
+		}
 	}
 
-	public AbstractCommand getLastLastCommand() {
-		return lastLastCommand;
+	public AbstractCommand getPreviousCommand() {
+		return previousCommand;
 	}
 
-	public void setLastLastCommand(AbstractCommand lastLastCommand) {
-		this.lastLastCommand = lastLastCommand;
+	public void setPreviousCommand(AbstractCommand previousCommand) {
+		this.previousCommand = previousCommand;
 	}
 
 	public AbstractCommand getLastCommand() {
@@ -126,6 +135,16 @@ public class CommandManager {
 
 	public void setRedoList(LinkedList<AbstractCommand> redoList) {
 		this.redoList = redoList;
+	}
+
+	public void reproduce(LinkedList<AbstractCommand> cmds) {
+		App.getCommandManager().getRedoList().clear();
+		App.getCommandManager().getHistory().clear();
+		App.getCommandManager().uptadeMenu();
+		App.getArea().clear();
+		for (AbstractCommand cmd : cmds) {
+			invokeCommand(cmd, true);
+		}
 	}
 
 }
