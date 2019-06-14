@@ -51,9 +51,19 @@ public class SaveCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected String getName() {
-		return SAVE_COMMAND + "(" + index + "," + savedDominoes.getIdRow() + "|"
-				+ savedDominoes.getIdCol() + ")";
+	public String getName() {
+		return SAVE_COMMAND + "(" + this.savedDominoes.getId() + ")";
+	}
+	
+	private String id;
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

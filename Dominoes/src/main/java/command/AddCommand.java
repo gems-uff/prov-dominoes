@@ -7,6 +7,7 @@ import javafx.scene.Group;
 
 public class AddCommand extends AbstractCommand {
 
+	private String key;
 	private Group piece;
 	private Dominoes addedDominoes;
 	private int index;
@@ -24,15 +25,14 @@ public class AddCommand extends AbstractCommand {
 	protected boolean doIt() {
 		boolean success = true;
 		try {
+			Dominoes auxDomino = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece));
+			this.addedDominoes = auxDomino.cloneNoMatrix();
+			this.addedDominoes.setId(this.key);
 			if (index == -1) {
-				Dominoes auxDomino = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece));
-				this.addedDominoes = auxDomino.cloneNoMatrix();
 				this.addedDominoes.setSourceIndex(App.getList().getPieces().indexOf(piece));
 				Group newPiece = App.copyToArea(addedDominoes, index);
 				this.index = App.getArea().getData().getPieces().indexOf(newPiece);
 			} else {
-				Dominoes auxDomino = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece));
-				this.addedDominoes = auxDomino.cloneNoMatrix();
 				this.addedDominoes.setSourceIndex(App.getList().getPieces().indexOf(piece));
 				App.getArea().add(addedDominoes, this.index);
 			}
@@ -51,8 +51,29 @@ public class AddCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected String getName() {
-		return ADD_COMMAND+"("+this.index+","+this.addedDominoes.getIdRow()+"|"+this.addedDominoes.getIdCol()+")";
+	public String getName() {
+		String base = ADD_COMMAND + "(" + this.addedDominoes.getRelation().getAbbreviate().replace(" ", "") + ")";
+		return addedDominoes.getId() + " = " + base;
+	}
+
+	public String getKey() {
+		return this.key;
+	}
+
+	public void setKey(String key) {
+		this.key=key;
+	}
+
+	private String id;
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

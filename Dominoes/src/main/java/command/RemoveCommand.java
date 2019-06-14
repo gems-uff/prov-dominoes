@@ -52,9 +52,19 @@ public class RemoveCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected String getName() {
-		return REMOVE_COMMAND + "(" + pieceIndex + "," + removedDominoes.getIdRow() + "|" + removedDominoes.getIdCol()
-				+ ")";
+	public String getName() {
+		return REMOVE_COMMAND + "(" + this.removedDominoes.getId() + ")";
+	}
+	
+	private String id;
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

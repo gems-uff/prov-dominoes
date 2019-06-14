@@ -20,9 +20,28 @@ public abstract class AbstractCommand {
 	public static final String DIAGONALIZE_COMMAND = "DIAGONALIZE";
 	public static final String UPPER_DIAGONAL_COMMAND = "UPPER_DIAGONAL";
 	public static final String LOWER_DIAGONAL_COMMAND = "LOWER_DIAGONAL";
-	
 
-	protected abstract String getName();
+	public static final String CMD_PARAM_USAGE = "USD";
+	public static final String CMD_PARAM_GENERATION = "WGB";
+	public static final String CMD_PARAM_INVALIDATION = "WVB";
+	public static final String CMD_PARAM_START = "STD";
+	public static final String CMD_PARAM_END = "END ";
+	public static final String CMD_PARAM_COMMUNICATION = "WFB";
+	public static final String CMD_PARAM_DERIVATION = "WDF";
+	public static final String CMD_PARAM_ASSOCIATION = "WAW";
+	public static final String CMD_PARAM_ATTRIBUTION = "WAT";
+	public static final String CMD_PARAM_DELEGATION = "AOB";
+	public static final String CMD_PARAM_INFLUENCE = "WIB";
+	public static final String CMD_PARAM_ALTERNATE = "AOF";
+	public static final String CMD_PARAM_SPECIALIZATION = "SOF";
+	public static final String CMD_PARAM_MENTION = "MOF";
+	public static final String CMD_PARAM_MEMBERSHIP = "HMB";
+
+	public abstract String getId();
+
+	public abstract void setId(String id);
+
+	public abstract String getName();
 
 	protected abstract boolean doIt();
 

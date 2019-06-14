@@ -59,9 +59,20 @@ public class BinarizeCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected String getName() {
-		return BINARIZE_COMMAND + "(" + this.index + "," + this.oldDominoes.getIdRow() + "|"
-				+ this.oldDominoes.getIdCol() + ")";
+	public String getName() {
+		return BINARIZE_COMMAND + "(" + this.oldDominoes.getId() + ")";
+	}
+
+	private String id;
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

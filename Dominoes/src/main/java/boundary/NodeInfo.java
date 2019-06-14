@@ -3,21 +3,24 @@ package boundary;
 import java.awt.Color;
 
 public class NodeInfo {
-	String id;
-	String userData;
+
+	private String id;
+	private String userData;
+	private String tooltip;
+	private Color color = Color.BLACK;
 	private float threshold = 0;
-	
-	boolean isHighlighted = false;
-	Color color = Color.BLACK;
-	
+	boolean isHighlighted;
+
+	public NodeInfo(String id) {
+		this.id = id;
+	}
+
 	public void setHighlighted(boolean isHighlighted) {
 		this.isHighlighted = isHighlighted;
 	}
 
 	static final Color Highlight = Color.YELLOW;
-	
-	
-	
+
 	public String getUserData() {
 		return userData;
 	}
@@ -26,12 +29,10 @@ public class NodeInfo {
 		this.userData = userData;
 	}
 
-
-	
 	public Color getColor() {
 		if (isHighlighted)
 			return Highlight;
-		
+
 		return color;
 	}
 
@@ -43,18 +44,14 @@ public class NodeInfo {
 		return id;
 	}
 
-	public NodeInfo(String id){
-		this.id = id;
-	}
-	
-	public String toString(){
+	public String toString() {
 		return id;
 	}
-	
-	public boolean isHighlighted(){
+
+	public boolean isHighlighted() {
 		return isHighlighted;
 	}
-	
+
 	public float getThreshold() {
 		return threshold;
 	}
@@ -62,5 +59,14 @@ public class NodeInfo {
 	public void setThreshold(float threshold) {
 		this.threshold = threshold;
 	}
-	
+
+	public void setTooltip(String tooltip) {
+		this.tooltip = tooltip;
+
+	}
+
+	public String getTooltip() {
+		return tooltip;
+	}
+
 }
