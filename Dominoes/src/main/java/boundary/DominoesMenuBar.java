@@ -217,7 +217,7 @@ public class DominoesMenuBar extends MenuBar {
 
 			@Override
 			public void handle(ActionEvent event) {
-				App.getCommandManager().invokeCommand(CommandFactory.getInstance().undo());
+				App.getCommandManager().invokeCommand(CommandFactory.getInstance().undo(),false);
 			}
 		});
 
@@ -225,7 +225,7 @@ public class DominoesMenuBar extends MenuBar {
 
 			@Override
 			public void handle(ActionEvent event) {
-				App.getCommandManager().invokeCommand(CommandFactory.getInstance().redo());
+				App.getCommandManager().invokeCommand(CommandFactory.getInstance().redo(),false);
 			}
 		});
 		
@@ -237,6 +237,7 @@ public class DominoesMenuBar extends MenuBar {
 				App.getCommandManager().getHistory().clear();
 				App.getCommandManager().uptadeMenu();
 				App.getArea().clear();
+				App.getTopPane().reset();
 			}
 		});
 

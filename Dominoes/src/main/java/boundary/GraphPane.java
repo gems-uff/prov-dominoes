@@ -266,7 +266,7 @@ public class GraphPane extends BorderPane {
 					
 					if (nodesHighlighted.size() == 1){
 						Layout<String, String> layout = vv.getGraphLayout();
-			            Point2D q = layout.transform(nodesHighlighted.get(0).id);
+			            Point2D q = layout.transform(nodesHighlighted.get(0).getId());
 			            Point2D lvc = vv.getRenderContext().getMultiLayerTransformer().inverseTransform(vv.getCenter());
 			            final double dx = (lvc.getX() - q.getX()) / 10;
 			            final double dy = (lvc.getY() - q.getY()) / 10;

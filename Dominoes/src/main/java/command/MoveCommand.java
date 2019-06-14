@@ -45,9 +45,9 @@ public class MoveCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected String getName() {
-		return MOVE_COMMAND + "(" + index + "," + App.getArea().getData().getDominoes().get(index).getIdRow() + "|"
-				+ App.getArea().getData().getDominoes().get(index).getIdCol() + ")";
+	public String getName() {
+		return MOVE_COMMAND + "(" + App.getArea().getData().getDominoes().get(index).getId() + ")";
+		
 	}
 
 	@Override
@@ -76,6 +76,18 @@ public class MoveCommand extends AbstractCommand {
 
 	public void setY(double translateY) {
 		this.y = translateY;
+	}
+
+	private String id;
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

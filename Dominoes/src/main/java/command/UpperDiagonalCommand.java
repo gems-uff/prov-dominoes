@@ -8,6 +8,7 @@ import javafx.scene.Group;
 
 public class UpperDiagonalCommand extends AbstractCommand {
 
+	private String id;
 	private Group piece;
 	private double x;
 	private double y;
@@ -59,9 +60,18 @@ public class UpperDiagonalCommand extends AbstractCommand {
 	}
 
 	@Override
-	protected String getName() {
-		return UPPER_DIAGONAL_COMMAND + "(" + this.index + "," + this.oldDominoes.getIdRow() + "|"
-				+ this.oldDominoes.getIdCol() + ")";
+	public String getName() {
+		return UPPER_DIAGONAL_COMMAND + "(" + "," + this.oldDominoes.getId() +")";
+	}
+	
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }
