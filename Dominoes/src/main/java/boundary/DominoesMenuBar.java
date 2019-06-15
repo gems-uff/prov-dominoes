@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package boundary;
 
 import java.io.IOException;
@@ -21,34 +16,31 @@ import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.ToggleGroup;
 
-/**
- *
- * @author Daniel
- */
 public class DominoesMenuBar extends MenuBar {
 
 	//------DOMINOES MENU ITENS-----------------------------------------------------
-	private final Menu mDominoes;
+	private final Menu mainMenu;
+	private final Menu mainMenuSave;
 
-	private final MenuItem mDominoes_new;
-	private final MenuItem mDominoes_openProv;
-	private final MenuItem mDominoes_loadAll;
-	private final MenuItem menuEditUndo;
-	private final MenuItem menuEditRedo;
-	private final MenuItem menuEditLimpar;
-	private final MenuItem mDominoes_exit;
-	private final MenuItem mDominoes_exitAndSave;
-	private final Menu mDominoes_save;
-	private final MenuItem mDominoes_save_saveAll;
-	private final CheckMenuItem mDominoes_save_autoSave;
-	private final SeparatorMenuItem mDominoes_separator;
+	private final CheckMenuItem mainMenuSaveAutoSave;
+	private final SeparatorMenuItem mainMenuSeparator;
+	private final MenuItem mainMenuNew;
+	private final MenuItem mainMenuOpenProv;
+	private final MenuItem mainMenuExportScript;
+	private final MenuItem mainMenuImportScript;
+	private final MenuItem mainMenuLoadAll;
+	private final MenuItem mainMenuExit;
+	private final MenuItem mainMenuExitAndSave;
+	private final MenuItem mainMenuSaveSaveAll;
+	private final MenuItem editMenuUndo;
+	private final MenuItem editMenuRedo;
+	private final MenuItem editMenuLimpar;
 
 	//------EDIT MENU ITENS---------------------------------------------------------
-	private final Menu mEdit;
+	private final Menu editMenu;
 
-	//    private final MenuColor mEdit_editMatrix_mcMatrixColor;
-	private final CheckMenuItem mEdit_showHistoric;
-	private final CheckMenuItem mEdit_showType;
+	private final CheckMenuItem editMenuShowHistoric;
+	private final CheckMenuItem editMenuShowType;
 
 	//------COFIGURATION MENU ITENS-------------------------------------------------
 	private final Menu mConfiguration;
@@ -64,48 +56,48 @@ public class DominoesMenuBar extends MenuBar {
 	private final Menu mTimeline;
 	private final CheckMenuItem mTimeline_ShowTimeline;
 
-	/**
-	 * Builder class
-	 */
+
 	public DominoesMenuBar() {
 		this.setHeight(30);
 		//------DOMINOES MENU ITENS-----------------------------------------------------
-		this.mDominoes = new Menu("Dominoes");
+		this.mainMenu = new Menu("Dominoes");
 
-		this.mDominoes_new = new MenuItem("New");
-		this.mDominoes_openProv = new MenuItem("Open Prov-N...");
-		this.mDominoes_loadAll = new MenuItem("Load All");
-		this.mDominoes_loadAll.setDisable(true);
-		this.mDominoes_save = new Menu("Save");
-		this.mDominoes_save_saveAll = new MenuItem("Save All");
-		this.mDominoes_save_autoSave = new CheckMenuItem("Auto Save");
-		this.mDominoes_save_autoSave.setSelected(Configuration.autoSave);
-		this.mDominoes_exit = new MenuItem("Exit");
-		this.mDominoes_exitAndSave = new MenuItem("Exit And Save");
+		this.mainMenuNew = new MenuItem("New");
+		this.mainMenuOpenProv = new MenuItem("Open Prov-N...");
+		this.mainMenuExportScript = new MenuItem("Export to script...");
+		this.mainMenuImportScript = new MenuItem("Import from script...");
+		this.mainMenuLoadAll = new MenuItem("Load All");
+		this.mainMenuLoadAll.setDisable(true);
+		this.mainMenuSave = new Menu("Save");
+		this.mainMenuSaveSaveAll = new MenuItem("Save All");
+		this.mainMenuSaveAutoSave = new CheckMenuItem("Auto Save");
+		this.mainMenuSaveAutoSave.setSelected(Configuration.autoSave);
+		this.mainMenuExit = new MenuItem("Exit");
+		this.mainMenuExitAndSave = new MenuItem("Exit And Save");
 
-		this.mDominoes_save.getItems().addAll(this.mDominoes_save_saveAll, this.mDominoes_save_autoSave);
+		this.mainMenuSave.getItems().addAll(this.mainMenuSaveSaveAll, this.mainMenuSaveAutoSave);
 
-		this.mDominoes_separator = new SeparatorMenuItem();
+		this.mainMenuSeparator = new SeparatorMenuItem();
 
-		this.mDominoes.getItems().addAll(this.mDominoes_new, this.mDominoes_openProv,this.mDominoes_loadAll, this.mDominoes_save,
-				this.mDominoes_separator, mDominoes_exitAndSave, this.mDominoes_exit);
+		this.mainMenu.getItems().addAll(this.mainMenuNew, this.mainMenuOpenProv, this.mainMenuExportScript, this.mainMenuImportScript,this.mainMenuLoadAll, this.mainMenuSave,
+				this.mainMenuSeparator, mainMenuExitAndSave, this.mainMenuExit);
 
 		//------EDIT MENU ITENS---------------------------------------------------------
-		this.mEdit = new Menu("Edit");
+		this.editMenu = new Menu("Edit");
 
-		this.menuEditUndo = new MenuItem("Undo");
-		this.menuEditUndo.setDisable(true);
-		this.menuEditRedo = new MenuItem("Redo");
-		this.menuEditLimpar = new MenuItem("Clear");
-		this.menuEditRedo.setDisable(true);
+		this.editMenuUndo = new MenuItem("Undo");
+		this.editMenuUndo.setDisable(true);
+		this.editMenuRedo = new MenuItem("Redo");
+		this.editMenuLimpar = new MenuItem("Clear");
+		this.editMenuRedo.setDisable(true);
 
-		this.mEdit_showHistoric = new CheckMenuItem("Show Historic");
-		this.mEdit_showHistoric.setSelected(Configuration.visibilityHistoric);
+		this.editMenuShowHistoric = new CheckMenuItem("Show Historic");
+		this.editMenuShowHistoric.setSelected(Configuration.visibilityHistoric);
 
-		mEdit_showType = new CheckMenuItem("Show Type");
-		mEdit_showType.setSelected(Configuration.visibilityType);
+		editMenuShowType = new CheckMenuItem("Show Type");
+		editMenuShowType.setSelected(Configuration.visibilityType);
 
-		this.mEdit.getItems().addAll(this.menuEditUndo, this.menuEditRedo, this.menuEditLimpar,this.mEdit_showHistoric, this.mEdit_showType);
+		this.editMenu.getItems().addAll(this.editMenuUndo, this.editMenuRedo, this.editMenuLimpar,this.editMenuShowHistoric, this.editMenuShowType);
 		//        this.mEdit.getItems().addAll(this.mEdit_editMatrix, this.mEdit_showHistoric, this.mEdit_showType);
 
 		//------CONFIGURATION MENU ITENS------------------------------------------------
@@ -136,32 +128,51 @@ public class DominoesMenuBar extends MenuBar {
 		this.mTimeline.getItems().addAll(mTimeline_ShowTimeline);
 
 		//------MENU ITENS--------------------------------------------------------------
-		this.getMenus().addAll(this.mDominoes, this.mEdit, this.mConfiguration, mTimeline);
-		//        this.getMenus().addAll(this.mDominoes, this.mEdit, this.mConfiguration);
+		this.getMenus().addAll(this.mainMenu, this.editMenu, this.mConfiguration, mTimeline);
+		//        this.getMenus().addAll(this.mainMenu, this.mEdit, this.mConfiguration);
 
 		if (!Configuration.automaticCheck || Configuration.endDate.compareTo(Configuration.beginDate) <= 0) {
 			this.changeEnableDisble();
 		}
 		//------ADD LISTENERS-----------------------------------------------------------
 		//----------DOMINOES MENU ITENS-------------------------------------------------
-		this.mDominoes_new.setOnAction(new EventHandler<ActionEvent>() {
+		this.mainMenuNew.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 
-				App.clear();
+				try {
+					App.clear();
+				} catch (IOException e) {
+					System.out.println("Erro ao tentar acessar arquivo de script!");
+					e.printStackTrace();
+				}
 				changeEnableDisble();
 
 			}
 		});
-		this.mDominoes_openProv.setOnAction(new EventHandler<ActionEvent>() {
+		this.mainMenuOpenProv.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				App.openProv();
 			}
 		});
-		this.mDominoes_loadAll.setOnAction(new EventHandler<ActionEvent>() {
+		this.mainMenuExportScript.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.exportScript();
+			}
+		});
+		this.mainMenuImportScript.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.importScript();
+			}
+		});
+		this.mainMenuLoadAll.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
@@ -169,7 +180,7 @@ public class DominoesMenuBar extends MenuBar {
 			}
 		});
 
-		this.mDominoes_save_saveAll.setOnAction(new EventHandler<ActionEvent>() {
+		this.mainMenuSaveSaveAll.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
@@ -181,16 +192,16 @@ public class DominoesMenuBar extends MenuBar {
 			}
 		});
 
-		this.mDominoes_save_autoSave.setOnAction(new EventHandler<ActionEvent>() {
+		this.mainMenuSaveAutoSave.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				Configuration.autoSave = /*this.*/mDominoes_save_autoSave.isSelected();
+				Configuration.autoSave = /*this.*/mainMenuSaveAutoSave.isSelected();
 
 			}
 		});
 
-		this.mDominoes_exitAndSave.setOnAction(new EventHandler<ActionEvent>() {
+		this.mainMenuExitAndSave.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
@@ -203,7 +214,7 @@ public class DominoesMenuBar extends MenuBar {
 			}
 		});
 
-		this.mDominoes_exit.setOnAction(new EventHandler<ActionEvent>() {
+		this.mainMenuExit.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
@@ -213,7 +224,7 @@ public class DominoesMenuBar extends MenuBar {
 
 		//----------EDIT MENU ITENS-----------------------------------------------------
 
-		this.menuEditUndo.setOnAction(new EventHandler<ActionEvent>() {
+		this.editMenuUndo.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
@@ -221,7 +232,7 @@ public class DominoesMenuBar extends MenuBar {
 			}
 		});
 
-		this.menuEditRedo.setOnAction(new EventHandler<ActionEvent>() {
+		this.editMenuRedo.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
@@ -229,7 +240,7 @@ public class DominoesMenuBar extends MenuBar {
 			}
 		});
 		
-		this.menuEditLimpar.setOnAction(new EventHandler<ActionEvent>() {
+		this.editMenuLimpar.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
@@ -241,20 +252,20 @@ public class DominoesMenuBar extends MenuBar {
 			}
 		});
 
-		this.mEdit_showHistoric.setOnAction(new EventHandler<ActionEvent>() {
+		this.editMenuShowHistoric.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				Configuration.visibilityHistoric = mEdit_showHistoric.isSelected();
+				Configuration.visibilityHistoric = editMenuShowHistoric.isSelected();
 				App.setVisibleHistoric();
 			}
 		});
 
-		this.mEdit_showType.setOnAction(new EventHandler<ActionEvent>() {
+		this.editMenuShowType.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				Configuration.visibilityType = mEdit_showType.isSelected();
+				Configuration.visibilityType = editMenuShowType.isSelected();
 				App.setVisibleType();
 			}
 		});
@@ -281,11 +292,11 @@ public class DominoesMenuBar extends MenuBar {
 
 	public void changeEnableDisble() {
 
-		this.mDominoes_new.setDisable(!this.mDominoes_new.isDisable());
-		this.mDominoes_loadAll.setDisable(!this.mDominoes_loadAll.isDisable());
-		this.mDominoes_save.setDisable(!this.mDominoes_save.isDisable());
-		this.mDominoes_exit.setDisable(!this.mDominoes_exit.isDisable());
-		this.mDominoes_exitAndSave.setDisable(!this.mDominoes_exitAndSave.isDisable());
+		this.mainMenuNew.setDisable(!this.mainMenuNew.isDisable());
+		this.mainMenuLoadAll.setDisable(!this.mainMenuLoadAll.isDisable());
+		this.mainMenuSave.setDisable(!this.mainMenuSave.isDisable());
+		this.mainMenuExit.setDisable(!this.mainMenuExit.isDisable());
+		this.mainMenuExitAndSave.setDisable(!this.mainMenuExitAndSave.isDisable());
 
 		//        this.mEdit.setDisable(!this.mEdit.isDisable());
 
@@ -303,12 +314,12 @@ public class DominoesMenuBar extends MenuBar {
 
 	}
 
-	public MenuItem getMenuEditUndo() {
-		return menuEditUndo;
+	public MenuItem getEditMenuUndo() {
+		return editMenuUndo;
 	}
 
-	public MenuItem getMenuEditRedo() {
-		return menuEditRedo;
+	public MenuItem getEditMenuRedo() {
+		return editMenuRedo;
 	}
 
 }

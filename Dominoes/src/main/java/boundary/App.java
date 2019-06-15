@@ -1,6 +1,7 @@
 package boundary;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -56,7 +57,6 @@ public class App extends Application {
 	private static Scene scene;
 	private static Stage stage;
 
-
 	private static GUIManager manager;
 
 	@Override
@@ -108,7 +108,7 @@ public class App extends Application {
 				App.load(Configuration.beginDate, Configuration.endDate);
 			}
 		});
-		
+
 		App.stage.show();
 
 	}
@@ -121,10 +121,8 @@ public class App extends Application {
 	/**
 	 * This function remove the element of the list and of the move area
 	 *
-	 * @param dominoes
-	 *            Element to remove
-	 * @param group
-	 *            Element to remove
+	 * @param dominoes Element to remove
+	 * @param group    Element to remove
 	 * @return true, in affirmative case
 	 * @throws IOException
 	 */
@@ -137,12 +135,12 @@ public class App extends Application {
 				if (result) {
 					return true;
 				} else {
-					App.movementCanvas.add(dominoes,-1);
+					App.movementCanvas.add(dominoes, -1);
 					App.pieceSelectorList.add(dominoes);
 					return false;
 				}
 			} else {
-				App.movementCanvas.add(dominoes,-1);
+				App.movementCanvas.add(dominoes, -1);
 				return false;
 			}
 		}
@@ -217,10 +215,11 @@ public class App extends Application {
 			App.pieceSelectorList.Configure(Controller.resultLoadMatrices);
 		}
 
-		/*manager = GUIManager.getInstance(); JFXPanel pane = new JFXPanel();
-		  pane.setScene(stage.getScene()); JFrame window = new JFrame();
-		  window.add(pane); window.setAlwaysOnTop(true);
-		  manager.setMainWindow(window);*/
+		/*
+		 * manager = GUIManager.getInstance(); JFXPanel pane = new JFXPanel();
+		 * pane.setScene(stage.getScene()); JFrame window = new JFrame();
+		 * window.add(pane); window.setAlwaysOnTop(true); manager.setMainWindow(window);
+		 */
 
 	}
 
@@ -243,11 +242,10 @@ public class App extends Application {
 		bottomPane.getItems().add(App.pieceSelectorList);
 		bottomPane.getItems().add(App.movementCanvas);
 		bottomPane.getItems().add(App.tabbedMatrixGraphPane);
-		
-		
+
 		topPane = new ActionHistoryGraphPane();
-		//topPane.setTop(App.projectInfoPanel);
-		//topPane.setCenter(time);
+		// topPane.setTop(App.projectInfoPanel);
+		// topPane.setCenter(time);
 		topPane.visibleProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
@@ -293,8 +291,7 @@ public class App extends Application {
 	/**
 	 * This function is used to exit this program
 	 *
-	 * @param status
-	 *            status required by the operating system
+	 * @param status status required by the operating system
 	 */
 	@SuppressWarnings("unused")
 	private static void exit(final int status) {
@@ -311,18 +308,19 @@ public class App extends Application {
 
 	/**
 	 * This function remove all parts in this area move
+	 * @throws IOException 
 	 */
-	public static void clear() {
+	public static void clear() throws IOException {
 		pieceSelectorList.clear();
 		movementCanvas.clear();
 		tabbedMatrixGraphPane.ClearTabs();
+		commandManager.clear(true);
 	}
 
 	/**
 	 * This function adds in List a matrix specified
 	 *
-	 * @param dominoes
-	 *            the matrix to be added
+	 * @param dominoes the matrix to be added
 	 */
 	public static void CopyToList(Dominoes dominoes) {
 		App.pieceSelectorList.add(dominoes);
@@ -331,18 +329,16 @@ public class App extends Application {
 	/**
 	 * This function adds in Area a matrix specified
 	 *
-	 * @param dominoes
-	 *            the matrix to be added
+	 * @param dominoes the matrix to be added
 	 */
-	public static Group copyToArea(Dominoes dominoes,int index) {
-		return App.movementCanvas.add(dominoes,index);
+	public static Group copyToArea(Dominoes dominoes, int index) {
+		return App.movementCanvas.add(dominoes, index);
 	}
 
 	/**
 	 * This function is used to define the visibility of historic
 	 *
-	 * @param visibility
-	 *            True to define visible the historic
+	 * @param visibility True to define visible the historic
 	 */
 	public static void setVisibleHistoric() {
 		movementCanvas.setVisibleHistoric();
@@ -352,8 +348,7 @@ public class App extends Application {
 	/**
 	 * This function is used to define the visibility of type
 	 *
-	 * @param visibility
-	 *            True to define visible the type
+	 * @param visibility True to define visible the type
 	 */
 	public static void setVisibleType() {
 		movementCanvas.setVisibleType();
@@ -377,7 +372,6 @@ public class App extends Application {
 			App.stage.setHeight(Configuration.height);
 			App.stage.centerOnScreen();
 		}
-
 
 		if (Configuration.visibilityTimePane) {
 			// App.time.definitionSlider(stage);
@@ -413,9 +407,28 @@ public class App extends Application {
 
 	}
 
-	/**
-	*
-	*/
+	public static void exportScript() {
+		try {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setInitialFileName("commands.pd");
+			File file = fileChooser.showSaveDialog(stage);
+			file.delete();
+			file.createNewFile();
+			if (file != null) {
+				FileWriter fw = new FileWriter(file);
+				fw.write(App.getCommandManager().getScript().toString());
+				fw.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void importScript() {
+		// TODO Auto-generated method stub
+	}
+
 	public static void start() {
 		launch(Controller.args);
 	}
@@ -423,7 +436,7 @@ public class App extends Application {
 	static void drawGraph(Dominoes domino) {
 		tabbedMatrixGraphPane.addTabGraph(domino);
 	}
-	
+
 	static void drawCentralityGraph(Dominoes domino) {
 		tabbedMatrixGraphPane.addTabCentralityGraph(domino);
 	}
@@ -447,10 +460,10 @@ public class App extends Application {
 	static Stage getStage() {
 		return App.stage;
 	}
-	
+
 	public static void setStage(Stage stage) {
 		App.stage = stage;
-	}	
+	}
 
 	public static CommandManager getCommandManager() {
 		return commandManager;
@@ -475,30 +488,6 @@ public class App extends Application {
 	public static void setArea(AreaMove area) {
 		App.movementCanvas = area;
 	}
-	
-	
-    public static void main(String args[]){
-    	Controller.args = args;
-        
-    	try {
-            // read the configuration file
-            control.Controller.loadConfiguration();
-            
-            if (Configuration.processingUnit == Configuration.GPU_DEVICE)
-            	Session.startSession(Configuration.gpuDevice);
-            
-            DominoesSQLDao.openDatabase(Configuration.database);
-            // call Application.launch()
-            launch(args);
-           
-            if (Configuration.processingUnit == Configuration.GPU_DEVICE)
-            	Session.closeSection();
-            
-           // DominoesSQLDao.closeDatabase();
-        } catch (Exception ex) {
-            System.err.println(ex.getMessage());
-        }
-    }
 
 	public static ActionHistoryGraphPane getTopPane() {
 		return topPane;
@@ -507,4 +496,28 @@ public class App extends Application {
 	public static void setTopPane(ActionHistoryGraphPane topPane) {
 		App.topPane = topPane;
 	}
+
+	public static void main(String args[]) {
+		Controller.args = args;
+
+		try {
+			// read the configuration file
+			control.Controller.loadConfiguration();
+
+			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
+				Session.startSession(Configuration.gpuDevice);
+
+			DominoesSQLDao.openDatabase(Configuration.database);
+			// call Application.launch()
+			launch(args);
+
+			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
+				Session.closeSection();
+
+			// DominoesSQLDao.closeDatabase();
+		} catch (Exception ex) {
+			System.err.println(ex.getMessage());
+		}
+	}
+
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import com.josericardojunior.domain.Dominoes;
 
-import command.AbstractCommand;
 import command.CommandFactory;
 import command.MoveCommand;
 import domain.Configuration;
@@ -153,12 +152,13 @@ public class AreaMove extends Pane {
 				cursorProperty().set(Cursor.OPEN_HAND);
 			}
 		});
-		piece.setOnDragDetected(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				App.getCommandManager().invokeCommand(CommandFactory.getInstance().move(piece));
-			}
-		});
+		/*
+		 * piece.setOnDragDetected(new EventHandler<MouseEvent>() {
+		 * 
+		 * @Override public void handle(MouseEvent event) {
+		 * App.getCommandManager().invokeCommand(CommandFactory.getInstance().move(piece
+		 * )); } });
+		 */
 
 		piece.setOnMouseDragged(new EventHandler<MouseEvent>() {
 
@@ -239,12 +239,10 @@ public class AreaMove extends Pane {
 						&& App.getArea().getData().getIndexSecondOperatorMultiplication() != -1) {
 					App.getCommandManager().invokeCommand(commandFactory.multiply());
 				} else {
-					AbstractCommand command = App.getCommandManager().getLastCommand();
-					if (command != null && command instanceof MoveCommand) {
-						MoveCommand move = (MoveCommand) command;
-						move.setX(piece.getTranslateX());
-						move.setY(piece.getTranslateY());
-					}
+					MoveCommand move = CommandFactory.getInstance().move(piece);
+					move.setX(piece.getTranslateX());
+					move.setY(piece.getTranslateY());
+					App.getCommandManager().invokeCommand(move);
 				}
 			}
 		});
@@ -326,7 +324,7 @@ public class AreaMove extends Pane {
 				if (((MenuItem) event.getTarget()).getText().equals(menuItemBinarizeFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterBinarize(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemInvertFilter.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.filterInvert(piece));				
+					App.getCommandManager().invokeCommand(commandFactory.filterInvert(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemDiagonalFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterDiagonal(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemUpperDiagonalFilter.getText())) {
