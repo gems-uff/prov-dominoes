@@ -46,8 +46,11 @@ public class MoveCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return MOVE_COMMAND + "(" + App.getArea().getData().getDominoes().get(index).getId() + ")";
-		
+		String cmd =  MOVE_COMMAND + "(" + App.getArea().getData().getDominoes().get(index).getId() + ", " + this.x + ", "
+				+ this.y + ")";
+		cmd = cmd.replace(".0", "");
+		return cmd;
+
 	}
 
 	@Override

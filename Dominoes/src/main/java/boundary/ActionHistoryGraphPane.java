@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,6 +67,7 @@ public class ActionHistoryGraphPane extends BorderPane {
 		buildGraph();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void buildGraph() {
 		graph = new DelegateForest<String, String>();
 		createTree();
@@ -117,7 +119,6 @@ public class ActionHistoryGraphPane extends BorderPane {
 		HBox hBox = new HBox();
 
 		hBox.setPadding(new Insets(15, 12, 15, 12));
-		// hBox.setSpacing(10);
 		hBox.setStyle("-fx-background-color: #9F945D;");
 
 		final ToggleGroup optionGroup = new ToggleGroup();
@@ -168,7 +169,12 @@ public class ActionHistoryGraphPane extends BorderPane {
 						HistoricNodeCommand.getCommandList(cmd, commands);
 						if (commands.size() > 0 || rootCommand.getId().equals(node.getId())) {
 							commands.addFirst(rootCommand.getCommand());
-							App.getCommandManager().reproduce(commands);
+							try {
+								App.getCommandManager().reproduce(commands);
+							} catch (IOException e) {
+								System.out.println("Erro ao tentar acessar arquivo de script!");
+								e.printStackTrace();
+							}
 							lastCommand = cmd;
 						}
 						break;
@@ -195,7 +201,7 @@ public class ActionHistoryGraphPane extends BorderPane {
 	}
 
 	public String addCommand(AbstractCommand cmd) {
-		String generatedId="";
+		String generatedId = "";
 		updatePicks();
 		if (cmd != null) {
 			if (rootCommand == null) {
@@ -215,7 +221,7 @@ public class ActionHistoryGraphPane extends BorderPane {
 								.findNode(App.getCommandManager().getRedoList().getFirst().getId(), rootCommand);
 					}
 				} else {
-					generatedId ="" + vertexCounter++;
+					generatedId = "" + vertexCounter++;
 					NodeInfo newNode = new NodeInfo(generatedId);
 					newNode.setTooltip(cmd.getName());
 					this.nodes.put(newNode.getId(), newNode);

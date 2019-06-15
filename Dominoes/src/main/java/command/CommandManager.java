@@ -1,5 +1,7 @@
 package command;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.LinkedList;
 
 import boundary.App;
@@ -14,9 +16,11 @@ public class CommandManager {
 	private AbstractCommand lastCommand;
 	private AbstractCommand previousCommand;
 	private DominoesMenuBar menu;
+	private StringWriter script;
 
 	public CommandManager() {
 		super();
+		this.script = new StringWriter();
 		this.history = new LinkedList<>();
 		this.redoList = new LinkedList<>();
 	}
@@ -31,31 +35,46 @@ public class CommandManager {
 	}
 
 	public void invokeCommand(AbstractCommand newCommand, boolean reproducing) {
-		if (newCommand instanceof Undo) {
-			undo();
-		} else if (newCommand instanceof Redo) {
-			redo();
-		} else {
-			if (lastCommand instanceof Undo) {
-				this.redoList.clear();
-			}
-			if (newCommand instanceof MultiplyCommand) {
-				this.history.removeFirst();
-			}
-			if (newCommand.doIt()) {
-				System.out.println(newCommand.getName());
-				addToHistory(newCommand);
+		if (newCommand != null) {
+			if (newCommand instanceof Undo) {
+				undo();
+				generateCommandId(newCommand, reproducing, false);
+			} else if (newCommand instanceof Redo) {
+				generateCommandId(newCommand, reproducing, false);
+				redo();
 			} else {
-				history.clear();
+				if (lastCommand instanceof Undo) {
+					this.redoList.clear();
+				}
+				if (newCommand instanceof MultiplyCommand && !this.history.isEmpty()) {
+					this.history.removeFirst();
+				}
+				if (newCommand.doIt()) {
+					System.out.println(newCommand.getName());
+					addToHistory(newCommand);
+					generateCommandId(newCommand, reproducing, true);
+				} else {
+					history.clear();
+				}
 			}
+			this.uptadeMenu();
+			this.previousCommand = this.lastCommand;
+			this.lastCommand = newCommand;
 		}
-		this.uptadeMenu();
-		this.previousCommand = this.lastCommand;
-		this.lastCommand = newCommand;
+	}
+
+	private void generateCommandId(AbstractCommand newCommand, boolean reproducing, boolean generateScript) {
 		if (!reproducing) {
+			if (generateScript) {
+				addToScript(newCommand.getName());
+			}
 			String id = App.getTopPane().addCommand(newCommand);
-			this.lastCommand.setId(id);
+			newCommand.setId(id);
 		}
+	}
+
+	private void addToScript(String cmd) {
+		this.script.append(cmd + "\n");
 	}
 
 	public AbstractCommand getPreviousCommand() {
@@ -76,14 +95,14 @@ public class CommandManager {
 
 	public void uptadeMenu() {
 		if (history.size() == 0) {
-			menu.getMenuEditUndo().setDisable(true);
+			menu.getEditMenuUndo().setDisable(true);
 		} else {
-			menu.getMenuEditUndo().setDisable(false);
+			menu.getEditMenuUndo().setDisable(false);
 		}
 		if (redoList.size() == 0) {
-			menu.getMenuEditRedo().setDisable(true);
+			menu.getEditMenuRedo().setDisable(true);
 		} else {
-			menu.getMenuEditRedo().setDisable(false);
+			menu.getEditMenuRedo().setDisable(false);
 		}
 	}
 
@@ -97,8 +116,9 @@ public class CommandManager {
 	private void undo() {
 		if (history.size() > 0) {
 			AbstractCommand undoCommand = (AbstractCommand) history.removeFirst();
-			System.out.println("UNDO[" + undoCommand.getName() + "]");
 			undoCommand.undoIt();
+			System.out.println("UNDO(" + undoCommand.getName() + ")");
+			addToScript("UNDO()");
 			redoList.addFirst(undoCommand);
 		}
 	}
@@ -106,8 +126,9 @@ public class CommandManager {
 	private void redo() {
 		if (redoList.size() > 0) {
 			AbstractCommand redoCommand = (AbstractCommand) redoList.removeFirst();
-			System.out.println("REDO[" + redoCommand.getName() + "]");
 			redoCommand.doIt();
+			System.out.println("REDO(" + redoCommand.getName() + ")");
+			addToScript("REDO()");
 			addToHistory(redoCommand);
 		}
 
@@ -137,14 +158,36 @@ public class CommandManager {
 		this.redoList = redoList;
 	}
 
-	public void reproduce(LinkedList<AbstractCommand> cmds) {
-		App.getCommandManager().getRedoList().clear();
-		App.getCommandManager().getHistory().clear();
-		App.getCommandManager().uptadeMenu();
-		App.getArea().clear();
+	public void reproduce(LinkedList<AbstractCommand> cmds) throws IOException {
+		clear(false);
 		for (AbstractCommand cmd : cmds) {
 			invokeCommand(cmd, true);
 		}
+	}
+
+	public void clear(boolean script) throws IOException {
+		App.getCommandManager().getRedoList().clear();
+		App.getCommandManager().getHistory().clear();
+		App.getCommandManager().uptadeMenu();
+		if (script) {
+			App.getCommandManager().clearScript();;
+		}
+		App.getArea().clear();
+	}
+
+	private void clearScript() throws IOException {
+		this.script.flush();
+		this.script.close();
+		this.script = new StringWriter();
+		
+	}
+
+	public StringWriter getScript() {
+		return script;
+	}
+
+	public void setScript(StringWriter script) {
+		this.script = script;
 	}
 
 }

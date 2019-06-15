@@ -61,7 +61,7 @@ public class UpperDiagonalCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return UPPER_DIAGONAL_COMMAND + "(" + "," + this.oldDominoes.getId() +")";
+		return UPPER_DIAGONAL_COMMAND + "("+ this.oldDominoes.getId() +")";
 	}
 	
 	@Override
