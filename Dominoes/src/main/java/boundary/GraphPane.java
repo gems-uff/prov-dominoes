@@ -178,7 +178,7 @@ public class GraphPane extends BorderPane {
     	HBox hBox = new HBox();
     	
     	hBox.setPadding(new Insets(15, 12, 15, 12));
-    	hBox.setStyle("-fx-background-color: #66FFFF;");
+    	hBox.setStyle("-fx-background-color: #9F945D;");
     	
     	Label lblThreshold = new Label("Threshold: ");
     	lblThreshold.setPrefSize(100, 20);
@@ -302,7 +302,7 @@ public class GraphPane extends BorderPane {
     	
     	hBox.setPadding(new Insets(15, 12, 15, 12));
     	hBox.setSpacing(10);
-    	hBox.setStyle("-fx-background-color: #66FFFF;");
+    	hBox.setStyle("-fx-background-color: #9F945D;");
     	
     	final ToggleGroup optionGroup = new ToggleGroup();
     	

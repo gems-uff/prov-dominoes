@@ -1,8 +1,6 @@
 package boundary;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.Date;
 
 import command.CommandFactory;
 import domain.Configuration;
@@ -12,77 +10,56 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.ToggleGroup;
 
 public class DominoesMenuBar extends MenuBar {
 
-	//------DOMINOES MENU ITENS-----------------------------------------------------
+	// ------DOMINOES MENU
+	// ITENS-----------------------------------------------------
 	private final Menu mainMenu;
-	private final Menu mainMenuSave;
 
-	private final CheckMenuItem mainMenuSaveAutoSave;
 	private final SeparatorMenuItem mainMenuSeparator;
-	private final MenuItem mainMenuNew;
 	private final MenuItem mainMenuOpenProv;
 	private final MenuItem mainMenuExportScript;
 	private final MenuItem mainMenuImportScript;
-	private final MenuItem mainMenuLoadAll;
 	private final MenuItem mainMenuExit;
-	private final MenuItem mainMenuExitAndSave;
-	private final MenuItem mainMenuSaveSaveAll;
 	private final MenuItem editMenuUndo;
 	private final MenuItem editMenuRedo;
 	private final MenuItem editMenuLimpar;
 
-	//------EDIT MENU ITENS---------------------------------------------------------
+	// ------EDIT MENU
+	// ITENS---------------------------------------------------------
 	private final Menu editMenu;
 
 	private final CheckMenuItem editMenuShowHistoric;
 	private final CheckMenuItem editMenuShowType;
 
-	//------COFIGURATION MENU ITENS-------------------------------------------------
-	private final Menu mConfiguration;
-	private final CheckMenuItem mConfiguration_fullScreen;
-	private final Menu mConfiguration_database;
-	private final RadioMenuItem mConfiguration_database_accessTXT;
-	private final RadioMenuItem mConfiguration_database_accessSQL;
-	private final ToggleGroup mConfiguration_database_accessGroup;
+	// ------COFIGURATION MENU
+	// ITENS-------------------------------------------------
 
-	private final SeparatorMenuItem mConfiguration_separator;
-
-	//------TIME MENU ITENS----------------------------------------------------
-	private final Menu mTimeline;
-	private final CheckMenuItem mTimeline_ShowTimeline;
-
+	// ------TIME MENU ITENS----------------------------------------------------
+	private final Menu mView;
+	private final CheckMenuItem mHistoryFullscreen;
+	private final CheckMenuItem mHistoryShowGraph;
 
 	public DominoesMenuBar() {
 		this.setHeight(30);
-		//------DOMINOES MENU ITENS-----------------------------------------------------
-		this.mainMenu = new Menu("Dominoes");
+		// ------DOMINOES MENU
+		// ITENS-----------------------------------------------------
+		this.mainMenu = new Menu("Prov-Dominoes");
 
-		this.mainMenuNew = new MenuItem("New");
 		this.mainMenuOpenProv = new MenuItem("Open Prov-N...");
 		this.mainMenuExportScript = new MenuItem("Export to script...");
 		this.mainMenuImportScript = new MenuItem("Import from script...");
-		this.mainMenuLoadAll = new MenuItem("Load All");
-		this.mainMenuLoadAll.setDisable(true);
-		this.mainMenuSave = new Menu("Save");
-		this.mainMenuSaveSaveAll = new MenuItem("Save All");
-		this.mainMenuSaveAutoSave = new CheckMenuItem("Auto Save");
-		this.mainMenuSaveAutoSave.setSelected(Configuration.autoSave);
 		this.mainMenuExit = new MenuItem("Exit");
-		this.mainMenuExitAndSave = new MenuItem("Exit And Save");
-
-		this.mainMenuSave.getItems().addAll(this.mainMenuSaveSaveAll, this.mainMenuSaveAutoSave);
 
 		this.mainMenuSeparator = new SeparatorMenuItem();
 
-		this.mainMenu.getItems().addAll(this.mainMenuNew, this.mainMenuOpenProv, this.mainMenuExportScript, this.mainMenuImportScript,this.mainMenuLoadAll, this.mainMenuSave,
-				this.mainMenuSeparator, mainMenuExitAndSave, this.mainMenuExit);
+		this.mainMenu.getItems().addAll(this.mainMenuOpenProv, this.mainMenuExportScript, this.mainMenuImportScript,
+				this.mainMenuSeparator, this.mainMenuExit);
 
-		//------EDIT MENU ITENS---------------------------------------------------------
+		// ------EDIT MENU
+		// ITENS---------------------------------------------------------
 		this.editMenu = new Menu("Edit");
 
 		this.editMenuUndo = new MenuItem("Undo");
@@ -97,60 +74,26 @@ public class DominoesMenuBar extends MenuBar {
 		editMenuShowType = new CheckMenuItem("Show Type");
 		editMenuShowType.setSelected(Configuration.visibilityType);
 
-		this.editMenu.getItems().addAll(this.editMenuUndo, this.editMenuRedo, this.editMenuLimpar,this.editMenuShowHistoric, this.editMenuShowType);
-		//        this.mEdit.getItems().addAll(this.mEdit_editMatrix, this.mEdit_showHistoric, this.mEdit_showType);
+		this.editMenu.getItems().addAll(this.editMenuUndo, this.editMenuRedo, this.editMenuLimpar,
+				this.editMenuShowHistoric, this.editMenuShowType);
 
-		//------CONFIGURATION MENU ITENS------------------------------------------------
-		this.mConfiguration = new Menu("Configuration");
+		// ------VIEW MENU ITENS----------------------------------------------------
+		this.mHistoryShowGraph = new CheckMenuItem("View History Graph");
+		this.mHistoryShowGraph.setSelected(Configuration.visibilityTimePane);
+		this.mHistoryFullscreen = new CheckMenuItem("Full Screen");
+		this.mHistoryFullscreen.setSelected(Configuration.fullscreen);
+		this.mView = new Menu("View");
+		this.mView.getItems().addAll(mHistoryFullscreen, mHistoryShowGraph);
 
-		this.mConfiguration_fullScreen = new CheckMenuItem("Full Screen");
-		this.mConfiguration_fullScreen.setSelected(Configuration.fullscreen);
-		this.mConfiguration_database = new Menu("Access Mode");
-		this.mConfiguration_database_accessGroup = new ToggleGroup();
-		this.mConfiguration_database_accessTXT = new RadioMenuItem("TXT Access");
-		this.mConfiguration_database_accessSQL = new RadioMenuItem("SQL Access");
-		this.mConfiguration_database_accessTXT.setToggleGroup(mConfiguration_database_accessGroup);
-		this.mConfiguration_database_accessSQL.setToggleGroup(mConfiguration_database_accessGroup);
-		this.mConfiguration_database_accessTXT.setSelected(true);
+		// ------MENU
+		// ITENS--------------------------------------------------------------
+		this.getMenus().addAll(this.mainMenu, this.editMenu, mView);
+		// this.getMenus().addAll(this.mainMenu, this.mEdit, this.mConfiguration);
 
-		this.mConfiguration_separator = new SeparatorMenuItem();
-
-		this.mConfiguration_database.getItems().addAll(this.mConfiguration_database_accessTXT,
-				this.mConfiguration_database_accessSQL);
-
-		this.mConfiguration.getItems().addAll(this.mConfiguration_database, this.mConfiguration_separator,
-				this.mConfiguration_fullScreen);
-
-		//------TIME MENU ITENS----------------------------------------------------
-		this.mTimeline_ShowTimeline = new CheckMenuItem("View Time");
-		this.mTimeline_ShowTimeline.setSelected(Configuration.visibilityTimePane);
-		this.mTimeline = new Menu("Time");
-		this.mTimeline.getItems().addAll(mTimeline_ShowTimeline);
-
-		//------MENU ITENS--------------------------------------------------------------
-		this.getMenus().addAll(this.mainMenu, this.editMenu, this.mConfiguration, mTimeline);
-		//        this.getMenus().addAll(this.mainMenu, this.mEdit, this.mConfiguration);
-
-		if (!Configuration.automaticCheck || Configuration.endDate.compareTo(Configuration.beginDate) <= 0) {
-			this.changeEnableDisble();
-		}
-		//------ADD LISTENERS-----------------------------------------------------------
-		//----------DOMINOES MENU ITENS-------------------------------------------------
-		this.mainMenuNew.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-
-				try {
-					App.clear();
-				} catch (IOException e) {
-					System.out.println("Erro ao tentar acessar arquivo de script!");
-					e.printStackTrace();
-				}
-				changeEnableDisble();
-
-			}
-		});
+		// ------ADD
+		// LISTENERS-----------------------------------------------------------
+		// ----------DOMINOES MENU
+		// ITENS-------------------------------------------------
 		this.mainMenuOpenProv.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -172,48 +115,6 @@ public class DominoesMenuBar extends MenuBar {
 				App.importScript();
 			}
 		});
-		this.mainMenuLoadAll.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				App.load(Configuration.beginDate, Configuration.endDate);
-			}
-		});
-
-		this.mainMenuSaveSaveAll.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				try {
-					App.saveAll();
-				} catch (IOException ex) {
-					System.err.println(ex.getMessage());
-				}
-			}
-		});
-
-		this.mainMenuSaveAutoSave.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				Configuration.autoSave = /*this.*/mainMenuSaveAutoSave.isSelected();
-
-			}
-		});
-
-		this.mainMenuExitAndSave.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				try {
-					App.saveAll();
-					System.exit(0);
-				} catch (IOException ex) {
-					System.err.println(ex.getMessage());
-				}
-			}
-		});
-
 		this.mainMenuExit.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -222,13 +123,14 @@ public class DominoesMenuBar extends MenuBar {
 			}
 		});
 
-		//----------EDIT MENU ITENS-----------------------------------------------------
+		// ----------EDIT MENU
+		// ITENS-----------------------------------------------------
 
 		this.editMenuUndo.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				App.getCommandManager().invokeCommand(CommandFactory.getInstance().undo(),false);
+				App.getCommandManager().invokeCommand(CommandFactory.getInstance().undo(), false);
 			}
 		});
 
@@ -236,10 +138,10 @@ public class DominoesMenuBar extends MenuBar {
 
 			@Override
 			public void handle(ActionEvent event) {
-				App.getCommandManager().invokeCommand(CommandFactory.getInstance().redo(),false);
+				App.getCommandManager().invokeCommand(CommandFactory.getInstance().redo(), false);
 			}
 		});
-		
+
 		this.editMenuLimpar.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -254,7 +156,8 @@ public class DominoesMenuBar extends MenuBar {
 					e.printStackTrace();
 				}
 				App.getArea().clear();
-				App.getTopPane().reset();;
+				App.getTopPane().reset();
+				;
 			}
 		});
 
@@ -276,48 +179,26 @@ public class DominoesMenuBar extends MenuBar {
 			}
 		});
 
-		//----------CONFIGURATION MENU ITENS------------------------------------------------
-		this.mConfiguration_fullScreen.setOnAction(new EventHandler<ActionEvent>() {
+		// ----------CONFIGURATION MENU
+		// ITENS------------------------------------------------
+		this.mHistoryFullscreen.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				App.setFullscreen(mConfiguration_fullScreen.isSelected());
+				App.setFullscreen(mHistoryFullscreen.isSelected());
 			}
 		});
-		//----------TIME PANE MENU ITENS----------------------------------------------------
-		mTimeline_ShowTimeline.setOnAction(new EventHandler<ActionEvent>() {
+		// ----------TIME PANE MENU
+		// ITENS----------------------------------------------------
+		mHistoryShowGraph.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 
-				App.changeVisibleTimePane();
+				App.changeVisibleGraphHistory();
 
 			}
 		});
-	}
-
-	public void changeEnableDisble() {
-
-		this.mainMenuNew.setDisable(!this.mainMenuNew.isDisable());
-		this.mainMenuLoadAll.setDisable(!this.mainMenuLoadAll.isDisable());
-		this.mainMenuSave.setDisable(!this.mainMenuSave.isDisable());
-		this.mainMenuExit.setDisable(!this.mainMenuExit.isDisable());
-		this.mainMenuExitAndSave.setDisable(!this.mainMenuExitAndSave.isDisable());
-
-		//        this.mEdit.setDisable(!this.mEdit.isDisable());
-
-		//        this.mConfiguration.setDisable(!this.mConfiguration.isDisable());
-
-		//        this.mTimeline.setDisable(false);
-
-	}
-
-	public void load(Date begin, Date end) throws ParseException {
-		changeEnableDisble();
-		Configuration.automaticCheck = true;
-		//App.checkout(begin, end);
-		App.LoadDominoesPieces();
-
 	}
 
 	public MenuItem getEditMenuUndo() {
