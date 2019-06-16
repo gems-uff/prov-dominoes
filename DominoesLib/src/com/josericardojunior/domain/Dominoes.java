@@ -335,7 +335,6 @@ public final class Dominoes {
 			break;
 		case Dominoes.TYPE_SUPPORT:
 			type.setText(Dominoes.TYPE_SUPPORT_CODE);
-
 			break;
 		case Dominoes.TYPE_CONFIDENCE:
 			type.setText(Dominoes.TYPE_CONFIDENCE_CODE);
@@ -508,14 +507,14 @@ public final class Dominoes {
 
 		if (!(this.type == Dominoes.TYPE_BASIC)) {
 			this.type = Dominoes.TYPE_DERIVED;
-		}
-		if (this.getIdRow().equals(this.getIdCol())) {
-			this.type = Dominoes.TYPE_SUPPORT;
+			if (this.getIdRow().equals(this.getIdCol())) {
+				this.type = Dominoes.TYPE_SUPPORT;
+			}
+			this.getHistoric().reverse();
+			this.setIdRow(this.getHistoric().getFirstItem());
+			this.setIdCol(this.getHistoric().getLastItem());
 		}
 
-		this.getHistoric().reverse();
-		this.setIdRow(this.getHistoric().getFirstItem());
-		this.setIdCol(this.getHistoric().getLastItem());
 
 		boolean swap = this.rowIsAggragatable;
 		this.rowIsAggragatable = this.colIsAggragatable;
@@ -531,14 +530,14 @@ public final class Dominoes {
 
 		if (!(this.type == Dominoes.TYPE_BASIC)) {
 			this.type = Dominoes.TYPE_DERIVED;
-		}
-		if (this.getIdRow().equals(this.getIdCol())) {
-			this.type = Dominoes.TYPE_SUPPORT;
+			if (this.getIdRow().equals(this.getIdCol())) {
+				this.type = Dominoes.TYPE_SUPPORT;
+			}
+			this.getHistoric().reverse();
+			this.setIdRow(this.getHistoric().getFirstItem());
+			this.setIdCol(this.getHistoric().getLastItem());
 		}
 
-		this.getHistoric().reverse();
-		this.setIdRow(this.getHistoric().getFirstItem());
-		this.setIdCol(this.getHistoric().getLastItem());
 
 		boolean swap = this.rowIsAggragatable;
 		this.rowIsAggragatable = this.colIsAggragatable;
@@ -610,14 +609,14 @@ public final class Dominoes {
 
 		if (!(this.type == Dominoes.TYPE_BASIC)) {
 			this.type = Dominoes.TYPE_DERIVED;
-		}
-		if (this.getIdRow().equals(this.getIdCol())) {
-			this.type = Dominoes.TYPE_SUPPORT;
+			if (this.getIdRow().equals(this.getIdCol())) {
+				this.type = Dominoes.TYPE_SUPPORT;
+			}
+			this.setIdRow(Dominoes.AGGREG_TEXT + idRow);
+			this.historic.reduceRow();
 		}
 
 		// this.getHistoric().reverse();
-		this.setIdRow(Dominoes.AGGREG_TEXT + idRow);
-		this.historic.reduceRow();
 		// this.setIdCol(this.getHistoric().getLastItem());
 
 		// this.historic = new Historic("SUM", this.getIdCol());

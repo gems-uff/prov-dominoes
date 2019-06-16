@@ -1,20 +1,23 @@
 package boundary;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import com.josericardojunior.arch.Session;
 import com.josericardojunior.dao.DominoesSQLDao;
 import com.josericardojunior.domain.Dominoes;
 
+import command.AbstractCommand;
+import command.CommandFactory;
 import command.CommandManager;
+import command.UndoCommand;
 import control.Controller;
-import convertion.ProvMatrixFactory;
 import domain.Configuration;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -30,18 +33,10 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.ProvMatrix;
-import util.Prov2DominoesUtil;
-
-// Information fragment // opened question
 
 public class App extends Application {
 
 	private static CommandManager commandManager;
-
-	public static Visual getVisual() {
-		return tabbedMatrixGraphPane;
-	}
 
 	private static SplitPane mainPane;
 
@@ -308,12 +303,13 @@ public class App extends Application {
 
 	/**
 	 * This function remove all parts in this area move
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	public static void clear() throws IOException {
 		pieceSelectorList.clear();
 		movementCanvas.clear();
-		tabbedMatrixGraphPane.ClearTabs();
+		tabbedMatrixGraphPane.clear();
 		commandManager.clear(true);
 	}
 
@@ -393,13 +389,10 @@ public class App extends Application {
 			FileChooser fileChooser = new FileChooser();
 			File file = fileChooser.showOpenDialog(stage);
 			if (file != null) {
+				App.clear();
+				App.getTopPane().reset();
 				String provFilePath = file.getAbsolutePath();
-				ProvMatrixFactory provFactory = new ProvMatrixFactory(provFilePath);
-				List<ProvMatrix> provMatrixList = provFactory.buildMatrices();
-				List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList);
-				clear();
-				Controller.resultLoadMatrices = dominoesList;
-				pieceSelectorList.Configure(Controller.resultLoadMatrices);
+				getCommandManager().invokeCommand(CommandFactory.getInstance().load(provFilePath));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -411,12 +404,13 @@ public class App extends Application {
 		try {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setInitialFileName("commands.pd");
+			fileChooser.setInitialDirectory(new File("C:\\Users\\Victor\\Desktop"));
 			File file = fileChooser.showSaveDialog(stage);
 			file.delete();
 			file.createNewFile();
 			if (file != null) {
 				FileWriter fw = new FileWriter(file);
-				fw.write(App.getCommandManager().getScript().toString());
+				fw.write(getCommandManager().getScriptController().getScript());
 				fw.close();
 			}
 		} catch (Exception e) {
@@ -426,7 +420,36 @@ public class App extends Application {
 	}
 
 	public static void importScript() {
-		// TODO Auto-generated method stub
+		try {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setInitialDirectory(new File("C:\\Users\\Victor\\Desktop"));
+			File file = fileChooser.showOpenDialog(stage);
+			if (file != null) {
+				App.clear();
+				App.getTopPane().reset();
+				FileReader fr = new FileReader(file);
+				BufferedReader br = new BufferedReader(fr);
+				String commandLine = br.readLine();
+				while (commandLine != null) {
+					AbstractCommand cmd = getCommandManager().getScriptController().parseCommand(commandLine);
+					if (cmd instanceof UndoCommand) {
+						UndoCommand undo = (UndoCommand) cmd;
+						for (int i = 0; i < undo.getCount(); i++) {
+							getCommandManager().invokeCommand(cmd);
+						}
+					} else {
+						getCommandManager().invokeCommand(cmd);
+					}
+					commandLine = br.readLine();
+				}
+				App.getCommandManager().getRedoList().clear();
+				App.getCommandManager().uptadeMenu();
+				br.close();
+				fr.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void start() {
@@ -518,6 +541,34 @@ public class App extends Application {
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
+	}
+
+	public static Visual getVisual() {
+		return tabbedMatrixGraphPane;
+	}
+
+	public static ListViewDominoes getPieceSelectorList() {
+		return pieceSelectorList;
+	}
+
+	public static void setPieceSelectorList(ListViewDominoes pieceSelectorList) {
+		App.pieceSelectorList = pieceSelectorList;
+	}
+
+	public static AreaMove getMovementCanvas() {
+		return movementCanvas;
+	}
+
+	public static void setMovementCanvas(AreaMove movementCanvas) {
+		App.movementCanvas = movementCanvas;
+	}
+
+	public static Visual getTabbedMatrixGraphPane() {
+		return tabbedMatrixGraphPane;
+	}
+
+	public static void setTabbedMatrixGraphPane(Visual tabbedMatrixGraphPane) {
+		App.tabbedMatrixGraphPane = tabbedMatrixGraphPane;
 	}
 
 }

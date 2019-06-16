@@ -1,7 +1,6 @@
 package command;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.LinkedList;
 
 import boundary.App;
@@ -9,18 +8,17 @@ import boundary.DominoesMenuBar;
 
 public class CommandManager {
 
-	private int maxHistoryLength = 100;
 
 	private LinkedList<AbstractCommand> history;
 	private LinkedList<AbstractCommand> redoList;
 	private AbstractCommand lastCommand;
 	private AbstractCommand previousCommand;
 	private DominoesMenuBar menu;
-	private StringWriter script;
+	private ScriptController scriptController;
 
 	public CommandManager() {
 		super();
-		this.script = new StringWriter();
+		this.scriptController = new ScriptController();
 		this.history = new LinkedList<>();
 		this.redoList = new LinkedList<>();
 	}
@@ -38,21 +36,15 @@ public class CommandManager {
 		if (newCommand != null) {
 			if (newCommand instanceof Undo) {
 				undo();
-				generateCommandId(newCommand, reproducing, false);
+				generateCommandId(newCommand, reproducing);
 			} else if (newCommand instanceof Redo) {
-				generateCommandId(newCommand, reproducing, false);
+				generateCommandId(newCommand, reproducing);
 				redo();
 			} else {
-				if (lastCommand instanceof Undo) {
-					this.redoList.clear();
-				}
-				if (newCommand instanceof MultiplyCommand && !this.history.isEmpty()) {
-					this.history.removeFirst();
-				}
 				if (newCommand.doIt()) {
 					System.out.println(newCommand.getName());
 					addToHistory(newCommand);
-					generateCommandId(newCommand, reproducing, true);
+					generateCommandId(newCommand, reproducing);
 				} else {
 					history.clear();
 				}
@@ -63,18 +55,12 @@ public class CommandManager {
 		}
 	}
 
-	private void generateCommandId(AbstractCommand newCommand, boolean reproducing, boolean generateScript) {
+	private void generateCommandId(AbstractCommand cmd, boolean reproducing) {
 		if (!reproducing) {
-			if (generateScript) {
-				addToScript(newCommand.getName());
-			}
-			String id = App.getTopPane().addCommand(newCommand);
-			newCommand.setId(id);
+			this.scriptController.addToScript(cmd);
+			String id = App.getTopPane().addCommand(cmd);
+			cmd.setId(id);
 		}
-	}
-
-	private void addToScript(String cmd) {
-		this.script.append(cmd + "\n");
 	}
 
 	public AbstractCommand getPreviousCommand() {
@@ -108,9 +94,6 @@ public class CommandManager {
 
 	private void addToHistory(AbstractCommand command) {
 		this.history.addFirst(command);
-		if (history.size() > maxHistoryLength) {
-			history.removeLast();
-		}
 	}
 
 	private void undo() {
@@ -118,7 +101,6 @@ public class CommandManager {
 			AbstractCommand undoCommand = (AbstractCommand) history.removeFirst();
 			undoCommand.undoIt();
 			System.out.println("UNDO(" + undoCommand.getName() + ")");
-			addToScript("UNDO()");
 			redoList.addFirst(undoCommand);
 		}
 	}
@@ -128,18 +110,9 @@ public class CommandManager {
 			AbstractCommand redoCommand = (AbstractCommand) redoList.removeFirst();
 			redoCommand.doIt();
 			System.out.println("REDO(" + redoCommand.getName() + ")");
-			addToScript("REDO()");
 			addToHistory(redoCommand);
 		}
 
-	}
-
-	public int getMaxHistoryLength() {
-		return maxHistoryLength;
-	}
-
-	public void setMaxHistoryLength(int maxHistoryLength) {
-		this.maxHistoryLength = maxHistoryLength;
 	}
 
 	public LinkedList<AbstractCommand> getHistory() {
@@ -170,24 +143,20 @@ public class CommandManager {
 		App.getCommandManager().getHistory().clear();
 		App.getCommandManager().uptadeMenu();
 		if (script) {
-			App.getCommandManager().clearScript();;
+			App.getCommandManager().getScriptController().clear();
 		}
 		App.getArea().clear();
 	}
 
-	private void clearScript() throws IOException {
-		this.script.flush();
-		this.script.close();
-		this.script = new StringWriter();
-		
+	public ScriptController getScriptController() {
+		return scriptController;
 	}
 
-	public StringWriter getScript() {
-		return script;
+	public void setScriptController(ScriptController scriptController) {
+		this.scriptController = scriptController;
 	}
 
-	public void setScript(StringWriter script) {
-		this.script = script;
-	}
+	
+
 
 }

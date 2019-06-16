@@ -98,7 +98,7 @@ public class Visual extends BorderPane {
         
     }
     
-    void ClearTabs(){
+    public void clear(){
     	this.tabPane.getTabs().clear();
     }
     

@@ -6,6 +6,7 @@ public abstract class AbstractCommand {
 	public static final String REDO_COMMAND = "REDO";
 	public static final String MOVE_COMMAND = "MOVE";
 	public static final String SAVE_COMMAND = "SAVE";
+	public static final String LOAD_COMMAND = "LOAD";
 	public static final String TRANSPOSE_COMMAND = "TRANSPOSE";
 	public static final String MULTIPLY_COMMAND = "MULTIPLY";
 	public static final String ADD_COMMAND = "ADD";

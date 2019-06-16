@@ -147,7 +147,10 @@ public class ListViewDominoes extends ListView<Group> {
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                     if (mouseEvent.getClickCount() == 2) {
-                        App.getCommandManager().invokeCommand(new CommandFactory().add(group));
+                    	int index = pieces.indexOf(group);
+                    	Dominoes d = dominoes.get(index);
+                    	String trigram = d.getRelation().getAbbreviate().replace(" ", "");
+                        App.getCommandManager().invokeCommand(new CommandFactory().add(trigram));
                     }
                 }
             }
@@ -165,10 +168,11 @@ public class ListViewDominoes extends ListView<Group> {
         minimenu.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                // choise menu item multiply
                 if (((MenuItem) event.getTarget()).getText().equals(menuItemToAreaMove.getText())) {
-                   // System.out.println("copy to area move");
-                    App.getCommandManager().invokeCommand(new CommandFactory().add(group));
+                	int index = pieces.indexOf(group);
+                	Dominoes d = dominoes.get(index);
+                	String trigram = d.getRelation().getAbbreviate().replace(" ", "");
+                	App.getCommandManager().invokeCommand(new CommandFactory().add(trigram));
                 } else if (((MenuItem) event.getTarget()).getText().equals(menuItemRemove.getText())) {
                     System.out.println("removing");
                     try {
