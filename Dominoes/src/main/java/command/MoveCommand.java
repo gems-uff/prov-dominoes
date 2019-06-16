@@ -15,9 +15,11 @@ public class MoveCommand extends AbstractCommand {
 		this.y = -1;
 	}
 
-	public MoveCommand(int index) {
+	public MoveCommand(int index, double x, double y) {
 		this();
 		this.index = index;
+		this.x = x;
+		this.y = y;
 	}
 
 	public double getOldX() {
@@ -46,8 +48,8 @@ public class MoveCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		String cmd =  MOVE_COMMAND + "(" + App.getArea().getData().getDominoes().get(index).getId() + ", " + this.x + ", "
-				+ this.y + ")";
+		String cmd = MOVE_COMMAND + "(" + App.getArea().getData().getDominoes().get(index).getId() + ", " + this.x
+				+ ", " + this.y + ")";
 		cmd = cmd.replace(".0", "");
 		return cmd;
 
@@ -55,13 +57,8 @@ public class MoveCommand extends AbstractCommand {
 
 	@Override
 	protected boolean doIt() {
-		if (this.x == -1 && this.y == -1) {
-			this.oldX = App.getArea().getData().getPieces().get(index).getTranslateX();
-			this.oldY = App.getArea().getData().getPieces().get(index).getTranslateY();
-		} else {
-			App.getArea().getData().getPieces().get(index).setTranslateX(x);
-			App.getArea().getData().getPieces().get(index).setTranslateY(y);
-		}
+		App.getArea().getData().getPieces().get(index).setTranslateX(x);
+		App.getArea().getData().getPieces().get(index).setTranslateY(y);
 		return true;
 	}
 
@@ -91,6 +88,14 @@ public class MoveCommand extends AbstractCommand {
 	@Override
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public double getX() {
+		return x;
 	}
 
 }

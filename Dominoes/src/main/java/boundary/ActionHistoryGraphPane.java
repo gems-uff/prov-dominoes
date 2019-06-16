@@ -15,6 +15,7 @@ import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.ConstantTransformer;
 
 import command.AbstractCommand;
+import command.CommandFactory;
 import command.Redo;
 import command.Undo;
 import edu.uci.ics.jung.algorithms.layout.TreeLayout;
@@ -68,7 +69,7 @@ public class ActionHistoryGraphPane extends BorderPane {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void buildGraph() {
+	public void buildGraph() {
 		graph = new DelegateForest<String, String>();
 		createTree();
 		treeLayout = new TreeLayout<String, String>(graph);
@@ -258,13 +259,15 @@ public class ActionHistoryGraphPane extends BorderPane {
 	}
 
 	public void reset() {
-		this.vertexCounter = 0;
+		this.vertexCounter = 1;
 		this.edgeCounter = 0;
+		this.ids = new Integer[10];
 		this.root = null;
 		this.rootCommand = null;
 		this.lastCommand = null;
 		this.nodes = new HashMap<>();
 		this.edges = new HashMap<>();
+		CommandFactory.getInstance().setPieceCounter(1);
 		buildGraph();
 	}
 

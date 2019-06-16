@@ -26,6 +26,7 @@ import javafx.scene.text.Text;
 public class AreaMove extends Pane {
 
 	private MoveData data;
+	private MoveCommand currentMove;
 	private CommandFactory commandFactory;
 
 	/**
@@ -152,52 +153,54 @@ public class AreaMove extends Pane {
 				cursorProperty().set(Cursor.OPEN_HAND);
 			}
 		});
-		/*
-		 * piece.setOnDragDetected(new EventHandler<MouseEvent>() {
-		 * 
-		 * @Override public void handle(MouseEvent event) {
-		 * App.getCommandManager().invokeCommand(CommandFactory.getInstance().move(piece
-		 * )); } });
-		 */
+
+		piece.setOnDragDetected(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				currentMove = CommandFactory.getInstance().move(piece, piece.getTranslateX(), piece.getTranslateY());
+			}
+		});
 
 		piece.setOnMouseDragged(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				double offsetX = event.getSceneX() - data.getSrcSceneX();
-				double offsetY = event.getSceneY() - data.getSrcSceneY();
-				double newTranslateX = data.getSrcTranslateX() + offsetX;
-				double newTranslateY = data.getSrcTranslateY() + offsetY;
 
 				// detect move out
-				boolean detecMoveOutX = false;
-				boolean detecMoveOutY = false;
+				boolean detectMoveOutY = false;
+
+				double offsetY = event.getSceneY() - data.getSrcSceneY();
+				double newTranslateY = data.getSrcTranslateY() + offsetY;
+
+				boolean detectMoveOutX = false;
+				double offsetX = event.getSceneX() - data.getSrcSceneX();
+				double newTranslateX = data.getSrcTranslateX() + offsetX;
 				if (newTranslateX < data.getBackground().getX()) {
 					((Group) (event.getSource())).setTranslateX(data.getBackground().getX());
 
-					detecMoveOutX = true;
+					detectMoveOutX = true;
 				}
 				if (newTranslateY < data.getBackground().getY()) {
 					((Group) (event.getSource())).setTranslateY(data.getBackground().getY());
-					detecMoveOutY = true;
+					detectMoveOutY = true;
 				}
 				if (newTranslateX + ((Group) (event.getSource())).prefWidth(-1) > data.getBackground().getX()
 						+ data.getBackground().getWidth()) {
 					((Group) (event.getSource())).setTranslateX(data.getBackground().getX()
 							+ data.getBackground().getWidth() - ((Group) (event.getSource())).prefWidth(-1));
-					detecMoveOutX = true;
+					detectMoveOutX = true;
 				}
 				if (newTranslateY + ((Group) (event.getSource())).prefHeight(-1) > data.getBackground().getY()
 						+ data.getBackground().getHeight()) {
 					((Group) (event.getSource())).setTranslateY(data.getBackground().getY()
 							+ data.getBackground().getHeight() - ((Group) (event.getSource())).prefHeight(-1));
-					detecMoveOutY = true;
+					detectMoveOutY = true;
 				}
 
-				if (!detecMoveOutX) {
+				if (!detectMoveOutX) {
 					((Group) (event.getSource())).setTranslateX(newTranslateX);
 				}
-				if (!detecMoveOutY) {
+				if (!detectMoveOutY) {
 					((Group) (event.getSource())).setTranslateY(newTranslateY);
 				}
 
@@ -238,11 +241,12 @@ public class AreaMove extends Pane {
 				if (App.getArea().getData().getIndexFirstOperatorMultiplication() != -1
 						&& App.getArea().getData().getIndexSecondOperatorMultiplication() != -1) {
 					App.getCommandManager().invokeCommand(commandFactory.multiply());
-				} else {
-					MoveCommand move = CommandFactory.getInstance().move(piece);
-					move.setX(piece.getTranslateX());
-					move.setY(piece.getTranslateY());
+				} else if (piece != null && currentMove != null && piece.getTranslateX() != currentMove.getOldX()
+						&& piece.getTranslateY() != currentMove.getOldY()) {
+					MoveCommand move = CommandFactory.getInstance().move(piece, currentMove.getOldX(),
+							currentMove.getOldY());
 					App.getCommandManager().invokeCommand(move);
+					currentMove = null;
 				}
 			}
 		});

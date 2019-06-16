@@ -23,14 +23,18 @@ public class CommandFactory {
 		return new RedoCommand();
 	}
 
-	public AbstractCommand add(Group piece) {
-		AddCommand add = new AddCommand(piece);
+	public AddCommand add(String trigram) {
+		AddCommand add = new AddCommand(trigram);
 		add.setKey("p" + getInstance().getPieceCounter());
 		return add;
 	}
 
-	public MoveCommand move(Group piece) {
-		return new MoveCommand(App.getArea().getData().getPieces().indexOf(piece));
+	public MoveCommand move(Group piece, double oldX, double oldY) {
+		MoveCommand move = new MoveCommand(App.getArea().getData().getPieces().indexOf(piece), piece.getTranslateX(),
+				piece.getTranslateY());
+		move.setOldX(oldX);
+		move.setOldY(oldY);
+		return move;
 	}
 
 	public AbstractCommand remove(Group piece) {
@@ -97,6 +101,14 @@ public class CommandFactory {
 
 	public void setPieceCounter(int pieceCounter) {
 		this.pieceCounter = pieceCounter;
+	}
+
+	public AbstractCommand load(String provFilePath) {
+		return new LoadCommand(provFilePath);
+	}
+
+	public AbstractCommand undo(int count) {
+		return new UndoCommand(count);
 	}
 
 }
