@@ -9,7 +9,7 @@ import javafx.scene.layout.BorderPane;
 
 public class Visual extends BorderPane {
 
-    private double padding = 200;
+    private double padding = 800;
     private TabPane tabPane;
     public Visual() {
         tabPane = new TabPane();

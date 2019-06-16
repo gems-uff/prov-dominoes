@@ -5,12 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
+import java.io.StringWriter;
 import java.util.Calendar;
-import java.util.Date;
 
 import com.josericardojunior.arch.Session;
-import com.josericardojunior.dao.DominoesSQLDao;
 import com.josericardojunior.domain.Dominoes;
 
 import command.AbstractCommand;
@@ -20,11 +18,8 @@ import command.UndoCommand;
 import control.Controller;
 import domain.Configuration;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -42,7 +37,6 @@ public class App extends Application {
 
 	private static ActionHistoryGraphPane topPane;
 	private static DominoesMenuBar menu;
-	public static TimePane time;
 
 	private static SplitPane bottomPane;
 	private static ListViewDominoes pieceSelectorList;
@@ -52,8 +46,6 @@ public class App extends Application {
 	private static Scene scene;
 	private static Stage stage;
 
-	private static GUIManager manager;
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
@@ -61,28 +53,13 @@ public class App extends Application {
 			App.stage = primaryStage;
 			App.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 			App.stage.centerOnScreen();
-			App.stage.setTitle("Dominoes Interface [" + Configuration.processingUnit + "]");
+			App.stage.setTitle("Prov-Dominoes [" + Configuration.processingUnit + "]");
 			App.stage.setResizable(Configuration.resizable);
 
 			App.menu = new DominoesMenuBar();
 			App.commandManager = new CommandManager(menu);
-			App.time = new TimePane();
 
 			App.set();
-
-			time.setButtomOnAction(new EventHandler<ActionEvent>() {
-
-				@Override
-				public void handle(ActionEvent arg0) {
-
-					try {
-						App.menu.load(Configuration.beginDate, Configuration.endDate);
-						App.setTimelime();
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-				}
-			});
 
 			if (Configuration.resizableTimeOnFullScreen) {
 				App.fillTimeHistoricPointers();
@@ -95,14 +72,6 @@ public class App extends Application {
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
-
-		time.setButtomOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent arg0) {
-				App.load(Configuration.beginDate, Configuration.endDate);
-			}
-		});
 
 		App.stage.show();
 
@@ -174,33 +143,6 @@ public class App extends Application {
 		max = max - min;
 		min = 0;
 
-		// Set begin and end date
-		try {
-			if (Configuration.projName != null && Configuration.projName.length() > 0) {
-				App.time.Configure(Configuration.beginDate, Configuration.endDate, Configuration.database,
-						Configuration.projName);
-				App.time.setVisible(true);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public static void load(Date being, Date end) {
-		manager.run(new Runnable() {
-			public void run() {
-				Platform.runLater(new Runnable() {
-					public void run() {
-						try {
-							App.menu.load(Configuration.beginDate, Configuration.endDate);
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-					}
-				});
-			}
-		});
 	}
 
 	public static void LoadDominoesPieces() {
@@ -239,25 +181,17 @@ public class App extends Application {
 		bottomPane.getItems().add(App.tabbedMatrixGraphPane);
 
 		topPane = new ActionHistoryGraphPane();
-		// topPane.setTop(App.projectInfoPanel);
-		// topPane.setCenter(time);
 		topPane.visibleProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
 				if (topPane.isVisible()) {
 					mainPane.getItems().remove(bottomPane);
-
 					mainPane.getItems().add(topPane);
 					mainPane.getItems().add(bottomPane);
 
-					bottomPane.setPrefHeight(Configuration.height / 2);
-					topPane.setPrefHeight(Configuration.height / 2);
-
 				} else {
-
 					mainPane.getItems().remove(topPane);
-					bottomPane.setPrefHeight(Configuration.height);
 				}
 			}
 		});
@@ -378,10 +312,10 @@ public class App extends Application {
 		stage.show();
 	}
 
-	static void changeVisibleTimePane() {
+	static void changeVisibleGraphHistory() {
 		Configuration.visibilityTimePane = !Configuration.visibilityTimePane;
-		App.time.setVisible(Configuration.visibilityTimePane);
 		App.topPane.setVisible(Configuration.visibilityTimePane);
+		setFullscreen(false);
 	}
 
 	public static void openProv() {
@@ -410,7 +344,10 @@ public class App extends Application {
 			file.createNewFile();
 			if (file != null) {
 				FileWriter fw = new FileWriter(file);
-				fw.write(getCommandManager().getScriptController().getScript());
+				StringWriter sw = new StringWriter();
+				getCommandManager().getScriptFromGraph(sw, getTopPane().getRootCommand(), 0);
+				fw.write(sw.toString());
+				// fw.write(getCommandManager().getScriptController().getScript());
 				fw.close();
 			}
 		} catch (Exception e) {
@@ -530,14 +467,11 @@ public class App extends Application {
 			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
 				Session.startSession(Configuration.gpuDevice);
 
-			DominoesSQLDao.openDatabase(Configuration.database);
-			// call Application.launch()
 			launch(args);
 
 			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
 				Session.closeSection();
 
-			// DominoesSQLDao.closeDatabase();
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
