@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import boundary.App;
 import boundary.DominoesMenuBar;
 import boundary.HistoricNodeCommand;
+import control.ScriptController;
 
 public class CommandManager {
 
