@@ -247,8 +247,14 @@ public class DominoesMenuBar extends MenuBar {
 				App.getCommandManager().getRedoList().clear();
 				App.getCommandManager().getHistory().clear();
 				App.getCommandManager().uptadeMenu();
+				try {
+					App.getCommandManager().clear(true);
+				} catch (IOException e) {
+					System.out.println("Erro ao acessar script de comandos");
+					e.printStackTrace();
+				}
 				App.getArea().clear();
-				App.getTopPane().reset();
+				App.getTopPane().reset();;
 			}
 		});
 

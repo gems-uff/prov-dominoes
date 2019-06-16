@@ -164,4 +164,5 @@ public class MoveData {
 	public void setMenuItemAggregateCol(List<MenuItem> menuItemAggregateCol) {
 		this.menuItemAggregateCol = menuItemAggregateCol;
 	}
+
 }

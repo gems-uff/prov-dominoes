@@ -11,26 +11,36 @@ public class AddCommand extends AbstractCommand {
 	private Group piece;
 	private Dominoes addedDominoes;
 	private int index;
+	private String trigram;
 
 	public AddCommand() {
 		this.index = -1;
 	}
 
-	public AddCommand(Group piece) {
+	public AddCommand(String trigram) {
 		this();
-		this.piece = piece;
+		this.trigram = trigram;
 	}
 
 	@Override
 	protected boolean doIt() {
 		boolean success = true;
 		try {
-			Dominoes auxDomino = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece));
-			this.addedDominoes = auxDomino.cloneNoMatrix();
-			this.addedDominoes.setId(this.key);
-			if (index == -1) {
+			if (trigram != null) {
+				for (Dominoes d : App.getList().getDominoes()) {
+					if (d != null && d.getRelation().getAbbreviate().replace(" ", "").equals(trigram)) {
+						int index = App.getList().getDominoes().indexOf(d);
+						this.piece = App.getList().getPieces().get(index);
+						this.addedDominoes = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece))
+								.cloneNoMatrix();
+						this.addedDominoes.setId(this.key);
+						break;
+					}
+				}
+			}
+			if (this.index == -1) {
 				this.addedDominoes.setSourceIndex(App.getList().getPieces().indexOf(piece));
-				Group newPiece = App.copyToArea(addedDominoes, index);
+				Group newPiece = App.copyToArea(addedDominoes, this.index);
 				this.index = App.getArea().getData().getPieces().indexOf(newPiece);
 			} else {
 				this.addedDominoes.setSourceIndex(App.getList().getPieces().indexOf(piece));
@@ -40,7 +50,6 @@ public class AddCommand extends AbstractCommand {
 			e.printStackTrace();
 			success = false;
 		}
-
 		return success;
 	}
 
@@ -61,7 +70,7 @@ public class AddCommand extends AbstractCommand {
 	}
 
 	public void setKey(String key) {
-		this.key=key;
+		this.key = key;
 	}
 
 	private String id;
@@ -75,5 +84,4 @@ public class AddCommand extends AbstractCommand {
 	public void setId(String id) {
 		this.id = id;
 	}
-
 }
