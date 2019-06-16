@@ -1,4 +1,4 @@
-package command;
+package control;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -6,6 +6,13 @@ import java.io.StringWriter;
 import com.josericardojunior.domain.Dominoes;
 
 import boundary.App;
+import command.AbstractCommand;
+import command.AddCommand;
+import command.CommandFactory;
+import command.MoveCommand;
+import command.MultiplyCommand;
+import command.Redo;
+import command.Undo;
 import javafx.scene.Group;
 
 public class ScriptController {
