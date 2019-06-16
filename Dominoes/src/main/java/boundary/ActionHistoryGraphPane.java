@@ -271,4 +271,12 @@ public class ActionHistoryGraphPane extends BorderPane {
 		buildGraph();
 	}
 
+	public HistoricNodeCommand getRootCommand() {
+		return rootCommand;
+	}
+
+	public void setRootCommand(HistoricNodeCommand rootCommand) {
+		this.rootCommand = rootCommand;
+	}
+
 }

@@ -1,13 +1,14 @@
 package command;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.LinkedList;
 
 import boundary.App;
 import boundary.DominoesMenuBar;
+import boundary.HistoricNodeCommand;
 
 public class CommandManager {
-
 
 	private LinkedList<AbstractCommand> history;
 	private LinkedList<AbstractCommand> redoList;
@@ -156,7 +157,27 @@ public class CommandManager {
 		this.scriptController = scriptController;
 	}
 
-	
-
+	public int getScriptFromGraph(StringWriter sw, HistoricNodeCommand root, int undoCount) {
+		if (root != null) {
+			AbstractCommand cmd = root.getCommand();
+			invokeCommand(cmd, true);
+			sw.append(cmd.getName() + "\n");
+			if (root.getChildren().size() > 0) {
+				for (HistoricNodeCommand child : root.getChildren()) {
+					if (undoCount > 0) {
+						if (undoCount==1) {
+							sw.append("UNDO()\n");
+						} else {
+							sw.append("UNDO(" + undoCount + ")\n");
+						}
+						undoCount = 0;
+					}
+					undoCount = getScriptFromGraph(sw, child, undoCount);
+					undoCount++;
+				}
+			}
+		}
+		return undoCount;
+	}
 
 }

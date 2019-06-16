@@ -634,7 +634,7 @@ public class AreaMove extends Pane {
 	public void setSize(double width, double height) {
 
 		this.data.getBackground().setWidth(width + data.getPadding());
-		this.data.getBackground().setHeight(height);
+		this.data.getBackground().setHeight(height+900);
 
 		this.setMinWidth(width);
 		this.setPrefWidth(width);
