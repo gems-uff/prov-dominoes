@@ -158,7 +158,7 @@ public class ActionHistoryGraphPane extends BorderPane {
 		});
 
 		Button btn = new Button();
-		btn.setText("Reproduzir...");
+		btn.setText("Reproduce...");
 		btn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -173,7 +173,7 @@ public class ActionHistoryGraphPane extends BorderPane {
 							try {
 								App.getCommandManager().reproduce(commands);
 							} catch (IOException e) {
-								System.out.println("Erro ao tentar acessar arquivo de script!");
+								System.out.println("Failed trying to access script file!");
 								e.printStackTrace();
 							}
 							lastCommand = cmd;
