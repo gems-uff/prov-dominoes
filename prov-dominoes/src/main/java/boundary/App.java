@@ -25,7 +25,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
@@ -163,7 +162,6 @@ public class App extends Application {
 
 		mainPane = new SplitPane();
 		mainPane.setOrientation(Orientation.VERTICAL);
-		Button exitButton = new Button("Exit");
 
 		bottomPane = new SplitPane();
 		bottomPane.getItems().add(App.pieceSelectorList);
