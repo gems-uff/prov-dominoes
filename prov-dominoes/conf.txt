@@ -1,0 +1,11 @@
+fullscreen: false
+autoSave: false
+visibilityHistoric: true
+visibilityType: true
+resizable: true
+automaticCheck: false
+width: 880.0
+height: 600.0
+listWidth: 150.0
+telemetry: false
+GPUDevice: 0
