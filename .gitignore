@@ -1,11 +1,11 @@
-JNIGPUMatrix/target/
-JNIGPUMatrix/.settings/
+jni-jpu-matrix/target/
+jni-jpu-matrix/.settings/
 
-Dominoes/target/
-Dominoes/.settings/
+prov-dominoes/target/
+prov-dominoes/.settings/
 
-DominoesLib/target/
-DominoesLib/.settings/
+dominoes-lib/target/
+dominoes-lib/.settings/
 
 gitdataminer/target/
 gitdataminer/.settings/
@@ -15,10 +15,10 @@ gitdataminer/.settings/
 
 .metadata
 .recommenders
-JNIGPUMatrix/kernel.o
-JNIGPUMatrix/libMatrixProcessor.o
-JNIGPUMatrix/resources/
-JNIGPUMatrix/jar/
+jni-jpu-matrix/kernel.o
+jni-jpu-matrix/libMatrixProcessor.o
+jni-jpu-matrix/resources/
+jni-jpu-matrix/jar/
 *.dylib
 *.so
 *.o
