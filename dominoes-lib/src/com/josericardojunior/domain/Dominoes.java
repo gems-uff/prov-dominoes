@@ -510,10 +510,10 @@ public final class Dominoes {
 			if (this.getIdRow().equals(this.getIdCol())) {
 				this.type = Dominoes.TYPE_SUPPORT;
 			}
-			this.getHistoric().reverse();
-			this.setIdRow(this.getHistoric().getFirstItem());
-			this.setIdCol(this.getHistoric().getLastItem());
 		}
+		this.getHistoric().reverse();
+		this.setIdRow(this.getHistoric().getFirstItem());
+		this.setIdCol(this.getHistoric().getLastItem());
 
 
 		boolean swap = this.rowIsAggragatable;
@@ -533,10 +533,10 @@ public final class Dominoes {
 			if (this.getIdRow().equals(this.getIdCol())) {
 				this.type = Dominoes.TYPE_SUPPORT;
 			}
-			this.getHistoric().reverse();
-			this.setIdRow(this.getHistoric().getFirstItem());
-			this.setIdCol(this.getHistoric().getLastItem());
 		}
+		this.getHistoric().reverse();
+		this.setIdRow(this.getHistoric().getFirstItem());
+		this.setIdCol(this.getHistoric().getLastItem());
 
 
 		boolean swap = this.rowIsAggragatable;
@@ -612,14 +612,9 @@ public final class Dominoes {
 			if (this.getIdRow().equals(this.getIdCol())) {
 				this.type = Dominoes.TYPE_SUPPORT;
 			}
-			this.setIdRow(Dominoes.AGGREG_TEXT + idRow);
-			this.historic.reduceRow();
 		}
-
-		// this.getHistoric().reverse();
-		// this.setIdCol(this.getHistoric().getLastItem());
-
-		// this.historic = new Historic("SUM", this.getIdCol());
+		this.setIdRow(Dominoes.AGGREG_TEXT + idRow);
+		this.historic.reduceRow();
 
 		MatrixOperations _newMat = mat.reduceRows(currentDevice.equalsIgnoreCase("GPU"));
 		setMat(_newMat);
