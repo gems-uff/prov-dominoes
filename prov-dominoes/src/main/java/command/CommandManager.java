@@ -43,7 +43,7 @@ public class CommandManager {
 	public void invokeCommand(AbstractCommand command) {
 		invokeCommand(command, false);
 	}
-
+	
 	public void invokeCommand(AbstractCommand newCommand, boolean reproducing) {
 		if (newCommand != null) {
 			if (newCommand instanceof Undo) {

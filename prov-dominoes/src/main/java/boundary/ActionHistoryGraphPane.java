@@ -162,29 +162,33 @@ public class ActionHistoryGraphPane extends BorderPane {
 		btn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				HashMap<String, NodeInfo> tempNodes = new HashMap<>(nodes);
-				for (NodeInfo node : tempNodes.values()) {
-					if (node.isHighlighted) {
-						LinkedList<AbstractCommand> commands = new LinkedList<>();
-						HistoricNodeCommand cmd = HistoricNodeCommand.findNode(node.getId(), rootCommand);
-						HistoricNodeCommand.getCommandList(cmd, commands);
-						if (commands.size() > 0 || rootCommand.getId().equals(node.getId())) {
-							commands.addFirst(rootCommand.getCommand());
-							try {
-								App.getCommandManager().reproduce(commands);
-							} catch (IOException e) {
-								System.out.println("Failed trying to access script file!");
-								e.printStackTrace();
-							}
-							lastCommand = cmd;
-						}
-						break;
-					}
-				}
+				executeReproduce();
 			}
 		});
 		hBox.getChildren().addAll(btn, lblMouseMode, rbPick, rbTransform);
 		return hBox;
+	}
+	
+	public void executeReproduce() {
+		HashMap<String, NodeInfo> tempNodes = new HashMap<>(nodes);
+		for (NodeInfo node : tempNodes.values()) {
+			if (node.isHighlighted) {
+				LinkedList<AbstractCommand> commands = new LinkedList<>();
+				HistoricNodeCommand cmd = HistoricNodeCommand.findNode(node.getId(), rootCommand);
+				HistoricNodeCommand.getCommandList(cmd, commands);
+				if (commands.size() > 0 || rootCommand.getId().equals(node.getId())) {
+					commands.addFirst(rootCommand.getCommand());
+					try {
+						App.getCommandManager().reproduce(commands);
+					} catch (IOException e) {
+						System.out.println("Failed trying to access script file!");
+						e.printStackTrace();
+					}
+					lastCommand = cmd;
+				}
+				break;
+			}
+		}
 	}
 
 	private void createTree() {
