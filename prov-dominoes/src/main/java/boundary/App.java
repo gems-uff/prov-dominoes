@@ -345,6 +345,7 @@ public class App extends Application {
 					getCommandManager().getScriptFromGraph(sw, getTopPane().getRootCommand(), 0);
 					fw.write(sw.toString());
 					fw.close();
+					topPane.executeReproduce();
 				}
 			}
 		} catch (Exception e) {
