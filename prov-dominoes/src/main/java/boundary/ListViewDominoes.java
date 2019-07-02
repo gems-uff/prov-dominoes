@@ -21,6 +21,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Shape;
+import model.ProvMatrix.Relation;
 
 public class ListViewDominoes extends ListView<Group> {
 
@@ -150,6 +151,9 @@ public class ListViewDominoes extends ListView<Group> {
                     	int index = pieces.indexOf(group);
                     	Dominoes d = dominoes.get(index);
                     	String trigram = d.getRelation().getAbbreviate().replace(" ", "");
+                		if (d.getRelation() == Relation.RELATION_INFLUENCE) {
+                			trigram = trigram + "[" + d.getIdRow() + ", " + d.getIdCol() + "]";
+                		}
                         App.getCommandManager().invokeCommand(new CommandFactory().add(trigram));
                     }
                 }
