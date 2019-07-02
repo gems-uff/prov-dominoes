@@ -7,28 +7,29 @@ import com.josericardojunior.domain.Dominoes;
 
 import boundary.App;
 import control.Controller;
-import convertion.ProvMatrixFactory;
+import convertion.ProvMatrixGameFactory;
 import model.ProvMatrix;
 import util.Prov2DominoesUtil;
 
 public class LoadCommand extends AbstractCommand {
 
-	private String provFilePath;
+	private String[] filePaths;
 	private String id;
 	private String dir;
 
-	public LoadCommand(String provFilePath) {
+	public LoadCommand(String[] filePaths) {
 		super();
-		this.provFilePath = provFilePath;
+		this.filePaths = filePaths;
 	}
 
-	public LoadCommand(String provFilePath, String dir) {
-		this(provFilePath);
+	public LoadCommand(String[] filePaths, String dir) {
+		this(filePaths);
 		this.dir = dir;
 	}
 
 	public LoadCommand() {
 		super();
+		this.filePaths = new String[1];
 	}
 
 	@Override
@@ -45,11 +46,7 @@ public class LoadCommand extends AbstractCommand {
 	protected boolean doIt() {
 		boolean result = true;
 		try {
-			String path = provFilePath;
-			if (provFilePath != null && !provFilePath.contains(":\\")) {
-				path = dir + provFilePath;
-			}
-			ProvMatrixFactory provFactory = new ProvMatrixFactory(path);
+			ProvMatrixGameFactory provFactory = new ProvMatrixGameFactory(filePaths, dir);
 			List<ProvMatrix> provMatrixList = provFactory.buildMatrices();
 			List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList);
 			App.getPieceSelectorList().clear();
@@ -70,25 +67,16 @@ public class LoadCommand extends AbstractCommand {
 	@Override
 	protected boolean undoIt() {
 		boolean result = true;
-		// App.getCommandManager().getRedoList().clear();
-		// App.getCommandManager().getHistory().clear();
-		// App.getCommandManager().uptadeMenu();
-		// try {
-		// App.getCommandManager().clear(true);
 		App.getPieceSelectorList().clear();
 		App.getMovementCanvas().clear();
 		App.getTabbedMatrixGraphPane().clear();
-		// } catch (IOException e) {
-		// System.out.println("Erro ao acessar script de comandos");
-		// e.printStackTrace();
-		// }
 		App.getArea().clear();
 		return result;
 	}
 
 	@Override
 	public String getName() {
-		return "LOAD(\"" + provFilePath + "\")";
+		return "LOAD(\"" + filePaths + "\")";
 	}
 
 }
