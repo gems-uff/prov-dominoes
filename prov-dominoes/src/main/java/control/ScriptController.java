@@ -122,7 +122,9 @@ public class ScriptController {
 				String[] token = cmdl.split("\\(");
 				token[0] = token[0].toUpperCase();
 				if (token[0].equals(AbstractCommand.LOAD_COMMAND)) {
-					cmd = CommandFactory.getInstance().load(token[1], dir);
+					String[] fileNames = new String[1];
+					fileNames[0] = token[1];
+					cmd = CommandFactory.getInstance().load(fileNames, dir);
 				} else if (token[0].equals(AbstractCommand.MOVE_COMMAND)) {
 					Group piece = null;
 					String[] operands = token[1].split(",");

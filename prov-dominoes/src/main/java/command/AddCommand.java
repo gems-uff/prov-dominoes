@@ -28,7 +28,7 @@ public class AddCommand extends AbstractCommand {
 		try {
 			if (trigram != null) {
 				for (Dominoes d : App.getList().getDominoes()) {
-					if (d != null && d.getRelation().getAbbreviate().replace(" ", "").equals(trigram)) {
+					if (d != null && cmd(d).equals(trigram)) {
 						int index = App.getList().getDominoes().indexOf(d);
 						this.piece = App.getList().getPieces().get(index);
 						this.addedDominoes = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece))
@@ -61,7 +61,7 @@ public class AddCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		String base = ADD_COMMAND + "(" + this.addedDominoes.getRelation().getAbbreviate().replace(" ", "") + ")";
+		String base = ADD_COMMAND + "(" + cmd(this.addedDominoes) + ")";
 		return addedDominoes.getId() + " = " + base;
 	}
 
