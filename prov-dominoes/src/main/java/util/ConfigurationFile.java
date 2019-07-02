@@ -14,6 +14,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import boundary.App;
+
 /**
  *
  * @author Daniel
@@ -97,6 +99,8 @@ public class ConfigurationFile {
 					} else if (valueVariable.compareTo("true") == 0) {
 						Configuration.resizableTimeOnFullScreen = true;
 					}
+				} else if (nameVariable.compareTo("lastdirectory") == 0) {
+					Configuration.lastDirectory = valueVariable;
 				} else if (nameVariable.compareTo("width") == 0 && isDouble(valueVariable)) {
 					Configuration.width = Double.parseDouble(valueVariable);
 				} else if (nameVariable.compareTo("height") == 0 && isDouble(valueVariable)) {
@@ -121,7 +125,7 @@ public class ConfigurationFile {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
 			bw.write("fullscreen=false\r\n" + "autoSave=false\r\n" + "visibilityHistoric=true\r\n"
 					+ "visibilityType=true\r\n" + "resizable=true\r\n" + "automaticCheck=false\r\n" + "width=1000.0\r\n"
-					+ "height=600.0\r\n" + "listWidth=130.0\r\n" + "telemetry=false\r\n" + "GPUDevice=0");
+					+ "height=600.0\r\n" + "listWidth=130.0\r\n" + "telemetry=false\r\n" + "GPUDevice=0"+ "lastDirectory=.");
 
 		} catch (IOException ex) {
 			throw new IOException(ex.getMessage());

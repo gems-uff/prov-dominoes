@@ -8,7 +8,8 @@ public class Configuration {
 	public static final String CPU_DEVICE = "CPU";
 	
     // to read file
-    public static boolean fullscreen = false;
+	public static String lastDirectory = ".";
+	public static boolean fullscreen = false;
     public static boolean autoSave = false;
     public static boolean visibilityHistoric = true;
     public static boolean visibilityType = true;
