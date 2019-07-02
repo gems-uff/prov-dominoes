@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import com.josericardojunior.arch.Session;
 import com.josericardojunior.domain.Dominoes;
@@ -49,6 +51,8 @@ public class App extends Application {
 	private static Scene scene;
 	private static Stage stage;
 
+	private static String lastDirectory = ".";
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
@@ -58,6 +62,7 @@ public class App extends Application {
 			App.stage.centerOnScreen();
 			App.stage.setTitle("Prov-Dominoes [" + Configuration.processingUnit + "]");
 			App.stage.setResizable(Configuration.resizable);
+			App.setLastDirectory(Configuration.lastDirectory);
 
 			App.menu = new DominoesMenuBar();
 			App.commandManager = new CommandManager(menu);
@@ -194,11 +199,11 @@ public class App extends Application {
 		App.scene.setRoot(back);
 		App.stage.setScene(App.scene);
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-		    public void handle(WindowEvent we) {                        
-		        Platform.setImplicitExit(false);
-		        stage.close();
-		        System.exit(0);
-		    }
+			public void handle(WindowEvent we) {
+				Platform.setImplicitExit(false);
+				stage.close();
+				System.exit(0);
+			}
 		});
 
 		App.setFullscreen(Configuration.fullscreen);
@@ -315,14 +320,23 @@ public class App extends Application {
 	public static void openProv() {
 		try {
 			FileChooser fileChooser = new FileChooser();
-			fileChooser.setInitialDirectory(new File("."));
-			File file = fileChooser.showOpenDialog(stage);
-			if (file != null) {
+			fileChooser.setInitialDirectory(new File(lastDirectory));
+			List<File> files = fileChooser.showOpenMultipleDialog(stage);
+			if (files != null) {
+				String[] fileNames = new String[files.size()];
 				App.clear();
 				App.getTopPane().reset();
-				String provFilePath = file.getAbsolutePath();
-				String dir = file.getAbsolutePath().replace(file.getName(), "");
-				getCommandManager().invokeCommand(CommandFactory.getInstance().load(provFilePath, dir));
+				String dir = "";
+				int i = 0;
+				for (File f : files) {
+					if (f != null) {
+						dir = f.getAbsolutePath().replace(f.getName(), "");
+						fileNames[i] = f.getAbsolutePath();
+						i++;
+						lastDirectory = dir;
+					}
+				}
+				getCommandManager().invokeCommand(CommandFactory.getInstance().load(fileNames, dir));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -462,7 +476,8 @@ public class App extends Application {
 		try {
 			// read the configuration file
 			control.Controller.loadConfiguration();
-
+			App.setLastDirectory(Configuration.lastDirectory);
+			
 			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
 				Session.startSession(Configuration.gpuDevice);
 
@@ -502,6 +517,14 @@ public class App extends Application {
 
 	public static void setTabbedMatrixGraphPane(Visual tabbedMatrixGraphPane) {
 		App.tabbedMatrixGraphPane = tabbedMatrixGraphPane;
+	}
+
+	public static String getLastDirectory() {
+		return lastDirectory;
+	}
+
+	public static void setLastDirectory(String lastDirectory) {
+		App.lastDirectory = lastDirectory;
 	}
 
 }

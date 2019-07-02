@@ -1,5 +1,9 @@
 package command;
 
+import com.josericardojunior.domain.Dominoes;
+
+import model.ProvMatrix.Relation;
+
 public abstract class AbstractCommand {
 
 	public static final String UNDO_COMMAND = "UNDO";
@@ -47,5 +51,13 @@ public abstract class AbstractCommand {
 	protected abstract boolean doIt();
 
 	protected abstract boolean undoIt();
+
+	protected String cmd(Dominoes d) {
+		String cmd = d.getRelation().getAbbreviate().replace(" ", "");
+		if (d.getRelation() == Relation.RELATION_INFLUENCE) {
+			cmd = cmd + "[" + d.getIdRow() + ", " + d.getIdCol() + "]";
+		}
+		return cmd;
+	}
 
 }

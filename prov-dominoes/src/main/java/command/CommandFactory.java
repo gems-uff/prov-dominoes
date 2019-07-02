@@ -103,8 +103,8 @@ public class CommandFactory {
 		this.pieceCounter = pieceCounter;
 	}
 
-	public AbstractCommand load(String provFilePath,String dir) {
-		return new LoadCommand(provFilePath, dir);
+	public AbstractCommand load(String[] filePaths, String dir) {
+		return new LoadCommand(filePaths, dir);
 	}
 
 	public AbstractCommand undo(int count) {
