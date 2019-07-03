@@ -5,9 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import com.josericardojunior.arch.Session;
@@ -27,12 +26,19 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import util.ConfigurationFile;
 
 public class App extends Application {
 
@@ -51,7 +57,6 @@ public class App extends Application {
 	private static Scene scene;
 	private static Stage stage;
 
-	private static String lastDirectory = ".";
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -62,32 +67,22 @@ public class App extends Application {
 			App.stage.centerOnScreen();
 			App.stage.setTitle("Prov-Dominoes [" + Configuration.processingUnit + "]");
 			App.stage.setResizable(Configuration.resizable);
-			App.setLastDirectory(Configuration.lastDirectory);
 
 			App.menu = new DominoesMenuBar();
 			App.commandManager = new CommandManager(menu);
 
 			App.set();
 
-			if (Configuration.resizableTimeOnFullScreen) {
-				App.fillTimeHistoricPointers();
-			}
-
 			if (!Configuration.automaticCheck) {
 				App.clear();
 			}
 
 		} catch (Exception ex) {
-			System.err.println(ex.getMessage());
+			alertException(ex, "Erro ao iniciar Prov-Dominoes!");
 		}
 
 		App.stage.show();
 
-	}
-
-	private static void fillTimeHistoricPointers() {
-		App.setFullscreen(!stage.isFullScreen());
-		App.setFullscreen(!stage.isFullScreen());
 	}
 
 	/**
@@ -129,28 +124,46 @@ public class App extends Application {
 		App.movementCanvas.saveAllAndSendToList();
 	}
 
-	public static void setTimelime() {
+	public static void alert(AlertType t, String title, String header, String message) {
+		Alert alert = new Alert(t);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(message);
+		alert.showAndWait();
+	}
 
-		double min = 0, max = 0;
+	public static void alertException(Exception e, String message) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Erro");
+		alert.setHeaderText("Erro não identificado!");
+		alert.setContentText(message);
 
-		Calendar beginDate = Calendar.getInstance();
-		beginDate.setTime(Configuration.beginDate);
-		Calendar endDate = Calendar.getInstance();
-		endDate.setTime(Configuration.endDate);
+		// Create expandable Exception.
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		String exceptionText = sw.toString();
 
-		try {
-			min = beginDate.get(Calendar.YEAR) * 12;
-			min += beginDate.get(Calendar.MONTH);
+		Label label = new Label("The exception stacktrace was:");
 
-			max = endDate.get(Calendar.YEAR) * 12;
-			max += endDate.get(Calendar.MONTH);
+		TextArea textArea = new TextArea(exceptionText);
+		textArea.setEditable(false);
+		textArea.setWrapText(true);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		max = max - min;
-		min = 0;
+		textArea.setMaxWidth(Double.MAX_VALUE);
+		textArea.setMaxHeight(Double.MAX_VALUE);
+		GridPane.setVgrow(textArea, Priority.ALWAYS);
+		GridPane.setHgrow(textArea, Priority.ALWAYS);
 
+		GridPane expContent = new GridPane();
+		expContent.setMaxWidth(Double.MAX_VALUE);
+		expContent.add(label, 0, 0);
+		expContent.add(textArea, 0, 1);
+
+		// Set expandable Exception into the dialog pane.
+		alert.getDialogPane().setExpandableContent(expContent);
+
+		alert.showAndWait();
 	}
 
 	/**
@@ -200,14 +213,30 @@ public class App extends Application {
 		App.stage.setScene(App.scene);
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			public void handle(WindowEvent we) {
-				Platform.setImplicitExit(false);
-				stage.close();
-				System.exit(0);
+				executeExit();
 			}
 		});
-
 		App.setFullscreen(Configuration.fullscreen);
 
+	}
+
+	public static void executeExit() {
+		Platform.setImplicitExit(false);
+		try {
+			new ConfigurationFile().updateConfiguration();
+		} catch (IOException e) {
+			alert(AlertType.ERROR, "Erro de IO", "Falha na atualização de configuração",
+					"Erro de IO ao tentar atualizar as configurações em configuration.properties");
+			stage.close();
+			System.exit(1);
+		} catch (Exception e) {
+			alert(AlertType.ERROR, "Erro de IO", "Falha na atualização de configuração",
+					"Erro não identificado ao tentar atualizar as configurações em configuration.properties");
+			stage.close();
+			System.exit(1);
+		}
+		stage.close();
+		System.exit(0);
 	}
 
 	@Override
@@ -320,7 +349,8 @@ public class App extends Application {
 	public static void openProv() {
 		try {
 			FileChooser fileChooser = new FileChooser();
-			fileChooser.setInitialDirectory(new File(lastDirectory));
+			fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
+			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("W3C PROV-N (*.provn)", "*.provn"));
 			List<File> files = fileChooser.showOpenMultipleDialog(stage);
 			if (files != null) {
 				String[] fileNames = new String[files.size()];
@@ -333,13 +363,13 @@ public class App extends Application {
 						dir = f.getAbsolutePath().replace(f.getName(), "");
 						fileNames[i] = f.getAbsolutePath();
 						i++;
-						lastDirectory = dir;
+						Configuration.lastDirectory = dir;
 					}
 				}
 				getCommandManager().invokeCommand(CommandFactory.getInstance().load(fileNames, dir));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			alertException(e, "Erro ao tentar abrir arquivo PROV-N!");
 		}
 
 	}
@@ -347,8 +377,8 @@ public class App extends Application {
 	public static void exportScript() {
 		try {
 			FileChooser fileChooser = new FileChooser();
-			fileChooser.setInitialDirectory(new File("."));
-			fileChooser.setInitialFileName("commands.pd");
+			fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
+			fileChooser.setInitialFileName("commands.ces");
 			File file = fileChooser.showSaveDialog(stage);
 			if (file != null) {
 				file.delete();
@@ -363,7 +393,7 @@ public class App extends Application {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			alertException(e, "Erro ao tentar exportar script");
 		}
 
 	}
@@ -371,7 +401,8 @@ public class App extends Application {
 	public static void importScript() {
 		try {
 			FileChooser fileChooser = new FileChooser();
-			fileChooser.setInitialDirectory(new File("."));
+			fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
+			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Command Evolution Script (*.ces)", "*.ces"));
 			File file = fileChooser.showOpenDialog(stage);
 			if (file != null) {
 				getCommandManager().setDir(file.getAbsolutePath().replace(file.getName(), ""));
@@ -398,7 +429,7 @@ public class App extends Application {
 				fr.close();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			alertException(e, "Erro ao tentar importar script!");
 		}
 	}
 
@@ -476,8 +507,7 @@ public class App extends Application {
 		try {
 			// read the configuration file
 			control.Controller.loadConfiguration();
-			App.setLastDirectory(Configuration.lastDirectory);
-			
+
 			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
 				Session.startSession(Configuration.gpuDevice);
 
@@ -486,8 +516,8 @@ public class App extends Application {
 			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
 				Session.closeSection();
 
-		} catch (Exception ex) {
-			System.err.println(ex.getMessage());
+		} catch (Exception e) {
+			alertException(e, "Erro desconhecido ao tentar iniciar aplicação!");
 		}
 	}
 
@@ -517,14 +547,6 @@ public class App extends Application {
 
 	public static void setTabbedMatrixGraphPane(Visual tabbedMatrixGraphPane) {
 		App.tabbedMatrixGraphPane = tabbedMatrixGraphPane;
-	}
-
-	public static String getLastDirectory() {
-		return lastDirectory;
-	}
-
-	public static void setLastDirectory(String lastDirectory) {
-		App.lastDirectory = lastDirectory;
 	}
 
 }

@@ -119,7 +119,7 @@ public class DominoesMenuBar extends MenuBar {
 
 			@Override
 			public void handle(ActionEvent event) {
-				System.exit(0);
+				App.executeExit();
 			}
 		});
 
@@ -188,8 +188,6 @@ public class DominoesMenuBar extends MenuBar {
 				App.setFullscreen(mHistoryFullscreen.isSelected());
 			}
 		});
-		// ----------TIME PANE MENU
-		// ITENS----------------------------------------------------
 		mHistoryShowGraph.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
