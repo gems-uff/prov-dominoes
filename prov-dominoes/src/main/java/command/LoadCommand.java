@@ -76,7 +76,14 @@ public class LoadCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return "LOAD(\"" + filePaths + "\")";
+		String files = "";
+		for (int i = 0; i < filePaths.length; i++) {
+			files += filePaths[i] + ",";
+		}
+		if (filePaths.length > 0) {
+			files = files.substring(0, files.length() - 1);
+		}
+		return "LOAD(\"" + files + "\")";
 	}
 
 }
