@@ -5,8 +5,6 @@
  */
 package util;
 
-import domain.Configuration;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,7 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import boundary.App;
+import domain.Configuration;
 
 /**
  *
@@ -81,7 +79,8 @@ public class ConfigurationFile {
 					} else if (valueVariable.compareTo("true") == 0) {
 						Configuration.resizable = true;
 					}
-				} if (nameVariable.compareTo("telemetry") == 0) {
+				}
+				if (nameVariable.compareTo("telemetry") == 0) {
 					if (valueVariable.compareTo("false") == 0) {
 						Configuration.telemetry = false;
 					} else if (valueVariable.compareTo("true") == 0) {
@@ -92,12 +91,6 @@ public class ConfigurationFile {
 						Configuration.automaticCheck = false;
 					} else if (valueVariable.compareTo("true") == 0) {
 						Configuration.automaticCheck = true;
-					}
-				} else if (nameVariable.compareTo("resizetimeonfullscreen") == 0) {
-					if (valueVariable.compareTo("false") == 0) {
-						Configuration.resizableTimeOnFullScreen = false;
-					} else if (valueVariable.compareTo("true") == 0) {
-						Configuration.resizableTimeOnFullScreen = true;
 					}
 				} else if (nameVariable.compareTo("lastdirectory") == 0) {
 					Configuration.lastDirectory = valueVariable;
@@ -125,7 +118,25 @@ public class ConfigurationFile {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
 			bw.write("fullscreen=false\r\n" + "autoSave=false\r\n" + "visibilityHistoric=true\r\n"
 					+ "visibilityType=true\r\n" + "resizable=true\r\n" + "automaticCheck=false\r\n" + "width=1000.0\r\n"
-					+ "height=600.0\r\n" + "listWidth=130.0\r\n" + "telemetry=false\r\n" + "GPUDevice=0"+ "lastDirectory=.");
+					+ "height=600.0\r\n" + "listWidth=130.0\r\n" + "telemetry=false\r\n" + "GPUDevice=0\r\n"
+					+ "lastDirectory=.");
+
+		} catch (IOException ex) {
+			throw new IOException(ex.getMessage());
+		} catch (Exception ex) {
+			throw new Exception(ex.getMessage());
+		}
+	}
+
+	public void updateConfiguration() throws IOException, Exception {
+		File file = new File(path);
+		file.delete();
+		file.createNewFile();
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+			bw.write("fullscreen=" + Configuration.fullscreen + "\r\n" + "autoSave=" + Configuration.autoSave + "\r\n"
+					+ "visibilityHistoric=true\r\n" + "visibilityType=true\r\n" + "resizable=true\r\n"
+					+ "automaticCheck=false\r\n" + "width=1000.0\r\n" + "height=600.0\r\n" + "listWidth=130.0\r\n"
+					+ "telemetry=false\r\n" + "GPUDevice=0\r\n" + "lastDirectory=" + Configuration.lastDirectory);
 
 		} catch (IOException ex) {
 			throw new IOException(ex.getMessage());
