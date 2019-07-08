@@ -182,7 +182,7 @@ public class ListViewDominoes extends ListView<Group> {
                     try {
                         removeFromListAndArea(group);
                     } catch (IOException ex) {
-                        System.err.println(ex.getMessage());
+                    	App.alertException(ex, ex.getMessage());
                     }
                 }
             }
