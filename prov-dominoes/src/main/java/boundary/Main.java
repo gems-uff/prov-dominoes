@@ -29,7 +29,7 @@ public class Main {
             	Session.closeSection();
             
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+        	App.alertException(ex, ex.getMessage());
         }
     }
 }
