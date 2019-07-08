@@ -55,9 +55,19 @@ public abstract class AbstractCommand {
 	protected String cmd(Dominoes d) {
 		String cmd = d.getRelation().getAbbreviate().replace(" ", "");
 		if (d.getRelation() == Relation.RELATION_INFLUENCE) {
-			cmd = cmd + "[" + d.getIdRow() + ", " + d.getIdCol() + "]";
+			cmd = cmd + "[" + d.getIdRow() + "," + d.getIdCol() + "]";
 		}
 		return cmd;
+	}
+	
+	public void updateCommandManager(CommandManager cmd, boolean reproducing) {
+		if (doIt()) {
+			System.out.println(getName());
+			cmd.addToHistory(this);
+			cmd.generateCommandId(this, reproducing);
+		} else {
+			cmd.getHistory().clear();
+		}
 	}
 
 }

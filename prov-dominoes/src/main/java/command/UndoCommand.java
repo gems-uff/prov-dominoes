@@ -46,4 +46,11 @@ public class UndoCommand extends AbstractCommand implements Undo {
 		this.count = count;
 	}
 
+	@Override
+	public void updateCommandManager(CommandManager cmd, boolean reproducing) {
+		cmd.undo();
+		cmd.generateCommandId(this, reproducing);
+		
+	}
+
 }
