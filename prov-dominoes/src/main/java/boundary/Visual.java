@@ -86,18 +86,6 @@ public class Visual extends BorderPane {
         
     }
     
-    void addTabTree(Dominoes domino) {
-        Tab tab = new Tab("Tree: " + domino.getIdRow() + "x" + domino.getIdCol() + " " + this.tabPane.getTabs().size());
-        TreePane graphPane = new TreePane(domino);
-        
-        tab.setContent(graphPane);
-        Tooltip.install(tab.getGraphic(), new Tooltip(domino.getHistoric().toString()));
-
-        this.tabPane.getTabs().add(tab);
-        this.tabPane.getSelectionModel().selectLast();
-        
-    }
-    
     public void clear(){
     	this.tabPane.getTabs().clear();
     }

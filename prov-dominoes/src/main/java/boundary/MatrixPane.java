@@ -1,12 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package boundary;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.josericardojunior.arch.Cell;
+import com.josericardojunior.arch.MatrixDescriptor;
+import com.josericardojunior.domain.Dominoes;
 
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
@@ -20,15 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
-import com.josericardojunior.arch.Cell;
-import com.josericardojunior.arch.MatrixDescriptor;
-import com.josericardojunior.domain.Dominoes;
 
-/**
- *
- * @author Daniel
- */
-@SuppressWarnings("restriction")
 public class MatrixPane extends Pane {
 	
     private double maxZoom = 2;
