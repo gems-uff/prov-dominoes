@@ -6,7 +6,7 @@ import java.io.StringWriter;
 import java.util.LinkedList;
 
 import boundary.App;
-import boundary.DominoesMenuBar;
+import boundary.ProvDominoesMenuBar;
 import boundary.HistoricNodeCommand;
 import control.ScriptController;
 
@@ -16,7 +16,7 @@ public class CommandManager {
 	private LinkedList<AbstractCommand> redoList;
 	private AbstractCommand lastCommand;
 	private AbstractCommand previousCommand;
-	private DominoesMenuBar menu;
+	private ProvDominoesMenuBar menu;
 	private ScriptController scriptController;
 
 	public CommandManager() {
@@ -33,7 +33,7 @@ public class CommandManager {
 		this.scriptController.setDir(dir);
 	}
 
-	public CommandManager(DominoesMenuBar menu) {
+	public CommandManager(ProvDominoesMenuBar menu) {
 		this();
 		this.menu = menu;
 	}
