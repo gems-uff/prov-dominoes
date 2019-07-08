@@ -47,7 +47,7 @@ public class App extends Application {
 	private static SplitPane mainPane;
 
 	private static ActionHistoryGraphPane topPane;
-	private static DominoesMenuBar menu;
+	private static ProvDominoesMenuBar menu;
 
 	private static SplitPane bottomPane;
 	private static ListViewDominoes pieceSelectorList;
@@ -68,7 +68,7 @@ public class App extends Application {
 			App.stage.setTitle("Prov-Dominoes [" + Configuration.processingUnit + "]");
 			App.stage.setResizable(Configuration.resizable);
 
-			App.menu = new DominoesMenuBar();
+			App.menu = new ProvDominoesMenuBar();
 			App.commandManager = new CommandManager(menu);
 
 			App.set();

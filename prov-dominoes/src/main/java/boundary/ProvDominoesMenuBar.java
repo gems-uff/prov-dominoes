@@ -12,7 +12,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 
-public class DominoesMenuBar extends MenuBar {
+public class ProvDominoesMenuBar extends MenuBar {
 
 	// ------DOMINOES MENU
 	// ITENS-----------------------------------------------------
@@ -42,7 +42,7 @@ public class DominoesMenuBar extends MenuBar {
 	private final CheckMenuItem mHistoryFullscreen;
 	private final CheckMenuItem mHistoryShowGraph;
 
-	public DominoesMenuBar() {
+	public ProvDominoesMenuBar() {
 		this.setHeight(30);
 		// ------DOMINOES MENU
 		// ITENS-----------------------------------------------------
