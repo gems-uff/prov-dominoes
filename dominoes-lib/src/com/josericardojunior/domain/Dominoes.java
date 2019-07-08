@@ -515,7 +515,6 @@ public final class Dominoes {
 		this.setIdRow(this.getHistoric().getFirstItem());
 		this.setIdCol(this.getHistoric().getLastItem());
 
-
 		boolean swap = this.rowIsAggragatable;
 		this.rowIsAggragatable = this.colIsAggragatable;
 		this.colIsAggragatable = swap;
@@ -537,7 +536,6 @@ public final class Dominoes {
 		this.getHistoric().reverse();
 		this.setIdRow(this.getHistoric().getFirstItem());
 		this.setIdCol(this.getHistoric().getLastItem());
-
 
 		boolean swap = this.rowIsAggragatable;
 		this.rowIsAggragatable = this.colIsAggragatable;
@@ -747,10 +745,17 @@ public final class Dominoes {
 	}
 
 	public String getId() {
+		if (this.id == null) {
+			this.id = getRelation().getAbbreviate().replace(" ", "");
+			if (getRelation() == Relation.RELATION_INFLUENCE) {
+				this.id += "[" + this.getIdRow() + "," + this.getIdCol() + "]";
+			}
+		}
 		return this.id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
 	}
+
 }

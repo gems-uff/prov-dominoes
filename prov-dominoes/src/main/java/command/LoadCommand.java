@@ -56,10 +56,10 @@ public class LoadCommand extends AbstractCommand {
 			App.getPieceSelectorList().Configure(Controller.resultLoadMatrices);
 		} catch (IOException e) {
 			result = false;
-			e.printStackTrace();
+			App.alertException(e, e.getMessage());
 		} catch (Exception e) {
 			result = false;
-			e.printStackTrace();
+			App.alertException(e, e.getMessage());
 		}
 		return result;
 	}
