@@ -152,8 +152,7 @@ public class DominoesMenuBar extends MenuBar {
 				try {
 					App.getCommandManager().clear(true);
 				} catch (IOException e) {
-					System.out.println("Erro ao acessar script de comandos");
-					e.printStackTrace();
+					App.alertException(e, "Erro ao acessar script de comandos");
 				}
 				App.getArea().clear();
 				App.getTopPane().reset();
