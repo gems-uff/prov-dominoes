@@ -457,10 +457,6 @@ public class App extends Application {
 		tabbedMatrixGraphPane.addTabLineChart(domino);
 	}
 
-	static void drawTree(Dominoes domino) {
-		tabbedMatrixGraphPane.addTabTree(domino);
-	}
-
 	static Stage getStage() {
 		return App.stage;
 	}

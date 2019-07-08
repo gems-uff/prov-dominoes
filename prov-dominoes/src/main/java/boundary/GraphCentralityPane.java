@@ -503,7 +503,7 @@ public class GraphCentralityPane extends BorderPane {
 		@Override
 		public boolean evaluate(Context<Graph<String, String>, String> context) {
 			String e = context.element;
-			return links.get(e).getWediht() >= threshold;
+			return links.get(e).getWeight() >= threshold;
 		}
 
 		public void setThreshold(float threshold) {
