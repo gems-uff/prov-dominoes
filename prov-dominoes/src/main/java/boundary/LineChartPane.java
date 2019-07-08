@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package boundary;
 
 import java.util.ArrayList;
@@ -24,10 +19,8 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
@@ -36,11 +29,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 
 
-/**
- *
- * @author Daniel
- */
-@SuppressWarnings("restriction")
 public class LineChartPane extends Pane {
 
 	private static final String TYPE_ORDER_BY_NORMAL = "Normal";
@@ -193,7 +181,6 @@ public class LineChartPane extends Pane {
     	hBox.setSpacing(10);
     	hBox.setStyle("-fx-background-color: #66FFFF;");
     	
-    	final ToggleGroup optionGroup = new ToggleGroup();
     	
     	Label lSelectedRow = new Label("Selected Row: ");
     	lSelectedRow.setPrefSize(100,  20);
@@ -212,17 +199,15 @@ public class LineChartPane extends Pane {
 
     }
 
-    @SuppressWarnings("rawtypes")
 	private synchronized void drawChart(Dominoes domino) {
     	
     	int _nCols = domino.getMat().getMatrixDescriptor().getNumCols();
-    	int _nRows = domino.getMat().getMatrixDescriptor().getNumRows();
     	
     	lc.getXAxis().setTickLabelFont(new Font("Lucida Console", (int)lc.getXAxis().getTickLabelFont().getSize()));
     	
         // Fill Chart
         lc.getData().removeAll(lc.getData());
-        Map<String, XYChart.Series> series = new HashMap<String, XYChart.Series>();
+        Map<String, XYChart.Series<String, Number>> series = new HashMap<String, XYChart.Series<String, Number>>();
         
         String itemSelected = cbSelectedRow.getSelectionModel().getSelectedItem();
         
@@ -290,39 +275,27 @@ public class LineChartPane extends Pane {
         	nameRow = domino.getMat().getMatrixDescriptor().getRowAt(cells.get(i).row);
         	nameCol = domino.getMat().getMatrixDescriptor().getColumnAt(cells.get(i).col);
         	
-        	XYChart.Series currentSerie = series.get(nameCol);
+        	XYChart.Series<String, Number> currentSerie = series.get(nameCol);
         	if (currentSerie == null){
-        		currentSerie = new XYChart.Series();
+        		currentSerie = new XYChart.Series<String, Number>();
         		currentSerie.setName(nameCol); //row name
         		series.put(nameCol, currentSerie);	
         	}
-        	
-            
-        	
-        	Data data = new XYChart.Data(nameRow, cells.get(i).value);
-        	currentSerie.getData().add(data);
+        	currentSerie.getData().add(new XYChart.Data<String,Number>(nameRow, cells.get(i).value));
 
         }
         
-        for (Map.Entry<String, XYChart.Series> _serie : series.entrySet()){
+        for (Map.Entry<String, XYChart.Series<String,Number>> _serie : series.entrySet()){
         	lc.getData().add(_serie.getValue());
         }
         
-        // 4 - end
-
-        // Draw Chart        
-        
-        float maxValue = domino.getMat().findMaxValue();
-        float minValue = domino.getMat().findMinValue();
         
         double fontSize = lc.getXAxis().getTickLabelFont().getSize();
     	double textLarger = 0;
         	
-    	int select = 0;
     	for(int i = 0; i < _nCols; i++){
     		if(domino.getMat().getMatrixDescriptor().getColumnAt(i).length() > textLarger){
     			textLarger = domino.getMat().getMatrixDescriptor().getColumnAt(i).length();
-    			select = i;
     		}
     	}
     	lc.setPrefWidth(_nCols * fontSize * 2);

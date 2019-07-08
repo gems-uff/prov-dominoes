@@ -29,7 +29,7 @@ public class NodeLink {
 		return color;
 	}
 
-	public float getWediht() {
+	public float getWeight() {
 		return weight;
 	}
 
@@ -73,9 +73,6 @@ public class NodeLink {
 		this.capacity = capacity;
 	}
 
-	public float getWeight() {
-		return weight;
-	}
 
 	public void setWeight(float weight) {
 		this.weight = weight;
