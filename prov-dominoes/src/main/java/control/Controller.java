@@ -237,8 +237,4 @@ public class Controller {
 
 	}
 
-//	public static void changeMatrixHeaderColor(Color color){
-//		App.getVisual().getCh
-//		
-//	}
 }
