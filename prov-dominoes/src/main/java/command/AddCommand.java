@@ -47,7 +47,7 @@ public class AddCommand extends AbstractCommand {
 				App.getArea().add(addedDominoes, this.index);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			App.alertException(e, e.getMessage());
 			success = false;
 		}
 		return success;
