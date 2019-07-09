@@ -90,7 +90,6 @@ public class AreaMove extends Pane {
 		MenuItem menuItemViewMatrix = new MenuItem("Matrix");
 		MenuItem menuItemViewChart = new MenuItem("Bar Chart");
 		MenuItem menuItemViewLineChart = new MenuItem("Line Chart");
-		MenuItem menuItemViewTree = new MenuItem("Tree");
 		MenuItem menuItemClose = new MenuItem("Close");
 
 		MenuItem menuItemBinarizeFilter = new MenuItem("Binarize");
@@ -350,8 +349,6 @@ public class AreaMove extends Pane {
 					drawMatrix(domino);
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewChart.getText())) {
 					drawChart(domino);
-				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewTree.getText())) {
-					drawTree(domino);
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemViewLineChart.getText())) {
 					drawLineChart(domino);
 				}
@@ -362,8 +359,8 @@ public class AreaMove extends Pane {
 				menuItemTransitiveClosure);
 		menuFilters.getItems().addAll(menuItemBinarizeFilter, menuItemInvertFilter, menuItemDiagonalFilter,
 				menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter);
-		menuView.getItems().addAll(menuItemViewChart, /* menuItemViewLineChart, */
-				menuItemViewGraph, menuItemViewEigenCentrality, menuItemViewMatrix/* , menuItemViewTree */);
+		menuView.getItems().addAll(menuItemViewChart,  menuItemViewLineChart, 
+				menuItemViewGraph, menuItemViewEigenCentrality, menuItemViewMatrix);
 		minimenu.getItems().addAll(menuOperate, menuFilters, menuView, menuItemSaveInList, menuItemClose);
 		this.setVisibleType();
 		return piece;
@@ -686,10 +683,6 @@ public class AreaMove extends Pane {
 
 	private void drawLineChart(Dominoes domino) {
 		App.drawLineChart(domino);
-	}
-
-	private void drawTree(Dominoes domino) {
-		App.drawTree(domino);
 	}
 
 	public MoveData getData() {

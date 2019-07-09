@@ -27,4 +27,10 @@ public class RedoCommand extends AbstractCommand implements Redo {
 		this.id = id;
 	}
 
+	@Override
+	public void updateCommandManager(CommandManager cmd, boolean reproducing) {
+		cmd.generateCommandId(this, reproducing);
+		cmd.redo();
+	}
+
 }

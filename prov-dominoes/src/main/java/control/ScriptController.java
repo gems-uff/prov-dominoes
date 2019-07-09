@@ -84,7 +84,7 @@ public class ScriptController {
 				if (cmdName.equals(AbstractCommand.ADD_COMMAND)) {
 					String trigram = token[1].split("\\(")[1];
 					for (Dominoes d : App.getList().getDominoes()) {
-						if (d.getRelation().getAbbreviate().replace(" ", "").equals(trigram)) {
+						if (d.getId().equals(trigram)) {
 							int index = App.getList().getDominoes().indexOf(d);
 							piece = App.getList().getPieces().get(index);
 							break;

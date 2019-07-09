@@ -152,7 +152,7 @@ public class ListViewDominoes extends ListView<Group> {
                     	Dominoes d = dominoes.get(index);
                     	String trigram = d.getRelation().getAbbreviate().replace(" ", "");
                 		if (d.getRelation() == Relation.RELATION_INFLUENCE) {
-                			trigram = trigram + "[" + d.getIdRow() + ", " + d.getIdCol() + "]";
+                			trigram = trigram + "[" + d.getIdRow() + "," + d.getIdCol() + "]";
                 		}
                         App.getCommandManager().invokeCommand(new CommandFactory().add(trigram));
                     }
@@ -182,7 +182,7 @@ public class ListViewDominoes extends ListView<Group> {
                     try {
                         removeFromListAndArea(group);
                     } catch (IOException ex) {
-                        System.err.println(ex.getMessage());
+                    	App.alertException(ex, ex.getMessage());
                     }
                 }
             }

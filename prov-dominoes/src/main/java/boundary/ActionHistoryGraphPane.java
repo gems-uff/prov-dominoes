@@ -181,8 +181,7 @@ public class ActionHistoryGraphPane extends BorderPane {
 					try {
 						App.getCommandManager().reproduce(commands);
 					} catch (IOException e) {
-						System.out.println("Failed trying to access script file!");
-						e.printStackTrace();
+						App.alertException(e, "Failed trying to access script file!");
 					}
 					lastCommand = cmd;
 				}

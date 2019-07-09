@@ -12,6 +12,7 @@ gitdataminer/.settings/
 
 .classpath
 .project
+configuration.properties
 
 .metadata
 .recommenders
