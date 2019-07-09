@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package util;
 
 import java.io.BufferedReader;
@@ -14,20 +9,10 @@ import java.io.IOException;
 
 import domain.Configuration;
 
-/**
- *
- * @author Daniel
- */
 public class ConfigurationFile {
 
 	private String path = "configuration.properties";
 
-	/**
-	 * This Functions is used to load the basic configuration of system
-	 *
-	 * @throws IOException
-	 * @throws Exception
-	 */
 	public void loadConfigurationFile() throws IOException, Exception {
 
 		File file = new File(path);
