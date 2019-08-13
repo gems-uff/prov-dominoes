@@ -2,7 +2,7 @@ package command;
 
 import com.josericardojunior.domain.Dominoes;
 
-import model.ProvMatrix.Relation;
+import model.ProvRelation.Relation;
 
 public abstract class AbstractCommand {
 

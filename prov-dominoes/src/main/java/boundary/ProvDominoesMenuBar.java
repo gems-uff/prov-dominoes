@@ -37,10 +37,15 @@ public class ProvDominoesMenuBar extends MenuBar {
 	// ------COFIGURATION MENU
 	// ITENS-------------------------------------------------
 
-	// ------TIME MENU ITENS----------------------------------------------------
+	// ------VIEW MENU ITENS----------------------------------------------------
 	private final Menu mView;
 	private final CheckMenuItem mHistoryFullscreen;
 	private final CheckMenuItem mHistoryShowGraph;
+
+	// ------FACTORY MENU ITENS----------------------------------------------------
+	private final Menu mFactory;
+	private final CheckMenuItem mDefaultFactory;
+	private final CheckMenuItem mExtendedFactory;
 
 	public ProvDominoesMenuBar() {
 		this.setHeight(30);
@@ -57,6 +62,13 @@ public class ProvDominoesMenuBar extends MenuBar {
 
 		this.mainMenu.getItems().addAll(this.mainMenuOpenProv, this.mainMenuExportScript, this.mainMenuImportScript,
 				this.mainMenuSeparator, this.mainMenuExit);
+
+		this.mFactory = new Menu("Factory");
+		this.mDefaultFactory = new CheckMenuItem("Default");
+		this.mDefaultFactory.setSelected(Configuration.defaultFactory);
+		this.mExtendedFactory = new CheckMenuItem("Extended");
+		this.mExtendedFactory.setSelected(!Configuration.defaultFactory);
+		this.mFactory.getItems().addAll(this.mDefaultFactory, this.mExtendedFactory);
 
 		// ------EDIT MENU
 		// ITENS---------------------------------------------------------
@@ -81,13 +93,13 @@ public class ProvDominoesMenuBar extends MenuBar {
 		this.mHistoryShowGraph = new CheckMenuItem("View History Graph");
 		this.mHistoryShowGraph.setSelected(Configuration.visibilityTimePane);
 		this.mHistoryFullscreen = new CheckMenuItem("Full Screen");
-		this.mHistoryFullscreen.setSelected(Configuration.fullscreen);
+		this.mHistoryFullscreen.setSelected(Configuration.fullScreen);
 		this.mView = new Menu("View");
 		this.mView.getItems().addAll(mHistoryFullscreen, mHistoryShowGraph);
 
 		// ------MENU
 		// ITENS--------------------------------------------------------------
-		this.getMenus().addAll(this.mainMenu, this.editMenu, mView);
+		this.getMenus().addAll(this.mainMenu, this.editMenu, mFactory, mView);
 		// this.getMenus().addAll(this.mainMenu, this.mEdit, this.mConfiguration);
 
 		// ------ADD
@@ -196,6 +208,24 @@ public class ProvDominoesMenuBar extends MenuBar {
 
 			}
 		});
+		// ----------FACTORY MENU
+		// ITENS------------------------------------------------
+		this.mDefaultFactory.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.getMenu().getmExtendedFactory().setSelected(false);
+				Configuration.defaultFactory = true;
+			}
+		});
+		this.mExtendedFactory.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.getMenu().getmDefaultFactory().setSelected(false);
+				Configuration.defaultFactory = false;
+			}
+		});
 	}
 
 	public MenuItem getEditMenuUndo() {
@@ -204,6 +234,14 @@ public class ProvDominoesMenuBar extends MenuBar {
 
 	public MenuItem getEditMenuRedo() {
 		return editMenuRedo;
+	}
+
+	public CheckMenuItem getmDefaultFactory() {
+		return mDefaultFactory;
+	}
+
+	public CheckMenuItem getmExtendedFactory() {
+		return mExtendedFactory;
 	}
 
 }

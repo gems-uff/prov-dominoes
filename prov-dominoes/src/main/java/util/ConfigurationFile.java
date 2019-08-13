@@ -24,45 +24,55 @@ public class ConfigurationFile {
 		}
 
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-			int amount = 1;
 			String line = br.readLine();
 			String separator = "=";
 			String nameVariable = null;
 			String valueVariable = null;
 			int firstSeparator = 0;
-			while (amount <= Configuration.amount && line != null) {
+			while (line != null) {
 				firstSeparator = line.indexOf(separator);
-				nameVariable = line.substring(0, firstSeparator).trim().toLowerCase();
-				valueVariable = line.substring(firstSeparator + 1).trim().toLowerCase();
-				if (nameVariable.compareTo("fullscreen") == 0) {
+				nameVariable = line.substring(0, firstSeparator).trim();
+				valueVariable = line.substring(firstSeparator + 1).trim();
+				if (nameVariable.compareTo("fullScreen") == 0) {
 					if (valueVariable.compareTo("false") == 0) {
-						Configuration.fullscreen = false;
+						Configuration.fullScreen = false;
 					} else if (valueVariable.compareTo("true") == 0) {
-						Configuration.fullscreen = true;
+						Configuration.fullScreen = true;
 					}
-				} else if (nameVariable.compareTo("autosave") == 0) {
+				}
+				if (nameVariable.compareTo("autoSave") == 0) {
 					if (valueVariable.compareTo("false") == 0) {
 						Configuration.autoSave = false;
 					} else if (valueVariable.compareTo("true") == 0) {
 						Configuration.autoSave = true;
 					}
-				} else if (nameVariable.compareTo("visibilityhistoric") == 0) {
+				}
+				if (nameVariable.compareTo("visibilityHistoric") == 0) {
 					if (valueVariable.compareTo("false") == 0) {
 						Configuration.visibilityHistoric = false;
 					} else if (valueVariable.compareTo("true") == 0) {
 						Configuration.visibilityHistoric = true;
 					}
-				} else if (nameVariable.compareTo("visibilitytype") == 0) {
+				}
+				if (nameVariable.compareTo("visibilityType") == 0) {
 					if (valueVariable.compareTo("false") == 0) {
 						Configuration.visibilityType = false;
 					} else if (valueVariable.compareTo("true") == 0) {
 						Configuration.visibilityType = true;
 					}
-				} else if (nameVariable.compareTo("resizable") == 0) {
+				}
+				if (nameVariable.compareTo("resizable") == 0) {
 					if (valueVariable.compareTo("false") == 0) {
 						Configuration.resizable = false;
 					} else if (valueVariable.compareTo("true") == 0) {
 						Configuration.resizable = true;
+					}
+				}
+				if (nameVariable.compareTo("defaultFactory") == 0) {
+					if (valueVariable.compareTo("false") == 0) {
+						Configuration.defaultFactory = false;
+					} else if (valueVariable.compareTo("true") == 0) {
+						Configuration.defaultFactory = true;
 					}
 				}
 				if (nameVariable.compareTo("telemetry") == 0) {
@@ -71,25 +81,30 @@ public class ConfigurationFile {
 					} else if (valueVariable.compareTo("true") == 0) {
 						Configuration.telemetry = true;
 					}
-				} else if (nameVariable.compareTo("automaticcheck") == 0) {
+				}
+				if (nameVariable.compareTo("automaticCheck") == 0) {
 					if (valueVariable.compareTo("false") == 0) {
 						Configuration.automaticCheck = false;
 					} else if (valueVariable.compareTo("true") == 0) {
 						Configuration.automaticCheck = true;
 					}
-				} else if (nameVariable.compareTo("lastdirectory") == 0) {
+				}
+				if (nameVariable.compareTo("lastDirectory") == 0) {
 					Configuration.lastDirectory = valueVariable;
-				} else if (nameVariable.compareTo("width") == 0 && isDouble(valueVariable)) {
+				}
+				if (nameVariable.compareTo("width") == 0 && isDouble(valueVariable)) {
 					Configuration.width = Double.parseDouble(valueVariable);
-				} else if (nameVariable.compareTo("height") == 0 && isDouble(valueVariable)) {
+				}
+				if (nameVariable.compareTo("height") == 0 && isDouble(valueVariable)) {
 					Configuration.height = Double.parseDouble(valueVariable);
-				} else if (nameVariable.compareTo("listwidth") == 0 && isDouble(valueVariable)) {
+				}
+				if (nameVariable.compareTo("listWidth") == 0 && isDouble(valueVariable)) {
 					Configuration.listWidth = Double.parseDouble(valueVariable);
-				} else if (nameVariable.compareTo("GPUDevice") == 0) {
-					Configuration.gpuDevice = Integer.parseInt(valueVariable);
+				}
+				if (nameVariable.compareTo("gpuDevice") == 0) {
+					Configuration.listWidth = Integer.parseInt(valueVariable);
 				}
 				line = br.readLine();
-				amount++;
 			}
 
 		} catch (IOException ex) {
@@ -101,10 +116,10 @@ public class ConfigurationFile {
 
 	private void resetConfiguration(File file) throws IOException, Exception {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-			bw.write("fullscreen=false\r\n" + "autoSave=false\r\n" + "visibilityHistoric=true\r\n"
+			bw.write("fullScreen=false\r\n" + "autoSave=false\r\n" + "visibilityHistoric=true\r\n"
 					+ "visibilityType=true\r\n" + "resizable=true\r\n" + "automaticCheck=false\r\n" + "width=1000.0\r\n"
-					+ "height=600.0\r\n" + "listWidth=130.0\r\n" + "telemetry=false\r\n" + "GPUDevice=0\r\n"
-					+ "lastDirectory=.");
+					+ "height=600.0\r\n" + "listWidth=147.0\r\n" + "telemetry=false\r\n" + "defaultFactory=true\r\n"
+					+ "GPUDevice=0\r\n" + "lastDirectory=.");
 
 		} catch (IOException ex) {
 			throw new IOException(ex.getMessage());
@@ -118,10 +133,14 @@ public class ConfigurationFile {
 		file.delete();
 		file.createNewFile();
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-			bw.write("fullscreen=" + Configuration.fullscreen + "\r\n" + "autoSave=" + Configuration.autoSave + "\r\n"
-					+ "visibilityHistoric=true\r\n" + "visibilityType=true\r\n" + "resizable=true\r\n"
-					+ "automaticCheck=false\r\n" + "width=1000.0\r\n" + "height=600.0\r\n" + "listWidth=130.0\r\n"
-					+ "telemetry=false\r\n" + "GPUDevice=0\r\n" + "lastDirectory=" + Configuration.lastDirectory);
+			bw.write("fullScreen=" + Configuration.fullScreen + "\r\n" + "autoSave=" + Configuration.autoSave + "\r\n"
+					+ "visibilityHistoric=" + Configuration.visibilityHistoric + "\r\n" + "visibilityType="
+					+ Configuration.visibilityType + "\r\n" + "resizable=" + Configuration.resizable + "\r\n"
+					+ "automaticCheck=" + Configuration.automaticCheck + "\r\n" + "width=" + Configuration.width
+					+ "\r\n" + "height=" + Configuration.height + "\r\n" + "listWidth=" + Configuration.listWidth
+					+ "\r\n" + "telemetry=" + Configuration.telemetry + "\r\n" + "defaultFactory="
+					+ Configuration.defaultFactory + "\r\n" + "GPUDevice=" + Configuration.gpuDevice + "\r\n"
+					+ "lastDirectory=" + Configuration.lastDirectory);
 
 		} catch (IOException ex) {
 			throw new IOException(ex.getMessage());

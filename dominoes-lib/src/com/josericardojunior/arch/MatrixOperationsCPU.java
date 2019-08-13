@@ -736,6 +736,6 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	public boolean isEmpty() {
 		System.out.println(
 				matrixDescriptor.getRowType() + ":" + matrixDescriptor.getColType() + " density = " + data.density());
-		return data.density() == 0;
+		return data.density() == 0.0;
 	}
 }
