@@ -7,7 +7,10 @@ import com.josericardojunior.domain.Dominoes;
 
 import boundary.App;
 import control.Controller;
-import convertion.ProvMatrixGameFactory;
+import convertion.ProvMatrixFactory;
+import domain.Configuration;
+import convertion.ProvMatrixDefaultFactory;
+import convertion.ProvMatrixExtendedFactory;
 import model.ProvMatrix;
 import util.Prov2DominoesUtil;
 
@@ -46,7 +49,12 @@ public class LoadCommand extends AbstractCommand {
 	protected boolean doIt() {
 		boolean result = true;
 		try {
-			ProvMatrixGameFactory provFactory = new ProvMatrixGameFactory(filePaths, dir);
+			ProvMatrixFactory provFactory =null;
+			if (Configuration.defaultFactory) {
+				provFactory = new ProvMatrixDefaultFactory(filePaths, dir);
+			} else {
+				provFactory = new ProvMatrixExtendedFactory(filePaths, dir);
+			}
 			List<ProvMatrix> provMatrixList = provFactory.buildMatrices();
 			List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList);
 			App.getPieceSelectorList().clear();
@@ -58,6 +66,7 @@ public class LoadCommand extends AbstractCommand {
 			result = false;
 			App.alertException(e, e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			result = false;
 			App.alertException(e, e.getMessage());
 		}

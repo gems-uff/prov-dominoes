@@ -57,7 +57,6 @@ public class App extends Application {
 	private static Scene scene;
 	private static Stage stage;
 
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
@@ -216,13 +215,16 @@ public class App extends Application {
 				executeExit();
 			}
 		});
-		App.setFullscreen(Configuration.fullscreen);
+		App.setFullscreen(Configuration.fullScreen);
 
 	}
 
 	public static void executeExit() {
 		Platform.setImplicitExit(false);
 		try {
+			Configuration.width = App.stage.getWidth();
+			Configuration.height = App.stage.getHeight();
+			Configuration.listWidth = App.pieceSelectorList.getWidth();
 			new ConfigurationFile().updateConfiguration();
 		} catch (IOException e) {
 			alert(AlertType.ERROR, "Erro de IO", "Falha na atualização de configuração",
@@ -319,7 +321,7 @@ public class App extends Application {
 	 * @param fullscreen
 	 */
 	static void setFullscreen(boolean fullscreen) {
-		Configuration.fullscreen = fullscreen;
+		Configuration.fullScreen = fullscreen;
 		double padding = menu.getHeight();
 		App.stage.setFullScreen(fullscreen);
 
@@ -402,7 +404,8 @@ public class App extends Application {
 		try {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
-			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Command Evolution Script (*.ces)", "*.ces"));
+			fileChooser.getExtensionFilters()
+					.add(new FileChooser.ExtensionFilter("Command Evolution Script (*.ces)", "*.ces"));
 			File file = fileChooser.showOpenDialog(stage);
 			if (file != null) {
 				getCommandManager().setDir(file.getAbsolutePath().replace(file.getName(), ""));
@@ -543,6 +546,14 @@ public class App extends Application {
 
 	public static void setTabbedMatrixGraphPane(Visual tabbedMatrixGraphPane) {
 		App.tabbedMatrixGraphPane = tabbedMatrixGraphPane;
+	}
+
+	public static ProvDominoesMenuBar getMenu() {
+		return menu;
+	}
+
+	public static void setMenu(ProvDominoesMenuBar menu) {
+		App.menu = menu;
 	}
 
 }

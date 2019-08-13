@@ -21,7 +21,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Shape;
-import model.ProvMatrix.Relation;
+import model.ProvRelation.Relation;
 
 public class ListViewDominoes extends ListView<Group> {
 

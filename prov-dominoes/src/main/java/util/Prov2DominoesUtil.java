@@ -6,9 +6,9 @@ import java.util.List;
 import org.la4j.matrix.sparse.CRSMatrix;
 
 import com.josericardojunior.arch.Cell;
+import com.josericardojunior.arch.MatrixDescriptor;
 import com.josericardojunior.arch.MatrixOperations;
 import com.josericardojunior.arch.MatrixOperationsFactory;
-import com.josericardojunior.arch.MatrixDescriptor;
 import com.josericardojunior.domain.Dominoes;
 
 import domain.Configuration;

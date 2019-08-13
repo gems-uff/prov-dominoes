@@ -1,16 +1,16 @@
 package com.josericardojunior.domain;
 
-import javafx.scene.control.Tooltip;
+import com.josericardojunior.arch.MatrixOperations;
+import com.josericardojunior.arch.MatrixOperationsGPU;
+
 import javafx.scene.Group;
+import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import model.ProvMatrix.Relation;
-
-import com.josericardojunior.arch.MatrixOperations;
-import com.josericardojunior.arch.MatrixOperationsGPU;
+import model.ProvRelation.Relation;
 
 public final class Dominoes {
 	public final static double GRAPH_WIDTH = 100;
