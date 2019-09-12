@@ -88,7 +88,10 @@
 		<profile>
 			<id>win64</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<os>
+					<family>windows</family>
+					<arch>amd64</arch>
+				</os>
 			</activation>
 			<properties>
 				<lib.arch.dir>lib/win_64</lib.arch.dir>
@@ -100,7 +103,7 @@
 			<activation>
 				<os>
 					<family>unix</family>
-					<arch>x64</arch>
+					<arch>amd64</arch>
 				</os>
 			</activation>
 			<properties>
@@ -113,7 +116,7 @@
 			<activation>
 				<os>
 					<family>mac</family>
-					<arch>x64</arch>
+					<arch>amd64</arch>
 				</os>
 			</activation>
 			<properties>
