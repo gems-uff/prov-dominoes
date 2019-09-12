@@ -2,7 +2,7 @@ package command;
 
 import java.io.IOException;
 
-import com.josericardojunior.domain.Dominoes;
+import domain.Dominoes;
 
 import boundary.App;
 import domain.Configuration;

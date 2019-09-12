@@ -5,9 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.josericardojunior.arch.Cell;
-import com.josericardojunior.domain.Dominoes;
-
+import domain.Dominoes;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -27,6 +25,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import processor.Cell;
 
 
 public class LineChartPane extends Pane {

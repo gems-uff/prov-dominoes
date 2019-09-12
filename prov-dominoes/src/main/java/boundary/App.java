@@ -9,8 +9,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 
-import com.josericardojunior.arch.Session;
-import com.josericardojunior.domain.Dominoes;
+import arch.Session;
+import domain.Dominoes;
 
 import command.AbstractCommand;
 import command.CommandFactory;

@@ -1,6 +1,6 @@
 package boundary;
 
-import com.josericardojunior.arch.Session;
+import arch.Session;
 
 import control.Controller;
 import domain.Configuration;

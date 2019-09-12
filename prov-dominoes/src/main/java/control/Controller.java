@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import com.josericardojunior.domain.Dominoes;
+import domain.Dominoes;
 
 import domain.Configuration;
 import javafx.embed.swing.JFXPanel;

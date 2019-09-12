@@ -5,14 +5,13 @@ import java.util.List;
 
 import org.la4j.matrix.sparse.CRSMatrix;
 
-import com.josericardojunior.arch.Cell;
-import com.josericardojunior.arch.MatrixDescriptor;
-import com.josericardojunior.arch.MatrixOperations;
-import com.josericardojunior.arch.MatrixOperationsFactory;
-import com.josericardojunior.domain.Dominoes;
-
+import arch.MatrixDescriptor;
+import arch.MatrixOperations;
+import arch.MatrixOperationsFactory;
 import domain.Configuration;
+import domain.Dominoes;
 import model.ProvMatrix;
+import processor.Cell;
 
 public class Prov2DominoesUtil {
 
@@ -30,7 +29,7 @@ public class Prov2DominoesUtil {
 				System.out.println(provMatrix.getColumnDescriptors());
 				descriptor.setRowsDesc(provMatrix.getRowDescriptors());
 				descriptor.setColumnsDesc(provMatrix.getColumnDescriptors());
-				MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(Configuration.CPU_DEVICE, descriptor);
+				MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(Configuration.CPU_DEVICE, descriptor, true);
 				mat.setData(matrix2Cells(provMatrix.getMatrix()));
 				// System.out.println(mat);
 				Dominoes dom = new Dominoes(provMatrix.getRowDimentionAbbreviate(),
