@@ -52,14 +52,20 @@ public class Visual extends BorderPane {
     }
 
     void addTabMatrix(Dominoes domino) {
-        Tab tab = new Tab("Matrix: " + domino.getIdRow() + "x" + domino.getIdCol() + " " + this.tabPane.getTabs().size());
-        MatrixPane graphPane = new MatrixPane(domino);
-        
-        tab.setContent(graphPane);
-        Tooltip.install(tab.getGraphic(), new Tooltip(domino.getHistoric().toString()));
+        try {
+			Tab tab = new Tab("Matrix: " + domino.getIdRow() + "x" + domino.getIdCol() + " " + this.tabPane.getTabs().size());
+			domino.setupOperation(true);
+			MatrixPane graphPane = new MatrixPane(domino);
+			
+			tab.setContent(graphPane);
+			Tooltip.install(tab.getGraphic(), new Tooltip(domino.getHistoric().toString()));
 
-        this.tabPane.getTabs().add(tab);
-        this.tabPane.getSelectionModel().selectLast();
+			this.tabPane.getTabs().add(tab);
+			this.tabPane.getSelectionModel().selectLast();
+		} catch (Exception e) {
+			App.alertException(e, "Erro desconhecido ao tentar carregar peça no canvas!");
+			e.printStackTrace();
+		}
     }
     
     void addTabChart(Dominoes domino) {

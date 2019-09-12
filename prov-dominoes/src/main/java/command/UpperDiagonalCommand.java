@@ -42,6 +42,7 @@ public class UpperDiagonalCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
+			App.alertException(e, "Erro desconhecido ao efetuar filtro de diagonalização superior!");
 			e.printStackTrace();
 			success = false;
 		}

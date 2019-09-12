@@ -41,6 +41,7 @@ public class DiagonalizeCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
+			App.alertException(e, "Erro desconhecido ao efetuar filtro de diagonalização!");
 			e.printStackTrace();
 			success = false;
 		}

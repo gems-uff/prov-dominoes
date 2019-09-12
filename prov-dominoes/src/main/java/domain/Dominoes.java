@@ -1,5 +1,8 @@
 package domain;
 
+import org.la4j.matrix.sparse.CRSMatrix;
+
+import arch.MatrixDescriptor;
 import arch.MatrixOperations;
 import arch.MatrixOperationsGPU;
 import javafx.scene.Group;
@@ -9,6 +12,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import model.ProvMatrix;
 import model.ProvRelation.Relation;
 
 public final class Dominoes {
@@ -102,6 +106,8 @@ public final class Dominoes {
 	private MatrixOperations mat = null;
 	private int sourceIndex;
 	private String currentDevice = DEVICE_CPU;
+	private CRSMatrix crsMatrix;
+	private MatrixDescriptor descriptor;
 
 	public Dominoes(String _device) {
 		this.rowIsAggragatable = false;
@@ -109,21 +115,11 @@ public final class Dominoes {
 		currentDevice = _device;
 	}
 
-	/**
-	 * Class build. The type, for default, is Basic.
-	 *
-	 * @param idRow - identifier row of the Dominos matrix
-	 * @param idCol - identifier row of the Dominos matrix
-	 * @param mat   - matrix2D
-	 * @throws IllegalArgumentException - in case of invalid parameters
-	 */
-	public Dominoes(String idRow, String idCol, MatrixOperations mat, String _device) throws IllegalArgumentException {
+	public Dominoes(String idRow, String idCol, String _device) throws IllegalArgumentException {
 		this.rowIsAggragatable = false;
 		this.colIsAggragatable = false;
 		this.setIdRow(idRow);
 		this.setIdCol(idCol);
-
-		this.setMat(mat);
 
 		this.setHistoric(new Historic(idRow, idCol));
 
@@ -131,22 +127,31 @@ public final class Dominoes {
 		this.currentDevice = _device;
 	}
 
-	public Dominoes(String idRow, String idCol, Relation relation, MatrixOperations mat, String _device)
-			throws IllegalArgumentException {
-		this(idRow, idCol, mat, _device);
-		this.relation = relation;
+	public Dominoes(ProvMatrix provMatrix, MatrixDescriptor descriptor, String processingUnit) {
+		this(provMatrix.getRowDimentionAbbreviate(), provMatrix.getColumnDimentionAbbreviate(), processingUnit);
+		this.relation = provMatrix.getRelation();
+		this.descriptor = descriptor;
+		this.crsMatrix = provMatrix.getMatrix();
 	}
 
-	/**
-	 * Class build. The type, for default, is Derived
-	 *
-	 * @param type
-	 * @param idRow    - identifier row of the Dominos matrix
-	 * @param idCol    - identifier row of the Dominos matrix
-	 * @param historic - The dominoes historic derivated
-	 * @param mat      - matrix2D
-	 * @throws IllegalArgumentException - in case of invalid parameters
-	 */
+	public Dominoes(String idRow, String idCol, MatrixOperations mat, String _device) throws IllegalArgumentException {
+		this.rowIsAggragatable = false;
+		this.colIsAggragatable = false;
+		this.setIdRow(idRow);
+		this.setIdCol(idCol);
+		this.setMat(mat);
+		this.setHistoric(new Historic(idRow, idCol));
+		this.type = Dominoes.TYPE_BASIC;
+		this.currentDevice = _device;
+	}
+
+	public Dominoes(String idRow, String idCol, Relation relation, MatrixDescriptor descriptor, MatrixOperations mat,
+			String _device) throws IllegalArgumentException {
+		this(idRow, idCol, mat, _device);
+		this.relation = relation;
+		this.descriptor = descriptor;
+	}
+
 	public Dominoes(int type, String idRow, String idCol, Historic historic, MatrixOperationsGPU mat, String _device)
 			throws IllegalArgumentException {
 		this.rowIsAggragatable = false;
@@ -167,51 +172,6 @@ public final class Dominoes {
 		this.type = type;
 		this.currentDevice = _device;
 	}
-
-	// /**
-	// * Class build. The type, for default, is Derived
-	// *
-	// * @param type
-	// * @param idRow - identifier row of the Dominos matrix
-	// * @param idCol - identifier row of the Dominos matrix
-	// * @throws IllegalArgumentException - in case of invalid parameters
-	// */
-	// public Dominoes(int type, String idRow, String idCol) throws
-	// IllegalArgumentException {
-	// this.setIdRow(idRow);
-	// this.setIdCol(idCol);
-	//
-	// this.historic = new ArrayList<>();
-	// this.historic.add(idRow);
-	// this.historic.add(idCol);
-	//
-	// this.type = Dominoes.TYPE_BASIC;
-	//
-	// this.mat = null;
-	// }
-
-	/**
-	 * Class Builder This function is used when the user to do a multiplication,
-	 * this will return a new matrix with data according with a real multiplication.
-	 * The type, for default, is the type of the first parameter
-	 *
-	 * @param firstOperator  The first matrix in this operation
-	 * @param secondOperator The second matrix in this operation
-	 * @param mat
-	 * @return A new matrix
-	 */
-	/*
-	 * public Dominoes(Dominoes firstOperator, Dominoes secondOperator, byte[][]
-	 * mat) throws IllegalArgumentException { this.historic = new ArrayList<>();
-	 * 
-	 * this.historic.addAll(firstOperator.getHistoric());
-	 * this.historic.addAll(this.historic.size(), secondOperator.getHistoric());
-	 * 
-	 * this.setIdRow(firstOperator.getIdRow());
-	 * this.setIdCol(secondOperator.getIdCol());
-	 * 
-	 * this.setMat(mat); this.type = firstOperator.getType(); }
-	 */
 
 	/**
 	 * From this Dominoes, this function will build a piece (graphically) respective
@@ -490,20 +450,15 @@ public final class Dominoes {
 	 * @throws IllegalArgumentException
 	 */
 	public void setMat(MatrixOperations mat) {
-		if (mat == null) {
-			throw new IllegalArgumentException("Invalid argument.\nThe Mat attribute is null");
-		}
-
 		this.mat = mat;
 	}
 
-	/**
-	 * This function just invert the Historic
-	 *
-	 * @return the historic invert
-	 */
-	public void transpose() {
+	public void setupOperation(boolean benefitFromSparseOperation) throws Exception {
+		this.mat = MatrixOperations.configureOperation(this.crsMatrix, descriptor, benefitFromSparseOperation);
+	}
 
+	public void transpose() throws Exception {
+		this.setupOperation(true);
 		if (!(this.type == Dominoes.TYPE_BASIC)) {
 			this.type = Dominoes.TYPE_DERIVED;
 			if (this.getIdRow().equals(this.getIdCol())) {
@@ -522,9 +477,9 @@ public final class Dominoes {
 		setMat(_newMat);
 	}
 
-	public void standardScore() {
-
-		MatrixOperations _newMat = mat.standardScore(currentDevice.equalsIgnoreCase("GPU"));
+	public void standardScore() throws Exception {
+		this.setupOperation(true);
+		MatrixOperations _newMat = mat.standardScore();
 
 		if (!(this.type == Dominoes.TYPE_BASIC)) {
 			this.type = Dominoes.TYPE_DERIVED;
@@ -540,7 +495,6 @@ public final class Dominoes {
 		this.rowIsAggragatable = this.colIsAggragatable;
 		this.colIsAggragatable = swap;
 
-		// IMatrix2D _newMat = mat.transpose();
 		setMat(_newMat);
 	}
 
@@ -548,45 +502,53 @@ public final class Dominoes {
 	 * This function just invert the Historic
 	 *
 	 * @return the historic invert
+	 * @throws Exception
 	 */
-	public void confidence() {
+	public void confidence() throws Exception {
+		this.setupOperation(true);
 		MatrixOperations _newMat = mat.confidence(currentDevice.equalsIgnoreCase("GPU"));
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_CONFIDENCE;
 	}
 
-	public void transitiveClosure() {
-		MatrixOperations _newMat = mat.transitiveClosure(currentDevice.equalsIgnoreCase("GPU"));
+	public void transitiveClosure() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.transitiveClosure();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_TRANSITIVE_CLOSURE;
 	}
 
-	public void binarize() {
-		MatrixOperations _newMat = mat.binarize(currentDevice.equalsIgnoreCase("GPU"));
+	public void binarize() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.binarize();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_BINARIZED;
 	}
 
-	public void invert() {
-		MatrixOperations _newMat = mat.invert(currentDevice.equalsIgnoreCase("GPU"));
+	public void invert() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.invert();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_INVERTED;
 	}
 
-	public void diagonalize() {
-		MatrixOperations _newMat = mat.diagonalize(currentDevice.equalsIgnoreCase("GPU"));
+	public void diagonalize() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.diagonalize();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_DIAGONAL;
 	}
 
-	public void upperDiagonal() {
-		MatrixOperations _newMat = mat.upperDiagonal(currentDevice.equalsIgnoreCase("GPU"));
+	public void upperDiagonal() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.upperDiagonal();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_UPPER_DIAGONAL;
 	}
 
-	public void lowerDiagonal() {
-		MatrixOperations _newMat = mat.lowerDiagonal(currentDevice.equalsIgnoreCase("GPU"));
+	public void lowerDiagonal() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.lowerDiagonal();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_LOWER_DIAGONAL;
 	}
@@ -595,9 +557,10 @@ public final class Dominoes {
 	 * This function reduce the lines of a matrix
 	 *
 	 * @return the historic invert
+	 * @throws Exception
 	 */
-	public boolean reduceRows() {
-
+	public boolean reduceRows() throws Exception {
+		this.setupOperation(true);
 		if (rowIsAggragatable) {
 			return false;
 		}
@@ -616,12 +579,11 @@ public final class Dominoes {
 		MatrixOperations _newMat = mat.reduceRows(currentDevice.equalsIgnoreCase("GPU"));
 		setMat(_newMat);
 
-		_newMat.Debug();
 		return true;
 	}
 
-	public Dominoes multiply(Dominoes dom) {
-
+	public Dominoes multiply(Dominoes dom) throws Exception {
+		this.setupOperation(true);
 		Dominoes domResult = new Dominoes(dom.getDevice());
 
 		domResult.type = Dominoes.TYPE_DERIVED;
@@ -645,11 +607,11 @@ public final class Dominoes {
 	}
 
 	public boolean isSquare() {
-		return getMat().getMatrixDescriptor().getNumRows() == getMat().getMatrixDescriptor().getNumCols();
+		return getDescriptor().getNumRows() == getDescriptor().getNumCols();
 	}
 
 	public Dominoes cloneNoMatrix() {
-		Dominoes cloned = new Dominoes(getIdRow(), getIdCol(), getRelation(), getMat(), getDevice());
+		Dominoes cloned = new Dominoes(getIdRow(), getIdCol(), getRelation(), getDescriptor(), getMat(), getDevice());
 		cloned.setType(this.type);
 		cloned.setCurrentDevice(getCurrentDevice());
 		cloned.setColIsAggragatable(colIsAggragatable);
@@ -755,6 +717,22 @@ public final class Dominoes {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public CRSMatrix getCrsMatrix() {
+		return crsMatrix;
+	}
+
+	public void setCrsMatrix(CRSMatrix crsMatrix) {
+		this.crsMatrix = crsMatrix;
+	}
+
+	public MatrixDescriptor getDescriptor() {
+		return descriptor;
+	}
+
+	public void setDescriptor(MatrixDescriptor descriptor) {
+		this.descriptor = descriptor;
 	}
 
 }

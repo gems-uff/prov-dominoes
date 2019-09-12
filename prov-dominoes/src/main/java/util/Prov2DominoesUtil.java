@@ -6,8 +6,6 @@ import java.util.List;
 import org.la4j.matrix.sparse.CRSMatrix;
 
 import arch.MatrixDescriptor;
-import arch.MatrixOperations;
-import arch.MatrixOperationsFactory;
 import domain.Configuration;
 import domain.Dominoes;
 import model.ProvMatrix;
@@ -29,13 +27,7 @@ public class Prov2DominoesUtil {
 				System.out.println(provMatrix.getColumnDescriptors());
 				descriptor.setRowsDesc(provMatrix.getRowDescriptors());
 				descriptor.setColumnsDesc(provMatrix.getColumnDescriptors());
-				MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(Configuration.CPU_DEVICE, descriptor, true);
-				mat.setData(matrix2Cells(provMatrix.getMatrix()));
-				// System.out.println(mat);
-				Dominoes dom = new Dominoes(provMatrix.getRowDimentionAbbreviate(),
-						provMatrix.getColumnDimentionAbbreviate(), provMatrix.getRelation(), mat,
-						Configuration.CPU_DEVICE);
-
+				Dominoes dom = new Dominoes(provMatrix, descriptor, Configuration.processingUnit);
 				dominoesList.add(dom);
 			}
 
@@ -43,7 +35,7 @@ public class Prov2DominoesUtil {
 		return dominoesList;
 	}
 
-	private static ArrayList<Cell> matrix2Cells(CRSMatrix matrix) {
+	public static ArrayList<Cell> matrix2Cells(CRSMatrix matrix) {
 		ArrayList<Cell> cells = new ArrayList<>();
 		for (int i = 0; i < matrix.rows(); i++) {
 			for (int j = 0; j < matrix.columns(); j++) {

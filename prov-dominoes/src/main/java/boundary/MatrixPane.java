@@ -44,11 +44,11 @@ public class MatrixPane extends Pane {
 		this.recCells = new ArrayList<>();
 		this.cells = new ArrayList<>();
 		
-        /*System.out.println("Rows: " + domino.getMat().getMatrixDescriptor().getNumRows() +
-        		" Cols: " + domino.getMat().getMatrixDescriptor().getNumCols());*/
+        /*System.out.println("Rows: " + domino.getDescriptor().getNumRows() +
+        		" Cols: " + domino.getDescriptor().getNumCols());*/
         
         Group group = new Group();
-        MatrixDescriptor _descriptor = domino.getMat().getMatrixDescriptor();
+        MatrixDescriptor _descriptor = domino.getDescriptor();
         
         this.min = domino.getMat().findMinValue();
         this.max = domino.getMat().findMaxValue();
@@ -71,8 +71,8 @@ public class MatrixPane extends Pane {
         int _nCols = _descriptor.getNumCols();
         
         for(int i = 0; i < _nRows; i++){
-        	if(domino.getMat().getMatrixDescriptor().getRowAt(i).length() > largerSize){
-        		largerSize = domino.getMat().getMatrixDescriptor().getRowAt(i).length();
+        	if(domino.getDescriptor().getRowAt(i).length() > largerSize){
+        		largerSize = domino.getDescriptor().getRowAt(i).length();
         	}
         }
         
@@ -80,8 +80,8 @@ public class MatrixPane extends Pane {
         endRowHead = 0;
         
         for(int i = 0; i < _nCols; i++){
-        	if(domino.getMat().getMatrixDescriptor().getColumnAt(i).length() > largerSize){
-        		largerSize = domino.getMat().getMatrixDescriptor().getColumnAt(i).length();
+        	if(domino.getDescriptor().getColumnAt(i).length() > largerSize){
+        		largerSize = domino.getDescriptor().getColumnAt(i).length();
         	}
         }
         
@@ -93,7 +93,7 @@ public class MatrixPane extends Pane {
     	
         // draw the label of the matrix row/columns
         for (int i = 0; i < _nRows; i++) {
-        	largerSize = domino.getMat().getMatrixDescriptor().getRowAt(i).length();
+        	largerSize = domino.getDescriptor().getRowAt(i).length();
         	Rectangle back = new Rectangle(width, height);
             back.setFill(new Color(1, 1, 1, 1));
             back.setTranslateX(0);
@@ -112,7 +112,7 @@ public class MatrixPane extends Pane {
             cell.setTranslateX(beginRowHead);
             cell.setTranslateY(i * (cellSpace + padding) + padding);
             
-            Text text = new Text(domino.getMat().getMatrixDescriptor().getRowAt(i));
+            Text text = new Text(domino.getDescriptor().getRowAt(i));
             text.setTranslateX(beginRowHead);
             text.setTranslateY(i * (cellSpace + padding) + padding + height);
             if(i%2 == 0){
@@ -146,7 +146,7 @@ public class MatrixPane extends Pane {
             
             Group cell = new Group(back, front);
             
-            Text text = new Text(domino.getMat().getMatrixDescriptor().getColumnAt(i));
+            Text text = new Text(domino.getDescriptor().getColumnAt(i));
             text.setTranslateX(endColumnHead);
             text.setTranslateY(height - 5.0);
 
@@ -166,7 +166,7 @@ public class MatrixPane extends Pane {
         }
         
         // draw the matrix information
-        ArrayList<Cell> cells = domino.getMat().getNonZeroData();
+        ArrayList<Cell> cells = domino.getMat().getData();
         
         for (Cell _matCell : cells){
         	Rectangle back = new Rectangle(cellSpace, cellSpace);

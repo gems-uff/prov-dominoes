@@ -41,6 +41,7 @@ public class LowerDiagonalCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
+			App.alertException(e, "Erro desconhecido ao tentar efetuar filtro de diagonalização inferior!");
 			e.printStackTrace();
 			success = false;
 		}

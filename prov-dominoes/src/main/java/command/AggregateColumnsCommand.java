@@ -51,9 +51,10 @@ public class AggregateColumnsCommand extends AbstractCommand {
 			} else {
 				success = false;
 				System.err.println(
-						"this domino is already aggregate by " + toReduce.getMat().getMatrixDescriptor().getRowType());
+						"this domino is already aggregate by " + toReduce.getDescriptor().getRowType());
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
+			App.alertException(e, "Erro desconhecido ao efetuar agregação de colunas!");
 			success = false;
 			e.printStackTrace();
 		}

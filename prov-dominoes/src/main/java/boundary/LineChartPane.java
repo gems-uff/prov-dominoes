@@ -68,8 +68,8 @@ public class LineChartPane extends Pane {
         cbSelectedRow = new ComboBox<>();
         ObservableList<String> itemsCBMatrixRows = FXCollections.observableArrayList();
         itemsCBMatrixRows.add(SELECT_ALL_ROWS);
-        for (int i = 0; i < domino.getMat().getMatrixDescriptor().getNumRows(); i++) {
-            itemsCBMatrixRows.add(domino.getMat().getMatrixDescriptor().getRowAt(i));
+        for (int i = 0; i < domino.getDescriptor().getNumRows(); i++) {
+            itemsCBMatrixRows.add(domino.getDescriptor().getRowAt(i));
 
         }
         cbSelectedRow.setItems(itemsCBMatrixRows);
@@ -200,7 +200,7 @@ public class LineChartPane extends Pane {
 
 	private synchronized void drawChart(Dominoes domino) {
     	
-    	int _nCols = domino.getMat().getMatrixDescriptor().getNumCols();
+    	int _nCols = domino.getDescriptor().getNumCols();
     	
     	lc.getXAxis().setTickLabelFont(new Font("Lucida Console", (int)lc.getXAxis().getTickLabelFont().getSize()));
     	
@@ -220,7 +220,7 @@ public class LineChartPane extends Pane {
         String nameCol = "";
         String nameRow = "";
         
-        ArrayList<Cell> cells = domino.getMat().getNonZeroData();
+        ArrayList<Cell> cells = domino.getMat().getData();
         ArrayList<Cell> temp = new ArrayList<Cell>();
         
         if (rowSelected != -1){
@@ -271,8 +271,8 @@ public class LineChartPane extends Pane {
         
         // 4 - Adding in Chart
         for(int i = 0; i < cells.size(); i++){
-        	nameRow = domino.getMat().getMatrixDescriptor().getRowAt(cells.get(i).row);
-        	nameCol = domino.getMat().getMatrixDescriptor().getColumnAt(cells.get(i).col);
+        	nameRow = domino.getDescriptor().getRowAt(cells.get(i).row);
+        	nameCol = domino.getDescriptor().getColumnAt(cells.get(i).col);
         	
         	XYChart.Series<String, Number> currentSerie = series.get(nameCol);
         	if (currentSerie == null){
@@ -293,8 +293,8 @@ public class LineChartPane extends Pane {
     	double textLarger = 0;
         	
     	for(int i = 0; i < _nCols; i++){
-    		if(domino.getMat().getMatrixDescriptor().getColumnAt(i).length() > textLarger){
-    			textLarger = domino.getMat().getMatrixDescriptor().getColumnAt(i).length();
+    		if(domino.getDescriptor().getColumnAt(i).length() > textLarger){
+    			textLarger = domino.getDescriptor().getColumnAt(i).length();
     		}
     	}
     	lc.setPrefWidth(_nCols * fontSize * 2);

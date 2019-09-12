@@ -56,10 +56,15 @@ public class AggregateLinesCommand extends AbstractCommand {
 			} else {
 				success = false;
 				System.err.println("this domino is already aggregate by "
-						+ toReduce.getMat().getMatrixDescriptor().getColType());
+						+ toReduce.getDescriptor().getColType());
 			}
 		} catch (IOException e) {
 			success = false;
+			e.printStackTrace();
+			App.alertException(e, "Erro não identificado ao agregar linhas!");
+		} catch (Exception e) {
+			success = false;
+			App.alertException(e, "Erro não identificado ao agregar linhas!");
 			e.printStackTrace();
 		}
 		return success;
