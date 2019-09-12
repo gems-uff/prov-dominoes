@@ -3,7 +3,7 @@ package boundary;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.josericardojunior.domain.Dominoes;
+import domain.Dominoes;
 
 import command.CommandFactory;
 import command.MoveCommand;
