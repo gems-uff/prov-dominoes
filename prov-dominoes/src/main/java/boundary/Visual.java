@@ -1,6 +1,6 @@
 package boundary;
 
-import com.josericardojunior.domain.Dominoes;
+import domain.Dominoes;
 
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;

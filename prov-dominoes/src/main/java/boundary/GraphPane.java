@@ -15,10 +15,8 @@ import java.util.Map;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 
-import com.josericardojunior.arch.Cell;
-import com.josericardojunior.arch.MatrixDescriptor;
-import com.josericardojunior.domain.Dominoes;
-
+import arch.MatrixDescriptor;
+import domain.Dominoes;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DelegateForest;
@@ -49,6 +47,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import processor.Cell;
 
 /**
  *

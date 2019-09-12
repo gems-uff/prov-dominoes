@@ -3,7 +3,7 @@ package control;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import com.josericardojunior.domain.Dominoes;
+import domain.Dominoes;
 
 import boundary.App;
 import command.AbstractCommand;

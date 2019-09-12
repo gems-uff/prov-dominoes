@@ -141,7 +141,7 @@
 		</dependency>
 		<dependency>
 			<groupId>gems.ic.uff.br</groupId>
-			<artifactId>dominoes-lib</artifactId>
+			<artifactId>prov-cuda</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>

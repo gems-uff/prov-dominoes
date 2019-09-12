@@ -1,6 +1,6 @@
 package command;
 
-import com.josericardojunior.domain.Dominoes;
+import domain.Dominoes;
 
 import boundary.App;
 import javafx.scene.Group;

@@ -3,10 +3,8 @@ package boundary;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.josericardojunior.arch.Cell;
-import com.josericardojunior.arch.MatrixDescriptor;
-import com.josericardojunior.domain.Dominoes;
-
+import arch.MatrixDescriptor;
+import domain.Dominoes;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -19,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import processor.Cell;
 
 public class MatrixPane extends Pane {
 	

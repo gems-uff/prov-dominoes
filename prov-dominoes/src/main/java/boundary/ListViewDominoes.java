@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.josericardojunior.domain.Dominoes;
+import domain.Dominoes;
 
 import command.CommandFactory;
 import domain.Configuration;

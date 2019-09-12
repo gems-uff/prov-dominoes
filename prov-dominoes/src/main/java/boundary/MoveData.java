@@ -3,7 +3,7 @@ package boundary;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.josericardojunior.domain.Dominoes;
+import domain.Dominoes;
 
 import javafx.scene.Group;
 import javafx.scene.control.MenuItem;
