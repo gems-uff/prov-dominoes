@@ -17,7 +17,7 @@ ifeq ($(UNAME),Darwin)
    LIBNAME := MatrixProcessor.jnilib
 endif
 
-ifeq ($(UNAME),wINDOWS)
+ifeq ($(UNAME),Windows)
    OUT_DIR := ../main/resources/lib/win_64
    LIBNAME := MatrixProcessor.dll
 endif
