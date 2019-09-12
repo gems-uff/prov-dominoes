@@ -72,11 +72,11 @@ public class AreaMove extends Pane {
 
 		MenuItem menuItemTranspose = new MenuItem("Transpose");
 
-		MenuItem aggByRow = new MenuItem("Aggregate by " + domino.getMat().getMatrixDescriptor().getRowType());
+		MenuItem aggByRow = new MenuItem("Aggregate by " + domino.getDescriptor().getRowType());
 		if (!data.getMenuItemAggregateRow().contains(aggByRow)) {
 			data.getMenuItemAggregateRow().add(aggByRow);
 		}
-		MenuItem aggByCol = new MenuItem("Aggregate by " + domino.getMat().getMatrixDescriptor().getColType());
+		MenuItem aggByCol = new MenuItem("Aggregate by " + domino.getDescriptor().getColType());
 		if (!data.getMenuItemAggregateCol().contains(aggByCol)) {
 			data.getMenuItemAggregateCol().add(aggByCol);
 		}
@@ -450,7 +450,7 @@ public class AreaMove extends Pane {
 						&& g1.getTranslateY() <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT)) {
 
 			if (d1.getIdRow().equals(d2.getIdCol()) && !d1.getIdRow().contains(Dominoes.AGGREG_TEXT) && d1.getMat()
-					.getMatrixDescriptor().getNumRows() == d2.getMat().getMatrixDescriptor().getNumCols()) {
+					.getMatrixDescriptor().getNumRows() == d2.getDescriptor().getNumCols()) {
 
 				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
 				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
@@ -474,7 +474,7 @@ public class AreaMove extends Pane {
 						&& g1.getTranslateY() + Dominoes.GRAPH_HEIGHT <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT)) {
 
 			if (d1.getIdRow().equals(d2.getIdCol()) && !d1.getIdRow().contains(Dominoes.AGGREG_TEXT) && d1.getMat()
-					.getMatrixDescriptor().getNumRows() == d2.getMat().getMatrixDescriptor().getNumCols()) {
+					.getMatrixDescriptor().getNumRows() == d2.getDescriptor().getNumCols()) {
 
 				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
 				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
@@ -499,7 +499,7 @@ public class AreaMove extends Pane {
 						&& g1.getTranslateY() <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT)) {
 
 			if (d1.getIdCol().equals(d2.getIdRow()) && !d1.getIdCol().contains(Dominoes.AGGREG_TEXT) && d1.getMat()
-					.getMatrixDescriptor().getNumCols() == d2.getMat().getMatrixDescriptor().getNumRows()) {
+					.getMatrixDescriptor().getNumCols() == d2.getDescriptor().getNumRows()) {
 
 				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
 				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
@@ -523,7 +523,7 @@ public class AreaMove extends Pane {
 						&& g1.getTranslateY() + Dominoes.GRAPH_HEIGHT <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT)) {
 
 			if (d1.getIdCol().equals(d2.getIdRow()) && !d1.getIdCol().contains(Dominoes.AGGREG_TEXT) && d1.getMat()
-					.getMatrixDescriptor().getNumCols() == d2.getMat().getMatrixDescriptor().getNumRows()) {
+					.getMatrixDescriptor().getNumCols() == d2.getDescriptor().getNumRows()) {
 
 				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
 				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);

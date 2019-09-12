@@ -102,7 +102,7 @@ public class ConfigurationFile {
 					Configuration.listWidth = Double.parseDouble(valueVariable);
 				}
 				if (nameVariable.compareTo("gpuDevice") == 0) {
-					Configuration.listWidth = Integer.parseInt(valueVariable);
+					Configuration.gpuDevice = Integer.parseInt(valueVariable);
 				}
 				line = br.readLine();
 			}

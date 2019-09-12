@@ -41,6 +41,7 @@ public class InvertCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
+			App.alertException(e, "Erro desconhecido ao efetuar filtro de inversão da peça!");
 			e.printStackTrace();
 			success = false;
 		}

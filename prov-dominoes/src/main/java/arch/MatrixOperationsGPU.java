@@ -8,6 +8,9 @@ import processor.MatrixProcessor;
 public class MatrixOperationsGPU implements MatrixOperations {
 
 	private long matPointer = 0;
+	private int[] rows;
+	private int[] cols;
+	private boolean isSparse;
 
 	private MatrixDescriptor matrixDescriptor;
 
@@ -15,13 +18,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		return matrixDescriptor;
 	}
 
-	@Override
-	public int getMemUsed() {
-		return matrixDescriptor.getNumCols() * matrixDescriptor.getNumRows() * (Float.SIZE / 8);
-	}
-
 	public MatrixOperationsGPU(MatrixDescriptor _matrixDescriptor, boolean isSparse) throws Exception {
-
+		this.isSparse = isSparse;
 		if (!Session.isSessionStarted())
 			throw new Exception("Session is not started");
 
@@ -30,10 +28,17 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 		matrixDescriptor = _matrixDescriptor;
 
-		matPointer = MatrixProcessor.createMatrixData(matrixDescriptor.getNumRows(), matrixDescriptor.getNumCols(), isSparse);
+		matPointer = MatrixProcessor.createMatrixData(matrixDescriptor.getNumRows(), matrixDescriptor.getNumCols(),
+				isSparse);
 
 		Session.register2DMatrix(this);
 	}
+	
+	@Override
+	public int getMemUsed() {
+		return matrixDescriptor.getNumCols() * matrixDescriptor.getNumRows() * (Float.SIZE / 8);
+	}
+
 
 	public void finalize() {
 		MatrixProcessor.deleteMatrixData(matPointer);
@@ -96,92 +101,6 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		return transpose;
 	}
 
-	public void Debug() {
-
-		/*
-		 * for (int i = 0; i < matrixDescriptor.getNumRows(); i++){
-		 * 
-		 * float[] rowData = getRow(matrixDescriptor.getRowAt(i));
-		 * 
-		 * for (int j = 0; j < matrixDescriptor.getNumCols(); j++){
-		 * System.out.print(rowData[j] + "\t"); } System.out.println(); }
-		 */
-	}
-
-	public void ExportCSV(String filename) {
-
-		/*
-		 * StringBuffer out = new StringBuffer();
-		 * 
-		 * for (int j = 0; j < matrixDescriptor.getNumCols(); j++){ out.append(";");
-		 * out.append(matrixDescriptor.getColumnAt(j)); } out.append("\n");
-		 * 
-		 * for (int i = 0; i < matrixDescriptor.getNumRows(); i++){
-		 * 
-		 * float[] rowData = getRow(matrixDescriptor.getRowAt(i));
-		 * 
-		 * out.append(matrixDescriptor.getRowAt(i) + ";");
-		 * 
-		 * for (int j = 0; j < matrixDescriptor.getNumCols(); j++){
-		 * out.append(rowData[j] + ";"); } out.append("\n"); }
-		 * 
-		 * File f = new File(filename); try { f.createNewFile();
-		 * 
-		 * FileWriter fw = new FileWriter(f.getAbsoluteFile()); BufferedWriter bw = new
-		 * BufferedWriter(fw); bw.write(out.toString()); bw.close(); } catch
-		 * (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-		 */
-	}
-
-	public StringBuffer ExportCSV() {
-
-		StringBuffer out = new StringBuffer();
-		/*
-		 * for (int j = 0; j < matrixDescriptor.getNumCols(); j++){ out.append(";");
-		 * out.append(matrixDescriptor.getColumnAt(j)); } out.append("\n");
-		 * 
-		 * for (int i = 0; i < matrixDescriptor.getNumRows(); i++){ float[] rowData =
-		 * getRow(matrixDescriptor.getRowAt(i)); out.append(matrixDescriptor.getRowAt(i)
-		 * + ";");
-		 * 
-		 * for (int j = 0; j < matrixDescriptor.getNumCols(); j++){
-		 * out.append(rowData[j] + ";"); } out.append("\n"); }
-		 */
-
-		return out;
-	}
-
-	/*
-	 * public static void main(String[] args) { float [] m1 = {1, 0, 5, 0, 8, 9};
-	 * float [] m2 = {1, 7, 7, 2, 10, 0};
-	 * 
-	 * Session.startSession();
-	 * 
-	 * MatrixDescriptor desc1 = new MatrixDescriptor("T1", "T2");
-	 * desc1.AddRowDesc("R1"); desc1.AddRowDesc("R2"); desc1.AddColDesc("C1");
-	 * desc1.AddColDesc("C2"); desc1.AddColDesc("C3");
-	 * 
-	 * try { Matrix2D mat1 = new Matrix2D(desc1);
-	 * 
-	 * 
-	 * mat1.setData(m1); mat1.Debug();
-	 * 
-	 * MatrixDescriptor desc2 = new MatrixDescriptor("T1", "T2");
-	 * desc2.AddRowDesc("R1"); desc2.AddRowDesc("R2"); desc2.AddRowDesc("R3");
-	 * desc2.AddColDesc("C1"); desc2.AddColDesc("C2"); Matrix2D mat2 = new
-	 * Matrix2D(desc2); mat2.setData(m2); mat2.Debug();
-	 * 
-	 * 
-	 * Matrix2D res = mat1.multiply(mat2, false); res.Debug();
-	 * 
-	 * 
-	 * //res.Debug(); } catch (Exception ex){ }
-	 * 
-	 * 
-	 * 
-	 * Session.closeSection(); }
-	 */
-
 	public float findMinValue() {
 		return MatrixProcessor.getMin(matPointer);
 	}
@@ -192,9 +111,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 	@Override
 	public void setData(ArrayList<Cell> cells) {
-
-		int[] rows = new int[cells.size()];
-		int[] cols = new int[cells.size()];
+		rows = new int[cells.size()];
+		cols = new int[cells.size()];
 		float[] data = new float[cells.size()];
 
 		for (int i = 0; i < cells.size(); i++) {
@@ -204,12 +122,14 @@ public class MatrixOperationsGPU implements MatrixOperations {
 			cols[i] = cell.col;
 			data[i] = cell.value;
 		}
-
-		MatrixProcessor.setData(matPointer, rows, cols, data);
+		if (isSparse) {
+			MatrixProcessor.setData(matPointer, data);
+		} else {
+			MatrixProcessor.setData(matPointer, rows, cols, data);
+		}
 	}
 
-	@Override
-	public ArrayList<Cell> getNonZeroData() {
+	private ArrayList<Cell> getSparseData() {
 
 		Cell[] nzList = MatrixProcessor.getSparseData(matPointer);
 		ArrayList<Cell> cellList = new ArrayList<Cell>();
@@ -264,36 +184,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations meanAndSD(boolean useGPU) {
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
-
-		_newDescriptor.AddRowDesc("MEAN");
-		_newDescriptor.AddRowDesc("SD");
-
-		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
-			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
-
-		// MatrixOperationsGPU meanSD = null;
-
-		// try {
-		// T
-		// meanSD = new Matrix2D(_newDescriptor);
-		// MatrixProcessor
-		// }
-
-		// TODO Implement meanAndSD
-		return null;
-	}
-
-	@Override
-	public MatrixOperations standardScore(boolean useGPU) {
-		// TODO Implement standardScore
-		return null;
-	}
-
-	@Override
-	public MatrixOperations transitiveClosure(boolean useGPU) {
+	public MatrixOperations transitiveClosure() {
 		// TODO Implement transitiveClosure
 		return null;
 	}
@@ -304,32 +195,67 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations binarize(boolean useGPU) {
+	public MatrixOperations binarize() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public MatrixOperations invert(boolean useGPU) {
+	public MatrixOperations invert() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public MatrixOperations lowerDiagonal(boolean useGPU) {
+	public MatrixOperations lowerDiagonal() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public MatrixOperations upperDiagonal(boolean useGPU) {
+	public MatrixOperations upperDiagonal() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public MatrixOperations diagonalize(boolean useGPU) {
+	public MatrixOperations diagonalize() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public MatrixOperations standardScore() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public MatrixOperations meanAndSD() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public ArrayList<Cell> getData() {
+		if (isSparse) {
+			return getSparseData();
+		}
+		Cell[] nzList = MatrixProcessor.getData(matPointer, getRows(), getCols());
+		ArrayList<Cell> cellList = new ArrayList<Cell>();
+
+		for (Cell nz : nzList) {
+			cellList.add(new Cell(nz.row, nz.col, nz.value));
+		}
+		return cellList;
+	}
+
+	private int[] getCols() {
+		return cols;
+	}
+
+	private int[] getRows() {
+		return rows;
+	}
+
 }

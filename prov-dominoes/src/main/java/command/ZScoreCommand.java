@@ -42,6 +42,7 @@ public class ZScoreCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
+			App.alertException(e, "Erro desconhecido ao tentar calcular desvio padrao!");
 			e.printStackTrace();
 			success = false;
 		}

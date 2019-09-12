@@ -1,11 +1,8 @@
 package command;
 
-import java.io.IOException;
-
-import domain.Dominoes;
-
 import boundary.App;
 import domain.Configuration;
+import domain.Dominoes;
 import javafx.scene.Group;
 
 public class MultiplyCommand extends AbstractCommand {
@@ -51,7 +48,7 @@ public class MultiplyCommand extends AbstractCommand {
 
 			try {
 				if (d1.getIdCol().equals(d2.getIdRow())) {
-					Dominoes resultOperation = control.Controller.MultiplyMatrices(d1, d2);
+					Dominoes resultOperation = control.Controller.multiply(d1, d2);
 					this.resultDominoes = resultOperation;
 					this.resultDominoes.setId(key);
 
@@ -88,7 +85,8 @@ public class MultiplyCommand extends AbstractCommand {
 				App.getArea().getData().setIndexFirstOperatorMultiplication(-1);
 				App.getArea().getData().setIndexSecondOperatorMultiplication(-1);
 				result = true;
-			} catch (IOException e) {
+			} catch (Exception e) {
+				App.alertException(e, "Erro desconhecido ao calcular multiplicação das matrizes das peças!");
 				result = false;
 				e.printStackTrace();
 			}

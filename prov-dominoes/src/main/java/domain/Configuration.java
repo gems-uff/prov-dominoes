@@ -2,6 +2,8 @@ package domain;
 
 import java.util.Date;
 
+import processor.MatrixProcessor;
+
 public class Configuration {
 	
 	public static final String GPU_DEVICE = "GPU";
@@ -22,8 +24,7 @@ public class Configuration {
     public static double height = 600.0f;
     public static double listWidth = 147.0f;
     
-    public static String processingUnit = CPU_DEVICE;
-    //public static String processingUnit =  MatrixProcessor.isGPUEnabled() ? GPU_DEVICE : CPU_DEVICE;
+    public static String processingUnit =  MatrixProcessor.isGPUEnabled() ? GPU_DEVICE : CPU_DEVICE;
     public static int gpuDevice = 0;
     
 	public static Date beginDate = null;

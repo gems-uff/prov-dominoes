@@ -42,6 +42,7 @@ public class TransitiveClosureCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
+			App.alertException(e, "Erro desconhecido ao calcular fecho transitivo!");
 			e.printStackTrace();
 			success = false;
 		}

@@ -368,8 +368,8 @@ public class GraphCentralityPane extends BorderPane {
 	private void createTree(Dominoes domino) {
 
 		// Matrix represents a relationship among elements
-		ArrayList<Cell> nz = domino.getMat().getNonZeroData();
-		MatrixDescriptor desc = domino.getMat().getMatrixDescriptor();
+		ArrayList<Cell> nz = domino.getMat().getData();
+		MatrixDescriptor desc = domino.getDescriptor();
 		float min = domino.getMat().findMinValue();
 		float max = domino.getMat().findMaxValue();
 		float dist = max - min;

@@ -41,6 +41,7 @@ public class ConfidenceCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
+			App.alertException(e, "Erro desconhecido ao tentar calcular confiança!");
 			e.printStackTrace();
 			success = false;
 		}

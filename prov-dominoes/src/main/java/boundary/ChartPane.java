@@ -63,8 +63,8 @@ public class ChartPane extends Pane {
 		CategoryAxis xAxis = new CategoryAxis();
 		NumberAxis yAxis = new NumberAxis();
 
-		xAxis.setLabel(domino.getMat().getMatrixDescriptor().getRowType());
-		yAxis.setLabel(domino.getMat().getMatrixDescriptor().getColType());
+		xAxis.setLabel(domino.getDescriptor().getRowType());
+		yAxis.setLabel(domino.getDescriptor().getColType());
 
 		bc = new BarChart<String, Number>(xAxis, yAxis);
 		bc.setAnimated(false);
@@ -77,21 +77,21 @@ public class ChartPane extends Pane {
 		double fontSize = bc.getXAxis().getTickLabelFont().getSize();
 		double textLarger = 0;
 
-		for (int i = 0; i < domino.getMat().getMatrixDescriptor().getNumCols(); i++) {
-			if (domino.getMat().getMatrixDescriptor().getColumnAt(i).length() > textLarger) {
-				textLarger = domino.getMat().getMatrixDescriptor().getColumnAt(i).length();
+		for (int i = 0; i < domino.getDescriptor().getNumCols(); i++) {
+			if (domino.getDescriptor().getColumnAt(i).length() > textLarger) {
+				textLarger = domino.getDescriptor().getColumnAt(i).length();
 			}
 		}
-		bc.setPrefWidth(domino.getMat().getMatrixDescriptor().getNumCols() * fontSize * 4);
+		bc.setPrefWidth(domino.getDescriptor().getNumCols() * fontSize * 4);
 		bc.setPrefHeight(2.5 * textLarger * fontSize);
 
 		// change color BarChart
 
 		cbSelectedRow = new ComboBox<>();
 		ObservableList<String> itemsCBMatrixRows = FXCollections.observableArrayList();
-		for (int i = 0; i < domino.getMat().getMatrixDescriptor().getNumRows(); i++) {
-			itemsCBMatrixRows.add(domino.getMat().getMatrixDescriptor().getRowAt(i));
-			unsortedList.put(domino.getMat().getMatrixDescriptor().getRowAt(i), i);
+		for (int i = 0; i < domino.getDescriptor().getNumRows(); i++) {
+			itemsCBMatrixRows.add(domino.getDescriptor().getRowAt(i));
+			unsortedList.put(domino.getDescriptor().getRowAt(i), i);
 
 		}
 		FXCollections.sort(itemsCBMatrixRows);
@@ -220,7 +220,7 @@ public class ChartPane extends Pane {
 	}
 
 	private void drawChart() {
-		int _nCols = domino.getMat().getMatrixDescriptor().getNumCols();
+		int _nCols = domino.getDescriptor().getNumCols();
 
 		bc.getData().removeAll(bc.getData());
 		XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
@@ -231,7 +231,7 @@ public class ChartPane extends Pane {
 
 		series.setName("row " + itemSelected); // row name
 
-		ArrayList<Cell> cells = domino.getMat().getNonZeroData();
+		ArrayList<Cell> cells = domino.getMat().getData();
 		ArrayList<Cell> temp = new ArrayList<Cell>();
 
 		// 1 - selecting the cells where its row is equals selected row
@@ -260,7 +260,7 @@ public class ChartPane extends Pane {
 		ArrayList<Data<String, Number>> chartColumns = new ArrayList<>();
 		for (int i = 0; i < cells.size(); i++) {
 
-			String name = domino.getMat().getMatrixDescriptor().getColumnAt(i);
+			String name = domino.getDescriptor().getColumnAt(i);
 			chartColumns.add(i, new XYChart.Data<String, Number>(name, cells.get(i).value));
 		}
 		// 3 - end

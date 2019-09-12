@@ -182,6 +182,7 @@ public class TransposeCommand extends AbstractCommand {
 				}
 			});
 		} catch (Exception e) {
+			App.alertException(e, "Erro não identificado ao transpor peça!");
 			System.err.println(e.getMessage());
 			success = false;
 		}

@@ -52,9 +52,9 @@ public class ListViewDominoes extends ListView<Group> {
     	
     	if (array != null) {
             for (Dominoes dom : array) {
-            	if (!dom.getMat().isEmpty()) {
+            	//if (!dom.getMat().isEmpty()) {
             		this.add(dom);
-            	}
+            	//}
             }
 
         }
@@ -89,13 +89,13 @@ public class ListViewDominoes extends ListView<Group> {
         Group group = domino.drawDominoes();
         group.getChildren().get(Dominoes.GRAPH_HISTORIC).setVisible(visibilityHistoric);
 
-        Tooltip tooltip = new Tooltip(domino.getMat().getMatrixDescriptor().getRowType()
+        Tooltip tooltip = new Tooltip(domino.getDescriptor().getRowType()
         		+ " x "
-        		+ domino.getMat().getMatrixDescriptor().getColType()
+        		+ domino.getDescriptor().getColType()
         		+ " : "
-        		+ domino.getMat().getMatrixDescriptor().getNumRows()
+        		+ domino.getDescriptor().getNumRows()
         		+ " x "
-        		+ domino.getMat().getMatrixDescriptor().getNumCols());
+        		+ domino.getDescriptor().getNumCols());
         Tooltip.install(group, tooltip);
 
         group.setOnMouseEntered(new EventHandler<MouseEvent>() {

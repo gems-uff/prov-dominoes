@@ -435,8 +435,9 @@ class MatrixProcessorTest {
 
 		assertNotNull(response);
 		assertTrue(response.length == v*v);
-
+		
 		CRSMatrix resp = toCRSMatrix(response, v, v);
+		System.out.println(resp);
 		assertTrue(resp.get(0, 0) == 1.0);
 		assertTrue(resp.get(0, 1) == 0.0);
 		assertTrue(resp.get(0, 2) == 1.0);
