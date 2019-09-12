@@ -435,7 +435,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		_diagonalizeFilter.setData(new CRSMatrix(filterMatrix));
 		return _diagonalizeFilter;
 	}
-	
+
 	@Override
 	public MatrixOperations upperDiagonal(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
@@ -448,13 +448,13 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		double[][] filterMatrix = new double[data.rows()][data.columns()];
 		for (int i = 0; i < data.rows(); i++) {
 			for (int j = i; j < data.columns(); j++) {
-					filterMatrix[i][j] = data.get(i, j);
+				filterMatrix[i][j] = data.get(i, j);
 			}
 		}
 		_upperDiagonal.setData(new CRSMatrix(filterMatrix));
 		return _upperDiagonal;
 	}
-	
+
 	@Override
 	public MatrixOperations lowerDiagonal(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
@@ -463,18 +463,17 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
 			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
-		MatrixOperationsCPU _upperDiagonal = new MatrixOperationsCPU(_newDescriptor);
+		MatrixOperationsCPU _lowerDiagonal = new MatrixOperationsCPU(_newDescriptor);
 		double[][] filterMatrix = new double[data.rows()][data.columns()];
 		for (int j = 0; j < data.columns(); j++) {
 			for (int i = j; i < data.rows(); i++) {
-					filterMatrix[i][j] = data.get(i, j);
+				filterMatrix[i][j] = data.get(i, j);
 			}
 		}
-		_upperDiagonal.setData(new CRSMatrix(filterMatrix));
-		return _upperDiagonal;
+		_lowerDiagonal.setData(new CRSMatrix(filterMatrix));
+		return _lowerDiagonal;
 	}
 
-  
 	// Transitive closure of graph[][] using Floyd Warshall algorithm
 	public MatrixOperations transitiveClosure(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
@@ -524,11 +523,14 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				for (j = 0; j < V; j++) {
 					// If vertex k is on a path from i to j,
 					// then make sure that the value of reach[i][j] is 1
-					if ((steps[i][j] != 0) || ((steps[i][k] != 0) && (steps[k][j] != 0))) {
-						if ((steps[i][j] == 0.00)) {
-							if (i != j && (steps[i][k] != 0) && (steps[k][j] != 0)) {
-								double v = (i == k ? 0 : steps[i][k]) + (k == j ? 0 : steps[k][j]);
-								steps[i][j] = v != 0.00 ? v : steps[i][j];
+					if (((steps[i][k] != 0.00) && (steps[k][j] != 0.00))) {
+						if (i != j) { // ignorar próprio nó (i=j)
+							double distIK = (i == k ? 0.00 : steps[i][k]);
+							double distKJ = (k == j ? 0.00 : steps[k][j]);
+							if (steps[i][j] == 0.00) { // caso em que não foi calculado steps entre IJ ainda
+								steps[i][j] = distIK + distKJ;							
+							} else if (distIK + distKJ < steps[i][j]){ // atualizar se novos steps forem menores
+								steps[i][j] = distIK + distKJ;
 							}
 						}
 					}
@@ -537,11 +539,10 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				}
 			}
 		}
-
 		_transitiveClosure.setData(new CRSMatrix(reach));
 		return _transitiveClosure;
 	}
-
+	
 	public static void main(String args[]) {
 
 		ArrayList<Cell> cells1 = new ArrayList<>();
@@ -591,8 +592,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		cells3.add(new Cell(7, 0, 0));
 		cells3.add(new Cell(8, 0, 0));
 
-		cells3.add(new Cell(0, 0, 0));
-		cells3.add(new Cell(1, 1, 0));
+		cells3.add(new Cell(0, 1, 0));
+		cells3.add(new Cell(1, 1, 1));
 		cells3.add(new Cell(2, 1, 0));
 		cells3.add(new Cell(3, 1, 1));
 		cells3.add(new Cell(4, 1, 0));
@@ -603,7 +604,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		cells3.add(new Cell(0, 2, 1));
 		cells3.add(new Cell(1, 2, 0));
-		cells3.add(new Cell(2, 2, 0));
+		cells3.add(new Cell(2, 2, 1));
 		cells3.add(new Cell(3, 2, 0));
 		cells3.add(new Cell(4, 2, 0));
 		cells3.add(new Cell(5, 2, 0));
@@ -704,7 +705,6 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		try {
 			MatrixOperations mat1 = new MatrixOperationsCPU(desc1);
 			mat1.setData(cells1);
-			// mat1.Debug();
 
 			MatrixDescriptor desc2 = new MatrixDescriptor("T1", "T2");
 			desc2.AddRowDesc("R1");
@@ -717,13 +717,10 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			desc2.AddColDesc("C4");
 			MatrixOperations mat2 = new MatrixOperationsCPU(desc2);
 			mat2.setData(cells2);
-			// mat2.Debug();
 
 			MatrixOperations mat3 = new MatrixOperationsCPU(desc3);
 			mat3.setData(cells3);
 
-			// MatrixOperations meanstd = mat2.standardScore(false);
-			// meanstd.Debug();
 			System.out.println(mat3);
 			System.out.println(mat3.transitiveClosure(false));
 		} catch (Exception e) {
