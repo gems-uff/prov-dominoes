@@ -252,13 +252,17 @@ extern "C" {
 		(cudaSetDevice(gpuDevice));
 	}
 	
-	bool g_IsDeviceEnabled() {
-		int nDevices;
+	int g_getDeviceCount() {
+		int nDevices = 0;
 		if (cudaGetDeviceCount(&nDevices) != cudaSuccess) {
 			cudaGetLastError();
 			nDevices = 0;
 		}
-		return nDevices > 0;
+		return nDevices;
+	}
+	
+	bool g_IsDeviceEnabled() {
+		return g_getDeviceCount()>0;
 	}
 	
 	void g_StandardDeviation(float* mat, int rows, int cols, 

@@ -4,6 +4,7 @@ import arch.Session;
 
 import control.Controller;
 import domain.Configuration;
+import processor.MatrixProcessor;
 
 public class Main {
 
@@ -17,12 +18,14 @@ public class Main {
 			// read the configuration file
 			Controller.loadConfiguration();
 
-			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
-				Session.startSession(Configuration.gpuDevice);
+			if (Configuration.gpuDevice + 1 > MatrixProcessor.getDeviceCount()) {
+				Configuration.gpuDevice = 0;
+			}
+			Session.startSession(Configuration.gpuDevice);
 
 			App.start();
 
-			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
+			if (Configuration.isGPUProcessing())
 				Session.closeSection();
 
 		} catch (Exception ex) {

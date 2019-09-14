@@ -89,9 +89,6 @@ public class ConfigurationFile {
 						Configuration.automaticCheck = true;
 					}
 				}
-				if (nameVariable.compareTo("lastDirectory") == 0) {
-					Configuration.lastDirectory = valueVariable;
-				}
 				if (nameVariable.compareTo("width") == 0 && isDouble(valueVariable)) {
 					Configuration.width = Double.parseDouble(valueVariable);
 				}
@@ -101,8 +98,14 @@ public class ConfigurationFile {
 				if (nameVariable.compareTo("listWidth") == 0 && isDouble(valueVariable)) {
 					Configuration.listWidth = Double.parseDouble(valueVariable);
 				}
+				if (nameVariable.compareTo("defaultProcessing") == 0) {
+					Configuration.defaultProcessing = valueVariable.toUpperCase();
+				}
 				if (nameVariable.compareTo("gpuDevice") == 0) {
 					Configuration.gpuDevice = Integer.parseInt(valueVariable);
+				}
+				if (nameVariable.compareTo("lastDirectory") == 0) {
+					Configuration.lastDirectory = valueVariable;
 				}
 				line = br.readLine();
 			}
@@ -119,7 +122,8 @@ public class ConfigurationFile {
 			bw.write("fullScreen=false\r\n" + "autoSave=false\r\n" + "visibilityHistoric=true\r\n"
 					+ "visibilityType=true\r\n" + "resizable=true\r\n" + "automaticCheck=false\r\n" + "width=1000.0\r\n"
 					+ "height=600.0\r\n" + "listWidth=147.0\r\n" + "telemetry=false\r\n" + "defaultFactory=true\r\n"
-					+ "GPUDevice=0\r\n" + "lastDirectory=.");
+					+ "defaultProcessing=gpu\r\n"
+					+ "gpuDevice=0\r\n" + "lastDirectory=.");
 
 		} catch (IOException ex) {
 			throw new IOException(ex.getMessage());
@@ -139,7 +143,7 @@ public class ConfigurationFile {
 					+ "automaticCheck=" + Configuration.automaticCheck + "\r\n" + "width=" + Configuration.width
 					+ "\r\n" + "height=" + Configuration.height + "\r\n" + "listWidth=" + Configuration.listWidth
 					+ "\r\n" + "telemetry=" + Configuration.telemetry + "\r\n" + "defaultFactory="
-					+ Configuration.defaultFactory + "\r\n" + "GPUDevice=" + Configuration.gpuDevice + "\r\n"
+					+ Configuration.defaultFactory + "\r\n" + "defaultProcessing=" + Configuration.defaultProcessing + "\r\n" + "gpuDevice=" + Configuration.gpuDevice + "\r\n"
 					+ "lastDirectory=" + Configuration.lastDirectory);
 
 		} catch (IOException ex) {

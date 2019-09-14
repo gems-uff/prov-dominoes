@@ -10,9 +10,9 @@ public class MatrixOperationsFactory {
 	 * @return Access type
 	 * @throws Exception
 	 */
-	public static MatrixOperations getMatrix2D(String type, MatrixDescriptor _matrixDescriptor, boolean isSparse)
+	public static MatrixOperations getMatrix2D(boolean isGPU, MatrixDescriptor _matrixDescriptor, boolean isSparse)
 			throws Exception {
-		if (type.toUpperCase().equals("GPU")) {
+		if (isGPU) {
 			return new MatrixOperationsGPU(_matrixDescriptor, isSparse);
 		} else {
 			return new MatrixOperationsCPU(_matrixDescriptor);

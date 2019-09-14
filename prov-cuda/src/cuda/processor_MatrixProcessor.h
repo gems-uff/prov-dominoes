@@ -25,6 +25,14 @@ JNIEXPORT jboolean JNICALL Java_processor_MatrixProcessor_isGPUEnabled
 
 /*
  * Class:     processor_MatrixProcessor
+ * Method:    getDeviceCount
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_processor_MatrixProcessor_getDeviceCount
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     processor_MatrixProcessor
  * Method:    getSparseData
  * Signature: (J)[Lprocessor/Cell;
  */

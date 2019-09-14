@@ -27,7 +27,8 @@ public class Prov2DominoesUtil {
 				System.out.println(provMatrix.getColumnDescriptors());
 				descriptor.setRowsDesc(provMatrix.getRowDescriptors());
 				descriptor.setColumnsDesc(provMatrix.getColumnDescriptors());
-				Dominoes dom = new Dominoes(provMatrix, descriptor, Configuration.processingUnit);
+				Dominoes dom = new Dominoes(provMatrix, descriptor,
+						(Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE));
 				dominoesList.add(dom);
 			}
 
@@ -43,6 +44,14 @@ public class Prov2DominoesUtil {
 			}
 		}
 		return cells;
+	}
+	
+	public static CRSMatrix cells2Matrix(ArrayList<Cell> cells, int rows, int cols) {
+		CRSMatrix matrix = new CRSMatrix(rows, cols);
+		for (Cell cell : cells) {
+			matrix.set(cell.row, cell.col, cell.value);
+		}
+		return matrix;
 	}
 
 }

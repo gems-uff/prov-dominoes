@@ -11,6 +11,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import processor.MatrixProcessor;
 
 public class ProvDominoesMenuBar extends MenuBar {
 
@@ -47,6 +48,12 @@ public class ProvDominoesMenuBar extends MenuBar {
 	private final CheckMenuItem mDefaultFactory;
 	private final CheckMenuItem mExtendedFactory;
 
+	// ------PROCESSING ITENS----------------------------------------------------
+	private final Menu mProcessing;
+	private final CheckMenuItem mCpuProcessing;
+	private final CheckMenuItem mGpuProcessing;
+	private CheckMenuItem[] devices;
+
 	public ProvDominoesMenuBar() {
 		this.setHeight(30);
 		// ------DOMINOES MENU
@@ -69,6 +76,77 @@ public class ProvDominoesMenuBar extends MenuBar {
 		this.mExtendedFactory = new CheckMenuItem("Extended");
 		this.mExtendedFactory.setSelected(!Configuration.defaultFactory);
 		this.mFactory.getItems().addAll(this.mDefaultFactory, this.mExtendedFactory);
+
+		this.mProcessing = new Menu("Processing");
+		this.mCpuProcessing = new CheckMenuItem("CPU");
+		this.mGpuProcessing = new CheckMenuItem("GPU");
+
+		int deviceCount = MatrixProcessor.getDeviceCount();
+		if (deviceCount > 0) {
+			SeparatorMenuItem deviceSeparator = new SeparatorMenuItem();
+			this.mProcessing.getItems().addAll(this.mCpuProcessing, this.mGpuProcessing, deviceSeparator);
+			this.devices = new CheckMenuItem[deviceCount];
+			for (int i = 0; i < devices.length; i++) {
+				this.devices[i] = new CheckMenuItem("Device " + i);
+				this.devices[i].setSelected(i == Configuration.gpuDevice);
+				this.devices[i].setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						CheckMenuItem target = (CheckMenuItem) event.getTarget();
+						CheckMenuItem[] devices = App.getMenu().getDevices();
+						for (int j = 0; j < devices.length; j++) {
+							if (devices[j].equals(target)) {
+								devices[j].setSelected(true);
+								Configuration.defaultProcessing = Configuration.GPU_DEVICE;
+								Configuration.gpuDevice = j;
+								MatrixProcessor.resetGPU(j);
+								App.getStage().setTitle(
+										"Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
+												: Configuration.CPU_DEVICE) + "]");
+							} else {
+								devices[j].setSelected(false);
+							}
+						}
+					}
+				});
+				this.mProcessing.getItems().add(this.devices[i]);
+				mGpuProcessing.setSelected(Configuration.defaultProcessing.equals(Configuration.GPU_DEVICE));
+				mGpuProcessing.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						Configuration.defaultProcessing = Configuration.GPU_DEVICE;
+						App.getStage().setTitle(
+								"Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
+										: Configuration.CPU_DEVICE) + "]");
+						App.getMenu().getmGpuProcessing().setSelected(true);
+						App.getMenu().getmCpuProcessing().setSelected(false);
+						CheckMenuItem[] devices = App.getMenu().getDevices();
+						for (int i = 0; i < devices.length; i++) {
+							devices[i].setSelected(i == Configuration.gpuDevice);
+							devices[i].setDisable(false);
+						}
+					}
+				});
+
+				mCpuProcessing.setSelected(Configuration.defaultProcessing.equals(Configuration.CPU_DEVICE));
+				mCpuProcessing.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						Configuration.defaultProcessing = Configuration.CPU_DEVICE;
+						App.getStage().setTitle(
+								"Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
+										: Configuration.CPU_DEVICE) + "]");
+						App.getMenu().getmCpuProcessing().setSelected(true);
+						App.getMenu().getmGpuProcessing().setSelected(false);
+						CheckMenuItem[] devices = App.getMenu().getDevices();
+						for (int i = 0; i < devices.length; i++) {
+							devices[i].setSelected(false);
+							devices[i].setDisable(true);
+						}
+					}
+				});
+			}
+		}
 
 		// ------EDIT MENU
 		// ITENS---------------------------------------------------------
@@ -99,7 +177,11 @@ public class ProvDominoesMenuBar extends MenuBar {
 
 		// ------MENU
 		// ITENS--------------------------------------------------------------
-		this.getMenus().addAll(this.mainMenu, this.editMenu, mFactory, mView);
+		if (deviceCount > 0) {
+			this.getMenus().addAll(this.mainMenu, this.editMenu, mProcessing, mFactory, mView);
+		} else {
+			this.getMenus().addAll(this.mainMenu, this.editMenu, mFactory, mView);
+		}
 		// this.getMenus().addAll(this.mainMenu, this.mEdit, this.mConfiguration);
 
 		// ------ADD
@@ -242,6 +324,22 @@ public class ProvDominoesMenuBar extends MenuBar {
 
 	public CheckMenuItem getmExtendedFactory() {
 		return mExtendedFactory;
+	}
+
+	public CheckMenuItem[] getDevices() {
+		return devices;
+	}
+
+	public void setDevices(CheckMenuItem[] devices) {
+		this.devices = devices;
+	}
+
+	public CheckMenuItem getmCpuProcessing() {
+		return mCpuProcessing;
+	}
+
+	public CheckMenuItem getmGpuProcessing() {
+		return mGpuProcessing;
 	}
 
 }

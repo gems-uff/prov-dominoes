@@ -24,7 +24,7 @@ public class Configuration {
     public static double height = 600.0f;
     public static double listWidth = 147.0f;
     
-    public static String processingUnit =  MatrixProcessor.isGPUEnabled() ? GPU_DEVICE : CPU_DEVICE;
+    public static String defaultProcessing = GPU_DEVICE;
     public static int gpuDevice = 0;
     
 	public static Date beginDate = null;
@@ -36,4 +36,12 @@ public class Configuration {
     
     public static boolean visibilityTimePane = true;
 	public static boolean telemetry = false;
+	
+	public static boolean isGPUProcessing() {
+		return defaultProcessing.equals(GPU_DEVICE) && MatrixProcessor.isGPUEnabled();
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(MatrixProcessor.getDeviceCount());
+	}
 }
