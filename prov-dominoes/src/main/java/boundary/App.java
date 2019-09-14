@@ -38,6 +38,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import processor.MatrixProcessor;
 import util.ConfigurationFile;
 
 public class App extends Application {
@@ -64,10 +65,14 @@ public class App extends Application {
 			App.stage = primaryStage;
 			App.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 			App.stage.centerOnScreen();
-			App.stage.setTitle("Prov-Dominoes [" + Configuration.processingUnit + "]");
+			App.stage.setTitle("Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
+					: Configuration.CPU_DEVICE) + "]");
 			App.stage.setResizable(Configuration.resizable);
 
 			App.menu = new ProvDominoesMenuBar();
+			if (Configuration.defaultProcessing.equals(Configuration.CPU_DEVICE)) {
+				App.menu.getmCpuProcessing().fire();
+			}
 			App.commandManager = new CommandManager(menu);
 
 			App.set();
@@ -507,12 +512,16 @@ public class App extends Application {
 			// read the configuration file
 			control.Controller.loadConfiguration();
 
-			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
+			if (Configuration.isGPUProcessing()) {
+				if (Configuration.gpuDevice + 1 > MatrixProcessor.getDeviceCount()) {
+					Configuration.gpuDevice = 0;
+				}
 				Session.startSession(Configuration.gpuDevice);
+			}
 
 			launch(args);
 
-			if (Configuration.processingUnit == Configuration.GPU_DEVICE)
+			if (Configuration.isGPUProcessing())
 				Session.closeSection();
 
 		} catch (Exception e) {

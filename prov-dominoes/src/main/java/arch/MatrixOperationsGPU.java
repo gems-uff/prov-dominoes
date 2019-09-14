@@ -33,12 +33,17 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 		Session.register2DMatrix(this);
 	}
-	
+
+	public MatrixOperationsGPU(MatrixDescriptor _matrixDescriptor, boolean isSparse, int[] rows, int[] cols) throws Exception {
+		this(_matrixDescriptor, isSparse);
+		this.rows = rows;
+		this.cols = cols;
+	}
+
 	@Override
 	public int getMemUsed() {
 		return matrixDescriptor.getNumCols() * matrixDescriptor.getNumRows() * (Float.SIZE / 8);
 	}
-
 
 	public void finalize() {
 		MatrixProcessor.deleteMatrixData(matPointer);
@@ -123,9 +128,11 @@ public class MatrixOperationsGPU implements MatrixOperations {
 			data[i] = cell.value;
 		}
 		if (isSparse) {
-			MatrixProcessor.setData(matPointer, data);
-		} else {
 			MatrixProcessor.setData(matPointer, rows, cols, data);
+			this.rows = null;
+			this.cols = null;
+		} else {
+			MatrixProcessor.setData(matPointer, data);
 		}
 	}
 
@@ -185,8 +192,18 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 	@Override
 	public MatrixOperations transitiveClosure() {
-		// TODO Implement transitiveClosure
-		return null;
+		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
+		MatrixOperationsGPU transitiveClosure = null;
+
+		try {
+			System.out.println("Operation: TransitiveClosure - Using " + getMemUsed() + " KB of GPU Memory.");
+			transitiveClosure = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
+			MatrixProcessor.transitiveClosure(matrixDescriptor.getNumRows(), matPointer, transitiveClosure.matPointer);
+			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return transitiveClosure;
 	}
 
 	@Override
@@ -196,32 +213,81 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 	@Override
 	public MatrixOperations binarize() {
-		// TODO Auto-generated method stub
-		return null;
+		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
+		MatrixOperationsGPU binarize = null;
+
+		try {
+			System.out.println("Operation: Binarize - Using " + getMemUsed() + " KB of GPU Memory.");
+			binarize = new MatrixOperationsGPU(_newDescriptor, true);
+			MatrixProcessor.binarize(matPointer, binarize.matPointer);
+			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return binarize;
 	}
 
 	@Override
 	public MatrixOperations invert() {
-		// TODO Auto-generated method stub
-		return null;
+		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
+		MatrixOperationsGPU invert = null;
+		try {
+			System.out.println("Operation: Invert - Using " + getMemUsed() + " KB of GPU Memory.");
+			invert = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
+			MatrixProcessor.binarize(matPointer, invert.matPointer);
+			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return invert;
 	}
 
 	@Override
 	public MatrixOperations lowerDiagonal() {
-		// TODO Auto-generated method stub
-		return null;
+		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
+		MatrixOperationsGPU lowerDiagonal = null;
+		try {
+			System.out.println("Operation: LowerDiagonal - Using " + getMemUsed() + " KB of GPU Memory.");
+			lowerDiagonal = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
+			MatrixProcessor.lowerDiagonal(this.matrixDescriptor.getNumRows(), this.matrixDescriptor.getNumCols(),
+					matPointer, lowerDiagonal.matPointer);
+			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return lowerDiagonal;
 	}
 
 	@Override
 	public MatrixOperations upperDiagonal() {
-		// TODO Auto-generated method stub
-		return null;
+		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
+		MatrixOperationsGPU upperDiagonal = null;
+		try {
+			System.out.println("Operation: UpperDiagonal - Using " + getMemUsed() + " KB of GPU Memory.");
+			upperDiagonal = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
+			MatrixProcessor.upperDiagonal(this.matrixDescriptor.getNumRows(), this.matrixDescriptor.getNumCols(),
+					matPointer, upperDiagonal.matPointer);
+			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return upperDiagonal;
 	}
 
 	@Override
 	public MatrixOperations diagonalize() {
-		// TODO Auto-generated method stub
-		return null;
+		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
+		MatrixOperationsGPU diagonalize = null;
+		try {
+			System.out.println("Operation: Diagonalize - Using " + getMemUsed() + " KB of GPU Memory.");
+			diagonalize = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
+			MatrixProcessor.diagonalize(this.matrixDescriptor.getNumRows()*this.matrixDescriptor.getNumCols(),
+					matPointer, diagonalize.matPointer);
+			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return diagonalize;
 	}
 
 	@Override
@@ -241,7 +307,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		if (isSparse) {
 			return getSparseData();
 		}
-		Cell[] nzList = MatrixProcessor.getData(matPointer, getRows(), getCols());
+		Cell[] nzList = MatrixProcessor.getData(matPointer, rows, cols);
 		ArrayList<Cell> cellList = new ArrayList<Cell>();
 
 		for (Cell nz : nzList) {
@@ -250,12 +316,20 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		return cellList;
 	}
 
-	private int[] getCols() {
+	public int[] getRows() {
+		return rows;
+	}
+
+	public void setRows(int[] rows) {
+		this.rows = rows;
+	}
+
+	public int[] getCols() {
 		return cols;
 	}
 
-	private int[] getRows() {
-		return rows;
+	public void setCols(int[] cols) {
+		this.cols = cols;
 	}
 
 }

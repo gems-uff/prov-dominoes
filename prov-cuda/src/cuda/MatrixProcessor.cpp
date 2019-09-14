@@ -19,6 +19,7 @@ extern "C" {
 
 	void g_ResetAndSetGPUDevice(int gpuDevice);
 	bool g_IsDeviceEnabled();
+	int g_getDeviceCount();
 
 	void g_MatMul(int n_rowsA, int n_colsA, int n_colsB, int nzA, int nzB, int *rowsA, int *colsA, float *valuesA,
 			int *rowsB, int *colsB, float *valuesB, int **row_res, int **cols_res, float **values_res, int& res_nz);
@@ -231,7 +232,7 @@ void calculateSD(SpMatf *matrix, SpMatf *mean, SpMatf *result, bool useGPU){
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_processor_MatrixProcessor_resetGPU
-  (JNIEnv* env, jclass obj, jint gpuDevice) {
+  (JNIEnv *env, jclass obj, jint gpuDevice) {
 	g_ResetAndSetGPUDevice(gpuDevice);
 }
 
@@ -241,8 +242,18 @@ JNIEXPORT void JNICALL Java_processor_MatrixProcessor_resetGPU
  * Signature: ()Z
  */
 JNIEXPORT jboolean JNICALL Java_processor_MatrixProcessor_isGPUEnabled
-  (JNIEnv* env, jclass obj) {
+  (JNIEnv *env, jclass obj) {
 	return g_IsDeviceEnabled();
+}
+
+/*
+ * Class:     processor_MatrixProcessor
+ * Method:    getDeviceCount
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_processor_MatrixProcessor_getDeviceCount
+  (JNIEnv *env, jclass obj) {
+	return g_getDeviceCount();
 }
 
 /*

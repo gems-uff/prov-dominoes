@@ -4,7 +4,6 @@ import org.la4j.matrix.sparse.CRSMatrix;
 
 import arch.MatrixDescriptor;
 import arch.MatrixOperations;
-import arch.MatrixOperationsGPU;
 import javafx.scene.Group;
 import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
@@ -14,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.ProvMatrix;
 import model.ProvRelation.Relation;
+import util.Prov2DominoesUtil;
 
 public final class Dominoes {
 	public final static double GRAPH_WIDTH = 100;
@@ -134,7 +134,10 @@ public final class Dominoes {
 		this.crsMatrix = provMatrix.getMatrix();
 	}
 
-	public Dominoes(String idRow, String idCol, MatrixOperations mat, String _device) throws IllegalArgumentException {
+	public Dominoes(String idRow, String idCol, Relation relation, MatrixDescriptor descriptor, MatrixOperations mat,
+			String _device) throws IllegalArgumentException {
+		this.relation = relation;
+		this.descriptor = descriptor;
 		this.rowIsAggragatable = false;
 		this.colIsAggragatable = false;
 		this.setIdRow(idRow);
@@ -145,33 +148,6 @@ public final class Dominoes {
 		this.currentDevice = _device;
 	}
 
-	public Dominoes(String idRow, String idCol, Relation relation, MatrixDescriptor descriptor, MatrixOperations mat,
-			String _device) throws IllegalArgumentException {
-		this(idRow, idCol, mat, _device);
-		this.relation = relation;
-		this.descriptor = descriptor;
-	}
-
-	public Dominoes(int type, String idRow, String idCol, Historic historic, MatrixOperationsGPU mat, String _device)
-			throws IllegalArgumentException {
-		this.rowIsAggragatable = false;
-		this.colIsAggragatable = false;
-		this.setIdRow(idRow);
-		this.setIdCol(idCol);
-
-		this.setMat(mat);
-
-		this.setHistoric(historic);
-		if (type == Dominoes.TYPE_BASIC || (type != Dominoes.TYPE_DERIVED && type != Dominoes.TYPE_CONFIDENCE
-				&& type != Dominoes.TYPE_SUPPORT && type != Dominoes.TYPE_LIFT
-				&& type != Dominoes.TYPE_TRANSITIVE_CLOSURE && type != Dominoes.TYPE_BINARIZED
-				&& type != Dominoes.TYPE_INVERTED && type != Dominoes.TYPE_DIAGONAL
-				&& type != Dominoes.TYPE_UPPER_DIAGONAL && type != Dominoes.TYPE_LOWER_DIAGONAL)) {
-			throw new IllegalArgumentException("Invalid argument.\nThe Type attribute not is defined or not is valid");
-		}
-		this.type = type;
-		this.currentDevice = _device;
-	}
 
 	/**
 	 * From this Dominoes, this function will build a piece (graphically) respective
@@ -451,6 +427,10 @@ public final class Dominoes {
 	 */
 	public void setMat(MatrixOperations mat) {
 		this.mat = mat;
+		if (mat != null) {
+			this.crsMatrix = Prov2DominoesUtil.cells2Matrix(mat.getData(), mat.getMatrixDescriptor().getNumRows(),
+					mat.getMatrixDescriptor().getNumCols());
+		}
 	}
 
 	public void setupOperation(boolean benefitFromSparseOperation) throws Exception {
@@ -498,12 +478,6 @@ public final class Dominoes {
 		setMat(_newMat);
 	}
 
-	/**
-	 * This function just invert the Historic
-	 *
-	 * @return the historic invert
-	 * @throws Exception
-	 */
 	public void confidence() throws Exception {
 		this.setupOperation(true);
 		MatrixOperations _newMat = mat.confidence(currentDevice.equalsIgnoreCase("GPU"));
@@ -519,7 +493,7 @@ public final class Dominoes {
 	}
 
 	public void binarize() throws Exception {
-		this.setupOperation(false);
+		this.setupOperation(true);
 		MatrixOperations _newMat = mat.binarize();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_BINARIZED;
@@ -620,6 +594,7 @@ public final class Dominoes {
 			cloned.setHistoric(getHistoric().clone());
 		}
 		cloned.setId(this.id);
+		cloned.setCrsMatrix(new CRSMatrix(this.crsMatrix));
 		return cloned;
 	}
 

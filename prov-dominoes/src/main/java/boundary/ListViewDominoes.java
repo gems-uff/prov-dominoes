@@ -25,350 +25,347 @@ import model.ProvRelation.Relation;
 
 public class ListViewDominoes extends ListView<Group> {
 
-    private ObservableList<Group> pieces;
-    private ArrayList<Dominoes> dominoes;
+	private ObservableList<Group> pieces;
+	private ArrayList<Dominoes> dominoes;
 
-    private double padding = 20;
+	private double padding = 20;
 
-    private boolean visibilityHistoric;
+	private boolean visibilityHistoric;
 
-    /**
-     * This class builder initialize this list and your arrays with values
-     * defined in the parameter Array.
-     *
-     * @param array Values to initialize this list and your array
-     */
-    public ListViewDominoes(ArrayList<Dominoes> array) {
-        this.visibilityHistoric = true;
+	/**
+	 * This class builder initialize this list and your arrays with values defined
+	 * in the parameter Array.
+	 *
+	 * @param array Values to initialize this list and your array
+	 */
+	public ListViewDominoes(ArrayList<Dominoes> array) {
+		this.visibilityHistoric = true;
 
-        this.pieces = FXCollections.observableList(new ArrayList<Group>());
-        this.dominoes = new ArrayList<>(); 
-        
-        this.Configure(array);
-    }
-    
-    public void Configure(List<Dominoes> array){
-    	this.clear();
-    	
-    	if (array != null) {
-            for (Dominoes dom : array) {
-            	//if (!dom.getMat().isEmpty()) {
-            		this.add(dom);
-            	//}
-            }
+		this.pieces = FXCollections.observableList(new ArrayList<Group>());
+		this.dominoes = new ArrayList<>();
 
-        }
-        
+		this.Configure(array);
+	}
 
-        this.setItems(this.pieces);
-    }
+	public void Configure(List<Dominoes> array) {
+		this.clear();
 
-    /**
-     * This function adds a Dominoes in the list
-     *
-     * @param domino The dominoes to resultMultiplication
-     * @return true in affirmative case
-     * @throws IllegalArgumentException
-     */
-    public boolean add(Dominoes domino) throws IllegalArgumentException {
+		if (array != null) {
+			for (Dominoes dom : array) {
+				// if (!dom.getMat().isEmpty()) {
+				this.add(dom);
+				// }
+			}
 
-        boolean result = false;
+		}
 
-        if (domino == null) {
-            return result;
-        }
+		this.setItems(this.pieces);
+	}
 
-        if (isAdded(domino)) {
-            return result;
-        }
+	/**
+	 * This function adds a Dominoes in the list
+	 *
+	 * @param domino The dominoes to resultMultiplication
+	 * @return true in affirmative case
+	 * @throws IllegalArgumentException
+	 */
+	public boolean add(Dominoes domino) throws IllegalArgumentException {
 
-        ContextMenu minimenu = new ContextMenu();
-        MenuItem menuItemToAreaMove = new MenuItem("Copy To Area Move");
-        MenuItem menuItemRemove = new MenuItem("Remove");
+		boolean result = false;
 
-        Group group = domino.drawDominoes();
-        group.getChildren().get(Dominoes.GRAPH_HISTORIC).setVisible(visibilityHistoric);
+		if (domino == null) {
+			return result;
+		}
 
-        Tooltip tooltip = new Tooltip(domino.getDescriptor().getRowType()
-        		+ " x "
-        		+ domino.getDescriptor().getColType()
-        		+ " : "
-        		+ domino.getDescriptor().getNumRows()
-        		+ " x "
-        		+ domino.getDescriptor().getNumCols());
-        Tooltip.install(group, tooltip);
+		if (isAdded(domino)) {
+			return result;
+		}
 
-        group.setOnMouseEntered(new EventHandler<MouseEvent>() {
+		ContextMenu minimenu = new ContextMenu();
+		MenuItem menuItemToAreaMove = new MenuItem("Copy To Area Move");
+		MenuItem menuItemRemove = new MenuItem("Remove");
 
-            @Override
-            public void handle(MouseEvent event) {
-                cursorProperty().set(Cursor.OPEN_HAND);
-            }
-        });
-        group.setOnMousePressed(new EventHandler<MouseEvent>() {
+		Group group = domino.drawDominoes();
+		group.getChildren().get(Dominoes.GRAPH_HISTORIC).setVisible(visibilityHistoric);
 
-            @Override
-            public void handle(MouseEvent event) {
-                cursorProperty().set(Cursor.CLOSED_HAND);
-            }
-        });
-        group.setOnMouseReleased(new EventHandler<MouseEvent>() {
+		Tooltip tooltip = new Tooltip(domino.getDescriptor().getRowType() + " x " + domino.getDescriptor().getColType()
+				+ " : " + domino.getDescriptor().getNumRows() + " x " + domino.getDescriptor().getNumCols());
+		Tooltip.install(group, tooltip);
 
-            @Override
-            public void handle(MouseEvent event) {
-                if (cursorProperty().get() == Cursor.CLOSED_HAND) {
+		group.setOnMouseEntered(new EventHandler<MouseEvent>() {
 
-                    int indexTargetRelative = (event.getY() < 0) ? (int) ((event.getY() + (-1) * (Dominoes.GRAPH_HEIGHT + 6)) / (Dominoes.GRAPH_HEIGHT + 6)) : (int) (event.getY() / (Dominoes.GRAPH_HEIGHT + 6));
+			@Override
+			public void handle(MouseEvent event) {
+				cursorProperty().set(Cursor.OPEN_HAND);
+			}
+		});
+		group.setOnMousePressed(new EventHandler<MouseEvent>() {
 
-                    if (/*this.*/pieces == null) {
-                        return;
-                    }
+			@Override
+			public void handle(MouseEvent event) {
+				cursorProperty().set(Cursor.CLOSED_HAND);
+			}
+		});
+		group.setOnMouseReleased(new EventHandler<MouseEvent>() {
 
-                    int indexSource = getSelectionModel().getSelectedIndex();
+			@Override
+			public void handle(MouseEvent event) {
+				if (cursorProperty().get() == Cursor.CLOSED_HAND) {
 
-                    moveItems(indexSource, indexTargetRelative);
-                }
-                cursorProperty().set(Cursor.OPEN_HAND);
-            }
-        });
-        group.setOnMouseExited(new EventHandler<MouseEvent>() {
+					int indexTargetRelative = (event.getY() < 0)
+							? (int) ((event.getY() + (-1) * (Dominoes.GRAPH_HEIGHT + 6)) / (Dominoes.GRAPH_HEIGHT + 6))
+							: (int) (event.getY() / (Dominoes.GRAPH_HEIGHT + 6));
 
-            @Override
-            public void handle(MouseEvent event) {
-                if (cursorProperty().get() == Cursor.CLOSED_HAND) {
+					if (/* this. */pieces == null) {
+						return;
+					}
 
-                } else {
-                    cursorProperty().set(Cursor.DEFAULT);
-                }
-            }
-        });
+					int indexSource = getSelectionModel().getSelectedIndex();
 
-        group.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                    if (mouseEvent.getClickCount() == 2) {
-                    	int index = pieces.indexOf(group);
-                    	Dominoes d = dominoes.get(index);
-                    	String trigram = d.getRelation().getAbbreviate().replace(" ", "");
-                		if (d.getRelation() == Relation.RELATION_INFLUENCE) {
-                			trigram = trigram + "[" + d.getIdRow() + "," + d.getIdCol() + "]";
-                		}
-                        App.getCommandManager().invokeCommand(new CommandFactory().add(trigram));
-                    }
-                }
-            }
-        });
+					moveItems(indexSource, indexTargetRelative);
+				}
+				cursorProperty().set(Cursor.OPEN_HAND);
+			}
+		});
+		group.setOnMouseExited(new EventHandler<MouseEvent>() {
 
-        minimenu.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
+			@Override
+			public void handle(MouseEvent event) {
+				if (cursorProperty().get() == Cursor.CLOSED_HAND) {
 
-                if (event.getButton() == MouseButton.SECONDARY) {
-                    event.consume();
-                }
-            }
-        });
-        minimenu.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (((MenuItem) event.getTarget()).getText().equals(menuItemToAreaMove.getText())) {
-                	int index = pieces.indexOf(group);
-                	Dominoes d = dominoes.get(index);
-                	String trigram = d.getRelation().getAbbreviate().replace(" ", "");
-                	App.getCommandManager().invokeCommand(new CommandFactory().add(trigram));
-                } else if (((MenuItem) event.getTarget()).getText().equals(menuItemRemove.getText())) {
-                    System.out.println("removing");
-                    try {
-                        removeFromListAndArea(group);
-                    } catch (IOException ex) {
-                    	App.alertException(ex, ex.getMessage());
-                    }
-                }
-            }
-        });
-        group.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                if (e.getButton() == MouseButton.SECONDARY) {
-                    minimenu.show(group, e.getScreenX(), e.getScreenY());
-                } else {
-                    minimenu.hide();
-                }
-            }
-        });
+				} else {
+					cursorProperty().set(Cursor.DEFAULT);
+				}
+			}
+		});
 
-        minimenu.getItems().addAll(menuItemToAreaMove, menuItemRemove);
+		group.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+					if (mouseEvent.getClickCount() == 2) {
+						int index = pieces.indexOf(group);
+						Dominoes d = dominoes.get(index);
+						String trigram = d.getRelation().getAbbreviate().replace(" ", "");
+						if (d.getRelation() == Relation.RELATION_INFLUENCE) {
+							trigram = trigram + "[" + d.getIdRow() + "," + d.getIdCol() + "]";
+						}
+						App.getCommandManager().invokeCommand(new CommandFactory().add(trigram));
+					}
+				}
+			}
+		});
 
-        this.dominoes.add(domino);
+		minimenu.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
 
-        this.pieces.add(group);
+				if (event.getButton() == MouseButton.SECONDARY) {
+					event.consume();
+				}
+			}
+		});
+		minimenu.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if (((MenuItem) event.getTarget()).getText().equals(menuItemToAreaMove.getText())) {
+					int index = pieces.indexOf(group);
+					Dominoes d = dominoes.get(index);
+					String trigram = d.getRelation().getAbbreviate().replace(" ", "");
+					App.getCommandManager().invokeCommand(new CommandFactory().add(trigram));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemRemove.getText())) {
+					System.out.println("removing");
+					try {
+						removeFromListAndArea(group);
+					} catch (IOException ex) {
+						App.alertException(ex, ex.getMessage());
+					}
+				}
+			}
+		});
+		group.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				if (e.getButton() == MouseButton.SECONDARY) {
+					minimenu.show(group, e.getScreenX(), e.getScreenY());
+				} else {
+					minimenu.hide();
+				}
+			}
+		});
 
-        result = true;
-        return result;
-    }
+		minimenu.getItems().addAll(menuItemToAreaMove, menuItemRemove);
 
-    /**
-     * This function checks if a domino parameters is added in the list
-     *
-     * @param domino The domino to check
-     * @return true, in affirmative case
-     * @throws IllegalArgumentException
-     */
-    private boolean isAdded(Dominoes domino) throws IllegalArgumentException {
-        if (domino == null) {
-            throw new IllegalArgumentException("list not initialized");
-        }
-        for (Dominoes d : this.dominoes) {
-            if ((d.getIdRow().equals(domino.getIdRow())
-                    && d.getIdCol().equals(domino.getIdCol())
-                    && domino.getHistoric().toString().equals(d.getHistoric().toString()) && domino.getRelation()==d.getRelation())) {
-                return true;
-            }
-        }
-        return false;
-    }
+		this.dominoes.add(domino);
 
-    /**
-     * This function is called to change the parts color
-     */
-    void changeColor() {
-        for (Group group : this.pieces) {
-            ((Shape) group.getChildren().get(Dominoes.GRAPH_FILL)).setFill(Dominoes.COLOR_BACK);
-            ((Shape) group.getChildren().get(Dominoes.GRAPH_LINE)).setFill(Dominoes.COLOR_BORDER);
-            ((Shape) group.getChildren().get(Dominoes.GRAPH_BORDER)).setFill(Dominoes.COLOR_BORDER);
-            ((Shape) group.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NORMAL_FONT);
-            ((Shape) group.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NORMAL_FONT);
-        }
-    }
+		this.pieces.add(group);
 
-    /**
-     * This function remove all parts in this area move
-     */
-    public void clear() {
-        for (int i = 0; i < this.pieces.size(); i++) {
-            this.pieces.get(i).setVisible(false);
-        }
-        this.pieces.removeAll(this.pieces);
-        this.dominoes.removeAll(this.dominoes);
-    }
+		result = true;
+		return result;
+	}
 
-    /**
-     * This function is used to move a selected domino in the list.
-     *
-     * @param indexSource The selected index. The dominoes in this position will
-     * suffer a change in their position
-     * @param indexTargetRelative The position target.
-     */
-    public void moveItems(int indexSource, int indexTargetRelative) {
-        int indexTarget = indexSource + indexTargetRelative;
+	/**
+	 * This function checks if a domino parameters is added in the list
+	 *
+	 * @param domino The domino to check
+	 * @return true, in affirmative case
+	 * @throws IllegalArgumentException
+	 */
+	private boolean isAdded(Dominoes domino) throws IllegalArgumentException {
+		if (domino == null) {
+			throw new IllegalArgumentException("list not initialized");
+		}
+		for (Dominoes d : this.dominoes) {
+			if ((d.getIdRow().equals(domino.getIdRow()) && d.getIdCol().equals(domino.getIdCol())
+					&& domino.getHistoric().toString().equals(d.getHistoric().toString())
+					&& domino.getRelation() == d.getRelation())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * This function is called to change the parts color
+	 */
+	void changeColor() {
+		for (Group group : this.pieces) {
+			((Shape) group.getChildren().get(Dominoes.GRAPH_FILL)).setFill(Dominoes.COLOR_BACK);
+			((Shape) group.getChildren().get(Dominoes.GRAPH_LINE)).setFill(Dominoes.COLOR_BORDER);
+			((Shape) group.getChildren().get(Dominoes.GRAPH_BORDER)).setFill(Dominoes.COLOR_BORDER);
+			((Shape) group.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NORMAL_FONT);
+			((Shape) group.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NORMAL_FONT);
+		}
+	}
+
+	/**
+	 * This function remove all parts in this area move
+	 */
+	public void clear() {
+		for (int i = 0; i < this.pieces.size(); i++) {
+			this.pieces.get(i).setVisible(false);
+		}
+		this.pieces.removeAll(this.pieces);
+		this.dominoes.removeAll(this.dominoes);
+	}
+
+	/**
+	 * This function is used to move a selected domino in the list.
+	 *
+	 * @param indexSource         The selected index. The dominoes in this position
+	 *                            will suffer a change in their position
+	 * @param indexTargetRelative The position target.
+	 */
+	public void moveItems(int indexSource, int indexTargetRelative) {
+		int indexTarget = indexSource + indexTargetRelative;
 //        int indexTarget = indexTargetRelative;
 
-        // catch index selected
-        if (this.pieces == null || this.dominoes == null) {
-            return;
-        }
+		// catch index selected
+		if (this.pieces == null || this.dominoes == null) {
+			return;
+		}
 
-        if ((indexTarget < 0 || indexTarget >= this.pieces.size())
-                || (indexSource < 0 || indexSource >= this.pieces.size())
-                || (indexSource == indexTarget)) {
-            return;
-        }
+		if ((indexTarget < 0 || indexTarget >= this.pieces.size())
+				|| (indexSource < 0 || indexSource >= this.pieces.size()) || (indexSource == indexTarget)) {
+			return;
+		}
 
-        if (indexTarget > indexSource) {
-            Group sourceGroup = new Group();
-            sourceGroup = this.pieces.get(indexSource);
-            Dominoes sourceDominoes = new Dominoes(Configuration.processingUnit);
-            sourceDominoes = this.dominoes.get(indexSource);
+		if (indexTarget > indexSource) {
+			Group sourceGroup = new Group();
+			sourceGroup = this.pieces.get(indexSource);
+			Dominoes sourceDominoes = new Dominoes(
+					(Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE));
+			sourceDominoes = this.dominoes.get(indexSource);
 
-            for (int i = indexSource; i < indexTarget; i++) {
-                this.pieces.set(i, this.pieces.get(i + 1));
-                this.dominoes.set(i, this.dominoes.get(i + 1));
-            }
+			for (int i = indexSource; i < indexTarget; i++) {
+				this.pieces.set(i, this.pieces.get(i + 1));
+				this.dominoes.set(i, this.dominoes.get(i + 1));
+			}
 
-            this.pieces.set(indexTarget, sourceGroup);
-            this.dominoes.set(indexTarget, sourceDominoes);
+			this.pieces.set(indexTarget, sourceGroup);
+			this.dominoes.set(indexTarget, sourceDominoes);
 
-        } else if (indexTarget < indexSource) {
-            Group sourceGroup = new Group();
-            sourceGroup = this.pieces.get(indexSource);
-            Dominoes sourceDominoes = new Dominoes(Configuration.processingUnit);
-            sourceDominoes = this.dominoes.get(indexSource);
+		} else if (indexTarget < indexSource) {
+			Group sourceGroup = new Group();
+			sourceGroup = this.pieces.get(indexSource);
+			Dominoes sourceDominoes = new Dominoes(
+					(Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE));
+			sourceDominoes = this.dominoes.get(indexSource);
 
-            for (int i = indexSource; i > indexTarget; i--) {
-                this.pieces.set(i, this.pieces.get(i - 1));
-                this.dominoes.set(i, this.dominoes.get(i - 1));
-            }
+			for (int i = indexSource; i > indexTarget; i--) {
+				this.pieces.set(i, this.pieces.get(i - 1));
+				this.dominoes.set(i, this.dominoes.get(i - 1));
+			}
 
-            this.pieces.set(indexTarget, sourceGroup);
-            this.dominoes.set(indexTarget, sourceDominoes);
-        }
-    }
+			this.pieces.set(indexTarget, sourceGroup);
+			this.dominoes.set(indexTarget, sourceDominoes);
+		}
+	}
 
-    /**
-     * This Functions is used to define the moving area size
-     *
-     * @param width
-     * @param height
-     */
-    void setSize(double width, double height) {
-        this.setMinWidth(width - padding);
-        this.setPrefWidth(width);
-        this.setMaxWidth(width + padding);
-        this.setPrefHeight(height);
-    }
+	/**
+	 * This Functions is used to define the moving area size
+	 *
+	 * @param width
+	 * @param height
+	 */
+	void setSize(double width, double height) {
+		this.setMinWidth(width - padding);
+		this.setPrefWidth(width);
+		this.setMaxWidth(width + padding);
+		this.setPrefHeight(height);
+	}
 
-    /**
-     * This function is used to define the visibility of historic
-     *
-     * @param visibility True to define visible the historic
-     */
-    void setVisibleHistoric() {
-    	boolean visibility = this.visibilityHistoric;
-        for (Group group : pieces) {
-            group.getChildren().get(Dominoes.GRAPH_HISTORIC).setVisible(visibility);
-        }
-    }
-    
-    /**
-     * This function is used to define the visibility of type
-     *
-     * @param visibility True to define visible the type
-     */
-    void setVisibleType() {
-    	boolean visibility = Configuration.visibilityType;
-        for (Group group : pieces) {
-            group.getChildren().get(Dominoes.GRAPH_TYPE).setVisible(visibility);
-        }
-    }
+	/**
+	 * This function is used to define the visibility of historic
+	 *
+	 * @param visibility True to define visible the historic
+	 */
+	void setVisibleHistoric() {
+		boolean visibility = this.visibilityHistoric;
+		for (Group group : pieces) {
+			group.getChildren().get(Dominoes.GRAPH_HISTORIC).setVisible(visibility);
+		}
+	}
 
-    /**
-     * This function remove only a element this list.
-     *
-     * @param group element to remove
-     * @return true in affimative case
-     */
-    public boolean remove(Group group) {
-        int index = this.pieces.indexOf(group);
-        if (index > -1) {
-            group.setVisible(false);
-            this.dominoes.remove(index);
-            this.pieces.remove(index);
-            return true;
-        }
-        return false;
-    }
+	/**
+	 * This function is used to define the visibility of type
+	 *
+	 * @param visibility True to define visible the type
+	 */
+	void setVisibleType() {
+		boolean visibility = Configuration.visibilityType;
+		for (Group group : pieces) {
+			group.getChildren().get(Dominoes.GRAPH_TYPE).setVisible(visibility);
+		}
+	}
 
-    /**
-     * This function remove the element of the list and of the move area
-     *
-     * @param group Element to remove
-     * @return true, in affirmative case
-     * @throws IOException
-     */
-    private boolean removeFromListAndArea(Group group) throws IOException {
-        return App.removeMatrix(this.dominoes.get(pieces.indexOf(group)), group);
-    }
+	/**
+	 * This function remove only a element this list.
+	 *
+	 * @param group element to remove
+	 * @return true in affimative case
+	 */
+	public boolean remove(Group group) {
+		int index = this.pieces.indexOf(group);
+		if (index > -1) {
+			group.setVisible(false);
+			this.dominoes.remove(index);
+			this.pieces.remove(index);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * This function remove the element of the list and of the move area
+	 *
+	 * @param group Element to remove
+	 * @return true, in affirmative case
+	 * @throws IOException
+	 */
+	private boolean removeFromListAndArea(Group group) throws IOException {
+		return App.removeMatrix(this.dominoes.get(pieces.indexOf(group)), group);
+	}
 
 	public ObservableList<Group> getPieces() {
 		return pieces;

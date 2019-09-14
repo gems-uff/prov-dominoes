@@ -17,6 +17,11 @@ class MatrixProcessorTest {
 	}
 
 	@Test
+	void getDeviceCountTest() {
+		assertTrue(MatrixProcessor.getDeviceCount() == 1);
+	}
+
+	@Test
 	void binarizeTest() {
 		long pointerMatrix = MatrixProcessor.createMatrixData(3, 4, true);
 		CRSMatrix matrix = new CRSMatrix(3, 4);
@@ -321,7 +326,7 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(3, 2) == -3.0);
 		assertTrue(resp.get(3, 3) == 985.0);
 	}
-	
+
 	@Test
 	void transitiveClosureTest1() {
 		int v = 9;
@@ -434,10 +439,9 @@ class MatrixProcessorTest {
 		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
 
 		assertNotNull(response);
-		assertTrue(response.length == v*v);
-		
+		assertTrue(response.length == v * v);
+
 		CRSMatrix resp = toCRSMatrix(response, v, v);
-		System.out.println(resp);
 		assertTrue(resp.get(0, 0) == 1.0);
 		assertTrue(resp.get(0, 1) == 0.0);
 		assertTrue(resp.get(0, 2) == 1.0);
@@ -447,7 +451,7 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(0, 6) == 0.5);
 		assertTrue(resp.get(0, 7) == 0.5);
 		assertTrue(resp.get(0, 8) == 1.0);
-		
+
 		assertTrue(new DecimalFormat("#.#").format(resp.get(1, 0)).equals("0,2"));
 		assertTrue(resp.get(1, 1) == 1.0);
 		assertTrue(new DecimalFormat("#.###").format(resp.get(1, 2)).equals("0,167"));
@@ -457,7 +461,7 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(1, 6) == 0.25);
 		assertTrue(resp.get(1, 7) == 0.5);
 		assertTrue(new DecimalFormat("#.###").format(resp.get(1, 8)).equals("0,333"));
-		
+
 		assertTrue(new DecimalFormat("#.##").format(resp.get(2, 0)).equals("0,25"));
 		assertTrue(resp.get(2, 1) == 0.0);
 		assertTrue(resp.get(2, 2) == 1.0);
@@ -467,7 +471,7 @@ class MatrixProcessorTest {
 		assertTrue(new DecimalFormat("#.###").format(resp.get(2, 6)).equals("0,333"));
 		assertTrue(resp.get(2, 7) == 1.00);
 		assertTrue(resp.get(2, 8) == 0.5);
-		
+
 		assertTrue(new DecimalFormat("#.###").format(resp.get(3, 0)).equals("0,167"));
 		assertTrue(resp.get(3, 1) == 1.0);
 		assertTrue(new DecimalFormat("#.###").format(resp.get(3, 2)).equals("0,143"));
@@ -477,7 +481,7 @@ class MatrixProcessorTest {
 		assertTrue(new DecimalFormat("#.#").format(resp.get(3, 6)).equals("0,2"));
 		assertTrue(new DecimalFormat("#.###").format(resp.get(3, 7)).equals("0,333"));
 		assertTrue(new DecimalFormat("#.##").format(resp.get(3, 8)).equals("0,25"));
-		
+
 		assertTrue(resp.get(4, 0) == 0.0);
 		assertTrue(resp.get(4, 1) == 0.0);
 		assertTrue(resp.get(4, 2) == 0.0);
@@ -487,7 +491,7 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(4, 6) == 0.0);
 		assertTrue(resp.get(4, 7) == 0.0);
 		assertTrue(resp.get(4, 8) == 0.0);
-		
+
 		assertTrue(new DecimalFormat("#.##").format(resp.get(5, 0)).equals("0,25"));
 		assertTrue(resp.get(5, 1) == 0.0);
 		assertTrue(new DecimalFormat("#.#").format(resp.get(5, 2)).equals("0,2"));
@@ -497,7 +501,7 @@ class MatrixProcessorTest {
 		assertTrue(new DecimalFormat("#.###").format(resp.get(5, 6)).equals("0,333"));
 		assertTrue(resp.get(5, 7) == 1.0);
 		assertTrue(resp.get(5, 8) == 0.5);
-		
+
 		assertTrue(resp.get(6, 0) == 1.0);
 		assertTrue(resp.get(6, 1) == 0.0);
 		assertTrue(resp.get(6, 2) == 0.5);
@@ -507,7 +511,7 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(6, 6) == 1.0);
 		assertTrue(new DecimalFormat("#.###").format(resp.get(6, 7)).equals("0,333"));
 		assertTrue(resp.get(6, 8) == 0.5);
-		
+
 		assertTrue(new DecimalFormat("#.###").format(resp.get(7, 0)).equals("0,333"));
 		assertTrue(resp.get(7, 1) == 0.0);
 		assertTrue(new DecimalFormat("#.##").format(resp.get(7, 2)).equals("0,25"));
@@ -517,7 +521,7 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(7, 6) == 0.5);
 		assertTrue(resp.get(7, 7) == 1.0);
 		assertTrue(resp.get(7, 8) == 1.0);
-		
+
 		assertTrue(resp.get(8, 0) == 0.5);
 		assertTrue(resp.get(8, 1) == 0.0);
 		assertTrue(new DecimalFormat("#.###").format(resp.get(8, 2)).equals("0,333"));
@@ -529,7 +533,7 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(8, 8) == 1.0);
 
 	}
-	
+
 	@Test
 	void transitiveClosureTest2() {
 		int v = 5;
@@ -582,7 +586,7 @@ class MatrixProcessorTest {
 		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
 
 		assertNotNull(response);
-		assertTrue(response.length == v*v);
+		assertTrue(response.length == v * v);
 
 		CRSMatrix resp = toCRSMatrix(response, v, v);
 		assertTrue(resp.get(0, 0) == 1.0);
@@ -590,31 +594,30 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(0, 2) == 1.0);
 		assertTrue(resp.get(0, 3) == 1.0);
 		assertTrue(resp.get(0, 4) == 0.5);
-		
+
 		assertTrue(resp.get(1, 0) == 0.5);
 		assertTrue(resp.get(1, 1) == 1.0);
 		assertTrue(resp.get(1, 2) == 1.0);
-		assertTrue(new DecimalFormat("#.###").format(resp.get(1,3)).equals("0,333"));
+		assertTrue(new DecimalFormat("#.###").format(resp.get(1, 3)).equals("0,333"));
 		assertTrue(resp.get(1, 4) == 0.5);
-		
+
 		assertTrue(resp.get(2, 0) == 1.0);
-		assertTrue(new DecimalFormat("#.###").format(resp.get(2,1)).equals("0,333"));
+		assertTrue(new DecimalFormat("#.###").format(resp.get(2, 1)).equals("0,333"));
 		assertTrue(resp.get(2, 2) == 1.0);
 		assertTrue(resp.get(2, 3) == 0.5);
 		assertTrue(resp.get(2, 4) == 1.0);
-		
-		assertTrue(new DecimalFormat("#.###").format(resp.get(3,0)).equals("0,333"));
+
+		assertTrue(new DecimalFormat("#.###").format(resp.get(3, 0)).equals("0,333"));
 		assertTrue(resp.get(3, 1) == 1.0);
 		assertTrue(resp.get(3, 2) == 0.5);
 		assertTrue(resp.get(3, 3) == 1.0);
 		assertTrue(resp.get(3, 4) == 1.0);
-		
+
 		assertTrue(resp.get(4, 0) == 0.0);
 		assertTrue(resp.get(4, 1) == 0.0);
 		assertTrue(resp.get(4, 2) == 0.0);
 		assertTrue(resp.get(4, 3) == 0.0);
 		assertTrue(resp.get(4, 4) == 1.0);
-		
 
 	}
 

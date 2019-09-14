@@ -16,6 +16,8 @@ public class MatrixProcessor {
 	public native static void resetGPU(int deviceToUse);
 
 	public native static boolean isGPUEnabled();
+	
+	public native static int getDeviceCount();
 
 	public native static Cell[] getSparseData(long pointer);
 
