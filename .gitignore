@@ -1,5 +1,6 @@
-prov-dominoes/target/
-prov-dominoes/.settings/
+target/
+.settings/
+
 
 .classpath
 .project
