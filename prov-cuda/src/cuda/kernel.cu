@@ -18,8 +18,8 @@
 #include <stdio.h>
 #include <math.h>
 
-#define N_THREADS_X 8
-#define N_THREADS_Y 8
+#define N_THREADS_X 16
+#define N_THREADS_Y 16
 
 __global__ void K_CheckNonZerosInCol(float *raw, int rows, int cols, int *nonZeros){
 	int idx = blockDim.x * blockIdx.x + threadIdx.x;
@@ -125,107 +125,66 @@ __global__ void invertKernel(float* values, int elements, float* result) {
 	}
 }
 
-__global__ void diagonalizeKernel(float* values, int elements, int threshold,
-		float* result) {
-	int idx = blockDim.x * blockIdx.x + threadIdx.x;
-
-	if (idx < elements) {
-		if (idx == 0 || idx % threshold == 0) {
-			result[idx] = values[idx];
+__global__ void diagonalizeKernel(float* values, int v, float* result) {
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+	int j = blockDim.y * blockIdx.y + threadIdx.y;
+	if (i < v && j < v) {
+		if (i==j) {
+			result[i*v + j] = values[i*v + j];
 		} else {
-			result[idx] = 0;
+			result[i*v + j] = 0;
 		}
 	}
 }
 
-__global__ void upperDiagonalKernel(float* values, int rows, int cols, float* result) {
-	int idx = blockDim.x * blockIdx.x + threadIdx.x;
-	if (idx < rows * cols) {
-		int i, j;
-		if (idx < cols) {
-			i = 0;
-			j = idx;
+__global__ void upperDiagonalKernel(float* values, int v, float* result) {
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+	int j = blockDim.y * blockIdx.y + threadIdx.y;
+	if (i < v && j < v) {
+		if (j >= i) {
+			result[i*v + j] = values[i*v + j];
 		} else {
-			i = idx/rows;
-			j = idx - i*(rows);
-		}
-		if ( i < rows && j >= i && j < cols) {
-			result[idx] = values[idx];
-		} else {
-			result[idx] = 0;
+			result[i*v + j] = 0;
 		}
 	}
 }
 
-__global__ void lowerDiagonalKernel(float* values, int rows, int cols, float* result) {
-	int idx = blockDim.x * blockIdx.x + threadIdx.x;
-	if (idx < rows * cols) {
-		int i, j;
-		if (idx < cols) {
-			i = 0;
-			j = idx;
+__global__ void lowerDiagonalKernel(float* values, int v, float* result) {
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+	int j = blockDim.y * blockIdx.y + threadIdx.y;
+	if (i < v && j < v) {
+		if (i >= j) {
+			result[i*v + j] = values[i*v + j];
 		} else {
-			i = idx/rows;
-			j = idx - i*(rows);
-		}
-		if ( j < cols && i >= j && i < rows) {
-			result[idx] = values[idx];
-		} else {
-			result[idx] = 0;
+			result[i*v + j] = 0;
 		}
 	}
 }
 
 __global__ void prepareClosureKernel(float* values, int v, float* result) {
-	int idx = blockDim.x * blockIdx.x + threadIdx.x;
-	
-	if (idx < v*v) {
-		int i, j;
-		if (idx < v) {
-			i = 0;
-			j = idx;
-		} else {
-			i = idx/v;
-			j = idx - i*(v);
-		}
-	
-		if ( i < v) {
-			if ( j < v) {
-				result[i*v + j] = values[i*v + j] > 0 ? 1 : 0;
-				if (i == j) {
-					result[i*v + j] = 1;
-				}
-			}
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+	int j = blockDim.y * blockIdx.y + threadIdx.y;
+	if (i < v && j < v) {
+		result[i*v + j] = values[i*v + j] > 0 ? 1 : 0;
+		if (i == j) {
+			result[i*v + j] = 1;
 		}
 	}
 }
 
-__global__ void transitiveClosureKernel(float* values, int v, float* result) {
-	int idx = blockDim.x * blockIdx.x + threadIdx.x;
-
-	if (idx < v*v) {
-		int i, j;
-		if (idx < v) {
-			i = 0;
-			j = idx;
-		} else {
-			i = idx/v;
-			j = idx - i*(v);
-		}
-		for (int k = 0; k < v; k++) {
-			__syncthreads();
-			if ( i < v) {
-				if ( j < v) {
-					if (((result[i*v + k] != 0) && (result[k*v + j] != 0))) {
-						if (i != j) { // ignorar próprio nó (i=j).
-							float distIK = (i == k ? 0 : result[i*v + k]);
-							float distKJ = (k == j ? 0 : result[k*v + j]);
-								if (result[i*v + j] == 0) { // caso em que não foi calculado result entre IJ ainda.
-									result[i*v + j] = distIK + distKJ;							
-								} else if (distIK + distKJ < result[i*v + j]){ // atualizar se novos result forem menores que o atual.
-									result[i*v + j] = distIK + distKJ;
-								}
-						}
+__global__ void transitiveClosureKernel(float* values, int k, int v, float* result) {
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+	int j = blockDim.y * blockIdx.y + threadIdx.y;
+	if (i < v) {
+		if (j < v) {
+			if (((result[i*v + k] != 0) && (result[k*v + j] != 0))) {
+				if (i != j) { // ignorar próprio nó (i=j).
+					float distIK = (i == k ? 0 : result[i*v + k]);
+					float distKJ = (k == j ? 0 : result[k*v + j]);
+					if (result[i*v + j] == 0) { // caso em que não foi calculado result entre IJ ainda.
+						result[i*v + j] = distIK + distKJ;							
+					} else if (distIK + distKJ < result[i*v + j]){ // atualizar se novos result forem menores que o atual.
+						result[i*v + j] = distIK + distKJ;
 					}
 				}
 			}
@@ -233,11 +192,12 @@ __global__ void transitiveClosureKernel(float* values, int v, float* result) {
 	}
 }
 
-__global__ void rasterizeClosureKernel(float* matrix, int elements) {
-	int idx = blockDim.x * blockIdx.x + threadIdx.x;
-	if (idx < elements) {
-		if (matrix[idx] > 0) {
-			matrix[idx] = 1 / matrix[idx];
+__global__ void rasterizeClosureKernel(float* matrix, int v) {
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+	int j = blockDim.y * blockIdx.y + threadIdx.y;
+	if (i < v && j < v) {
+		if (matrix[i*v + j] > 0) {
+			matrix[i*v + j] = 1 / matrix[i*v + j];
 		}
 	}
 }
@@ -413,8 +373,8 @@ extern "C" {
 		checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * elements));
 		checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * elements));
 	
-		dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1, 1);
-		dim3 gridDim(ceil((float) elements / (N_THREADS_X * N_THREADS_Y)), 1, 1);
+		dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1);
+		dim3 gridDim(ceil((float) elements / (N_THREADS_X * N_THREADS_X)), 1, 1);
 	
 		binarizeKernel<<<gridDim, blockDim>>>(d_values, elements, d_result);
 	
@@ -437,8 +397,8 @@ extern "C" {
 		checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * elements));
 		checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * elements));
 	
-		dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1, 1);
-		dim3 gridDim(ceil((float) elements / (N_THREADS_X * N_THREADS_Y)), 1, 1);
+		dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1);
+		dim3 gridDim(ceil((float) elements / (N_THREADS_X * N_THREADS_X)), 1, 1);
 	
 		invertKernel<<<gridDim, blockDim>>>(d_values, elements, d_result);
 	
@@ -450,73 +410,72 @@ extern "C" {
 		checkCudaErrors(cudaFree(d_result));
 	}
 	
-	void g_Diagonalize(float* values, int elements, float* result) {
+	void g_Diagonalize(float* values, int v, float* result) {
 		float* d_values;
 		float* d_result;
-		checkCudaErrors(cudaMalloc(&d_values, sizeof(float) * elements));
+		checkCudaErrors(cudaMalloc(&d_values, sizeof(float) * v*v));
 		checkCudaErrors(
-				cudaMemcpy(d_values, values, sizeof(float) * elements,
+				cudaMemcpy(d_values, values, sizeof(float) * v*v,
 						cudaMemcpyHostToDevice));
 	
-		checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * elements));
-		checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * elements));
+		checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * v*v));
+		checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * v*v));
 	
-		dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1, 1);
-		dim3 gridDim(ceil((float) elements / (N_THREADS_X * N_THREADS_Y)), 1, 1);
+		dim3 blockDim(N_THREADS_X , N_THREADS_Y, 1);
+		dim3 gridDim(ceil((float) v / (N_THREADS_X)), ceil((float) v / (N_THREADS_Y)), 1);
 	
-		int threshold = (int) sqrt(elements) + 1;
-		diagonalizeKernel<<<gridDim, blockDim>>>(d_values, elements, threshold, d_result);
+		diagonalizeKernel<<<gridDim, blockDim>>>(d_values, v, d_result);
 	
 		checkCudaErrors(
-				cudaMemcpy(result, d_result, sizeof(float) * elements,
+				cudaMemcpy(result, d_result, sizeof(float) * v*v,
 						cudaMemcpyDeviceToHost));
 	
 		checkCudaErrors(cudaFree(d_values));
 		checkCudaErrors(cudaFree(d_result));
 	}
 	
-	void g_UpperDiagonal(float* values, int rows, int cols, float* result) {
-			float* d_values;
-			float* d_result;
-			checkCudaErrors(cudaMalloc(&d_values, sizeof(float) * rows*cols));
-			checkCudaErrors(
-					cudaMemcpy(d_values, values, sizeof(float) * rows*cols,
-							cudaMemcpyHostToDevice));
-		
-			checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * rows*cols));
-			checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * rows*cols));
-		
-			dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1, 1);
-			dim3 gridDim(ceil((float) rows*cols / (N_THREADS_X * N_THREADS_Y)), 1, 1);
-		
-			upperDiagonalKernel<<<gridDim, blockDim>>>(d_values, rows, cols, d_result);
-		
-			checkCudaErrors(
-					cudaMemcpy(result, d_result, sizeof(float) * rows*cols,
-							cudaMemcpyDeviceToHost));
-		
-			checkCudaErrors(cudaFree(d_values));
-			checkCudaErrors(cudaFree(d_result));
+	void g_UpperDiagonal(float* values, int v, float* result) {
+		float* d_values;
+		float* d_result;
+		checkCudaErrors(cudaMalloc(&d_values, sizeof(float) * v*v));
+		checkCudaErrors(
+				cudaMemcpy(d_values, values, sizeof(float) * v*v,
+						cudaMemcpyHostToDevice));
+	
+		checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * v*v));
+		checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * v*v));
+	
+		dim3 blockDim(N_THREADS_X , N_THREADS_Y, 1);
+		dim3 gridDim(ceil((float) v / (N_THREADS_X)), ceil((float) v / (N_THREADS_Y)), 1);
+	
+		upperDiagonalKernel<<<gridDim, blockDim>>>(d_values, v, d_result);
+	
+		checkCudaErrors(
+				cudaMemcpy(result, d_result, sizeof(float) * v*v,
+						cudaMemcpyDeviceToHost));
+	
+		checkCudaErrors(cudaFree(d_values));
+		checkCudaErrors(cudaFree(d_result));
 		}
 	
-	void g_LowerDiagonal(float* values, int rows, int cols, float* result) {
+	void g_LowerDiagonal(float* values, int v, float* result) {
 			float* d_values;
 			float* d_result;
-			checkCudaErrors(cudaMalloc(&d_values, sizeof(float) * rows*cols));
+			checkCudaErrors(cudaMalloc(&d_values, sizeof(float) * v*v));
 			checkCudaErrors(
-					cudaMemcpy(d_values, values, sizeof(float) * rows*cols,
+					cudaMemcpy(d_values, values, sizeof(float) * v*v,
 							cudaMemcpyHostToDevice));
 		
-			checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * rows*cols));
-			checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * rows*cols));
+			checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * v*v));
+			checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * v*v));
 		
-			dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1, 1);
-			dim3 gridDim(ceil((float) rows*cols / (N_THREADS_X * N_THREADS_Y)), 1, 1);
+			dim3 blockDim(N_THREADS_X , N_THREADS_Y, 1);
+			dim3 gridDim(ceil((float) v / (N_THREADS_X)), ceil((float) v / (N_THREADS_Y)), 1);
 		
-			lowerDiagonalKernel<<<gridDim, blockDim>>>(d_values, rows, cols, d_result);
+			lowerDiagonalKernel<<<gridDim, blockDim>>>(d_values, v, d_result);
 		
 			checkCudaErrors(
-					cudaMemcpy(result, d_result, sizeof(float) * rows*cols,
+					cudaMemcpy(result, d_result, sizeof(float) * v*v,
 							cudaMemcpyDeviceToHost));
 		
 			checkCudaErrors(cudaFree(d_values));
@@ -535,14 +494,16 @@ extern "C" {
 		checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * v*v));
 	
 		
-		dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1, 1);
-		dim3 gridDim(ceil((float) v*v / (N_THREADS_X * N_THREADS_Y)), 1, 1);
+		dim3 blockDim(N_THREADS_X, N_THREADS_Y, 1);
+		dim3 gridDim(ceil((float) v / (N_THREADS_X)), ceil((float) v / (N_THREADS_Y)), 1);
 		
 		prepareClosureKernel<<<gridDim, blockDim>>>(d_values, v, d_result);
 		
-		transitiveClosureKernel<<<gridDim, blockDim>>>(d_values, v, d_result);
+		for (int k=0; k < v; k++) {
+			transitiveClosureKernel<<<gridDim, blockDim>>>(d_values, k, v, d_result);
+		}
 		
-		rasterizeClosureKernel<<<gridDim, blockDim>>>(d_result, v*v);
+		rasterizeClosureKernel<<<gridDim, blockDim>>>(d_result, v);
 	
 		checkCudaErrors(
 				cudaMemcpy(result, d_result, sizeof(float) * v*v,

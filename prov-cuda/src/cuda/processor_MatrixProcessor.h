@@ -186,18 +186,18 @@ JNIEXPORT void JNICALL Java_processor_MatrixProcessor_diagonalize
 /*
  * Class:     processor_MatrixProcessor
  * Method:    upperDiagonal
- * Signature: (IIJJ)V
+ * Signature: (IJJ)V
  */
 JNIEXPORT void JNICALL Java_processor_MatrixProcessor_upperDiagonal
-  (JNIEnv *, jclass, jint, jint, jlong, jlong);
+  (JNIEnv *, jclass, jint, jlong, jlong);
 
 /*
  * Class:     processor_MatrixProcessor
  * Method:    lowerDiagonal
- * Signature: (IIJJ)V
+ * Signature: (IJJ)V
  */
 JNIEXPORT void JNICALL Java_processor_MatrixProcessor_lowerDiagonal
-  (JNIEnv *, jclass, jint, jint, jlong, jlong);
+  (JNIEnv *, jclass, jint, jlong, jlong);
 
 /*
  * Class:     processor_MatrixProcessor

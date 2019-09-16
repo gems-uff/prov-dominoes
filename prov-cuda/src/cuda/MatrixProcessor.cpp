@@ -29,9 +29,9 @@ extern "C" {
 
 	void g_Binarize(float* values, int elements, float* result);
 	void g_Invert(float* values, int elements, float* result);
-	void g_Diagonalize(float* values, int elements, float* result);
-	void g_UpperDiagonal(float* values, int rows, int cols, float* result);
-	void g_LowerDiagonal(float* values, int rows, int cols, float* result);
+	void g_Diagonalize(float* values, int vertices, float* result);
+	void g_UpperDiagonal(float* values, int vertices, float* result);
+	void g_LowerDiagonal(float* values, int vertices, float* result);
 	void g_TransitiveClosure(float* values, int vertices, float* result);
 }
 
@@ -610,7 +610,7 @@ JNIEXPORT void JNICALL Java_processor_MatrixProcessor_binarize
 /*
  * Class:     processor_MatrixProcessor
  * Method:    invert
- * Signature: (JJ)V
+ * Signature: (IJJ)V
  */
 JNIEXPORT void JNICALL Java_processor_MatrixProcessor_invert
   (JNIEnv *env, jclass obj, jint elements, jlong pointer, jlong jresult) {
@@ -625,10 +625,10 @@ JNIEXPORT void JNICALL Java_processor_MatrixProcessor_invert
  * Signature: (IJJ)V
  */
 JNIEXPORT void JNICALL Java_processor_MatrixProcessor_diagonalize
-  (JNIEnv *env, jclass obj, jint elements, jlong pointer, jlong jresult) {
+  (JNIEnv *env, jclass obj, jint vertices, jlong pointer, jlong jresult) {
 	float* values = (float*) pointer;
 	float* result = (float*) jresult;
-	g_Diagonalize(values, elements, result);
+	g_Diagonalize(values, vertices, result);
 }
 
 
@@ -638,10 +638,10 @@ JNIEXPORT void JNICALL Java_processor_MatrixProcessor_diagonalize
  * Signature: (IIJJ)V
  */
 JNIEXPORT void JNICALL Java_processor_MatrixProcessor_upperDiagonal
-  (JNIEnv *env, jclass obj, jint rows, jint cols, jlong pointer, jlong jresult) {
+  (JNIEnv *env, jclass obj, jint vertices, jlong pointer, jlong jresult) {
 	float* values = (float*) pointer;
 	float* result = (float*) jresult;
-	g_UpperDiagonal(values, rows, cols, result);
+	g_UpperDiagonal(values, vertices, result);
 }
 
 /*
@@ -650,10 +650,10 @@ JNIEXPORT void JNICALL Java_processor_MatrixProcessor_upperDiagonal
  * Signature: (IIJJ)V
  */
 JNIEXPORT void JNICALL Java_processor_MatrixProcessor_lowerDiagonal
-  (JNIEnv *env, jclass obj, jint rows, jint cols, jlong pointer, jlong jresult) {
+  (JNIEnv *env, jclass obj, jint vertices, jlong pointer, jlong jresult) {
 	float* values = (float*) pointer;
 	float* result = (float*) jresult;
-	g_LowerDiagonal(values, rows, cols, result);
+	g_LowerDiagonal(values, vertices, result);
 }
 
 /*
