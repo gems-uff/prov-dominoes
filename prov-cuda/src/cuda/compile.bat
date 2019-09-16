@@ -1,7 +1,7 @@
 @ECHO OFF
 
-SET JAVA_HOME="C:\Program Files\Java\jdk1.8.0_212"
-SET VC="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC"
+SET JAVA_HOME=C:\Progra~1\Java\jdk1.8.0_212
+SET VC="C:\Progra~2\Microsoft Visual Studio\2019\Community\VC"
 SET CUDA="V:\NVIDIA\CUDA\v10.1"
 SET EIGEN="V:\cuda-libs\eigen"
 SET CUSP="V:\cuda-libs\cusp"

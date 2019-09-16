@@ -55,11 +55,11 @@ public class MatrixProcessor {
 
 	public native static void invert(int elements, long matrixPointer, long resultPointer);
 
-	public native static void diagonalize(int elements, long matrixPointer, long resultPointer);
+	public native static void diagonalize(int vertices, long matrixPointer, long resultPointer);
 
-	public native static void upperDiagonal(int rows, int cols, long matrixPointer, long resultPointer);
+	public native static void upperDiagonal(int vertices, long matrixPointer, long resultPointer);
 
-	public native static void lowerDiagonal(int rows, int cols, long matrixPointer, long resultPointer);
+	public native static void lowerDiagonal(int vertices, long matrixPointer, long resultPointer);
 
 	public native static void transitiveClosure(int vertices, long matrixPointer, long resultPointer);
 	

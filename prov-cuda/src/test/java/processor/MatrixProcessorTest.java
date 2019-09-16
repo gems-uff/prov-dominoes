@@ -17,11 +17,6 @@ class MatrixProcessorTest {
 	}
 
 	@Test
-	void getDeviceCountTest() {
-		assertTrue(MatrixProcessor.getDeviceCount() == 1);
-	}
-
-	@Test
 	void binarizeTest() {
 		long pointerMatrix = MatrixProcessor.createMatrixData(3, 4, true);
 		CRSMatrix matrix = new CRSMatrix(3, 4);
@@ -107,7 +102,7 @@ class MatrixProcessorTest {
 
 		long pointerResultMatrix = MatrixProcessor.createMatrixData(3, 4, false);
 
-		MatrixProcessor.invert(3 * 4, pointerMatrix, pointerResultMatrix);
+		MatrixProcessor.invert(3* 4, pointerMatrix, pointerResultMatrix);
 
 		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
 
@@ -167,7 +162,7 @@ class MatrixProcessorTest {
 
 		long pointerResultMatrix = MatrixProcessor.createMatrixData(4, 4, false);
 
-		MatrixProcessor.diagonalize(4 * 4, pointerMatrix, pointerResultMatrix);
+		MatrixProcessor.diagonalize(4, pointerMatrix, pointerResultMatrix);
 
 		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
 
@@ -233,7 +228,7 @@ class MatrixProcessorTest {
 
 		long pointerResultMatrix = MatrixProcessor.createMatrixData(4, 4, false);
 
-		MatrixProcessor.upperDiagonal(4, 4, pointerMatrix, pointerResultMatrix);
+		MatrixProcessor.upperDiagonal(4, pointerMatrix, pointerResultMatrix);
 
 		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
 
@@ -298,7 +293,7 @@ class MatrixProcessorTest {
 
 		long pointerResultMatrix = MatrixProcessor.createMatrixData(4, 4, false);
 
-		MatrixProcessor.lowerDiagonal(4, 4, pointerMatrix, pointerResultMatrix);
+		MatrixProcessor.lowerDiagonal(4, pointerMatrix, pointerResultMatrix);
 
 		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
 
@@ -619,6 +614,11 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(4, 3) == 0.0);
 		assertTrue(resp.get(4, 4) == 1.0);
 
+	}
+	
+	@Test
+	void getDeviceCountTest() {
+		assertTrue(MatrixProcessor.getDeviceCount() == 1);
 	}
 
 	private void cellList2Arrays(ArrayList<Cell> cells, int[] rows, int[] cols, float[] values) {
