@@ -65,8 +65,8 @@ public class App extends Application {
 			App.stage = primaryStage;
 			App.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 			App.stage.centerOnScreen();
-			App.stage.setTitle("Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
-					: Configuration.CPU_DEVICE) + "]");
+			App.stage.setTitle("Prov-Dominoes ["
+					+ (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE) + "]");
 			App.stage.setResizable(Configuration.resizable);
 
 			App.menu = new ProvDominoesMenuBar();
@@ -385,7 +385,9 @@ public class App extends Application {
 		try {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
-			fileChooser.setInitialFileName("commands.ces");
+			fileChooser.getExtensionFilters()
+					.add(new FileChooser.ExtensionFilter("Command Evolution Script (*.ces)", "*.ces"));
+			fileChooser.setInitialFileName("commands");
 			File file = fileChooser.showSaveDialog(stage);
 			if (file != null) {
 				file.delete();
