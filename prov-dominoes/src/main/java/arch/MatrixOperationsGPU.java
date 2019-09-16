@@ -34,7 +34,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		Session.register2DMatrix(this);
 	}
 
-	public MatrixOperationsGPU(MatrixDescriptor _matrixDescriptor, boolean isSparse, int[] rows, int[] cols) throws Exception {
+	public MatrixOperationsGPU(MatrixDescriptor _matrixDescriptor, boolean isSparse, int[] rows, int[] cols)
+			throws Exception {
 		this(_matrixDescriptor, isSparse);
 		this.rows = rows;
 		this.cols = cols;
@@ -234,7 +235,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		try {
 			System.out.println("Operation: Invert - Using " + getMemUsed() + " KB of GPU Memory.");
 			invert = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
-			MatrixProcessor.binarize(matPointer, invert.matPointer);
+			MatrixProcessor.invert(_newDescriptor.getNumRows() * _newDescriptor.getNumCols(), matPointer,
+					invert.matPointer);
 			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -249,8 +251,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		try {
 			System.out.println("Operation: LowerDiagonal - Using " + getMemUsed() + " KB of GPU Memory.");
 			lowerDiagonal = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
-			MatrixProcessor.lowerDiagonal(this.matrixDescriptor.getNumRows(), this.matrixDescriptor.getNumCols(),
-					matPointer, lowerDiagonal.matPointer);
+			MatrixProcessor.lowerDiagonal(this.matrixDescriptor.getNumRows(), matPointer, lowerDiagonal.matPointer);
 			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -265,8 +266,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		try {
 			System.out.println("Operation: UpperDiagonal - Using " + getMemUsed() + " KB of GPU Memory.");
 			upperDiagonal = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
-			MatrixProcessor.upperDiagonal(this.matrixDescriptor.getNumRows(), this.matrixDescriptor.getNumCols(),
-					matPointer, upperDiagonal.matPointer);
+			MatrixProcessor.upperDiagonal(this.matrixDescriptor.getNumRows(), matPointer, upperDiagonal.matPointer);
 			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -281,7 +281,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		try {
 			System.out.println("Operation: Diagonalize - Using " + getMemUsed() + " KB of GPU Memory.");
 			diagonalize = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
-			MatrixProcessor.diagonalize(this.matrixDescriptor.getNumRows()*this.matrixDescriptor.getNumCols(),
+			MatrixProcessor.diagonalize(this.matrixDescriptor.getNumRows() * this.matrixDescriptor.getNumCols(),
 					matPointer, diagonalize.matPointer);
 			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
 		} catch (Exception ex) {
