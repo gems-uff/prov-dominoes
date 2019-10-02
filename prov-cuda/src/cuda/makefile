@@ -17,11 +17,6 @@ ifeq ($(UNAME),Darwin)
    LIBNAME := MatrixProcessor.jnilib
 endif
 
-ifeq ($(UNAME),Windows)
-   OUT_DIR := ../main/resources/lib/win_64
-   LIBNAME := MatrixProcessor.dll
-endif
-
 MKDIR_P = mkdir -p
    
 .PHONY: directories all clean
@@ -84,10 +79,10 @@ MatrixProcessor.jnilib : MatrixProcessor.o kernel.o
      -Wl,-rpath,$(CUDA)/lib \
 	 kernel.o -o $(OUT_DIR)/$(LIBNAME) -m64 -L $(CUDA)/lib -lcudart_static 
    endif
-
+   
    ifeq ($(UNAME),Linux)
 	g++ -shared MatrixProcessor.o \
-	 -Wl,-rpath,$(LIBS)/armadillo/lib -Wl,-rpath,$(CUDA)/lib64  \
+	 -Wl,-rpath,$(CUDA)/lib64  \
 	 kernel.o -o $(OUT_DIR)/$(LIBNAME) -m64 -L $(CUDA)/lib64 -lcudart 
    endif
 	
