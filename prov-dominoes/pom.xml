@@ -31,7 +31,7 @@
 				<artifactId>javafx-maven-plugin</artifactId>
 				<version>8.2.0</version>
 				<configuration>
-					<mainClass>boundary.Main</mainClass>
+					<mainClass>provdominoes.Main</mainClass>
 					<jfxAppOutputDir>${basedir}/app</jfxAppOutputDir>
 					<webXml>src\main\webapp\WEB-INF\web.xml</webXml>
 				</configuration>
@@ -43,7 +43,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>boundary.Main</mainClass>
+							<mainClass>provdominoes.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -81,7 +81,7 @@
 		<dependency>
 			<groupId>gems.ic.uff.br</groupId>
 			<artifactId>prov-matrix</artifactId>
-			<version>1.3</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.la4j</groupId>
