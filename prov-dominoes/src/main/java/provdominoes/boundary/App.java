@@ -513,17 +513,20 @@ public class App extends Application {
 			// read the configuration file
 			provdominoes.control.Controller.loadConfiguration();
 
-			if (Configuration.isGPUProcessing()) {
+			if (!MatrixProcessor.isLibSkipped()) {
 				if (Configuration.gpuDevice + 1 > MatrixProcessor.getDeviceCount()) {
 					Configuration.gpuDevice = 0;
+					Session.startSession(Configuration.gpuDevice);
 				}
-				Session.startSession(Configuration.gpuDevice);
 			}
 
 			launch(args);
 
-			if (Configuration.isGPUProcessing())
-				Session.closeSection();
+			if (!MatrixProcessor.isLibSkipped()) {
+				if (Configuration.isGPUProcessing()) {
+					Session.closeSection();
+				}
+			}
 
 		} catch (Exception e) {
 			alertException(e, "Erro desconhecido ao tentar iniciar aplicação!");
