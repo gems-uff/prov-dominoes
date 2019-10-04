@@ -39,10 +39,8 @@ public class Configuration {
 	public static boolean telemetry = false;
 	
 	public static boolean isGPUProcessing() {
-		return defaultProcessing.equals(GPU_DEVICE) && MatrixProcessor.isGPUEnabled();
+		return !MatrixProcessor.isLibSkipped() && defaultProcessing.equals(GPU_DEVICE) && MatrixProcessor.isGPUEnabled();
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(MatrixProcessor.getDeviceCount());
-	}
+	
 }

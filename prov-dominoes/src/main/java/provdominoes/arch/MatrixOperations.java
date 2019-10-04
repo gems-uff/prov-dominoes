@@ -55,9 +55,11 @@ public interface MatrixOperations {
 
 	public static MatrixOperations configureOperation(CRSMatrix matrix, MatrixDescriptor descriptor, boolean isSparse)
 			throws Exception {
-		MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(
-				MatrixProcessor.isGPUEnabled() && Configuration.defaultProcessing.equals(Configuration.GPU_DEVICE),
-				descriptor, isSparse);
+		MatrixOperations mat = MatrixOperationsFactory
+				.getMatrix2D(
+						!MatrixProcessor.isLibSkipped() && MatrixProcessor.isGPUEnabled()
+								&& Configuration.defaultProcessing.equals(Configuration.GPU_DEVICE),
+						descriptor, isSparse);
 		mat.setData(Prov2DominoesUtil.matrix2Cells(matrix));
 		return mat;
 	}

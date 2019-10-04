@@ -96,7 +96,10 @@ public class ProvDominoesMenuBar extends MenuBar {
 				}
 			}
 		});
-		int deviceCount = MatrixProcessor.getDeviceCount();
+		int deviceCount = 0;
+		if (!MatrixProcessor.isLibSkipped()) {
+			deviceCount = MatrixProcessor.getDeviceCount();
+		}
 		if (deviceCount > 0) {
 			SeparatorMenuItem deviceSeparator = new SeparatorMenuItem();
 			SeparatorMenuItem influenceSeparator = new SeparatorMenuItem();

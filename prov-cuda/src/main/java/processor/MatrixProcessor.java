@@ -12,11 +12,12 @@ public class MatrixProcessor {
 	private static final String LIB_ARCH_FILE = "lib.arch.file";
 	private static final String LIB_ARCH_DIR = "lib.arch.dir";
 	private static final String DIR_SEPARATOR = "/";
+	private static boolean libSkipped = false;
 
 	public native static void resetGPU(int deviceToUse);
 
 	public native static boolean isGPUEnabled();
-	
+
 	public native static int getDeviceCount();
 
 	public native static Cell[] getSparseData(long pointer);
@@ -62,7 +63,11 @@ public class MatrixProcessor {
 	public native static void lowerDiagonal(int vertices, long matrixPointer, long resultPointer);
 
 	public native static void transitiveClosure(int vertices, long matrixPointer, long resultPointer);
-	
+
+	public static boolean isLibSkipped() {
+		return libSkipped;
+	}
+
 	static {
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		if (cl != null) {
@@ -76,8 +81,12 @@ public class MatrixProcessor {
 					in = url.openStream();
 					Properties props = new Properties();
 					props.load(in);
-					NativeUtils.loadLibraryFromJar(
-							DIR_SEPARATOR + props.getProperty(LIB_ARCH_DIR) +DIR_SEPARATOR+ props.getProperty(LIB_ARCH_FILE));
+					NativeUtils.loadLibraryFromJar(DIR_SEPARATOR + props.getProperty(LIB_ARCH_DIR) + DIR_SEPARATOR
+							+ props.getProperty(LIB_ARCH_FILE));
+				} catch (UnsatisfiedLinkError e1) {
+					libSkipped = true;
+					System.out.println("[ATENÇÃO]: Não foi encontrado dispositivo GPU ativado com drivers CUDA. "
+							+ "Modo CPU-only ativado!");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -13,6 +13,7 @@ import model.ProvMatrix;
 import model.ProvRelation.Relation;
 import provdominoes.arch.MatrixDescriptor;
 import provdominoes.arch.MatrixOperations;
+import provdominoes.boundary.App;
 import provdominoes.util.Prov2DominoesUtil;
 
 public final class Dominoes {
@@ -595,6 +596,11 @@ public final class Dominoes {
 		}
 		cloned.setId(this.id);
 		cloned.setCrsMatrix(new CRSMatrix(this.crsMatrix));
+		try {
+			cloned.setupOperation(true);
+		} catch (Exception e) {
+			App.alertException(e, e.getMessage());
+		}
 		return cloned;
 	}
 
