@@ -121,7 +121,7 @@ public class ScriptController {
 				String[] token = cmdl.split("\\(");
 				token[0] = token[0].toUpperCase();
 				if (token[0].equals(AbstractCommand.LOAD_COMMAND)) {
-					String[] fileNames = token[1].split(",");					
+					String[] fileNames = token[1].split(",");
 					cmd = CommandFactory.getInstance().load(fileNames, dir);
 				} else if (token[0].equals(AbstractCommand.MOVE_COMMAND)) {
 					Group piece = null;
@@ -212,6 +212,24 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().filterInvert(piece);
+				} else if (token[0].equals(AbstractCommand.TWENTY_COMMAND)) {
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(token[1].toLowerCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					cmd = CommandFactory.getInstance().filterTwenty(piece);
+				} else if (token[0].equals(AbstractCommand.HALF_COMMAND)) {
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(token[1].toLowerCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					cmd = CommandFactory.getInstance().filterHalf(piece);
 				} else if (token[0].equals(AbstractCommand.LOWER_DIAGONAL_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
@@ -230,6 +248,15 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().filterUpperDiagonal(piece);
+				} else if (token[0].equals(AbstractCommand.COMPRESS_COMMAND)) {
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(token[1].toLowerCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					cmd = CommandFactory.getInstance().filterCompress(piece);
 				} else if (token[0].equals(AbstractCommand.REMOVE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {

@@ -96,6 +96,9 @@ public class AreaMove extends Pane {
 		MenuItem menuItemDiagonalFilter = new MenuItem("Diagonalize");
 		MenuItem menuItemUpperDiagonalFilter = new MenuItem("Upper Diagonal");
 		MenuItem menuItemLowerDiagonalFilter = new MenuItem("Lower Diagonal");
+		MenuItem menuItemCompressFilter = new MenuItem("Compress");
+		MenuItem menuItemTwentyFilter = new MenuItem("Twenty");
+		MenuItem menuItemHalfFilter = new MenuItem("Half");
 
 		Menu menuOperate = new Menu("Operations");
 		Menu menuFilters = new Menu("Filters");
@@ -333,6 +336,12 @@ public class AreaMove extends Pane {
 					App.getCommandManager().invokeCommand(commandFactory.filterUpperDiagonal(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemLowerDiagonalFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterLowerDiagonal(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemCompressFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterCompress(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemTwentyFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterTwenty(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemHalfFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterHalf(piece));
 				}
 			}
 		});
@@ -357,7 +366,7 @@ public class AreaMove extends Pane {
 		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore,
 				menuItemTransitiveClosure);
 		menuFilters.getItems().addAll(menuItemBinarizeFilter, menuItemInvertFilter, menuItemDiagonalFilter,
-				menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter);
+				menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter, menuItemCompressFilter, menuItemTwentyFilter, menuItemHalfFilter);
 		menuView.getItems().addAll(menuItemViewChart,  menuItemViewLineChart, 
 				menuItemViewGraph, menuItemViewEigenCentrality, menuItemViewMatrix);
 		minimenu.getItems().addAll(menuOperate, menuFilters, menuView, menuItemSaveInList, menuItemClose);

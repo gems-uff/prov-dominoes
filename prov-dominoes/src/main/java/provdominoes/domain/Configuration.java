@@ -23,7 +23,7 @@ public class Configuration {
     
     public static double width = 1000.0f;
     public static double height = 600.0f;
-    public static double listWidth = 147.0f;
+    public static double listWidth = 167.0f;
     
     public static String defaultProcessing = GPU_DEVICE;
     public static int gpuDevice = 0;

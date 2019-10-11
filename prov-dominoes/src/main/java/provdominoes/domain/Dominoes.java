@@ -82,6 +82,9 @@ public final class Dominoes {
 	private static final int TYPE_DIAGONAL = 8;
 	private static final int TYPE_UPPER_DIAGONAL = 9;
 	private static final int TYPE_LOWER_DIAGONAL = 10;
+	private static final int TYPE_COMPRESSED = 11;
+	private static final int TYPE_TWENTY = 12;
+	private static final int TYPE_HALF = 13;
 	public final static String TYPE_BASIC_CODE = "B";
 	public final static String TYPE_DERIVED_CODE = "D";
 	public final static String TYPE_SUPPORT_CODE = "S";
@@ -91,6 +94,9 @@ public final class Dominoes {
 	public final static String TYPE_DIAGONAL_CODE = "DG";
 	public final static String TYPE_UPPER_DIAGONAL_CODE = "UDG";
 	public final static String TYPE_LOWER_DIAGONAL_CODE = "LDG";
+	public final static String TYPE_COMPRESSED_CODE = "SED";
+	public final static String TYPE_TWENTY_CODE = "20%";
+	public final static String TYPE_HALF_CODE = "50%";
 
 	public final static String AGGREG_TEXT = "/SUM ";
 	public static final String TYPE_BINARIZED_CODE = "Z";
@@ -291,6 +297,16 @@ public final class Dominoes {
 			z = 10;
 			break;
 		}
+		case Dominoes.TYPE_TWENTY: {
+			type.setText(Dominoes.TYPE_TWENTY_CODE);
+			z = 17;
+			break;
+		}
+		case Dominoes.TYPE_HALF: {
+			type.setText(Dominoes.TYPE_HALF_CODE);
+			z = 17;
+			break;
+		}
 		case Dominoes.TYPE_UPPER_DIAGONAL: {
 			type.setText(Dominoes.TYPE_UPPER_DIAGONAL_CODE);
 			z = 17;
@@ -298,6 +314,11 @@ public final class Dominoes {
 		}
 		case Dominoes.TYPE_LOWER_DIAGONAL: {
 			type.setText(Dominoes.TYPE_LOWER_DIAGONAL_CODE);
+			z = 17;
+			break;
+		}
+		case Dominoes.TYPE_COMPRESSED: {
+			type.setText(Dominoes.TYPE_COMPRESSED_CODE);
 			z = 17;
 			break;
 		}
@@ -507,6 +528,20 @@ public final class Dominoes {
 		this.type = Dominoes.TYPE_INVERTED;
 	}
 
+	public void twenty() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.twenty();
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_TWENTY;
+	}
+	
+	public void half() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.half();
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_HALF;
+	}
+
 	public void diagonalize() throws Exception {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.diagonalize();
@@ -526,6 +561,13 @@ public final class Dominoes {
 		MatrixOperations _newMat = mat.lowerDiagonal();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_LOWER_DIAGONAL;
+	}
+
+	public void compress() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.compress();
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_COMPRESSED;
 	}
 
 	/**

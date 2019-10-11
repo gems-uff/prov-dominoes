@@ -332,4 +332,22 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		this.cols = cols;
 	}
 
+	@Override
+	public MatrixOperations compress() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public MatrixOperations twenty() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public MatrixOperations half() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
 }

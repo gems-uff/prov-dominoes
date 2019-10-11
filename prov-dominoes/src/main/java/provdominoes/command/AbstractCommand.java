@@ -24,6 +24,9 @@ public abstract class AbstractCommand {
 	public static final String DIAGONALIZE_COMMAND = "DIAGONALIZE";
 	public static final String UPPER_DIAGONAL_COMMAND = "UPPER_DIAGONAL";
 	public static final String LOWER_DIAGONAL_COMMAND = "LOWER_DIAGONAL";
+	public static final String COMPRESS_COMMAND = "COMPRESS";
+	public static final String TWENTY_COMMAND = "TWENTY";
+	public static final String HALF_COMMAND = "HALF";
 
 	public static final String CMD_PARAM_USAGE = "USD";
 	public static final String CMD_PARAM_GENERATION = "WGB";
