@@ -165,6 +165,16 @@ public class Controller {
 		return domino;
 	}
 	
+	public static Dominoes twenty(Dominoes domino) throws Exception {
+		domino.twenty();
+		return domino;
+	}
+	
+	public static Dominoes half(Dominoes domino) throws Exception {
+		domino.half();
+		return domino;
+	}
+	
 	public static Dominoes diagonalize(Dominoes domino) throws Exception {
 		domino.diagonalize();
 		return domino;
@@ -177,6 +187,11 @@ public class Controller {
 	
 	public static Dominoes lowerDiagonal(Dominoes domino) throws Exception {
 		domino.lowerDiagonal();
+		return domino;
+	}
+	
+	public static Dominoes compress(Dominoes domino) throws Exception {
+		domino.compress();
 		return domino;
 	}
 

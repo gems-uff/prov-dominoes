@@ -101,9 +101,10 @@ public class ProvDominoesMenuBar extends MenuBar {
 			deviceCount = MatrixProcessor.getDeviceCount();
 		}
 		if (deviceCount > 0) {
-			SeparatorMenuItem deviceSeparator = new SeparatorMenuItem();
 			SeparatorMenuItem influenceSeparator = new SeparatorMenuItem();
-			this.mProcessing.getItems().addAll(this.mDeriveInfluence, influenceSeparator,this.mCpuProcessing, this.mGpuProcessing, deviceSeparator);
+			SeparatorMenuItem deviceSeparator = new SeparatorMenuItem();
+			this.mProcessing.getItems().addAll(this.mDeriveInfluence, influenceSeparator, this.mCpuProcessing,
+					this.mGpuProcessing, deviceSeparator);
 			this.devices = new CheckMenuItem[deviceCount];
 			for (int i = 0; i < devices.length; i++) {
 				this.devices[i] = new CheckMenuItem("Device " + i);
@@ -165,6 +166,8 @@ public class ProvDominoesMenuBar extends MenuBar {
 					}
 				});
 			}
+		} else {
+			this.mProcessing.getItems().addAll(this.mDeriveInfluence);
 		}
 
 		// ------EDIT MENU

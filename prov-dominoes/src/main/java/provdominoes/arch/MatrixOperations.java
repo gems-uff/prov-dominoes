@@ -46,12 +46,17 @@ public interface MatrixOperations {
 	public MatrixOperations invert();
 
 	public MatrixOperations binarize();
+	
 
 	public MatrixOperations diagonalize();
 
 	public MatrixOperations lowerDiagonal();
 
 	public MatrixOperations upperDiagonal();
+	
+	public MatrixOperations compress();
+	public MatrixOperations twenty();
+	public MatrixOperations half();
 
 	public static MatrixOperations configureOperation(CRSMatrix matrix, MatrixDescriptor descriptor, boolean isSparse)
 			throws Exception {

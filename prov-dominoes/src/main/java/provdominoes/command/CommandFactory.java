@@ -82,6 +82,14 @@ public class CommandFactory {
 	public AbstractCommand filterInvert(Group piece) {
 		return new InvertCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
+	
+	public AbstractCommand filterTwenty(Group piece) {
+		return new TwentyCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+	
+	public AbstractCommand filterHalf(Group piece) {
+		return new HalfCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
 
 	public AbstractCommand filterDiagonal(Group piece) {
 		return new DiagonalizeCommand(App.getArea().getData().getPieces().indexOf(piece));
@@ -93,6 +101,10 @@ public class CommandFactory {
 
 	public AbstractCommand filterLowerDiagonal(Group piece) {
 		return new LowerDiagonalCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+	
+	public AbstractCommand filterCompress(Group piece) {
+		return new CompressCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
 	public int getPieceCounter() {
