@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javafx.util.Pair;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 import provdominoes.util.ConfigurationFile;
@@ -28,7 +29,6 @@ public class Controller {
 	public static List<Dominoes> resultLoadMatrices;
 
 	public static int indexTileSelected = -1;
-
 
 	/**
 	 * This function is used to initialize the Configuration class
@@ -69,7 +69,7 @@ public class Controller {
 	 * @param dom1 First operator in multiplication
 	 * @param dom2 Second operator in multiplication
 	 * @return The result of multiplication
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static Dominoes multiply(Dominoes dom1, Dominoes dom2) throws Exception {
 		// call dominoes
@@ -118,7 +118,7 @@ public class Controller {
 	 * 
 	 * @param domino Matrix to be transposed
 	 * @return Return the transpose of the matrix in the parameter
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static Dominoes tranposeDominoes(Dominoes domino) throws Exception {
 
@@ -133,7 +133,7 @@ public class Controller {
 	 * 
 	 * @param support domino Matrix to be calculated
 	 * @return Return the confidence of the support matrix
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static Dominoes confidence(Dominoes domino) throws Exception {
 
@@ -148,7 +148,7 @@ public class Controller {
 	 * 
 	 * @param transitive closure domino Matrix to be calculated
 	 * @return Return the transitive closure
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static Dominoes transitiveClosure(Dominoes domino) throws Exception {
 		domino.transitiveClosure();
@@ -164,32 +164,37 @@ public class Controller {
 		domino.invert();
 		return domino;
 	}
-	
-	public static Dominoes twenty(Dominoes domino) throws Exception {
-		domino.twenty();
+
+	public static Dominoes percent(Dominoes domino, double d) throws Exception {
+		domino.percent(d);
 		return domino;
 	}
 	
-	public static Dominoes half(Dominoes domino) throws Exception {
-		domino.half();
+	public static Dominoes filterColumnText(Dominoes domino, Pair<String, Boolean> t) throws Exception {
+		domino.filterColumnText(t);
 		return domino;
 	}
 	
+	public static Dominoes filterRowText(Dominoes domino, Pair<String, Boolean> t) throws Exception {
+		domino.filterRowText(t);
+		return domino;
+	}
+
 	public static Dominoes diagonalize(Dominoes domino) throws Exception {
 		domino.diagonalize();
 		return domino;
 	}
-	
+
 	public static Dominoes upperDiagonal(Dominoes domino) throws Exception {
 		domino.upperDiagonal();
 		return domino;
 	}
-	
+
 	public static Dominoes lowerDiagonal(Dominoes domino) throws Exception {
 		domino.lowerDiagonal();
 		return domino;
 	}
-	
+
 	public static Dominoes compress(Dominoes domino) throws Exception {
 		domino.compress();
 		return domino;
@@ -200,7 +205,7 @@ public class Controller {
 	 * 
 	 * @param support domino Matrix to be calculated
 	 * @return Return the confidence of the support matrix
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static Dominoes standardScore(Dominoes domino) throws Exception {
 
@@ -215,7 +220,7 @@ public class Controller {
 	 * 
 	 * @param domino Matrix to be reduced
 	 * @return Return the reduced matrix in the parameter
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static Dominoes reduceDominoes(Dominoes domino) throws Exception {
 

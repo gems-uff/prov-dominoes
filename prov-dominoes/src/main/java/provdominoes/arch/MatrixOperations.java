@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.la4j.matrix.sparse.CRSMatrix;
 
+import javafx.util.Pair;
 import processor.Cell;
 import processor.MatrixProcessor;
 import provdominoes.domain.Configuration;
@@ -55,8 +56,10 @@ public interface MatrixOperations {
 	public MatrixOperations upperDiagonal();
 	
 	public MatrixOperations compress();
-	public MatrixOperations twenty();
-	public MatrixOperations half();
+	public MatrixOperations percent(double d);
+
+	MatrixOperations filterColumnText(Pair<String, Boolean> t);
+	MatrixOperations filterRowText(Pair<String, Boolean> t);
 
 	public static MatrixOperations configureOperation(CRSMatrix matrix, MatrixDescriptor descriptor, boolean isSparse)
 			throws Exception {

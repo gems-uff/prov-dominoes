@@ -1,11 +1,13 @@
 package provdominoes.arch;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.la4j.matrix.functor.MatrixProcedure;
 import org.la4j.matrix.sparse.CRSMatrix;
 
+import javafx.util.Pair;
 import processor.Cell;
 import provdominoes.util.Prov2DominoesUtil;
 
@@ -334,8 +336,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		_invertFilter.setData(new CRSMatrix(filterMatrix));
 		return _invertFilter;
 	}
-	
-	public MatrixOperations twenty() {
+
+	public MatrixOperations percent(double d) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
@@ -346,7 +348,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
-				if (data.get(i, j) >= data.max()*0.8) {
+				if (data.get(i, j) >= data.max() * ((100 - d) / 100.0)) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
 					filterMatrix[i][j] = 0.00;
@@ -356,27 +358,51 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		_twentyFilter.setData(new CRSMatrix(filterMatrix));
 		return _twentyFilter;
 	}
-	
-	public MatrixOperations half() {
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
-		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
-			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+
+	public MatrixOperations filterColumnText(Pair<String, Boolean> t) {
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
 			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
-		MatrixOperationsCPU _twentyFilter = new MatrixOperationsCPU(_newDescriptor);
+		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
+			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+		MatrixOperationsCPU _columnFilter = new MatrixOperationsCPU(_newDescriptor);
 		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
-				if (data.get(i, j) >= data.max()*0.5) {
+				if ((!t.getValue() && this.matrixDescriptor.getColumnAt(j).contains(t.getKey()))
+						|| (t.getValue() && this.matrixDescriptor.getColumnAt(j).matches(t.getKey()))) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
 					filterMatrix[i][j] = 0.00;
 				}
 			}
 		}
-		_twentyFilter.setData(new CRSMatrix(filterMatrix));
-		return _twentyFilter;
+		_columnFilter.setData(new CRSMatrix(filterMatrix));
+		return _columnFilter;
+	}
+
+	public MatrixOperations filterRowText(Pair<String, Boolean> t) {
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
+		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
+			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
+		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
+			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+		MatrixOperationsCPU _rowFilter = new MatrixOperationsCPU(_newDescriptor);
+		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
+		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
+			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
+				if ((!t.getValue() && this.matrixDescriptor.getRowAt(i).contains(t.getKey()))
+						|| (t.getValue() && this.matrixDescriptor.getRowAt(i).matches(t.getKey()))) {
+					filterMatrix[i][j] = data.get(i, j);
+				} else {
+					filterMatrix[i][j] = 0.00;
+				}
+			}
+		}
+		_rowFilter.setData(new CRSMatrix(filterMatrix));
+		return _rowFilter;
 	}
 
 	public MatrixOperations diagonalize() {
@@ -473,9 +499,13 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		result = new MatrixOperationsCPU(_newDescriptor);
 		result.setData(
 				Prov2DominoesUtil.cells2Matrix(newMatrix, _newDescriptor.getNumRows(), _newDescriptor.getNumCols()));
+		Long cells = new Long(matrixDescriptor.getNumRows() * matrixDescriptor.getNumCols()
+				- _newDescriptor.getNumRows() * _newDescriptor.getNumCols());
+		Double p = new Double(cells.doubleValue() / (matrixDescriptor.getNumRows() * matrixDescriptor.getNumCols()));
+		System.out
+				.println("# cells removed: " + cells + ". % cells removed: " + (new DecimalFormat("##.##%").format(p)));
 		return result;
 	}
-	
 
 	// Transitive closure of graph[][] using Floyd Warshall algorithm
 	public MatrixOperations transitiveClosure() {

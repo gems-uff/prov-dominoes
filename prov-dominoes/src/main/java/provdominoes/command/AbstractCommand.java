@@ -27,6 +27,9 @@ public abstract class AbstractCommand {
 	public static final String COMPRESS_COMMAND = "COMPRESS";
 	public static final String TWENTY_COMMAND = "TWENTY";
 	public static final String HALF_COMMAND = "HALF";
+	public static final String PERCENT_COMMAND = "PERCENT";
+	public static final String COLUMN_TEXT_COMMAND = "COLUMN_TEXT";
+	public static final String ROW_TEXT_COMMAND = "ROW_TEXT";
 
 	public static final String CMD_PARAM_USAGE = "USD";
 	public static final String CMD_PARAM_GENERATION = "WGB";
@@ -53,6 +56,8 @@ public abstract class AbstractCommand {
 	protected abstract boolean doIt();
 
 	protected abstract boolean undoIt();
+	
+	private boolean reproducing;
 
 	protected String cmd(Dominoes d) {
 		String cmd = d.getRelation().getAbbreviate().replace(" ", "");
@@ -63,6 +68,7 @@ public abstract class AbstractCommand {
 	}
 	
 	public void updateCommandManager(CommandManager cmd, boolean reproducing) {
+		setReproducing(reproducing);
 		if (doIt()) {
 			System.out.println(getName());
 			cmd.addToHistory(this);
@@ -70,6 +76,14 @@ public abstract class AbstractCommand {
 		} else {
 			cmd.getHistory().clear();
 		}
+	}
+
+	public boolean isReproducing() {
+		return reproducing;
+	}
+
+	public void setReproducing(boolean reproducing) {
+		this.reproducing = reproducing;
 	}
 
 }

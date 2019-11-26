@@ -2,8 +2,11 @@ package provdominoes.control;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 import javafx.scene.Group;
+import javafx.util.Pair;
 import provdominoes.boundary.App;
 import provdominoes.command.AbstractCommand;
 import provdominoes.command.AddCommand;
@@ -212,24 +215,47 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().filterInvert(piece);
-				} else if (token[0].equals(AbstractCommand.TWENTY_COMMAND)) {
+				} else if (token[0].equals(AbstractCommand.PERCENT_COMMAND)) {
+					String[] operands = token[1].split(",");
+					String percent = operands[1].toLowerCase();
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(operands[0].toLowerCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().filterTwenty(piece);
-				} else if (token[0].equals(AbstractCommand.HALF_COMMAND)) {
+					try {
+						cmd = CommandFactory.getInstance().filterPercent(piece, NumberFormat.getInstance().parse(percent).doubleValue());
+					} catch (ParseException e) {
+						App.alertException(e, "Erro desconhecido ao processar comando: "+cmdl);
+					}
+				} else if (token[0].equals(AbstractCommand.COLUMN_TEXT_COMMAND)) {
+					String[] operands = token[1].split(",");
+					String p1 = operands[1].toLowerCase().replace("\"", "");
+					String p2 = operands[2];
+					Pair<String, Boolean> t = new Pair<>(p2, Boolean.parseBoolean(p1));
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(operands[0].toLowerCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().filterHalf(piece);
+					cmd = CommandFactory.getInstance().filterColumnText(piece, t);
+				} else if (token[0].equals(AbstractCommand.ROW_TEXT_COMMAND)) {
+					String[] operands = token[1].split(",");
+					String p1 = operands[1].toLowerCase().replace("\"", "");
+					String p2 = operands[2];
+					Pair<String, Boolean> t = new Pair<>(p2, Boolean.parseBoolean(p1));
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(operands[0].toLowerCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					cmd = CommandFactory.getInstance().filterRowText(piece, t);
 				} else if (token[0].equals(AbstractCommand.LOWER_DIAGONAL_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
