@@ -10,6 +10,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import processor.MatrixProcessor;
+import provdominoes.arch.Session;
 import provdominoes.command.CommandFactory;
 import provdominoes.domain.Configuration;
 
@@ -119,6 +120,8 @@ public class ProvDominoesMenuBar extends MenuBar {
 								devices[j].setSelected(true);
 								Configuration.defaultProcessing = Configuration.GPU_DEVICE;
 								Configuration.gpuDevice = j;
+								Session.closeSection();
+								Session.startSession(Configuration.gpuDevice);
 								MatrixProcessor.resetGPU(j);
 								App.getStage().setTitle(
 										"Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
@@ -135,6 +138,8 @@ public class ProvDominoesMenuBar extends MenuBar {
 					@Override
 					public void handle(ActionEvent event) {
 						Configuration.defaultProcessing = Configuration.GPU_DEVICE;
+						Session.closeSection();
+						Session.startSession(Configuration.gpuDevice);
 						App.getStage().setTitle(
 								"Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
 										: Configuration.CPU_DEVICE) + "]");
@@ -153,6 +158,7 @@ public class ProvDominoesMenuBar extends MenuBar {
 					@Override
 					public void handle(ActionEvent event) {
 						Configuration.defaultProcessing = Configuration.CPU_DEVICE;
+						Session.closeSection();
 						App.getStage().setTitle(
 								"Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
 										: Configuration.CPU_DEVICE) + "]");
