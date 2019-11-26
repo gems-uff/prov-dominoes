@@ -6,7 +6,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 
 import javafx.scene.Group;
-import javafx.util.Pair;
 import provdominoes.boundary.App;
 import provdominoes.command.AbstractCommand;
 import provdominoes.command.AddCommand;
@@ -14,6 +13,7 @@ import provdominoes.command.CommandFactory;
 import provdominoes.command.MoveCommand;
 import provdominoes.command.MultiplyCommand;
 import provdominoes.command.Redo;
+import provdominoes.command.TextFilterData;
 import provdominoes.command.Undo;
 import provdominoes.domain.Dominoes;
 
@@ -226,15 +226,17 @@ public class ScriptController {
 						}
 					}
 					try {
-						cmd = CommandFactory.getInstance().filterPercent(piece, NumberFormat.getInstance().parse(percent).doubleValue());
+						cmd = CommandFactory.getInstance().filterPercent(piece,
+								NumberFormat.getInstance().parse(percent).doubleValue());
 					} catch (ParseException e) {
-						App.alertException(e, "Erro desconhecido ao processar comando: "+cmdl);
+						App.alertException(e, "Erro desconhecido ao processar comando: " + cmdl);
 					}
 				} else if (token[0].equals(AbstractCommand.COLUMN_TEXT_COMMAND)) {
 					String[] operands = token[1].split(",");
-					String p1 = operands[1].toLowerCase().replace("\"", "");
-					String p2 = operands[2];
-					Pair<String, Boolean> t = new Pair<>(p2, Boolean.parseBoolean(p1));
+					String isRegexp = operands[1].toLowerCase().replace("\"", "");
+					String isCaseSensitive = operands[2].toLowerCase().replace("\"", "");
+					String exp = operands[3];
+					TextFilterData t = new TextFilterData(exp, Boolean.parseBoolean(isRegexp), Boolean.parseBoolean(isCaseSensitive));
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(operands[0].toLowerCase())) {
@@ -245,9 +247,10 @@ public class ScriptController {
 					cmd = CommandFactory.getInstance().filterColumnText(piece, t);
 				} else if (token[0].equals(AbstractCommand.ROW_TEXT_COMMAND)) {
 					String[] operands = token[1].split(",");
-					String p1 = operands[1].toLowerCase().replace("\"", "");
-					String p2 = operands[2];
-					Pair<String, Boolean> t = new Pair<>(p2, Boolean.parseBoolean(p1));
+					String isRegexp = operands[1].toLowerCase().replace("\"", "");
+					String isCaseSensitive = operands[2].toLowerCase().replace("\"", "");
+					String exp = operands[3];
+					TextFilterData t = new TextFilterData(exp, Boolean.parseBoolean(isRegexp), Boolean.parseBoolean(isCaseSensitive));
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(operands[0].toLowerCase())) {

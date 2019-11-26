@@ -4,11 +4,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.la4j.matrix.functor.MatrixProcedure;
 import org.la4j.matrix.sparse.CRSMatrix;
 
-import javafx.util.Pair;
 import processor.Cell;
+import provdominoes.command.TextFilterData;
 import provdominoes.util.Prov2DominoesUtil;
 
 public class MatrixOperationsCPU implements MatrixOperations {
@@ -359,7 +360,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return _twentyFilter;
 	}
 
-	public MatrixOperations filterColumnText(Pair<String, Boolean> t) {
+	public MatrixOperations filterColumnText(TextFilterData t) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
 				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -370,8 +371,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
-				if ((!t.getValue() && this.matrixDescriptor.getColumnAt(j).contains(t.getKey()))
-						|| (t.getValue() && this.matrixDescriptor.getColumnAt(j).matches(t.getKey()))) {
+				if ((!t.isRegularExpression() && contains(j, t)) || (t.isRegularExpression()
+						&& this.matrixDescriptor.getColumnAt(j).matches(t.getExpression()))) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
 					filterMatrix[i][j] = 0.00;
@@ -382,7 +383,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return _columnFilter;
 	}
 
-	public MatrixOperations filterRowText(Pair<String, Boolean> t) {
+	public MatrixOperations filterRowText(TextFilterData t) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
 				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -393,8 +394,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
-				if ((!t.getValue() && this.matrixDescriptor.getRowAt(i).contains(t.getKey()))
-						|| (t.getValue() && this.matrixDescriptor.getRowAt(i).matches(t.getKey()))) {
+				if ((!t.isRegularExpression() && contains(i, t))
+						|| (t.isRegularExpression() && this.matrixDescriptor.getRowAt(i).matches(t.getExpression()))) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
 					filterMatrix[i][j] = 0.00;
@@ -403,6 +404,14 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		}
 		_rowFilter.setData(new CRSMatrix(filterMatrix));
 		return _rowFilter;
+	}
+
+	private boolean contains(int i, TextFilterData t) {
+		if (t.isCaseSensitive()) {
+			return this.matrixDescriptor.getRowAt(i).contains(t.getExpression());
+		} else {
+			return StringUtils.containsIgnoreCase(this.matrixDescriptor.getRowAt(i), t.getExpression());
+		}
 	}
 
 	public MatrixOperations diagonalize() {

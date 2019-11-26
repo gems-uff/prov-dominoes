@@ -2,9 +2,9 @@ package provdominoes.arch;
 
 import java.util.ArrayList;
 
-import javafx.util.Pair;
 import processor.Cell;
 import processor.MatrixProcessor;
+import provdominoes.command.TextFilterData;
 
 public class MatrixOperationsGPU implements MatrixOperations {
 
@@ -346,13 +346,13 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations filterColumnText(Pair<String, Boolean> t) {
+	public MatrixOperations filterColumnText(TextFilterData t) {
 		// TODO Pending GPU implementation
 		return null;
 	}
 
 	@Override
-	public MatrixOperations filterRowText(Pair<String, Boolean> t) {
+	public MatrixOperations filterRowText(TextFilterData t) {
 		// TODO Pending GPU implementation
 		return null;
 	}
