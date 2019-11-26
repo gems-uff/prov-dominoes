@@ -97,8 +97,9 @@ public class AreaMove extends Pane {
 		MenuItem menuItemUpperDiagonalFilter = new MenuItem("Upper Diagonal");
 		MenuItem menuItemLowerDiagonalFilter = new MenuItem("Lower Diagonal");
 		MenuItem menuItemCompressFilter = new MenuItem("Compress");
-		MenuItem menuItemTwentyFilter = new MenuItem("Twenty");
-		MenuItem menuItemHalfFilter = new MenuItem("Half");
+		MenuItem menuItemPercentFilter = new MenuItem("Percent");
+		MenuItem menuItemRowTextFilter = new MenuItem("Word on Row");
+		MenuItem menuItemColumnTextFilter = new MenuItem("Word on Column");
 
 		Menu menuOperate = new Menu("Operations");
 		Menu menuFilters = new Menu("Filters");
@@ -338,10 +339,12 @@ public class AreaMove extends Pane {
 					App.getCommandManager().invokeCommand(commandFactory.filterLowerDiagonal(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemCompressFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterCompress(piece));
-				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemTwentyFilter.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.filterTwenty(piece));
-				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemHalfFilter.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.filterHalf(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemPercentFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterPercent(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemColumnTextFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterColumnText(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemRowTextFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterRowText(piece));
 				}
 			}
 		});
@@ -366,9 +369,10 @@ public class AreaMove extends Pane {
 		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore,
 				menuItemTransitiveClosure);
 		menuFilters.getItems().addAll(menuItemBinarizeFilter, menuItemInvertFilter, menuItemDiagonalFilter,
-				menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter, menuItemCompressFilter, menuItemTwentyFilter, menuItemHalfFilter);
-		menuView.getItems().addAll(menuItemViewChart,  menuItemViewLineChart, 
-				menuItemViewGraph, menuItemViewEigenCentrality, menuItemViewMatrix);
+				menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter, menuItemCompressFilter, menuItemPercentFilter,
+				menuItemRowTextFilter, menuItemColumnTextFilter);
+		menuView.getItems().addAll(menuItemViewChart, menuItemViewLineChart, menuItemViewGraph,
+				menuItemViewEigenCentrality, menuItemViewMatrix);
 		minimenu.getItems().addAll(menuOperate, menuFilters, menuView, menuItemSaveInList, menuItemClose);
 		this.setVisibleType();
 		return piece;
@@ -457,8 +461,8 @@ public class AreaMove extends Pane {
 				&& (g1.getTranslateY() >= g2.getTranslateY()
 						&& g1.getTranslateY() <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT)) {
 
-			if (d1.getIdRow().equals(d2.getIdCol()) && !d1.getIdRow().contains(Dominoes.AGGREG_TEXT) && d1.getMat()
-					.getMatrixDescriptor().getNumRows() == d2.getDescriptor().getNumCols()) {
+			if (d1.getIdRow().equals(d2.getIdCol()) && !d1.getIdRow().contains(Dominoes.AGGREG_TEXT)
+					&& d1.getMat().getMatrixDescriptor().getNumRows() == d2.getDescriptor().getNumCols()) {
 
 				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
 				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
@@ -481,8 +485,8 @@ public class AreaMove extends Pane {
 				&& (g1.getTranslateY() + Dominoes.GRAPH_HEIGHT >= g2.getTranslateY()
 						&& g1.getTranslateY() + Dominoes.GRAPH_HEIGHT <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT)) {
 
-			if (d1.getIdRow().equals(d2.getIdCol()) && !d1.getIdRow().contains(Dominoes.AGGREG_TEXT) && d1.getMat()
-					.getMatrixDescriptor().getNumRows() == d2.getDescriptor().getNumCols()) {
+			if (d1.getIdRow().equals(d2.getIdCol()) && !d1.getIdRow().contains(Dominoes.AGGREG_TEXT)
+					&& d1.getMat().getMatrixDescriptor().getNumRows() == d2.getDescriptor().getNumCols()) {
 
 				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
 				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
@@ -506,8 +510,8 @@ public class AreaMove extends Pane {
 				&& (g1.getTranslateY() >= g2.getTranslateY()
 						&& g1.getTranslateY() <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT)) {
 
-			if (d1.getIdCol().equals(d2.getIdRow()) && !d1.getIdCol().contains(Dominoes.AGGREG_TEXT) && d1.getMat()
-					.getMatrixDescriptor().getNumCols() == d2.getDescriptor().getNumRows()) {
+			if (d1.getIdCol().equals(d2.getIdRow()) && !d1.getIdCol().contains(Dominoes.AGGREG_TEXT)
+					&& d1.getMat().getMatrixDescriptor().getNumCols() == d2.getDescriptor().getNumRows()) {
 
 				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
 				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
@@ -530,8 +534,8 @@ public class AreaMove extends Pane {
 				&& (g1.getTranslateY() + Dominoes.GRAPH_HEIGHT >= g2.getTranslateY()
 						&& g1.getTranslateY() + Dominoes.GRAPH_HEIGHT <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT)) {
 
-			if (d1.getIdCol().equals(d2.getIdRow()) && !d1.getIdCol().contains(Dominoes.AGGREG_TEXT) && d1.getMat()
-					.getMatrixDescriptor().getNumCols() == d2.getDescriptor().getNumRows()) {
+			if (d1.getIdCol().equals(d2.getIdRow()) && !d1.getIdCol().contains(Dominoes.AGGREG_TEXT)
+					&& d1.getMat().getMatrixDescriptor().getNumCols() == d2.getDescriptor().getNumRows()) {
 
 				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
 				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
@@ -639,7 +643,7 @@ public class AreaMove extends Pane {
 	public void setSize(double width, double height) {
 
 		this.data.getBackground().setWidth(width + data.getPadding());
-		this.data.getBackground().setHeight(height+900);
+		this.data.getBackground().setHeight(height + 900);
 
 		this.setMinWidth(width);
 		this.setPrefWidth(width);

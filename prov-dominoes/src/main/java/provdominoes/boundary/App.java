@@ -66,6 +66,9 @@ public class App extends Application {
 			App.stage.centerOnScreen();
 			App.stage.setTitle("Prov-Dominoes ["
 					+ (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE) + "]");
+			if (Configuration.isGPUProcessing()) {
+				Session.startSession(Configuration.gpuDevice);
+			}
 			App.stage.setResizable(Configuration.resizable);
 
 			App.menu = new ProvDominoesMenuBar();
@@ -425,10 +428,10 @@ public class App extends Application {
 					if (cmd instanceof UndoCommand) {
 						UndoCommand undo = (UndoCommand) cmd;
 						for (int i = 0; i < undo.getCount(); i++) {
-							getCommandManager().invokeCommand(cmd);
+							getCommandManager().invokeCommand(cmd, true);
 						}
 					} else {
-						getCommandManager().invokeCommand(cmd);
+						getCommandManager().invokeCommand(cmd, true);
 					}
 					commandLine = br.readLine();
 				}

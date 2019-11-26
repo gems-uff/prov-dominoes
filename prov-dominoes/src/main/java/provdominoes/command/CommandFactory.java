@@ -1,6 +1,7 @@
 package provdominoes.command;
 
 import javafx.scene.Group;
+import javafx.util.Pair;
 import provdominoes.boundary.App;
 
 public class CommandFactory {
@@ -83,12 +84,16 @@ public class CommandFactory {
 		return new InvertCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
-	public AbstractCommand filterTwenty(Group piece) {
-		return new TwentyCommand(App.getArea().getData().getPieces().indexOf(piece));
+	public AbstractCommand filterPercent(Group piece) {
+		return new PercentCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
-	public AbstractCommand filterHalf(Group piece) {
-		return new HalfCommand(App.getArea().getData().getPieces().indexOf(piece));
+	public AbstractCommand filterColumnText(Group piece) {
+		return new ColumnTextCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+	
+	public AbstractCommand filterRowText(Group piece) {
+		return new RowTextCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
 	public AbstractCommand filterDiagonal(Group piece) {
@@ -123,4 +128,22 @@ public class CommandFactory {
 		return new UndoCommand(count);
 	}
 
+	public AbstractCommand filterPercent(Group piece, double p) {
+		PercentCommand pc = new PercentCommand(App.getArea().getData().getPieces().indexOf(piece));
+		pc.setPercent(p);
+		return pc;
+	}
+	
+	public AbstractCommand filterColumnText(Group piece, Pair<String, Boolean> t) {
+		ColumnTextCommand tc = new ColumnTextCommand(App.getArea().getData().getPieces().indexOf(piece));
+		tc.setText(t);
+		return tc;
+	}
+	
+	public AbstractCommand filterRowText(Group piece, Pair<String, Boolean> t) {
+		RowTextCommand tc = new RowTextCommand(App.getArea().getData().getPieces().indexOf(piece));
+		tc.setText(t);
+		return tc;
+	}
+	
 }
