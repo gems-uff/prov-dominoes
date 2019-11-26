@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.util.Pair;
+import provdominoes.command.TextFilterData;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 import provdominoes.util.ConfigurationFile;
@@ -170,12 +170,12 @@ public class Controller {
 		return domino;
 	}
 	
-	public static Dominoes filterColumnText(Dominoes domino, Pair<String, Boolean> t) throws Exception {
+	public static Dominoes filterColumnText(Dominoes domino, TextFilterData t) throws Exception {
 		domino.filterColumnText(t);
 		return domino;
 	}
 	
-	public static Dominoes filterRowText(Dominoes domino, Pair<String, Boolean> t) throws Exception {
+	public static Dominoes filterRowText(Dominoes domino, TextFilterData t) throws Exception {
 		domino.filterRowText(t);
 		return domino;
 	}

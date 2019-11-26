@@ -9,12 +9,12 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Pair;
 import model.ProvMatrix;
 import model.ProvRelation.Relation;
 import provdominoes.arch.MatrixDescriptor;
 import provdominoes.arch.MatrixOperations;
 import provdominoes.boundary.App;
+import provdominoes.command.TextFilterData;
 import provdominoes.util.Prov2DominoesUtil;
 
 public final class Dominoes {
@@ -114,6 +114,7 @@ public final class Dominoes {
 	private String idRow;
 	private String idCol;
 	private Historic historic;
+	private Text textType;
 	private int type;
 	private MatrixOperations mat = null;
 	private int sourceIndex;
@@ -250,14 +251,14 @@ public final class Dominoes {
 		double padding = 1;
 		Circle circle = new Circle(0, 0, radius, Dominoes.COLOR_TYPE);
 
-		Text type = new Text();
-		type.setFill(Dominoes.COLOR_NORMAL_FONT);
+		textType = new Text();
+		textType.setFill(Dominoes.COLOR_NORMAL_FONT);
 
 		int z = 0;
 		switch (this.getType()) {
 		case Dominoes.TYPE_BASIC:
-			type.setText(Dominoes.TYPE_BASIC_CODE);
-			type.setFill(Dominoes.COLOR_INIVISIBLE);
+			textType.setText(Dominoes.TYPE_BASIC_CODE);
+			textType.setFill(Dominoes.COLOR_INIVISIBLE);
 
 			circle.setFill(Dominoes.COLOR_INIVISIBLE);
 
@@ -265,8 +266,8 @@ public final class Dominoes {
 
 			break;
 		case Dominoes.TYPE_DERIVED:
-			type.setText(Dominoes.TYPE_DERIVED_CODE);
-			type.setFill(Dominoes.COLOR_INIVISIBLE);
+			textType.setText(Dominoes.TYPE_DERIVED_CODE);
+			textType.setFill(Dominoes.COLOR_INIVISIBLE);
 
 			circle.setFill(Dominoes.COLOR_INIVISIBLE);
 
@@ -280,71 +281,71 @@ public final class Dominoes {
 
 			break;
 		case Dominoes.TYPE_SUPPORT:
-			type.setText(Dominoes.TYPE_SUPPORT_CODE);
+			textType.setText(Dominoes.TYPE_SUPPORT_CODE);
 			break;
 		case Dominoes.TYPE_CONFIDENCE:
-			type.setText(Dominoes.TYPE_CONFIDENCE_CODE);
+			textType.setText(Dominoes.TYPE_CONFIDENCE_CODE);
 			break;
 		case Dominoes.TYPE_LIFT:
-			type.setText(Dominoes.TYPE_LIFT_CODE);
+			textType.setText(Dominoes.TYPE_LIFT_CODE);
 			break;
 		case Dominoes.TYPE_TRANSITIVE_CLOSURE:
-			type.setText(Dominoes.TYPE_TRANSITIVE_CLOSURE_CODE);
+			textType.setText(Dominoes.TYPE_TRANSITIVE_CLOSURE_CODE);
 			break;
 		case Dominoes.TYPE_BINARIZED:
-			type.setText(Dominoes.TYPE_BINARIZED_CODE);
+			textType.setText(Dominoes.TYPE_BINARIZED_CODE);
 			break;
 		case Dominoes.TYPE_INVERTED:
-			type.setText(Dominoes.TYPE_INVERTED_CODE);
+			textType.setText(Dominoes.TYPE_INVERTED_CODE);
 			break;
 		case Dominoes.TYPE_DIAGONAL: {
-			type.setText(Dominoes.TYPE_DIAGONAL_CODE);
+			textType.setText(Dominoes.TYPE_DIAGONAL_CODE);
 			z = 10;
 			break;
 		}
 		case Dominoes.TYPE_TWENTY: {
-			type.setText(Dominoes.TYPE_TWENTY_CODE);
+			textType.setText(Dominoes.TYPE_TWENTY_CODE);
 			z = 17;
 			break;
 		}
 		case Dominoes.TYPE_HALF: {
-			type.setText(Dominoes.TYPE_HALF_CODE);
+			textType.setText(Dominoes.TYPE_HALF_CODE);
 			z = 17;
 			break;
 		}
 		case Dominoes.TYPE_PERCENT: {
-			type.setText(Dominoes.TYPE_PERCENT_CODE);
+			textType.setText(Dominoes.TYPE_PERCENT_CODE);
 			z = 17;
 			break;
 		}
 		case Dominoes.TYPE_TEXT: {
-			type.setText(Dominoes.TYPE_TEXT_CODE);
+			textType.setText(Dominoes.TYPE_TEXT_CODE);
 			z = 17;
 			break;
 		}
 		case Dominoes.TYPE_UPPER_DIAGONAL: {
-			type.setText(Dominoes.TYPE_UPPER_DIAGONAL_CODE);
+			textType.setText(Dominoes.TYPE_UPPER_DIAGONAL_CODE);
 			z = 17;
 			break;
 		}
 		case Dominoes.TYPE_LOWER_DIAGONAL: {
-			type.setText(Dominoes.TYPE_LOWER_DIAGONAL_CODE);
+			textType.setText(Dominoes.TYPE_LOWER_DIAGONAL_CODE);
 			z = 17;
 			break;
 		}
 		case Dominoes.TYPE_COMPRESSED: {
-			type.setText(Dominoes.TYPE_COMPRESSED_CODE);
+			textType.setText(Dominoes.TYPE_COMPRESSED_CODE);
 			z = 17;
 			break;
 		}
 		}
-		type.setX((circle.getCenterX() - circle.getRadius() / 2 - padding));
-		type.setY(circle.getCenterY() + circle.getRadius() / 2 + padding);
+		textType.setX((circle.getCenterX() - circle.getRadius() / 2 - padding));
+		textType.setY(circle.getCenterY() + circle.getRadius() / 2 + padding);
 
 		circle.toFront();
-		type.toFront();
+		textType.toFront();
 
-		Group groupType = new Group(circle, type);
+		Group groupType = new Group(circle, textType);
 		groupType.setTranslateX(border.getX() + border.getWidth() - (radius + circlePadding) - z);
 		groupType.setTranslateY((radius + circlePadding));
 		groupType.setAutoSizeChildren(true);
@@ -549,15 +550,15 @@ public final class Dominoes {
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_PERCENT;
 	}
-	
-	public void filterColumnText(Pair<String, Boolean> t) throws Exception {
+
+	public void filterColumnText(TextFilterData t) throws Exception {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.filterColumnText(t);
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_TEXT;
 	}
-	
-	public void filterRowText(Pair<String, Boolean> t) throws Exception {
+
+	public void filterRowText(TextFilterData t) throws Exception {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.filterRowText(t);
 		setMat(_newMat);
@@ -778,6 +779,14 @@ public final class Dominoes {
 
 	public void setDescriptor(MatrixDescriptor descriptor) {
 		this.descriptor = descriptor;
+	}
+
+	public Text getTextType() {
+		return textType;
+	}
+
+	public void setTextType(Text textType) {
+		this.textType = textType;
 	}
 
 }

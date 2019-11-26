@@ -1,7 +1,6 @@
 package provdominoes.command;
 
 import javafx.scene.Group;
-import javafx.util.Pair;
 import provdominoes.boundary.App;
 
 public class CommandFactory {
@@ -134,13 +133,13 @@ public class CommandFactory {
 		return pc;
 	}
 	
-	public AbstractCommand filterColumnText(Group piece, Pair<String, Boolean> t) {
+	public AbstractCommand filterColumnText(Group piece, TextFilterData t) {
 		ColumnTextCommand tc = new ColumnTextCommand(App.getArea().getData().getPieces().indexOf(piece));
 		tc.setText(t);
 		return tc;
 	}
 	
-	public AbstractCommand filterRowText(Group piece, Pair<String, Boolean> t) {
+	public AbstractCommand filterRowText(Group piece, TextFilterData t) {
 		RowTextCommand tc = new RowTextCommand(App.getArea().getData().getPieces().indexOf(piece));
 		tc.setText(t);
 		return tc;

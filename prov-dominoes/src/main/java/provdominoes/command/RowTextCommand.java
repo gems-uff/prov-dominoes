@@ -13,7 +13,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
 import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
@@ -25,7 +24,7 @@ public class RowTextCommand extends AbstractCommand {
 	private double y;
 	private Dominoes oldDominoes;
 	private int index;
-	private Pair<String, Boolean> text;
+	private TextFilterData text;
 
 	public RowTextCommand() {
 		this.index = -1;
@@ -45,16 +44,20 @@ public class RowTextCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toText = App.getArea().getData().getDominoes().get(index);
-			if(!super.isReproducing()) {
+			if (!super.isReproducing()) {
 				text = getText();
 			}
-			Dominoes domino = provdominoes.control.Controller.filterRowText(toText, text);
+			if (text != null) {
+				Dominoes domino = provdominoes.control.Controller.filterRowText(toText, text);
 
-			App.getArea().remove(index);
-			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
+				App.getArea().remove(index);
+				this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
 
-			if (Configuration.autoSave) {
-				App.getArea().saveAndSendToList(piece);
+				if (Configuration.autoSave) {
+					App.getArea().saveAndSendToList(piece);
+				}
+			} else {
+				success = false;
 			}
 		} catch (Exception e) {
 			App.alertException(e,
@@ -66,12 +69,12 @@ public class RowTextCommand extends AbstractCommand {
 		return success;
 	}
 
-	private Pair<String, Boolean> getText() {
-		Pair<String, Boolean> d = null;
+	private TextFilterData getText() {
+		TextFilterData d = null;
 		// Create the custom dialog.
-		Dialog<Pair<String, Boolean>> dialog = new Dialog<>();
+		Dialog<TextFilterData> dialog = new Dialog<>();
 		dialog.setTitle("Row Word Filter");
-		dialog.setHeaderText("Please enter the expression you want to filter for rows!");
+		dialog.setHeaderText("Please enter the expression you want to filter on rows!");
 
 		// Set the button types.
 		ButtonType loginButtonType = new ButtonType("Filter", ButtonData.OK_DONE);
@@ -84,12 +87,24 @@ public class RowTextCommand extends AbstractCommand {
 		grid.setPadding(new Insets(20, 150, 10, 10));
 
 		TextField expression = new TextField();
-		expression.setPromptText("expression to filter");
+		expression.setPromptText("String or expression");
 		CheckBox cb = new CheckBox("Regular Expression");
+		CheckBox cs = new CheckBox("Case Sensitive");
+		
+		cb.setOnAction((event) -> {
+			if (cb.isSelected()) {
+				cs.setSelected(true);
+				cs.setDisable(true);
+			} else {
+				cs.setDisable(false);
+			}
+		});
 
 		grid.add(new Label("Expression:"), 0, 0);
 		grid.add(expression, 1, 0);
 		grid.add(cb, 2, 0);
+		grid.add(cs, 3, 0);
+		
 
 		// Enable/Disable login button depending on whether a username was entered.
 		Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
@@ -109,12 +124,12 @@ public class RowTextCommand extends AbstractCommand {
 		// clicked.
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == loginButtonType) {
-				return new Pair<>(expression.getText(), cb.isSelected());
+				return new TextFilterData(expression.getText(), cb.isSelected(), cs.isSelected());
 			}
 			return null;
 		});
 
-		Optional<Pair<String, Boolean>> result = dialog.showAndWait();
+		Optional<TextFilterData> result = dialog.showAndWait();
 
 		if (result.isPresent()) {
 			d = result.get();
@@ -134,7 +149,8 @@ public class RowTextCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return ROW_TEXT_COMMAND + "(" + this.oldDominoes.getId() + ", " + text.getValue() + ", \"" + text.getKey() + "\")";
+		return ROW_TEXT_COMMAND + "(" + this.oldDominoes.getId() + ", " + text.isRegularExpression() + ", "
+				+ text.isRegularExpression() + ", \"" + text.getExpression() + "\")";
 	}
 
 	private String id;
@@ -149,7 +165,7 @@ public class RowTextCommand extends AbstractCommand {
 		this.id = id;
 	}
 
-	public void setText(Pair<String, Boolean> text) {
+	public void setText(TextFilterData text) {
 		this.text = text;
 	}
 
