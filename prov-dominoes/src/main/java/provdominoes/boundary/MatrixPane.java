@@ -174,8 +174,12 @@ public class MatrixPane extends Pane {
 			back.setFill(new Color(1, 1, 1, 1));
 			Rectangle front = new Rectangle(cellSpace, cellSpace);
 
-			front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
-					(_matCell.value - min) / (max - min)));
+			if (_matCell.value > 0.0) {
+				front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
+						(_matCell.value - min) / (max - min)));
+			} else {
+				front.setFill(new Color(150.0/255.0,150.0/255.0,55.0/255.0,1));
+			}
 			front.toFront();
 
 			this.cells.add(_matCell.value);

@@ -83,4 +83,5 @@ public class AddCommand extends AbstractCommand {
 	public void setId(String id) {
 		this.id = id;
 	}
+
 }

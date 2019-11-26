@@ -2,6 +2,7 @@ package provdominoes.arch;
 
 import java.util.ArrayList;
 
+import javafx.util.Pair;
 import processor.Cell;
 import processor.MatrixProcessor;
 
@@ -339,13 +340,19 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations twenty() {
+	public MatrixOperations percent(double d) {
 		// TODO Pending GPU implementation
 		return null;
 	}
 
 	@Override
-	public MatrixOperations half() {
+	public MatrixOperations filterColumnText(Pair<String, Boolean> t) {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public MatrixOperations filterRowText(Pair<String, Boolean> t) {
 		// TODO Pending GPU implementation
 		return null;
 	}

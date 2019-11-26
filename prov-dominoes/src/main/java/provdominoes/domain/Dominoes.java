@@ -9,6 +9,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 import model.ProvMatrix;
 import model.ProvRelation.Relation;
 import provdominoes.arch.MatrixDescriptor;
@@ -85,6 +86,8 @@ public final class Dominoes {
 	private static final int TYPE_COMPRESSED = 11;
 	private static final int TYPE_TWENTY = 12;
 	private static final int TYPE_HALF = 13;
+	private static final int TYPE_PERCENT = 14;
+	private static final int TYPE_TEXT = 15;
 	public final static String TYPE_BASIC_CODE = "B";
 	public final static String TYPE_DERIVED_CODE = "D";
 	public final static String TYPE_SUPPORT_CODE = "S";
@@ -97,6 +100,8 @@ public final class Dominoes {
 	public final static String TYPE_COMPRESSED_CODE = "SED";
 	public final static String TYPE_TWENTY_CODE = "20%";
 	public final static String TYPE_HALF_CODE = "50%";
+	public final static String TYPE_PERCENT_CODE = "%";
+	public final static String TYPE_TEXT_CODE = "TXT";
 
 	public final static String AGGREG_TEXT = "/SUM ";
 	public static final String TYPE_BINARIZED_CODE = "Z";
@@ -304,6 +309,16 @@ public final class Dominoes {
 		}
 		case Dominoes.TYPE_HALF: {
 			type.setText(Dominoes.TYPE_HALF_CODE);
+			z = 17;
+			break;
+		}
+		case Dominoes.TYPE_PERCENT: {
+			type.setText(Dominoes.TYPE_PERCENT_CODE);
+			z = 17;
+			break;
+		}
+		case Dominoes.TYPE_TEXT: {
+			type.setText(Dominoes.TYPE_TEXT_CODE);
 			z = 17;
 			break;
 		}
@@ -528,18 +543,25 @@ public final class Dominoes {
 		this.type = Dominoes.TYPE_INVERTED;
 	}
 
-	public void twenty() throws Exception {
+	public void percent(double d) throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.twenty();
+		MatrixOperations _newMat = mat.percent(d);
 		setMat(_newMat);
-		this.type = Dominoes.TYPE_TWENTY;
+		this.type = Dominoes.TYPE_PERCENT;
 	}
 	
-	public void half() throws Exception {
+	public void filterColumnText(Pair<String, Boolean> t) throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.half();
+		MatrixOperations _newMat = mat.filterColumnText(t);
 		setMat(_newMat);
-		this.type = Dominoes.TYPE_HALF;
+		this.type = Dominoes.TYPE_TEXT;
+	}
+	
+	public void filterRowText(Pair<String, Boolean> t) throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.filterRowText(t);
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_TEXT;
 	}
 
 	public void diagonalize() throws Exception {
