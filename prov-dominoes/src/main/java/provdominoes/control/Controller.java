@@ -164,6 +164,16 @@ public class Controller {
 		domino.invert();
 		return domino;
 	}
+	
+	public static Dominoes sortRows(Dominoes domino) throws Exception {
+		domino.sortRows();
+		return domino;
+	}
+	
+	public static Dominoes sortCols(Dominoes domino) throws Exception {
+		domino.sortCols();
+		return domino;
+	}
 
 	public static Dominoes percent(Dominoes domino, double d) throws Exception {
 		domino.percent(d);

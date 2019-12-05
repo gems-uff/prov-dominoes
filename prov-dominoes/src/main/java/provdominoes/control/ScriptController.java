@@ -16,6 +16,7 @@ import provdominoes.command.Redo;
 import provdominoes.command.TextFilterData;
 import provdominoes.command.Undo;
 import provdominoes.domain.Dominoes;
+import provdominoes.util.TokenUtil;
 
 public class ScriptController {
 
@@ -77,7 +78,11 @@ public class ScriptController {
 	public AbstractCommand parseCommand(String commandLine) {
 		AbstractCommand cmd = null;
 		if (commandLine != null) {
+
+			commandLine = TokenUtil.getInstance().supressReserved(commandLine);
+
 			String cmdl = commandLine.replace(" ", "").replace("\"", "").replace(")", "");
+
 			if (cmdl.contains("=")) {
 				String[] token = cmdl.split("=");
 				String pieceAlias = token[0].toLowerCase();
@@ -236,7 +241,10 @@ public class ScriptController {
 					String isRegexp = operands[1].toLowerCase().replace("\"", "");
 					String isCaseSensitive = operands[2].toLowerCase().replace("\"", "");
 					String exp = operands[3];
-					TextFilterData t = new TextFilterData(exp, Boolean.parseBoolean(isRegexp), Boolean.parseBoolean(isCaseSensitive));
+					exp = "\"" + exp + "\"";
+					exp = TokenUtil.getInstance().impressReserved(exp).replace("\"", "");
+					TextFilterData t = new TextFilterData(exp, Boolean.parseBoolean(isRegexp),
+							Boolean.parseBoolean(isCaseSensitive));
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(operands[0].toLowerCase())) {
@@ -250,7 +258,10 @@ public class ScriptController {
 					String isRegexp = operands[1].toLowerCase().replace("\"", "");
 					String isCaseSensitive = operands[2].toLowerCase().replace("\"", "");
 					String exp = operands[3];
-					TextFilterData t = new TextFilterData(exp, Boolean.parseBoolean(isRegexp), Boolean.parseBoolean(isCaseSensitive));
+					exp = "\"" + exp + "\"";
+					exp = TokenUtil.getInstance().impressReserved(exp).replace("\"", "");
+					TextFilterData t = new TextFilterData(exp, Boolean.parseBoolean(isRegexp),
+							Boolean.parseBoolean(isCaseSensitive));
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(operands[0].toLowerCase())) {
@@ -259,6 +270,24 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().filterRowText(piece, t);
+				} else if (token[0].equals(AbstractCommand.SORT_ROW_COMMAND)) {
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(token[1].toLowerCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					cmd = CommandFactory.getInstance().sortRows(piece);
+				} else if (token[0].equals(AbstractCommand.SORT_COLUMN_COMMAND)) {
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(token[1].toLowerCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					cmd = CommandFactory.getInstance().sortColumns(piece);
 				} else if (token[0].equals(AbstractCommand.LOWER_DIAGONAL_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {

@@ -88,6 +88,8 @@ public final class Dominoes {
 	private static final int TYPE_HALF = 13;
 	private static final int TYPE_PERCENT = 14;
 	private static final int TYPE_TEXT = 15;
+	private static final int TYPE_ROW_ASC = 16;
+	private static final int TYPE_COL_ASC = 17;
 	public final static String TYPE_BASIC_CODE = "B";
 	public final static String TYPE_DERIVED_CODE = "D";
 	public final static String TYPE_SUPPORT_CODE = "S";
@@ -102,6 +104,8 @@ public final class Dominoes {
 	public final static String TYPE_HALF_CODE = "50%";
 	public final static String TYPE_PERCENT_CODE = "%";
 	public final static String TYPE_TEXT_CODE = "TXT";
+	public final static String TYPE_ROW_ASC_CODE = "RASC";
+	public final static String TYPE_COL_ASC_CODE = "CASC";
 
 	public final static String AGGREG_TEXT = "/SUM ";
 	public static final String TYPE_BINARIZED_CODE = "Z";
@@ -323,6 +327,16 @@ public final class Dominoes {
 			z = 17;
 			break;
 		}
+		case Dominoes.TYPE_ROW_ASC: {
+			textType.setText(Dominoes.TYPE_ROW_ASC_CODE);
+			z = 23;
+			break;
+		}
+		case Dominoes.TYPE_COL_ASC: {
+			textType.setText(Dominoes.TYPE_COL_ASC_CODE);
+			z = 23;
+			break;
+		}
 		case Dominoes.TYPE_UPPER_DIAGONAL: {
 			textType.setText(Dominoes.TYPE_UPPER_DIAGONAL_CODE);
 			z = 17;
@@ -542,6 +556,20 @@ public final class Dominoes {
 		MatrixOperations _newMat = mat.invert();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_INVERTED;
+	}
+	
+	public void sortRows() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.sortRows();
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_ROW_ASC;
+	}
+	
+	public void sortCols() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.sortColumns();
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_COL_ASC;
 	}
 
 	public void percent(double d) throws Exception {

@@ -83,6 +83,8 @@ public class AreaMove extends Pane {
 
 		MenuItem menuItemZScore = new MenuItem("Z-Score");
 		MenuItem menuItemTransitiveClosure = new MenuItem("Transitive Closure");
+		MenuItem menuItemSortRows = new MenuItem("Sort Rows Asc");
+		MenuItem menuItemSortColumns = new MenuItem("Sort Columns Asc");
 		MenuItem menuItemSaveInList = new MenuItem("Save");
 		MenuItem menuItemViewGraph = new MenuItem("Graph");
 		MenuItem menuItemViewEigenCentrality = new MenuItem("Centrality Graph");
@@ -320,6 +322,10 @@ public class AreaMove extends Pane {
 					App.getCommandManager().invokeCommand(commandFactory.zscore(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemTransitiveClosure.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.transitiveClosure(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortRows.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.sortRows(piece));
+				}  else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortColumns.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.sortColumns(piece));
 				}
 			}
 		});
@@ -367,7 +373,7 @@ public class AreaMove extends Pane {
 		});
 
 		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore,
-				menuItemTransitiveClosure);
+				menuItemTransitiveClosure, menuItemSortRows, menuItemSortColumns);
 		menuFilters.getItems().addAll(menuItemBinarizeFilter, menuItemInvertFilter, menuItemDiagonalFilter,
 				menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter, menuItemCompressFilter, menuItemPercentFilter,
 				menuItemRowTextFilter, menuItemColumnTextFilter);
