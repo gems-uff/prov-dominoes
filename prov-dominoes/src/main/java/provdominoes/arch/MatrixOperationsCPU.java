@@ -2,7 +2,10 @@ package provdominoes.arch;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.la4j.matrix.functor.MatrixProcedure;
@@ -15,18 +18,17 @@ import provdominoes.util.Prov2DominoesUtil;
 public class MatrixOperationsCPU implements MatrixOperations {
 
 	private CRSMatrix data;
-
 	private MatrixDescriptor matrixDescriptor;
-
-	public MatrixDescriptor getMatrixDescriptor() {
-		return matrixDescriptor;
-	}
 
 	public MatrixOperationsCPU(MatrixDescriptor _matrixDescriptor) {
 
 		matrixDescriptor = _matrixDescriptor;
 
 		data = new CRSMatrix(matrixDescriptor.getNumRows(), matrixDescriptor.getNumCols());
+	}
+
+	public MatrixDescriptor getMatrixDescriptor() {
+		return matrixDescriptor;
 	}
 
 	@Override
@@ -371,7 +373,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
-				if ((!t.isRegularExpression() && contains(j, t)) || (t.isRegularExpression()
+				if ((!t.isRegularExpression() && contains(false, j, t)) || (t.isRegularExpression()
 						&& this.matrixDescriptor.getColumnAt(j).matches(t.getExpression()))) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
@@ -394,7 +396,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
-				if ((!t.isRegularExpression() && contains(i, t))
+				if ((!t.isRegularExpression() && contains(true, i, t))
 						|| (t.isRegularExpression() && this.matrixDescriptor.getRowAt(i).matches(t.getExpression()))) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
@@ -406,11 +408,19 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return _rowFilter;
 	}
 
-	private boolean contains(int i, TextFilterData t) {
-		if (t.isCaseSensitive()) {
-			return this.matrixDescriptor.getRowAt(i).contains(t.getExpression());
+	private boolean contains(boolean isRow, int i, TextFilterData t) {
+		if (isRow) {
+			if (t.isCaseSensitive()) {
+				return this.matrixDescriptor.getRowAt(i).contains(t.getExpression());
+			} else {
+				return StringUtils.containsIgnoreCase(this.matrixDescriptor.getRowAt(i), t.getExpression());
+			}
 		} else {
-			return StringUtils.containsIgnoreCase(this.matrixDescriptor.getRowAt(i), t.getExpression());
+			if (t.isCaseSensitive()) {
+				return this.matrixDescriptor.getColumnAt(i).contains(t.getExpression());
+			} else {
+				return StringUtils.containsIgnoreCase(this.matrixDescriptor.getColumnAt(i), t.getExpression());
+			}
 		}
 	}
 
@@ -583,6 +593,58 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		}
 		_transitiveClosure.setData(new CRSMatrix(reach));
 		return _transitiveClosure;
+	}
+
+	@Override
+	public MatrixOperations sortRows() {
+		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
+				matrixDescriptor.getColType());
+		List<String> rowsDesc = new ArrayList<>(matrixDescriptor.getRowsDesc());
+		Map<String, Integer> rowsIndexes = new HashMap<>();
+		for (int i = 0; i < rowsDesc.size(); i++) {
+			rowsIndexes.put(rowsDesc.get(i), i);
+		}
+		Collections.sort(rowsDesc);
+		_matrixDescriptor.setRowsDesc(rowsDesc);
+		_matrixDescriptor.setColumnsDesc(matrixDescriptor.getColumnsDesc());
+
+		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
+
+		double[][] matrix = new double[data.rows()][data.columns()];
+		for (int i = 0; i < data.rows(); i++) {
+			for (int j = 0; j < data.columns(); j++) {
+				matrix[i][j] = data.get(rowsIndexes.get(rowsDesc.get(i)), j);
+			}
+		}
+
+		result.setData(new CRSMatrix(matrix));
+		return result;
+	}
+
+	@Override
+	public MatrixOperations sortColumns() {
+		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
+				matrixDescriptor.getColType());
+		List<String> colsDesc = new ArrayList<>(matrixDescriptor.getColumnsDesc());
+		Map<String, Integer> colsIndexes = new HashMap<>();
+		for (int i = 0; i < colsDesc.size(); i++) {
+			colsIndexes.put(colsDesc.get(i), i);
+		}
+		Collections.sort(colsDesc);
+		_matrixDescriptor.setColumnsDesc(colsDesc);
+		_matrixDescriptor.setRowsDesc(matrixDescriptor.getRowsDesc());
+
+		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
+
+		double[][] matrix = new double[data.rows()][data.columns()];
+		for (int i = 0; i < data.rows(); i++) {
+			for (int j = 0; j < data.columns(); j++) {
+				matrix[i][j] = data.get(i, colsIndexes.get(colsDesc.get(j)));
+			}
+		}
+
+		result.setData(new CRSMatrix(matrix));
+		return result;
 	}
 
 	@Override

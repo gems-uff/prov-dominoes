@@ -61,6 +61,10 @@ public interface MatrixOperations {
 	MatrixOperations filterColumnText(TextFilterData t);
 	MatrixOperations filterRowText(TextFilterData t);
 
+	MatrixOperations sortColumns();
+
+	MatrixOperations sortRows();
+
 	public static MatrixOperations configureOperation(CRSMatrix matrix, MatrixDescriptor descriptor, boolean isSparse)
 			throws Exception {
 		MatrixOperations mat = MatrixOperationsFactory
