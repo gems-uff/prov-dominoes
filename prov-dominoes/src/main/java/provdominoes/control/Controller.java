@@ -205,8 +205,8 @@ public class Controller {
 		return domino;
 	}
 
-	public static Dominoes compress(Dominoes domino) throws Exception {
-		domino.compress();
+	public static Dominoes trim(Dominoes domino) throws Exception {
+		domino.trim();
 		return domino;
 	}
 

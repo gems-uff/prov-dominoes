@@ -55,7 +55,7 @@ public interface MatrixOperations {
 
 	public MatrixOperations upperDiagonal();
 	
-	public MatrixOperations compress();
+	public MatrixOperations trim();
 	public MatrixOperations percent(double d);
 
 	MatrixOperations filterColumnText(TextFilterData t);

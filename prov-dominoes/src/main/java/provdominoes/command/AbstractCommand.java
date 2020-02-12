@@ -26,7 +26,7 @@ public abstract class AbstractCommand {
 	public static final String DIAGONALIZE_COMMAND = "DIAGONALIZE";
 	public static final String UPPER_DIAGONAL_COMMAND = "UPPER_DIAGONAL";
 	public static final String LOWER_DIAGONAL_COMMAND = "LOWER_DIAGONAL";
-	public static final String COMPRESS_COMMAND = "COMPRESS";
+	public static final String TRIM_COMMAND = "TRIM";
 	public static final String TWENTY_COMMAND = "TWENTY";
 	public static final String HALF_COMMAND = "HALF";
 	public static final String PERCENT_COMMAND = "PERCENT";
@@ -58,17 +58,21 @@ public abstract class AbstractCommand {
 	protected abstract boolean doIt();
 
 	protected abstract boolean undoIt();
-	
+
 	private boolean reproducing;
 
 	protected String cmd(Dominoes d) {
-		String cmd = d.getRelation().getAbbreviate().replace(" ", "");
+
+		String cmd = d.getId();
+		if (d.getRelation() != null) {
+			cmd = d.getRelation().getAbbreviate().replace(" ", "");
+		}
 		if (d.getRelation() == Relation.RELATION_INFLUENCE) {
 			cmd = cmd + "[" + d.getIdRow() + "," + d.getIdCol() + "]";
 		}
 		return cmd;
 	}
-	
+
 	public void updateCommandManager(CommandManager cmd, boolean reproducing) {
 		setReproducing(reproducing);
 		if (doIt()) {

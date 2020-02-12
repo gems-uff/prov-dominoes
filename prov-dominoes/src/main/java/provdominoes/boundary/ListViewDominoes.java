@@ -145,11 +145,14 @@ public class ListViewDominoes extends ListView<Group> {
 					if (mouseEvent.getClickCount() == 2) {
 						int index = pieces.indexOf(group);
 						Dominoes d = dominoes.get(index);
-						String trigram = d.getRelation().getAbbreviate().replace(" ", "");
-						if (d.getRelation() == Relation.RELATION_INFLUENCE) {
-							trigram = trigram + "[" + d.getIdRow() + "," + d.getIdCol() + "]";
+						String id = d.getId();
+						if (d.getRelation() != null) {
+							id = d.getRelation().getAbbreviate().replace(" ", "");
+							if (d.getRelation() == Relation.RELATION_INFLUENCE) {
+								id = id + "[" + d.getIdRow() + "," + d.getIdCol() + "]";
+							}
 						}
-						App.getCommandManager().invokeCommand(new CommandFactory().add(trigram));
+						App.getCommandManager().invokeCommand(new CommandFactory().add(id));
 					}
 				}
 			}
@@ -170,8 +173,11 @@ public class ListViewDominoes extends ListView<Group> {
 				if (((MenuItem) event.getTarget()).getText().equals(menuItemToAreaMove.getText())) {
 					int index = pieces.indexOf(group);
 					Dominoes d = dominoes.get(index);
-					String trigram = d.getRelation().getAbbreviate().replace(" ", "");
-					App.getCommandManager().invokeCommand(new CommandFactory().add(trigram));
+					String id = d.getId();
+					if (d.getRelation() != null) {
+						id = d.getRelation().getAbbreviate().replace(" ", "");
+					}
+					App.getCommandManager().invokeCommand(new CommandFactory().add(id));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemRemove.getText())) {
 					System.out.println("removing");
 					try {

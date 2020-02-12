@@ -107,8 +107,8 @@ public class CommandFactory {
 		return new LowerDiagonalCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
-	public AbstractCommand filterCompress(Group piece) {
-		return new CompressCommand(App.getArea().getData().getPieces().indexOf(piece));
+	public AbstractCommand filterTrim(Group piece) {
+		return new TrimCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
 	public AbstractCommand sortRows(Group piece) {

@@ -26,7 +26,6 @@ public class TokenUtil {
 		return token != null && token.length() == 0;
 	}
 
-
 	public String supressReserved(String token) {
 		String result = null;
 		Map<String, String> replacements = new HashMap<>();
@@ -83,4 +82,3 @@ public class TokenUtil {
 	}
 
 }
-
