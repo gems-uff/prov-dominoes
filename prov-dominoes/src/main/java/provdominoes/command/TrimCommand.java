@@ -5,7 +5,7 @@ import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class CompressCommand extends AbstractCommand {
+public class TrimCommand extends AbstractCommand {
 
 	private Group piece;
 	private double x;
@@ -13,11 +13,11 @@ public class CompressCommand extends AbstractCommand {
 	private Dominoes oldDominoes;
 	private int index;
 
-	public CompressCommand() {
+	public TrimCommand() {
 		this.index = -1;
 	}
 
-	public CompressCommand(int index) {
+	public TrimCommand(int index) {
 		this();
 		this.index = index;
 	}
@@ -30,8 +30,8 @@ public class CompressCommand extends AbstractCommand {
 		x = this.piece.getTranslateX();
 		y = this.piece.getTranslateY();
 		try {
-			Dominoes toCompress = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.compress(toCompress);
+			Dominoes toTrim = App.getArea().getData().getDominoes().get(index);
+			Dominoes domino = provdominoes.control.Controller.trim(toTrim);
 
 			App.getArea().remove(index);
 			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
@@ -40,7 +40,7 @@ public class CompressCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao tentar efetuar filtro de compressão!");
+			App.alertException(e, "Erro desconhecido ao tentar efetuar filtro de poda!");
 			e.printStackTrace();
 			success = false;
 		}
@@ -60,7 +60,7 @@ public class CompressCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return COMPRESS_COMMAND + "(" + this.oldDominoes.getId() + ")";
+		return TRIM_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
 
 	private String id;

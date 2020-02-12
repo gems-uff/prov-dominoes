@@ -334,7 +334,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations compress() {
+	public MatrixOperations trim() {
 		// TODO Pending GPU implementation
 		return null;
 	}

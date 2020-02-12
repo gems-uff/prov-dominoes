@@ -302,9 +302,10 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		MatrixOperationsCPU _binarizeFilter = new MatrixOperationsCPU(_newDescriptor);
 
 		int V = data.rows();
-		double[][] filterMatrix = new double[V][V];
-		for (int i = 0; i < filterMatrix.length; i++) {
-			for (int j = 0; j < filterMatrix.length; j++) {
+		int C = data.columns();
+		double[][] filterMatrix = new double[V][C];
+		for (int i = 0; i < V; i++) {
+			for (int j = 0; j < C; j++) {
 				if (data.get(i, j) > 0) {
 					filterMatrix[i][j] = 1.00;
 				} else {
@@ -326,9 +327,10 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
 		MatrixOperationsCPU _invertFilter = new MatrixOperationsCPU(_newDescriptor);
 		int V = data.rows();
-		double[][] filterMatrix = new double[V][V];
-		for (int i = 0; i < filterMatrix.length; i++) {
-			for (int j = 0; j < filterMatrix.length; j++) {
+		int C = data.columns();
+		double[][] filterMatrix = new double[V][C];
+		for (int i = 0; i < V; i++) {
+			for (int j = 0; j < C; j++) {
 				if (data.get(i, j) > 0) {
 					filterMatrix[i][j] = 0.00;
 				} else {
@@ -484,7 +486,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return _lowerDiagonal;
 	}
 
-	public MatrixOperations compress() {
+	public MatrixOperations trim() {
 		MatrixOperationsCPU result = null;
 		ArrayList<Cell> newMatrix = new ArrayList<>();
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),

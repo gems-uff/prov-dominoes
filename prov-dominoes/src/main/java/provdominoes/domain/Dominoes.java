@@ -83,7 +83,7 @@ public final class Dominoes {
 	private static final int TYPE_DIAGONAL = 8;
 	private static final int TYPE_UPPER_DIAGONAL = 9;
 	private static final int TYPE_LOWER_DIAGONAL = 10;
-	private static final int TYPE_COMPRESSED = 11;
+	private static final int TYPE_TRIMMED = 11;
 	private static final int TYPE_TWENTY = 12;
 	private static final int TYPE_HALF = 13;
 	private static final int TYPE_PERCENT = 14;
@@ -99,7 +99,7 @@ public final class Dominoes {
 	public final static String TYPE_DIAGONAL_CODE = "DG";
 	public final static String TYPE_UPPER_DIAGONAL_CODE = "UDG";
 	public final static String TYPE_LOWER_DIAGONAL_CODE = "LDG";
-	public final static String TYPE_COMPRESSED_CODE = "SED";
+	public final static String TYPE_TRIMMED_CODE = "P";
 	public final static String TYPE_TWENTY_CODE = "20%";
 	public final static String TYPE_HALF_CODE = "50%";
 	public final static String TYPE_PERCENT_CODE = "%";
@@ -347,8 +347,8 @@ public final class Dominoes {
 			z = 17;
 			break;
 		}
-		case Dominoes.TYPE_COMPRESSED: {
-			textType.setText(Dominoes.TYPE_COMPRESSED_CODE);
+		case Dominoes.TYPE_TRIMMED: {
+			textType.setText(Dominoes.TYPE_TRIMMED_CODE);
 			z = 17;
 			break;
 		}
@@ -614,11 +614,11 @@ public final class Dominoes {
 		this.type = Dominoes.TYPE_LOWER_DIAGONAL;
 	}
 
-	public void compress() throws Exception {
+	public void trim() throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.compress();
+		MatrixOperations _newMat = mat.trim();
 		setMat(_newMat);
-		this.type = Dominoes.TYPE_COMPRESSED;
+		this.type = Dominoes.TYPE_TRIMMED;
 	}
 
 	/**

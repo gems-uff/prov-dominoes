@@ -98,7 +98,7 @@ public class AreaMove extends Pane {
 		MenuItem menuItemDiagonalFilter = new MenuItem("Diagonalize");
 		MenuItem menuItemUpperDiagonalFilter = new MenuItem("Upper Diagonal");
 		MenuItem menuItemLowerDiagonalFilter = new MenuItem("Lower Diagonal");
-		MenuItem menuItemCompressFilter = new MenuItem("Compress");
+		MenuItem menuItemTrimFilter = new MenuItem("Trim");
 		MenuItem menuItemPercentFilter = new MenuItem("Percent");
 		MenuItem menuItemRowTextFilter = new MenuItem("Word on Row");
 		MenuItem menuItemColumnTextFilter = new MenuItem("Word on Column");
@@ -343,8 +343,8 @@ public class AreaMove extends Pane {
 					App.getCommandManager().invokeCommand(commandFactory.filterUpperDiagonal(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemLowerDiagonalFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterLowerDiagonal(piece));
-				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemCompressFilter.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.filterCompress(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemTrimFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterTrim(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemPercentFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterPercent(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemColumnTextFilter.getText())) {
@@ -375,7 +375,7 @@ public class AreaMove extends Pane {
 		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore,
 				menuItemTransitiveClosure, menuItemSortRows, menuItemSortColumns);
 		menuFilters.getItems().addAll(menuItemBinarizeFilter, menuItemInvertFilter, menuItemDiagonalFilter,
-				menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter, menuItemCompressFilter, menuItemPercentFilter,
+				menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter, menuItemTrimFilter, menuItemPercentFilter,
 				menuItemRowTextFilter, menuItemColumnTextFilter);
 		menuView.getItems().addAll(menuItemViewChart, menuItemViewLineChart, menuItemViewGraph,
 				menuItemViewEigenCentrality, menuItemViewMatrix);

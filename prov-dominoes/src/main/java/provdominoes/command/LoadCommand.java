@@ -55,7 +55,7 @@ public class LoadCommand extends AbstractCommand {
 				provFactory = new ProvMatrixExtendedFactory(filePaths, dir);
 			}
 			List<ProvMatrix> provMatrixList = provFactory.buildMatrices(Configuration.deriveInfluence);
-			List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList);
+			List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList, provFactory.getLabels());
 			App.getPieceSelectorList().clear();
 			App.getMovementCanvas().clear();
 			App.getTabbedMatrixGraphPane().clear();

@@ -306,7 +306,7 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().filterUpperDiagonal(piece);
-				} else if (token[0].equals(AbstractCommand.COMPRESS_COMMAND)) {
+				} else if (token[0].equals(AbstractCommand.TRIM_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(token[1].toLowerCase())) {
@@ -314,7 +314,7 @@ public class ScriptController {
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().filterCompress(piece);
+					cmd = CommandFactory.getInstance().filterTrim(piece);
 				} else if (token[0].equals(AbstractCommand.REMOVE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
