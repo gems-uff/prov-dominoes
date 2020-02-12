@@ -358,8 +358,12 @@ public class App extends Application {
 	public static void openProv() {
 		try {
 			FileChooser fileChooser = new FileChooser();
-			fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
+			File folder = new File(Configuration.lastDirectory);
+			if (folder.exists()) {
+				fileChooser.setInitialDirectory(folder);
+			}
 			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("W3C PROV-N (*.provn)", "*.provn"));
+			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("W3C PROV-XML (*.xml)", "*.xml"));
 			List<File> files = fileChooser.showOpenMultipleDialog(stage);
 			if (files != null) {
 				String[] fileNames = new String[files.size()];
