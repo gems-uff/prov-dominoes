@@ -56,15 +56,20 @@ public interface MatrixOperations {
 	public MatrixOperations upperDiagonal();
 	
 	public MatrixOperations trim();
-	public MatrixOperations percent(double d);
+	public MatrixOperations highPassFilter(double d);
+	public MatrixOperations lowPassFilter(double d);
 
-	MatrixOperations filterColumnText(TextFilterData t);
-	MatrixOperations filterRowText(TextFilterData t);
-
-	MatrixOperations sortColumns();
-
-	MatrixOperations sortRows();
-
+	public MatrixOperations filterColumnText(TextFilterData t);
+	public MatrixOperations filterRowText(TextFilterData t);
+    
+	public MatrixOperations sortColumns();
+    
+	public MatrixOperations sortRows();
+    
+	public MatrixOperations standardScoreExclusive();
+	
+	public ArrayList<Cell> getAllData();
+	
 	public static MatrixOperations configureOperation(CRSMatrix matrix, MatrixDescriptor descriptor, boolean isSparse)
 			throws Exception {
 		MatrixOperations mat = MatrixOperationsFactory
@@ -75,4 +80,6 @@ public interface MatrixOperations {
 		mat.setData(Prov2DominoesUtil.matrix2Cells(matrix));
 		return mat;
 	}
+
+
 }

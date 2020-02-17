@@ -35,7 +35,7 @@ public class ZScoreCommand extends AbstractCommand {
 			Dominoes domino = provdominoes.control.Controller.standardScore(toStandardScore);
 
 			App.getArea().remove(index);
-			App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
+			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
 
 			if (Configuration.autoSave) {
 				App.getArea().saveAndSendToList(piece);
@@ -61,7 +61,7 @@ public class ZScoreCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return ZSCORE_COMMAND + "(" + "," + this.oldDominoes.getId() + ")";
+		return ZSCORE_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
 
 	@Override

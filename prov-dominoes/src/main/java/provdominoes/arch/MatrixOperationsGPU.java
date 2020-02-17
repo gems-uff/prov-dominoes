@@ -340,7 +340,13 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations percent(double d) {
+	public MatrixOperations highPassFilter(double d) {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public MatrixOperations lowPassFilter(double d) {
 		// TODO Pending GPU implementation
 		return null;
 	}
@@ -365,6 +371,18 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 	@Override
 	public MatrixOperations sortRows() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public MatrixOperations standardScoreExclusive() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public ArrayList<Cell> getAllData() {
 		// TODO Pending GPU implementation
 		return null;
 	}
