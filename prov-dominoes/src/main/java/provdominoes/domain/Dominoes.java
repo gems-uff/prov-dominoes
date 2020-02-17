@@ -72,44 +72,44 @@ public final class Dominoes {
 	/*
 	 * This variables are used to know the type of matrix
 	 */
-	public final static int TYPE_BASIC = 0;
-	public final static int TYPE_DERIVED = 1;
-	public final static int TYPE_SUPPORT = 2;
-	public final static int TYPE_CONFIDENCE = 3;
-	public final static int TYPE_LIFT = 4;
-	private static final int TYPE_TRANSITIVE_CLOSURE = 5;
-	private static final int TYPE_BINARIZED = 6;
-	private static final int TYPE_INVERTED = 7;
-	private static final int TYPE_DIAGONAL = 8;
-	private static final int TYPE_UPPER_DIAGONAL = 9;
-	private static final int TYPE_LOWER_DIAGONAL = 10;
-	private static final int TYPE_TRIMMED = 11;
-	private static final int TYPE_TWENTY = 12;
-	private static final int TYPE_HALF = 13;
-	private static final int TYPE_PERCENT = 14;
-	private static final int TYPE_TEXT = 15;
-	private static final int TYPE_ROW_ASC = 16;
-	private static final int TYPE_COL_ASC = 17;
-	public final static String TYPE_BASIC_CODE = "B";
-	public final static String TYPE_DERIVED_CODE = "D";
-	public final static String TYPE_SUPPORT_CODE = "S";
-	public final static String TYPE_CONFIDENCE_CODE = "C";
-	public final static String TYPE_LIFT_CODE = "L";
-	public final static String TYPE_TRANSITIVE_CLOSURE_CODE = "T";
-	public final static String TYPE_DIAGONAL_CODE = "DG";
-	public final static String TYPE_UPPER_DIAGONAL_CODE = "UDG";
-	public final static String TYPE_LOWER_DIAGONAL_CODE = "LDG";
-	public final static String TYPE_TRIMMED_CODE = "P";
-	public final static String TYPE_TWENTY_CODE = "20%";
-	public final static String TYPE_HALF_CODE = "50%";
-	public final static String TYPE_PERCENT_CODE = "%";
-	public final static String TYPE_TEXT_CODE = "TXT";
-	public final static String TYPE_ROW_ASC_CODE = "RASC";
-	public final static String TYPE_COL_ASC_CODE = "CASC";
-
-	public final static String AGGREG_TEXT = "/SUM ";
-	public static final String TYPE_BINARIZED_CODE = "Z";
+	public static final int TYPE_BASIC = 0;
+	public static final int TYPE_DERIVED = 1;
+	public static final int TYPE_SUPPORT = 2;
+	public static final int TYPE_CONFIDENCE = 3;
+	public static final int TYPE_LIFT = 4;
+	public static final int TYPE_TRANSITIVE_CLOSURE = 5;
+	public static final int TYPE_BINARIZED = 6;
+	public static final int TYPE_INVERTED = 7;
+	public static final int TYPE_DIAGONAL = 8;
+	public static final int TYPE_UPPER_DIAGONAL = 9;
+	public static final int TYPE_LOWER_DIAGONAL = 10;
+	public static final int TYPE_TRIMMED = 11;
+	public static final int TYPE_LPF = 12;
+	public static final int TYPE_HPF = 13;
+	public static final int TYPE_ZSCORE = 14;
+	public static final int TYPE_TEXT = 15;
+	public static final int TYPE_ROW_ASC = 16;
+	public static final int TYPE_COL_ASC = 17;
+	public static final String TYPE_BASIC_CODE = "B";
+	public static final String TYPE_DERIVED_CODE = "D";
+	public static final String TYPE_SUPPORT_CODE = "S";
+	public static final String TYPE_CONFIDENCE_CODE = "C";
+	public static final String TYPE_ZSCORE_CODE = "Z";
+	public static final String TYPE_LIFT_CODE = "L";
+	public static final String TYPE_BINARIZED_CODE = "01";
 	public static final String TYPE_INVERTED_CODE = "I";
+	public static final String TYPE_TRANSITIVE_CLOSURE_CODE = "T";
+	public static final String TYPE_DIAGONAL_CODE = "DG";
+	public static final String TYPE_UPPER_DIAGONAL_CODE = "UDG";
+	public static final String TYPE_LOWER_DIAGONAL_CODE = "LDG";
+	public static final String TYPE_TRIMMED_CODE = "TRIM";
+	public static final String TYPE_HPF_CODE = "HI";
+	public static final String TYPE_LPF_CODE = "LO";
+	public static final String TYPE_TEXT_CODE = "TXT";
+	public static final String TYPE_ROW_ASC_CODE = "RASC";
+	public static final String TYPE_COL_ASC_CODE = "CASC";
+
+	public static final String AGGREG_TEXT = "/SUM ";
 
 	private boolean rowIsAggragatable = false;
 	private boolean colIsAggragatable = false;
@@ -290,6 +290,9 @@ public final class Dominoes {
 		case Dominoes.TYPE_CONFIDENCE:
 			textType.setText(Dominoes.TYPE_CONFIDENCE_CODE);
 			break;
+		case Dominoes.TYPE_ZSCORE:
+			textType.setText(Dominoes.TYPE_ZSCORE_CODE);
+			break;
 		case Dominoes.TYPE_LIFT:
 			textType.setText(Dominoes.TYPE_LIFT_CODE);
 			break;
@@ -297,6 +300,7 @@ public final class Dominoes {
 			textType.setText(Dominoes.TYPE_TRANSITIVE_CLOSURE_CODE);
 			break;
 		case Dominoes.TYPE_BINARIZED:
+			z = 5;
 			textType.setText(Dominoes.TYPE_BINARIZED_CODE);
 			break;
 		case Dominoes.TYPE_INVERTED:
@@ -307,19 +311,14 @@ public final class Dominoes {
 			z = 10;
 			break;
 		}
-		case Dominoes.TYPE_TWENTY: {
-			textType.setText(Dominoes.TYPE_TWENTY_CODE);
-			z = 17;
+		case Dominoes.TYPE_HPF: {
+			textType.setText(Dominoes.TYPE_HPF_CODE);
+			z = 20;
 			break;
 		}
-		case Dominoes.TYPE_HALF: {
-			textType.setText(Dominoes.TYPE_HALF_CODE);
-			z = 17;
-			break;
-		}
-		case Dominoes.TYPE_PERCENT: {
-			textType.setText(Dominoes.TYPE_PERCENT_CODE);
-			z = 17;
+		case Dominoes.TYPE_LPF: {
+			textType.setText(Dominoes.TYPE_LPF_CODE);
+			z = 20;
 			break;
 		}
 		case Dominoes.TYPE_TEXT: {
@@ -349,7 +348,7 @@ public final class Dominoes {
 		}
 		case Dominoes.TYPE_TRIMMED: {
 			textType.setText(Dominoes.TYPE_TRIMMED_CODE);
-			z = 17;
+			z = 23;
 			break;
 		}
 		}
@@ -510,24 +509,10 @@ public final class Dominoes {
 	}
 
 	public void standardScore() throws Exception {
-		this.setupOperation(true);
+		this.setupOperation(false);
 		MatrixOperations _newMat = mat.standardScore();
-
-		if (!(this.type == Dominoes.TYPE_BASIC)) {
-			this.type = Dominoes.TYPE_DERIVED;
-			if (this.getIdRow().equals(this.getIdCol())) {
-				this.type = Dominoes.TYPE_SUPPORT;
-			}
-		}
-		this.getHistoric().reverse();
-		this.setIdRow(this.getHistoric().getFirstItem());
-		this.setIdCol(this.getHistoric().getLastItem());
-
-		boolean swap = this.rowIsAggragatable;
-		this.rowIsAggragatable = this.colIsAggragatable;
-		this.colIsAggragatable = swap;
-
 		setMat(_newMat);
+		this.type = Dominoes.TYPE_ZSCORE;
 	}
 
 	public void confidence() throws Exception {
@@ -572,11 +557,18 @@ public final class Dominoes {
 		this.type = Dominoes.TYPE_COL_ASC;
 	}
 
-	public void percent(double d) throws Exception {
+	public void highPassFilter(double d) throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.percent(d);
+		MatrixOperations _newMat = mat.highPassFilter(d);
 		setMat(_newMat);
-		this.type = Dominoes.TYPE_PERCENT;
+		this.type = Dominoes.TYPE_HPF;
+	}
+	
+	public void lowPassFilter(double d) throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.lowPassFilter(d);
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_LPF;
 	}
 
 	public void filterColumnText(TextFilterData t) throws Exception {

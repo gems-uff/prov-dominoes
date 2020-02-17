@@ -40,6 +40,13 @@ public class ConfigurationFile {
 						Configuration.fullScreen = true;
 					}
 				}
+				if (nameVariable.compareTo("graphHistory") == 0) {
+					if (valueVariable.compareTo("false") == 0) {
+						Configuration.visibilityGraphHistory = false;
+					} else if (valueVariable.compareTo("true") == 0) {
+						Configuration.visibilityGraphHistory = true;
+					}
+				}
 				if (nameVariable.compareTo("autoSave") == 0) {
 					if (valueVariable.compareTo("false") == 0) {
 						Configuration.autoSave = false;
@@ -126,9 +133,9 @@ public class ConfigurationFile {
 
 	private void resetConfiguration(File file) throws IOException, Exception {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-			bw.write("fullScreen=false\r\n" + "autoSave=false\r\n" + "visibilityHistoric=true\r\n"
+			bw.write("fullScreen=false\r\n"+ "graphHistory=false\r\n" + "autoSave=false\r\n" + "visibilityHistoric=true\r\n"
 					+ "visibilityType=true\r\n" + "resizable=true\r\n" + "automaticCheck=false\r\n"
-					+ "deriveInfluence=false\r\n" + "width=1000.0\r\n" + "height=600.0\r\n" + "listWidth=147.0\r\n"
+					+ "deriveInfluence=false\r\n" + "width=1000.0\r\n" + "height=600.0\r\n" + "listWidth=128.0\r\n"
 					+ "telemetry=false\r\n" + "defaultFactory=true\r\n" + "defaultProcessing=gpu\r\n"
 					+ "gpuDevice=0\r\n" + "lastDirectory=.");
 
@@ -144,7 +151,8 @@ public class ConfigurationFile {
 		file.delete();
 		file.createNewFile();
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-			bw.write("fullScreen=" + Configuration.fullScreen + "\r\n" + "autoSave=" + Configuration.autoSave + "\r\n"
+			bw.write("fullScreen=" + Configuration.fullScreen + "\r\n" + 
+					"graphHistory=" + Configuration.visibilityGraphHistory + "\r\n" + "autoSave=" + Configuration.autoSave + "\r\n"
 					+ "visibilityHistoric=" + Configuration.visibilityHistoric + "\r\n" + "visibilityType="
 					+ Configuration.visibilityType + "\r\n" + "resizable=" + Configuration.resizable + "\r\n"
 					+ "automaticCheck=" + Configuration.automaticCheck + "\r\n" + "deriveInfluence="

@@ -83,8 +83,10 @@ public class AreaMove extends Pane {
 
 		MenuItem menuItemZScore = new MenuItem("Z-Score");
 		MenuItem menuItemTransitiveClosure = new MenuItem("Transitive Closure");
-		MenuItem menuItemSortRows = new MenuItem("Sort Rows Asc");
-		MenuItem menuItemSortColumns = new MenuItem("Sort Columns Asc");
+		MenuItem menuItemTrim = new MenuItem("Trim");
+		MenuItem menuItemBinarize = new MenuItem("Binarize");
+		MenuItem menuItemInvert = new MenuItem("Invert");
+
 		MenuItem menuItemSaveInList = new MenuItem("Save");
 		MenuItem menuItemViewGraph = new MenuItem("Graph");
 		MenuItem menuItemViewEigenCentrality = new MenuItem("Centrality Graph");
@@ -93,18 +95,20 @@ public class AreaMove extends Pane {
 		MenuItem menuItemViewLineChart = new MenuItem("Line Chart");
 		MenuItem menuItemClose = new MenuItem("Close");
 
-		MenuItem menuItemBinarizeFilter = new MenuItem("Binarize");
-		MenuItem menuItemInvertFilter = new MenuItem("Invert");
 		MenuItem menuItemDiagonalFilter = new MenuItem("Diagonalize");
 		MenuItem menuItemUpperDiagonalFilter = new MenuItem("Upper Diagonal");
 		MenuItem menuItemLowerDiagonalFilter = new MenuItem("Lower Diagonal");
-		MenuItem menuItemTrimFilter = new MenuItem("Trim");
-		MenuItem menuItemPercentFilter = new MenuItem("Percent");
+		MenuItem menuItemHighPassFilter = new MenuItem("High-Pass Filter (HPF)");
+		MenuItem menuItemLowPassFilter = new MenuItem("Low-Pass Filter (LPF)");
 		MenuItem menuItemRowTextFilter = new MenuItem("Word on Row");
 		MenuItem menuItemColumnTextFilter = new MenuItem("Word on Column");
 
+		MenuItem menuItemSortRows = new MenuItem("Sort Rows Asc");
+		MenuItem menuItemSortColumns = new MenuItem("Sort Columns Asc");
+
 		Menu menuOperate = new Menu("Operations");
 		Menu menuFilters = new Menu("Filters");
+		Menu menuSorting = new Menu("Sorting");
 		Menu menuView = new Menu("Views");
 
 		Group piece = domino.drawDominoes();
@@ -322,10 +326,12 @@ public class AreaMove extends Pane {
 					App.getCommandManager().invokeCommand(commandFactory.zscore(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemTransitiveClosure.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.transitiveClosure(piece));
-				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortRows.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.sortRows(piece));
-				}  else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortColumns.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.sortColumns(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemInvert.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.invert(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemBinarize.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.binarize(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemTrim.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.trim(piece));
 				}
 			}
 		});
@@ -333,24 +339,31 @@ public class AreaMove extends Pane {
 		menuFilters.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if (((MenuItem) event.getTarget()).getText().equals(menuItemBinarizeFilter.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.filterBinarize(piece));
-				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemInvertFilter.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.filterInvert(piece));
-				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemDiagonalFilter.getText())) {
+				if (((MenuItem) event.getTarget()).getText().equals(menuItemDiagonalFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterDiagonal(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemUpperDiagonalFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterUpperDiagonal(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemLowerDiagonalFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterLowerDiagonal(piece));
-				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemTrimFilter.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.filterTrim(piece));
-				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemPercentFilter.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.filterPercent(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemHighPassFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterHighPassFilter(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemLowPassFilter.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.filterLowPassFilter(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemColumnTextFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterColumnText(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemRowTextFilter.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.filterRowText(piece));
+				}
+			}
+		});
+
+		menuSorting.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if (((MenuItem) event.getTarget()).getText().equals(menuItemSortRows.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.sortRows(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortColumns.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.sortColumns(piece));
 				}
 			}
 		});
@@ -373,13 +386,13 @@ public class AreaMove extends Pane {
 		});
 
 		menuOperate.getItems().addAll(menuItemTranspose, aggByRow, aggByCol, menuItemConfidence, menuItemZScore,
-				menuItemTransitiveClosure, menuItemSortRows, menuItemSortColumns);
-		menuFilters.getItems().addAll(menuItemBinarizeFilter, menuItemInvertFilter, menuItemDiagonalFilter,
-				menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter, menuItemTrimFilter, menuItemPercentFilter,
-				menuItemRowTextFilter, menuItemColumnTextFilter);
+				menuItemTransitiveClosure, menuItemTrim, menuItemBinarize, menuItemInvert);
+		menuFilters.getItems().addAll(menuItemDiagonalFilter, menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter,
+				menuItemHighPassFilter, menuItemLowPassFilter, menuItemRowTextFilter, menuItemColumnTextFilter);
 		menuView.getItems().addAll(menuItemViewChart, menuItemViewLineChart, menuItemViewGraph,
 				menuItemViewEigenCentrality, menuItemViewMatrix);
-		minimenu.getItems().addAll(menuOperate, menuFilters, menuView, menuItemSaveInList, menuItemClose);
+		menuSorting.getItems().addAll(menuItemSortRows, menuItemSortColumns);
+		minimenu.getItems().addAll(menuView, menuOperate, menuFilters, menuSorting, menuItemSaveInList, menuItemClose);
 		this.setVisibleType();
 		return piece;
 	}
