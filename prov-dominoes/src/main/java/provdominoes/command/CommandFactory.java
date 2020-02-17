@@ -75,16 +75,20 @@ public class CommandFactory {
 		return new TransitiveClosureCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
-	public AbstractCommand filterBinarize(Group piece) {
+	public AbstractCommand binarize(Group piece) {
 		return new BinarizeCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
-	public AbstractCommand filterInvert(Group piece) {
+	public AbstractCommand invert(Group piece) {
 		return new InvertCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
-	public AbstractCommand filterPercent(Group piece) {
-		return new PercentCommand(App.getArea().getData().getPieces().indexOf(piece));
+	public AbstractCommand filterHighPassFilter(Group piece) {
+		return new HighPassFilterCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+	
+	public AbstractCommand filterLowPassFilter(Group piece) {
+		return new LowPassFilterCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
 	public AbstractCommand filterColumnText(Group piece) {
@@ -107,7 +111,7 @@ public class CommandFactory {
 		return new LowerDiagonalCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
-	public AbstractCommand filterTrim(Group piece) {
+	public AbstractCommand trim(Group piece) {
 		return new TrimCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
@@ -135,8 +139,14 @@ public class CommandFactory {
 		return new UndoCommand(count);
 	}
 
-	public AbstractCommand filterPercent(Group piece, double p) {
-		PercentCommand pc = new PercentCommand(App.getArea().getData().getPieces().indexOf(piece));
+	public AbstractCommand filterHighPass(Group piece, double p) {
+		HighPassFilterCommand pc = new HighPassFilterCommand(App.getArea().getData().getPieces().indexOf(piece));
+		pc.setPercent(p);
+		return pc;
+	}
+	
+	public AbstractCommand filterLowPass(Group piece, double p) {
+		LowPassFilterCommand pc = new LowPassFilterCommand(App.getArea().getData().getPieces().indexOf(piece));
 		pc.setPercent(p);
 		return pc;
 	}
@@ -152,5 +162,5 @@ public class CommandFactory {
 		tc.setText(t);
 		return tc;
 	}
-	
+
 }
