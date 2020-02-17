@@ -166,19 +166,45 @@ public class MatrixPane extends Pane {
 			group.getChildren().add(g);
 		}
 
-		// draw the matrix information
-		ArrayList<Cell> cells = domino.getMat().getData();
+		ArrayList<Cell> cells = null;
+		if (domino.getType() == Dominoes.TYPE_ZSCORE) {
+			cells = domino.getMat().getAllData();
+		} else {
+			cells = domino.getMat().getData();
+		}
 
 		for (Cell _matCell : cells) {
 			Rectangle back = new Rectangle(cellSpace, cellSpace);
 			back.setFill(new Color(1, 1, 1, 1));
 			Rectangle front = new Rectangle(cellSpace, cellSpace);
 
-			if (_matCell.value > 0.0) {
-				front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
-						(_matCell.value - min) / (max - min)));
+			if (min < 0) {
+				if (_matCell.value != 0.0) {
+					if (_matCell.value > 0.0) {
+						front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
+								(_matCell.value) / (max)));
+					} else {
+						front.setFill(new Color(cellColor.getBlue(), cellColor.getGreen(), cellColor.getRed(),
+								(_matCell.value) / (min)));
+					}
+				} else {
+					if (domino.getType() == Dominoes.TYPE_ZSCORE) {
+						front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(), 0));
+					} else {
+						front.setFill(new Color(150.0 / 255.0, 150.0 / 255.0, 55.0 / 255.0, 1));
+					}
+				}
 			} else {
-				front.setFill(new Color(150.0/255.0,150.0/255.0,55.0/255.0,1));
+				if (_matCell.value != 0.0) {
+					front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
+							(_matCell.value - min) / (max - min)));
+				} else {
+					if (domino.getType() == Dominoes.TYPE_ZSCORE) {
+						front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(), 0));
+					} else {
+						front.setFill(new Color(150.0 / 255.0, 150.0 / 255.0, 55.0 / 255.0, 1));
+					}
+				}
 			}
 			front.toFront();
 
