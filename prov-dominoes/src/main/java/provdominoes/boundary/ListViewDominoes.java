@@ -27,8 +27,6 @@ public class ListViewDominoes extends ListView<Group> {
 	private ObservableList<Group> pieces;
 	private ArrayList<Dominoes> dominoes;
 
-	private double padding = 20;
-
 	private boolean visibilityHistoric;
 
 	/**
@@ -43,10 +41,10 @@ public class ListViewDominoes extends ListView<Group> {
 		this.pieces = FXCollections.observableList(new ArrayList<Group>());
 		this.dominoes = new ArrayList<>();
 
-		this.Configure(array);
+		this.configure(array);
 	}
 
-	public void Configure(List<Dominoes> array) {
+	public void configure(List<Dominoes> array) {
 		this.clear();
 
 		if (array != null) {
@@ -314,9 +312,9 @@ public class ListViewDominoes extends ListView<Group> {
 	 * @param height
 	 */
 	void setSize(double width, double height) {
-		this.setMinWidth(width - padding);
+		this.setMinWidth(width);
 		this.setPrefWidth(width);
-		this.setMaxWidth(width + padding);
+		this.setMaxWidth(width);
 		this.setPrefHeight(height);
 	}
 

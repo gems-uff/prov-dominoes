@@ -42,7 +42,7 @@ public class ProvDominoesMenuBar extends MenuBar {
 	// ------VIEW MENU ITENS----------------------------------------------------
 	private final Menu mView;
 	private final CheckMenuItem mHistoryFullscreen;
-	private final CheckMenuItem mHistoryShowGraph;
+	public final CheckMenuItem mHistoryShowGraph;
 
 	// ------FACTORY MENU ITENS----------------------------------------------------
 	private final Menu mFactory;
@@ -197,7 +197,7 @@ public class ProvDominoesMenuBar extends MenuBar {
 
 		// ------VIEW MENU ITENS----------------------------------------------------
 		this.mHistoryShowGraph = new CheckMenuItem("View History Graph");
-		this.mHistoryShowGraph.setSelected(Configuration.visibilityTimePane);
+		this.mHistoryShowGraph.setSelected(Configuration.visibilityGraphHistory);
 		this.mHistoryFullscreen = new CheckMenuItem("Full Screen");
 		this.mHistoryFullscreen.setSelected(Configuration.fullScreen);
 		this.mView = new Menu("View");
@@ -306,16 +306,14 @@ public class ProvDominoesMenuBar extends MenuBar {
 
 			@Override
 			public void handle(ActionEvent event) {
-				App.setFullscreen(mHistoryFullscreen.isSelected());
+				App.setSize(mHistoryFullscreen.isSelected());
 			}
 		});
 		mHistoryShowGraph.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-
 				App.changeVisibleGraphHistory();
-
 			}
 		});
 		// ----------FACTORY MENU
@@ -372,6 +370,10 @@ public class ProvDominoesMenuBar extends MenuBar {
 
 	public CheckMenuItem getmDeriveInfluence() {
 		return mDeriveInfluence;
+	}
+
+	public CheckMenuItem getmHistoryShowGraph() {
+		return mHistoryShowGraph;
 	}
 
 }

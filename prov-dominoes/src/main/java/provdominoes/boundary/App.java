@@ -77,7 +77,7 @@ public class App extends Application {
 			}
 			App.commandManager = new CommandManager(menu);
 
-			App.set();
+			App.set(true);
 
 			if (!Configuration.automaticCheck) {
 				App.clear();
@@ -89,6 +89,10 @@ public class App extends Application {
 
 		App.stage.show();
 
+	}
+
+	public static Stage getStage() {
+		return stage;
 	}
 
 	/**
@@ -172,13 +176,23 @@ public class App extends Application {
 		alert.showAndWait();
 	}
 
+	static void changeVisibleGraphHistory() {
+		Configuration.visibilityGraphHistory = !Configuration.visibilityGraphHistory;
+		App.topPane.setVisible(Configuration.visibilityGraphHistory);
+		set(false);
+		setSize(Configuration.fullScreen);
+	}
+
 	/**
 	 * Set the basic configuration of this Application
 	 */
-	public static void set() {
-		App.pieceSelectorList = new ListViewDominoes(null);
-		App.tabbedMatrixGraphPane = new Visual();
-		App.movementCanvas = new AreaMove();
+	public static void set(boolean start) {
+		if (start) {
+			App.pieceSelectorList = new ListViewDominoes(null);
+			App.tabbedMatrixGraphPane = new Visual();
+			App.movementCanvas = new AreaMove();
+			topPane = new ActionHistoryGraphPane();
+		}
 
 		App.scene = null;
 		App.scene = new Scene(new Group());
@@ -192,9 +206,23 @@ public class App extends Application {
 		bottomPane.getItems().add(App.movementCanvas);
 		bottomPane.getItems().add(App.tabbedMatrixGraphPane);
 
-		topPane = new ActionHistoryGraphPane();
-		topPane.visibleProperty().addListener(new ChangeListener<Boolean>() {
+		adjustTopPane();
 
+		back.getChildren().addAll(menu, mainPane);
+
+		App.scene.setRoot(back);
+		App.stage.setScene(App.scene);
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent we) {
+				executeExit();
+			}
+		});
+		App.setSize(Configuration.fullScreen);
+
+	}
+
+	private static void adjustTopPane() {
+		topPane.visibleProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
 				if (topPane.isVisible()) {
@@ -208,22 +236,10 @@ public class App extends Application {
 			}
 		});
 
-		if (Configuration.visibilityTimePane)
+		if (Configuration.visibilityGraphHistory)
 			mainPane.getItems().add(topPane);
 
 		mainPane.getItems().add(bottomPane);
-
-		back.getChildren().addAll(menu, mainPane);
-
-		App.scene.setRoot(back);
-		App.stage.setScene(App.scene);
-		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			public void handle(WindowEvent we) {
-				executeExit();
-			}
-		});
-		App.setFullscreen(Configuration.fullScreen);
-
 	}
 
 	public static void executeExit() {
@@ -327,7 +343,7 @@ public class App extends Application {
 	 *
 	 * @param fullscreen
 	 */
-	static void setFullscreen(boolean fullscreen) {
+	static void setSize(boolean fullscreen) {
 		Configuration.fullScreen = fullscreen;
 		double padding = menu.getHeight();
 		App.stage.setFullScreen(fullscreen);
@@ -340,19 +356,10 @@ public class App extends Application {
 			App.stage.centerOnScreen();
 		}
 
-		if (Configuration.visibilityTimePane) {
-			// App.time.definitionSlider(stage);
-		}
 		App.pieceSelectorList.setSize(Configuration.listWidth, App.stage.getHeight() - padding);
 		App.tabbedMatrixGraphPane.setSize(300, App.stage.getHeight() - padding);
 		App.movementCanvas.setSize(400, App.stage.getHeight() - padding);
 		stage.show();
-	}
-
-	static void changeVisibleGraphHistory() {
-		Configuration.visibilityTimePane = !Configuration.visibilityTimePane;
-		App.topPane.setVisible(Configuration.visibilityTimePane);
-		setFullscreen(false);
 	}
 
 	public static void openProv() {
@@ -471,10 +478,6 @@ public class App extends Application {
 
 	static void drawLineChart(Dominoes domino) {
 		tabbedMatrixGraphPane.addTabLineChart(domino);
-	}
-
-	static Stage getStage() {
-		return App.stage;
 	}
 
 	public static void setStage(Stage stage) {

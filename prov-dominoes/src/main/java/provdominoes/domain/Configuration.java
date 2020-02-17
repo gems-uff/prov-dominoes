@@ -23,7 +23,7 @@ public class Configuration {
     
     public static double width = 1000.0f;
     public static double height = 600.0f;
-    public static double listWidth = 167.0f;
+    public static double listWidth = 128.0f;
     
     public static String defaultProcessing = GPU_DEVICE;
     public static int gpuDevice = 0;
@@ -35,7 +35,7 @@ public class Configuration {
     public static double fullscreenWidth = Configuration.width;
     public static double fullscreenHeight = Configuration.height;
     
-    public static boolean visibilityTimePane = true;
+    public static boolean visibilityGraphHistory = false;
 	public static boolean telemetry = false;
 	
 	public static boolean isGPUProcessing() {
