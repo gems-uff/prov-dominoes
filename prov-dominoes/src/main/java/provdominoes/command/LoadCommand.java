@@ -48,7 +48,7 @@ public class LoadCommand extends AbstractCommand {
 	protected boolean doIt() {
 		boolean result = true;
 		try {
-			ProvMatrixFactory provFactory =null;
+			ProvMatrixFactory provFactory = null;
 			if (Configuration.defaultFactory) {
 				provFactory = new ProvMatrixDefaultFactory(filePaths, dir);
 			} else {
@@ -60,7 +60,8 @@ public class LoadCommand extends AbstractCommand {
 			App.getMovementCanvas().clear();
 			App.getTabbedMatrixGraphPane().clear();
 			Controller.resultLoadMatrices = dominoesList;
-			App.getPieceSelectorList().Configure(Controller.resultLoadMatrices);
+			updateTitle();
+			App.getPieceSelectorList().configure(Controller.resultLoadMatrices);
 		} catch (IOException e) {
 			result = false;
 			App.alertException(e, e.getMessage());
@@ -70,6 +71,18 @@ public class LoadCommand extends AbstractCommand {
 			App.alertException(e, e.getMessage());
 		}
 		return result;
+	}
+
+	private void updateTitle() {
+		if (filePaths != null && filePaths.length > 0) {
+			String defaultTitle = "Prov-Dominoes ["
+					+ (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE) + "]";
+			if (filePaths.length == 1) {
+				App.getStage().setTitle(defaultTitle + " - " + filePaths[0]);
+			} else {
+				App.getStage().setTitle(defaultTitle + " - " + filePaths[0] + " ...");
+			}
+		}
 	}
 
 	@Override
