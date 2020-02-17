@@ -27,9 +27,8 @@ public abstract class AbstractCommand {
 	public static final String UPPER_DIAGONAL_COMMAND = "UPPER_DIAGONAL";
 	public static final String LOWER_DIAGONAL_COMMAND = "LOWER_DIAGONAL";
 	public static final String TRIM_COMMAND = "TRIM";
-	public static final String TWENTY_COMMAND = "TWENTY";
-	public static final String HALF_COMMAND = "HALF";
-	public static final String PERCENT_COMMAND = "PERCENT";
+	public static final String HPF_COMMAND = "HPF";
+	public static final String LPF_COMMAND = "LPF";
 	public static final String COLUMN_TEXT_COMMAND = "COLUMN_TEXT";
 	public static final String ROW_TEXT_COMMAND = "ROW_TEXT";
 
