@@ -233,14 +233,76 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	@Override
 	public MatrixOperations standardScore() {
 
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
-
-		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
-			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
 			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
+		
+		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
+			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+
+		MatrixOperations _standardScore = new MatrixOperationsCPU(_newDescriptor);
+
+		float meanCol[] = new float[_standardScore.getMatrixDescriptor().getNumCols()];
+		float sdCol[] = new float[_standardScore.getMatrixDescriptor().getNumCols()];
+		float values[] = new float[_standardScore.getMatrixDescriptor().getNumCols()];
+		int numElements[] = new int[_standardScore.getMatrixDescriptor().getNumCols()];
+
+		data.each(new MatrixProcedure() {
+
+			@Override
+			public void apply(int row, int col, double value) {
+				numElements[col]++;
+				values[col] += value;
+			}
+		});
+
+		for (int i = 0; i < values.length; i++)
+			meanCol[i] = values[i] / (float) numElements[i];
+
+		data.each(new MatrixProcedure() {
+
+			@Override
+			public void apply(int row, int col, double value) {
+				sdCol[col] += (value - meanCol[col]) * (value - meanCol[col]);
+				values[col] += value;
+			}
+		});
+
+		for (int i = 0; i < sdCol.length; i++)
+			sdCol[i] = (float) Math.sqrt((double) (sdCol[i] * (1.0f / (float) numElements[i])));
+
+		ArrayList<Cell> _data = new ArrayList<>();
+		data.each(new MatrixProcedure() {
+
+			@Override
+			public void apply(int row, int col, double value) {
+				Cell _cell = new Cell();
+				_cell.col = col;
+				_cell.row = row;
+				_cell.value = ((float) value - meanCol[col]) / sdCol[col];
+
+				_data.add(_cell);
+			}
+		});
+
+		_standardScore.setData(_data);
+
+		return _standardScore;
+	}
+	
+	@Override
+	public MatrixOperations standardScoreExclusive() {
+
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
+
+		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
+			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
+		
+		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
+			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 
 		MatrixOperations _standardScore = new MatrixOperationsCPU(_newDescriptor);
 
@@ -342,7 +404,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return _invertFilter;
 	}
 
-	public MatrixOperations percent(double d) {
+	public MatrixOperations highPassFilter(double d) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
@@ -354,6 +416,29 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
 				if (data.get(i, j) >= data.max() * ((100 - d) / 100.0)) {
+					filterMatrix[i][j] = data.get(i, j);
+				} else {
+					filterMatrix[i][j] = 0.00;
+				}
+			}
+		}
+		_twentyFilter.setData(new CRSMatrix(filterMatrix));
+		return _twentyFilter;
+	}
+	
+	@Override
+	public MatrixOperations lowPassFilter(double d) {
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
+				this.matrixDescriptor.getRowType());
+		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
+			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
+		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
+			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
+		MatrixOperationsCPU _twentyFilter = new MatrixOperationsCPU(_newDescriptor);
+		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
+		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
+			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
+				if (data.get(i, j) <= data.max() * ((100 - d) / 100.0)) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
 					filterMatrix[i][j] = 0.00;
@@ -661,6 +746,25 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		ArrayList<Cell> cells = new ArrayList<Cell>();
 
 		data.eachNonZero(new MatrixProcedure() {
+
+			@Override
+			public void apply(int row, int col, double value) {
+				Cell cell = new Cell();
+				cell.row = row;
+				cell.col = col;
+				cell.value = (float) value;
+				cells.add(cell);
+			}
+		});
+
+		return cells;
+	}
+	
+	@Override
+	public ArrayList<Cell> getAllData() {
+		ArrayList<Cell> cells = new ArrayList<Cell>();
+
+		data.each(new MatrixProcedure() {
 
 			@Override
 			public void apply(int row, int col, double value) {

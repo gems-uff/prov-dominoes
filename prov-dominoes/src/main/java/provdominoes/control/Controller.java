@@ -175,8 +175,13 @@ public class Controller {
 		return domino;
 	}
 
-	public static Dominoes percent(Dominoes domino, double d) throws Exception {
-		domino.percent(d);
+	public static Dominoes highPassFilter(Dominoes domino, double d) throws Exception {
+		domino.highPassFilter(d);
+		return domino;
+	}
+	
+	public static Dominoes lowPassFilter(Dominoes domino, double d) throws Exception {
+		domino.lowPassFilter(d);
 		return domino;
 	}
 	
