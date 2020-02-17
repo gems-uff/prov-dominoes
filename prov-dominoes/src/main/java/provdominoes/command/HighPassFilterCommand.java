@@ -10,7 +10,7 @@ import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class PercentCommand extends AbstractCommand {
+public class HighPassFilterCommand extends AbstractCommand {
 
 	private Group piece;
 	private double x;
@@ -19,11 +19,11 @@ public class PercentCommand extends AbstractCommand {
 	private int index;
 	private double percent;
 
-	public PercentCommand() {
+	public HighPassFilterCommand() {
 		this.index = -1;
 	}
 
-	public PercentCommand(int index) {
+	public HighPassFilterCommand(int index) {
 		this();
 		this.index = index;
 	}
@@ -36,12 +36,12 @@ public class PercentCommand extends AbstractCommand {
 		x = this.piece.getTranslateX();
 		y = this.piece.getTranslateY();
 		try {
-			Dominoes toPercent = App.getArea().getData().getDominoes().get(index);
+			Dominoes toHPF = App.getArea().getData().getDominoes().get(index);
 			if (!super.isReproducing()) {
 				percent = getPercent();
 			}
 			if (percent != -1.0) {
-				Dominoes domino = provdominoes.control.Controller.percent(toPercent, percent);
+				Dominoes domino = provdominoes.control.Controller.highPassFilter(toHPF, percent);
 
 				App.getArea().remove(index);
 				this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
@@ -53,8 +53,8 @@ public class PercentCommand extends AbstractCommand {
 				success = false;
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao efetuar filtro de" + NumberFormat.getInstance().format(percent)
-					+ "% maiores!");
+			App.alertException(e, "Erro desconhecido ao efetuar filtro de passa-alta(threshold: " + NumberFormat.getInstance().format(percent)
+					+ " %)!");
 			e.printStackTrace();
 			success = false;
 		}
@@ -95,7 +95,7 @@ public class PercentCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return PERCENT_COMMAND + "(" + this.oldDominoes.getId() + ", " + NumberFormat.getInstance().format(percent)
+		return HPF_COMMAND + "(" + this.oldDominoes.getId() + ", " + NumberFormat.getInstance().format(percent)
 				+ ")";
 	}
 
