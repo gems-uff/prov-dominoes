@@ -192,7 +192,7 @@ public class ScriptController {
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().filterBinarize(piece);
+					cmd = CommandFactory.getInstance().binarize(piece);
 				} else if (token[0].equals(AbstractCommand.CONFIDENCE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
@@ -219,8 +219,8 @@ public class ScriptController {
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().filterInvert(piece);
-				} else if (token[0].equals(AbstractCommand.PERCENT_COMMAND)) {
+					cmd = CommandFactory.getInstance().invert(piece);
+				} else if (token[0].equals(AbstractCommand.HPF_COMMAND)) {
 					String[] operands = token[1].split(",");
 					String percent = operands[1].toLowerCase();
 					Group piece = null;
@@ -231,7 +231,23 @@ public class ScriptController {
 						}
 					}
 					try {
-						cmd = CommandFactory.getInstance().filterPercent(piece,
+						cmd = CommandFactory.getInstance().filterHighPass(piece,
+								NumberFormat.getInstance().parse(percent).doubleValue());
+					} catch (ParseException e) {
+						App.alertException(e, "Erro desconhecido ao processar comando: " + cmdl);
+					}
+				} else if (token[0].equals(AbstractCommand.LPF_COMMAND)) {
+					String[] operands = token[1].split(",");
+					String percent = operands[1].toLowerCase();
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(operands[0].toLowerCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					try {
+						cmd = CommandFactory.getInstance().filterLowPass(piece,
 								NumberFormat.getInstance().parse(percent).doubleValue());
 					} catch (ParseException e) {
 						App.alertException(e, "Erro desconhecido ao processar comando: " + cmdl);
@@ -314,7 +330,7 @@ public class ScriptController {
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().filterTrim(piece);
+					cmd = CommandFactory.getInstance().trim(piece);
 				} else if (token[0].equals(AbstractCommand.REMOVE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
