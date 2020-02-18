@@ -38,7 +38,8 @@ public class MatrixPane extends Pane {
 
 	public MatrixPane(Dominoes domino) {
 
-		this.setStyle("-fx-background-color: #969637");
+		this.setStyle("-fx-background-color: #FFFFFF");
+		//this.setStyle("-fx-background-color: #969637");
 
 		this.recHeaders = new ArrayList<>();
 		this.recCells = new ArrayList<>();
@@ -167,11 +168,11 @@ public class MatrixPane extends Pane {
 		}
 
 		ArrayList<Cell> cells = null;
-		if (domino.getType() == Dominoes.TYPE_ZSCORE) {
+		//if (domino.getType() == Dominoes.TYPE_ZSCORE) {
 			cells = domino.getMat().getAllData();
-		} else {
-			cells = domino.getMat().getData();
-		}
+		//} else {
+			//cells = domino.getMat().getData();
+		//}
 
 		for (Cell _matCell : cells) {
 			Rectangle back = new Rectangle(cellSpace, cellSpace);
