@@ -357,7 +357,7 @@ public class App extends Application {
 		}
 
 		App.pieceSelectorList.setSize(Configuration.listWidth, App.stage.getHeight() - padding);
-		App.tabbedMatrixGraphPane.setSize(300, App.stage.getHeight() - padding);
+		App.tabbedMatrixGraphPane.setSize(900, App.stage.getHeight() - padding);
 		App.movementCanvas.setSize(400, App.stage.getHeight() - padding);
 		stage.show();
 	}
