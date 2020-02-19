@@ -38,8 +38,8 @@ public class MatrixPane extends Pane {
 
 	public MatrixPane(Dominoes domino) {
 
-		this.setStyle("-fx-background-color: #FFFFFF");
-		//this.setStyle("-fx-background-color: #969637");
+		this.setStyle("-fx-background-color: #B4B4B4");
+		// this.setStyle("-fx-background-color: #969637");
 
 		this.recHeaders = new ArrayList<>();
 		this.recCells = new ArrayList<>();
@@ -168,42 +168,52 @@ public class MatrixPane extends Pane {
 		}
 
 		ArrayList<Cell> cells = null;
-		//if (domino.getType() == Dominoes.TYPE_ZSCORE) {
+		if (domino.getType() == Dominoes.TYPE_ZSCORE) {
+			cells = domino.getMat().getData();
+		} else {
 			cells = domino.getMat().getAllData();
-		//} else {
-			//cells = domino.getMat().getData();
-		//}
+		}
 
 		for (Cell _matCell : cells) {
 			Rectangle back = new Rectangle(cellSpace, cellSpace);
+			Rectangle front = new Rectangle(cellSpace - 1, cellSpace - 1);
 			back.setFill(new Color(1, 1, 1, 1));
-			Rectangle front = new Rectangle(cellSpace, cellSpace);
 
 			if (min < 0) {
 				if (_matCell.value != 0.0) {
-					if (_matCell.value > 0.0) {
-						front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
-								(_matCell.value) / (max)));
+					if (Float.isNaN(_matCell.value)) {
+						front.setFill(new Color(1, 1, 1, 1));
+						_matCell.value = 0f;
 					} else {
-						front.setFill(new Color(cellColor.getBlue(), cellColor.getGreen(), cellColor.getRed(),
-								(_matCell.value) / (min)));
+						if (_matCell.value > 0.0) {
+							front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
+									(_matCell.value) / (max)));
+						} else {
+							front.setFill(new Color(cellColor.getBlue(), cellColor.getGreen(), cellColor.getRed(),
+									(_matCell.value) / (min)));
+						}
 					}
 				} else {
 					if (domino.getType() == Dominoes.TYPE_ZSCORE) {
-						front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(), 0));
+						front.setFill(new Color(1, 1, 1, 1));
 					} else {
-						front.setFill(new Color(150.0 / 255.0, 150.0 / 255.0, 55.0 / 255.0, 1));
+						front.setFill(new Color(180.0 / 255.0, 180.0 / 255.0, 180.0 / 255.0, 1));
 					}
 				}
 			} else {
 				if (_matCell.value != 0.0) {
-					front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
-							(_matCell.value - min) / (max - min)));
+					if (Float.isNaN(_matCell.value)) {
+						front.setFill(new Color(1, 1, 1, 1));
+						_matCell.value = 0f;
+					} else {
+						front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
+								(_matCell.value - min) / (max - min)));
+					}
 				} else {
 					if (domino.getType() == Dominoes.TYPE_ZSCORE) {
-						front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(), 0));
+						front.setFill(new Color(1, 1, 1, 1));
 					} else {
-						front.setFill(new Color(150.0 / 255.0, 150.0 / 255.0, 55.0 / 255.0, 1));
+						front.setFill(new Color(180.0 / 255.0, 180.0 / 255.0, 180.0 / 255.0, 1));
 					}
 				}
 			}
