@@ -292,7 +292,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations standardScore() {
+	public MatrixOperations standardScoreDense() {
 		// TODO Pending GPU implementation
 		return null;
 	}
@@ -376,7 +376,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations standardScoreExclusive() {
+	public MatrixOperations standardScoreSparse() {
 		// TODO Pending GPU implementation
 		return null;
 	}
@@ -388,7 +388,13 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations sortLineup() {
+	public MatrixOperations sortJoinRows() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public MatrixOperations sortJoinColumns() {
 		// TODO Pending GPU implementation
 		return null;
 	}

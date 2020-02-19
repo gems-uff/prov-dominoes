@@ -175,8 +175,13 @@ public class Controller {
 		return domino;
 	}
 	
-	public static Dominoes sortLineup(Dominoes domino) throws Exception {
-		domino.sortLineup();
+	public static Dominoes sortJoinRows(Dominoes domino) throws Exception {
+		domino.sortJoinRows();
+		return domino;
+	}
+	
+	public static Dominoes sortJoinCols(Dominoes domino) throws Exception {
+		domino.sortJoinCols();
 		return domino;
 	}
 

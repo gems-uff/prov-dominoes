@@ -23,7 +23,8 @@ public abstract class AbstractCommand {
 	public static final String INVERT_COMMAND = "INVERT";
 	public static final String SORT_ROW_COMMAND = "SORT_ROW";
 	public static final String SORT_COLUMN_COMMAND = "SORT_COLUMN";
-	public static final String SORT_LINEUP_COMMAND = "SORT_LINEUP";
+	public static final String SORT_JOIN_ROWS_COMMAND = "SORT_JROW";
+	public static final String SORT_JOIN_COLS_COMMAND = "SORT_JCOL";
 	public static final String DIAGONALIZE_COMMAND = "DIAGONALIZE";
 	public static final String UPPER_DIAGONAL_COMMAND = "UPPER_DIAGONAL";
 	public static final String LOWER_DIAGONAL_COMMAND = "LOWER_DIAGONAL";

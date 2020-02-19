@@ -90,7 +90,8 @@ public final class Dominoes {
 	public static final int TYPE_TEXT = 15;
 	public static final int TYPE_SORT_ROW_ASC = 16;
 	public static final int TYPE_SORT_COL_ASC = 17;
-	public static final int TYPE_SORT_LINEUP = 18;
+	public static final int TYPE_SORT_JOIN_ROWS = 18;
+	public static final int TYPE_SORT_JOIN_COLS = 19;
 	public static final String TYPE_BASIC_CODE = "B";
 	public static final String TYPE_DERIVED_CODE = "D";
 	public static final String TYPE_SUPPORT_CODE = "S";
@@ -109,7 +110,8 @@ public final class Dominoes {
 	public static final String TYPE_TEXT_CODE = "TXT";
 	public static final String TYPE_ROW_ASC_CODE = "RASC";
 	public static final String TYPE_COL_ASC_CODE = "CASC";
-	public static final String TYPE_SORT_LINEUP_CODE = "LUP";
+	public static final String TYPE_SORT_JOIN_ROWS_CODE = "JROW";
+	public static final String TYPE_SORT_JOIN_COLS_CODE = "JCOL";
 
 	public static final String AGGREG_TEXT = "/SUM ";
 
@@ -338,8 +340,13 @@ public final class Dominoes {
 			z = 23;
 			break;
 		}
-		case Dominoes.TYPE_SORT_LINEUP: {
-			textType.setText(Dominoes.TYPE_SORT_LINEUP_CODE);
+		case Dominoes.TYPE_SORT_JOIN_ROWS: {
+			textType.setText(Dominoes.TYPE_SORT_JOIN_ROWS_CODE);
+			z = 23;
+			break;
+		}
+		case Dominoes.TYPE_SORT_JOIN_COLS: {
+			textType.setText(Dominoes.TYPE_SORT_JOIN_COLS_CODE);
 			z = 23;
 			break;
 		}
@@ -517,7 +524,7 @@ public final class Dominoes {
 
 	public void standardScore() throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.standardScore();
+		MatrixOperations _newMat = mat.standardScoreSparse();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_ZSCORE;
 	}
@@ -564,11 +571,18 @@ public final class Dominoes {
 		this.type = Dominoes.TYPE_SORT_COL_ASC;
 	}
 	
-	public void sortLineup() throws Exception {
+	public void sortJoinRows() throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.sortLineup();
+		MatrixOperations _newMat = mat.sortJoinRows();
 		setMat(_newMat);
-		this.type = Dominoes.TYPE_SORT_LINEUP;
+		this.type = Dominoes.TYPE_SORT_JOIN_ROWS;
+	}
+	
+	public void sortJoinCols() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.sortJoinColumns();
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_SORT_JOIN_COLS;
 	}
 
 	public void highPassFilter(double d) throws Exception {
