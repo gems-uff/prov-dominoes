@@ -81,5 +81,7 @@ public interface MatrixOperations {
 		return mat;
 	}
 
+	MatrixOperations sortLineup();
+
 
 }

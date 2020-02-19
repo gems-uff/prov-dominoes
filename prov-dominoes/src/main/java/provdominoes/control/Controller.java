@@ -174,6 +174,11 @@ public class Controller {
 		domino.sortCols();
 		return domino;
 	}
+	
+	public static Dominoes sortLineup(Dominoes domino) throws Exception {
+		domino.sortLineup();
+		return domino;
+	}
 
 	public static Dominoes highPassFilter(Dominoes domino, double d) throws Exception {
 		domino.highPassFilter(d);

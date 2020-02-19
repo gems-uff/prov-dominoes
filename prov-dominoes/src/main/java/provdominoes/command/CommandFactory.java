@@ -122,7 +122,11 @@ public class CommandFactory {
 	public AbstractCommand sortColumns(Group piece) {
 		return new SortColumnsCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
-
+	
+	public AbstractCommand sortLineup(Group piece) {
+		return new SortLineupCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+	
 	public int getPieceCounter() {
 		return pieceCounter++;
 	}

@@ -387,4 +387,10 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		return null;
 	}
 
+	@Override
+	public MatrixOperations sortLineup() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
 }

@@ -88,8 +88,9 @@ public final class Dominoes {
 	public static final int TYPE_HPF = 13;
 	public static final int TYPE_ZSCORE = 14;
 	public static final int TYPE_TEXT = 15;
-	public static final int TYPE_ROW_ASC = 16;
-	public static final int TYPE_COL_ASC = 17;
+	public static final int TYPE_SORT_ROW_ASC = 16;
+	public static final int TYPE_SORT_COL_ASC = 17;
+	public static final int TYPE_SORT_LINEUP = 18;
 	public static final String TYPE_BASIC_CODE = "B";
 	public static final String TYPE_DERIVED_CODE = "D";
 	public static final String TYPE_SUPPORT_CODE = "S";
@@ -108,6 +109,7 @@ public final class Dominoes {
 	public static final String TYPE_TEXT_CODE = "TXT";
 	public static final String TYPE_ROW_ASC_CODE = "RASC";
 	public static final String TYPE_COL_ASC_CODE = "CASC";
+	public static final String TYPE_SORT_LINEUP_CODE = "LUP";
 
 	public static final String AGGREG_TEXT = "/SUM ";
 
@@ -326,13 +328,18 @@ public final class Dominoes {
 			z = 17;
 			break;
 		}
-		case Dominoes.TYPE_ROW_ASC: {
+		case Dominoes.TYPE_SORT_ROW_ASC: {
 			textType.setText(Dominoes.TYPE_ROW_ASC_CODE);
 			z = 23;
 			break;
 		}
-		case Dominoes.TYPE_COL_ASC: {
+		case Dominoes.TYPE_SORT_COL_ASC: {
 			textType.setText(Dominoes.TYPE_COL_ASC_CODE);
+			z = 23;
+			break;
+		}
+		case Dominoes.TYPE_SORT_LINEUP: {
+			textType.setText(Dominoes.TYPE_SORT_LINEUP_CODE);
 			z = 23;
 			break;
 		}
@@ -547,14 +554,21 @@ public final class Dominoes {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortRows();
 		setMat(_newMat);
-		this.type = Dominoes.TYPE_ROW_ASC;
+		this.type = Dominoes.TYPE_SORT_ROW_ASC;
 	}
 	
 	public void sortCols() throws Exception {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortColumns();
 		setMat(_newMat);
-		this.type = Dominoes.TYPE_COL_ASC;
+		this.type = Dominoes.TYPE_SORT_COL_ASC;
+	}
+	
+	public void sortLineup() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.sortLineup();
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_SORT_LINEUP;
 	}
 
 	public void highPassFilter(double d) throws Exception {
