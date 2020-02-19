@@ -105,6 +105,7 @@ public class AreaMove extends Pane {
 
 		MenuItem menuItemSortRows = new MenuItem("Sort Rows Asc");
 		MenuItem menuItemSortColumns = new MenuItem("Sort Columns Asc");
+		MenuItem menuItemSortLineup = new MenuItem("Sort Lineup");
 
 		Menu menuOperate = new Menu("Operations");
 		Menu menuFilters = new Menu("Filters");
@@ -364,6 +365,8 @@ public class AreaMove extends Pane {
 					App.getCommandManager().invokeCommand(commandFactory.sortRows(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortColumns.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.sortColumns(piece));
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortLineup.getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.sortLineup(piece));
 				}
 			}
 		});
@@ -391,7 +394,7 @@ public class AreaMove extends Pane {
 				menuItemHighPassFilter, menuItemLowPassFilter, menuItemRowTextFilter, menuItemColumnTextFilter);
 		menuView.getItems().addAll(menuItemViewChart, menuItemViewLineChart, menuItemViewGraph,
 				menuItemViewEigenCentrality, menuItemViewMatrix);
-		menuSorting.getItems().addAll(menuItemSortRows, menuItemSortColumns);
+		menuSorting.getItems().addAll(menuItemSortRows, menuItemSortColumns, menuItemSortLineup);
 		minimenu.getItems().addAll(menuView, menuOperate, menuFilters, menuSorting, menuItemSaveInList, menuItemClose);
 		this.setVisibleType();
 		return piece;
