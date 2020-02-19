@@ -38,7 +38,7 @@ public interface MatrixOperations {
 
 	public MatrixOperations confidence(boolean useGPU);
 
-	public MatrixOperations standardScore();
+	public MatrixOperations standardScoreDense();
 
 	public MatrixOperations meanAndSD();
 
@@ -66,7 +66,11 @@ public interface MatrixOperations {
     
 	public MatrixOperations sortRows();
     
-	public MatrixOperations standardScoreExclusive();
+	public MatrixOperations sortJoinRows();
+	
+	public MatrixOperations sortJoinColumns();
+	
+	public MatrixOperations standardScoreSparse();
 	
 	public ArrayList<Cell> getAllData();
 	
@@ -81,7 +85,6 @@ public interface MatrixOperations {
 		return mat;
 	}
 
-	MatrixOperations sortLineup();
 
 
 }
