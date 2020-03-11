@@ -26,6 +26,7 @@ public class ListViewDominoes extends ListView<Group> {
 
 	private ObservableList<Group> pieces;
 	private ArrayList<Dominoes> dominoes;
+	private int addedPieces;
 
 	private boolean visibilityHistoric;
 
@@ -177,7 +178,7 @@ public class ListViewDominoes extends ListView<Group> {
 					}
 					App.getCommandManager().invokeCommand(new CommandFactory().add(id));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemRemove.getText())) {
-					System.out.println("removing");
+					System.out.println("removing from piece list: "+ domino.getId());
 					try {
 						removeFromListAndArea(group);
 					} catch (IOException ex) {
@@ -204,6 +205,7 @@ public class ListViewDominoes extends ListView<Group> {
 		this.pieces.add(group);
 
 		result = true;
+		this.addedPieces++;
 		return result;
 	}
 
@@ -384,6 +386,14 @@ public class ListViewDominoes extends ListView<Group> {
 
 	public void setDominoes(ArrayList<Dominoes> dominoes) {
 		this.dominoes = dominoes;
+	}
+
+	public int getAddedPieces() {
+		return addedPieces;
+	}
+
+	public void setAddedPieces(int addedPieces) {
+		this.addedPieces = addedPieces;
 	}
 
 }

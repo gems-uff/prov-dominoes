@@ -652,11 +652,16 @@ public class AreaMove extends Pane {
 	 * @param group The matrix which will suffer with this operation
 	 * @throws IOException
 	 */
-	public void saveAndSendToList(Group group) throws IOException {
-		provdominoes.control.Controller.saveMatrix(this.data.getDominoes().get(this.data.getPieces().indexOf(group)));
+	public String saveAndSendToList(Group group) throws IOException {
+		Dominoes d = this.data.getDominoes().get(this.data.getPieces().indexOf(group));
+		d.setRelation(null);
+		String id = "PL"+(App.getPieceSelectorList().getAddedPieces()+1);		
+		d.setId(id);
+		provdominoes.control.Controller.saveMatrix(d);
 
 		// adding in list
 		App.CopyToList(this.data.getDominoes().get(this.data.getPieces().indexOf(group)));
+		return id;
 	}
 
 	/**

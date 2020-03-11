@@ -60,7 +60,7 @@ public class AddCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		String base = ADD_COMMAND + "(" + cmd(this.addedDominoes) + ")";
+		String base = ADD_COMMAND + "(" + trigram + ")";
 		return addedDominoes.getId() + " = " + base;
 	}
 
