@@ -80,7 +80,9 @@ public class ScriptController {
 		if (commandLine != null) {
 
 			commandLine = TokenUtil.getInstance().supressReserved(commandLine);
-
+			if (commandLine.contains(AbstractCommand.SAVE_COMMAND)) {
+				commandLine = commandLine.substring(0, commandLine.indexOf(")")+1);
+			}
 			String cmdl = commandLine.replace(" ", "").replace("\"", "").replace(")", "");
 
 			if (cmdl.contains("=")) {
