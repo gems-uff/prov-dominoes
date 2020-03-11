@@ -12,6 +12,8 @@ public class SaveCommand extends AbstractCommand {
 	private double x;
 	private double y;
 	private int index;
+	private String prevId;
+	private String intoId;
 
 	public SaveCommand() {
 		this.index = -1;
@@ -29,8 +31,9 @@ public class SaveCommand extends AbstractCommand {
 		x = piece.getTranslateX();
 		y = piece.getTranslateY();
 		this.savedDominoes = App.getArea().getData().getDominoes().get(index);
+		this.prevId = savedDominoes.getId();
 		try {
-			App.getArea().saveAndSendToList(piece);
+			intoId = App.getArea().saveAndSendToList(piece);
 			App.getArea().close(piece);
 		} catch (IOException e) {
 			success = false;
@@ -51,10 +54,11 @@ public class SaveCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return SAVE_COMMAND + "(" + this.savedDominoes.getId() + ")";
+		return SAVE_COMMAND + "(" + prevId + ") => " + intoId;
 	}
-	
+
 	private String id;
+
 	@Override
 	public String getId() {
 		return id;
