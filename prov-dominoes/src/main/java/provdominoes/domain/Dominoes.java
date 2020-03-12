@@ -737,40 +737,6 @@ public final class Dominoes {
 		this.sourceIndex = sourceIndex;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((idCol == null) ? 0 : idCol.hashCode());
-		result = prime * result + ((idRow == null) ? 0 : idRow.hashCode());
-		result = prime * result + ((relation == null) ? 0 : relation.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Dominoes other = (Dominoes) obj;
-		if (idCol == null) {
-			if (other.idCol != null)
-				return false;
-		} else if (!idCol.equals(other.idCol))
-			return false;
-		if (idRow == null) {
-			if (other.idRow != null)
-				return false;
-		} else if (!idRow.equals(other.idRow))
-			return false;
-		if (relation != other.relation)
-			return false;
-		return true;
-	}
-
 	public void setType(int type) {
 		this.type = type;
 	}
@@ -835,6 +801,46 @@ public final class Dominoes {
 
 	public void setTextType(Text textType) {
 		this.textType = textType;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Dominoes other = (Dominoes) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (idCol == null) {
+			if (other.idCol != null)
+				return false;
+		} else if (!idCol.equals(other.idCol))
+			return false;
+		if (idRow == null) {
+			if (other.idRow != null)
+				return false;
+		} else if (!idRow.equals(other.idRow))
+			return false;
+		if (relation != other.relation)
+			return false;
+		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((idCol == null) ? 0 : idCol.hashCode());
+		result = prime * result + ((idRow == null) ? 0 : idRow.hashCode());
+		result = prime * result + ((relation == null) ? 0 : relation.hashCode());
+		return result;
 	}
 
 }
