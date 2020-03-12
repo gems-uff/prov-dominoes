@@ -223,7 +223,8 @@ public class ListViewDominoes extends ListView<Group> {
 		for (Dominoes d : this.dominoes) {
 			if ((d.getIdRow().equals(domino.getIdRow()) && d.getIdCol().equals(domino.getIdCol())
 					&& domino.getHistoric().toString().equals(d.getHistoric().toString())
-					&& domino.getRelation() == d.getRelation())) {
+					&& domino.getRelation() == d.getRelation())
+					&& domino.getId() .equals(d.getId())) {
 				return true;
 			}
 		}
@@ -252,6 +253,7 @@ public class ListViewDominoes extends ListView<Group> {
 		}
 		this.pieces.removeAll(this.pieces);
 		this.dominoes.removeAll(this.dominoes);
+		this.addedPieces=0;
 	}
 
 	/**
