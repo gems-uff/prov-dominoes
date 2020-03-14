@@ -308,7 +308,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		float meanCol[] = new float[_standardScore.getMatrixDescriptor().getNumCols()];
 		float sdCol[] = new float[_standardScore.getMatrixDescriptor().getNumCols()];
-		float values[] = new float[_standardScore.getMatrixDescriptor().getNumCols()];
+		float sumCol[] = new float[_standardScore.getMatrixDescriptor().getNumCols()];
 		int numElements[] = new int[_standardScore.getMatrixDescriptor().getNumCols()];
 
 		data.eachNonZero(new MatrixProcedure() {
@@ -316,19 +316,19 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			@Override
 			public void apply(int row, int col, double value) {
 				numElements[col]++;
-				values[col] += value;
+				sumCol[col] += value;
 			}
 		});
 
-		for (int i = 0; i < values.length; i++)
-			meanCol[i] = values[i] / (float) numElements[i];
+		for (int i = 0; i < sumCol.length; i++)
+			meanCol[i] = sumCol[i] / (float) numElements[i];
 
 		data.eachNonZero(new MatrixProcedure() {
 
 			@Override
 			public void apply(int row, int col, double value) {
 				sdCol[col] += (value - meanCol[col]) * (value - meanCol[col]);
-				values[col] += value;
+				sumCol[col] += value;
 			}
 		});
 
