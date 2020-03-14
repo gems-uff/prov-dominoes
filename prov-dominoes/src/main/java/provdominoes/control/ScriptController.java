@@ -323,7 +323,7 @@ public class ScriptController {
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().sortJoinRows(piece);
+					cmd = CommandFactory.getInstance().sortJoinCols(piece);
 				} else if (token[0].equals(AbstractCommand.LOWER_DIAGONAL_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
