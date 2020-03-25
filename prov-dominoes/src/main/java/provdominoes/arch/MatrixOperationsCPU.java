@@ -122,7 +122,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations reduceRows(boolean useGPU) {
+	public MatrixOperations aggregateDimension(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 
@@ -344,6 +344,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				_cell.col = col;
 				_cell.row = row;
 				_cell.value = ((float) value - meanCol[col]) / sdCol[col];
+				if (_cell.value == 0) {
+					_cell.value = _cell.value / 0;
+				}
 				_data.add(_cell);
 			}
 		});
@@ -741,7 +744,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations sortJoinRows() {
+	public MatrixOperations sortColumnsFirst() {
 		MatrixOperationsCPU result = null;
 		ArrayList<Cell> newMatrix = new ArrayList<>();
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
@@ -795,7 +798,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations sortJoinColumns() {
+	public MatrixOperations sortRowsFirst() {
 		MatrixOperationsCPU result = null;
 		ArrayList<Cell> newMatrix = new ArrayList<>();
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),

@@ -118,7 +118,8 @@ public class MultiplyCommand extends AbstractCommand {
 		AbstractCommand comm = App.getCommandManager().getPreviousCommand();
 		if (comm != null && comm instanceof MoveCommand) {
 			MoveCommand move = (MoveCommand) comm;
-			if (move.getIndex() == indexLeftDominoes) {
+			if (App.getArea().getData().getPieces()
+					.indexOf(App.getArea().getData().getPiece(move.getIdentifier())) == indexLeftDominoes) {
 				xLeftDominoes = move.getOldX();
 				yLeftDominoes = move.getOldY();
 			} else {
@@ -131,7 +132,7 @@ public class MultiplyCommand extends AbstractCommand {
 	protected Group getPiece() {
 		return this.resultPiece;
 	}
-	
+
 	@Override
 	public String getId() {
 		return id;
@@ -155,7 +156,5 @@ public class MultiplyCommand extends AbstractCommand {
 		String base = MULTIPLY_COMMAND + "(" + leftDominoes.getId() + ", " + rightDominoes.getId() + ")";
 		return key + " = " + base;
 	}
-
-	
 
 }

@@ -4,7 +4,7 @@ import provdominoes.boundary.App;
 
 public class MoveCommand extends AbstractCommand {
 
-	private int index;
+	private String identifier;
 	private double oldX;
 	private double oldY;
 	private double y;
@@ -15,9 +15,9 @@ public class MoveCommand extends AbstractCommand {
 		this.y = -1;
 	}
 
-	public MoveCommand(int index, double x, double y) {
+	public MoveCommand(String identifier, double x, double y) {
 		this();
-		this.index = index;
+		this.identifier = identifier;
 		this.x = x;
 		this.y = y;
 	}
@@ -38,17 +38,11 @@ public class MoveCommand extends AbstractCommand {
 		this.oldY = oldY;
 	}
 
-	public int getIndex() {
-		return index;
-	}
 
-	public void setIndex(int index) {
-		this.index = index;
-	}
 
 	@Override
 	public String getName() {
-		String cmd = MOVE_COMMAND + "(" + App.getArea().getData().getDominoes().get(index).getId() + ", " + this.x
+		String cmd = MOVE_COMMAND + "(" + identifier + ", " + this.x
 				+ ", " + this.y + ")";
 		cmd = cmd.replace(".0", "");
 		return cmd;
@@ -57,15 +51,15 @@ public class MoveCommand extends AbstractCommand {
 
 	@Override
 	protected boolean doIt() {
-		App.getArea().getData().getPieces().get(index).setTranslateX(x);
-		App.getArea().getData().getPieces().get(index).setTranslateY(y);
+		App.getArea().getData().getPiece(identifier).setTranslateX(x);
+		App.getArea().getData().getPiece(identifier).setTranslateY(y);
 		return true;
 	}
 
 	@Override
 	protected boolean undoIt() {
-		App.getArea().getData().getPieces().get(index).setTranslateX(oldX);
-		App.getArea().getData().getPieces().get(index).setTranslateY(oldY);
+		App.getArea().getData().getPiece(identifier).setTranslateX(oldX);
+		App.getArea().getData().getPiece(identifier).setTranslateY(oldY);
 		return true;
 	}
 
@@ -96,6 +90,14 @@ public class MoveCommand extends AbstractCommand {
 
 	public double getX() {
 		return x;
+	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 }

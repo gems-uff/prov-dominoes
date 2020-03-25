@@ -34,7 +34,7 @@ public interface MatrixOperations {
 
 	public MatrixOperations multiply(MatrixOperations other, boolean useGPU) throws Exception;
 
-	public MatrixOperations reduceRows(boolean useGPU);
+	public MatrixOperations aggregateDimension(boolean useGPU);
 
 	public MatrixOperations confidence(boolean useGPU);
 
@@ -66,9 +66,9 @@ public interface MatrixOperations {
     
 	public MatrixOperations sortRows();
     
-	public MatrixOperations sortJoinRows();
+	public MatrixOperations sortColumnsFirst();
 	
-	public MatrixOperations sortJoinColumns();
+	public MatrixOperations sortRowsFirst();
 	
 	public MatrixOperations standardScoreSparse();
 	

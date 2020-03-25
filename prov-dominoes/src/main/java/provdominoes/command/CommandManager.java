@@ -39,24 +39,24 @@ public class CommandManager {
 	}
 
 	public void invokeCommand(AbstractCommand command) {
-		invokeCommand(command, false);
+		invokeCommand(command, false, false);
 	}
 
-	public void invokeCommand(AbstractCommand newCommand, boolean reproducing) {
+	public void invokeCommand(AbstractCommand newCommand, boolean reproducing, boolean scripting) {
 		if (newCommand != null) {
-			newCommand.updateCommandManager(this, reproducing);
+			newCommand.updateCommandManager(this, reproducing, scripting);
 			this.uptadeMenu();
 			this.previousCommand = this.lastCommand;
 			this.lastCommand = newCommand;
 		}
 	}
 
-	public void generateCommandId(AbstractCommand cmd, boolean reproducing) {
-		//if (!reproducing) {
+	public void generateCommandId(AbstractCommand cmd, boolean reproducing, boolean scripting) {
+		if (!reproducing || scripting) {
 			this.scriptController.addToScript(cmd);
 			String id = App.getTopPane().addCommand(cmd);
 			cmd.setId(id);
-		//}
+		}
 	}
 
 	public void uptadeMenu() {
@@ -98,7 +98,7 @@ public class CommandManager {
 	public void reproduce(LinkedList<AbstractCommand> cmds) throws IOException {
 		clear(false);
 		for (AbstractCommand cmd : cmds) {
-			invokeCommand(cmd, true);
+			invokeCommand(cmd, true, false);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class CommandManager {
 	public int getScriptFromGraph(StringWriter sw, HistoricNodeCommand root, int undoCount) {
 		if (root != null) {
 			AbstractCommand cmd = root.getCommand();
-			invokeCommand(cmd, true);
+			invokeCommand(cmd, true, false);
 			sw.append(cmd.getName() + "\n");
 			if (root.getChildren().size() > 0) {
 				for (HistoricNodeCommand child : root.getChildren()) {
