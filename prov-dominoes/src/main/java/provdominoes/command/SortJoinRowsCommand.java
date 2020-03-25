@@ -60,7 +60,7 @@ public class SortJoinRowsCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return SORT_JOIN_ROWS_COMMAND + "(" + this.oldDominoes.getId() + ")";
+		return SORT_COLUMNS_FIRST_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
 	private String id;
 
