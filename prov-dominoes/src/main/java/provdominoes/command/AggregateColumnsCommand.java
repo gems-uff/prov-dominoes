@@ -34,7 +34,7 @@ public class AggregateColumnsCommand extends AbstractCommand {
 		boolean success = true;
 		try {
 			if (!toReduce.isRowAggregatable()) {
-				Dominoes domino = provdominoes.control.Controller.reduceDominoes(toReduce);
+				Dominoes domino = provdominoes.control.Controller.aggregateDimension(toReduce);
 				App.getArea().getData().getDominoes().set(index, domino);
 
 				((Text) piece.getChildren().get(Dominoes.GRAPH_ID_ROW)).setText(domino.getIdRow());
@@ -44,7 +44,7 @@ public class AggregateColumnsCommand extends AbstractCommand {
 				if (Configuration.autoSave) {
 					App.getArea().saveAndSendToList(piece);
 				}
-				App.getArea().getData().getMenuItemAggregateRow().get(index).setDisable(true);
+				App.getArea().getData().getMenuItemAggregateRows().get(index).setDisable(true);
 			} else {
 				success = false;
 				System.err.println(

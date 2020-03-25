@@ -200,22 +200,28 @@ public final class Dominoes {
 		Text relationText = null;
 		Text arrowText = null;
 		//
-		if (this.relation != null) {
-			arrowText = new Text("\u21D2");
-			arrowText.setFill(Dominoes.COLOR_NORMAL_FONT);
-			arrowText.setFont(new Font("Times", 10));
-			arrowText.toFront();
-			arrowText.setX(GRAPH_WIDTH / 2 - 12);
-			arrowText.setY(border.getHeight() - back.getHeight() + 10);
+		arrowText = new Text("\u21D2");
+		arrowText.setFill(Dominoes.COLOR_NORMAL_FONT);
+		arrowText.setFont(new Font("Times", 10));
+		arrowText.setX(GRAPH_WIDTH / 2 - 12);
+		arrowText.toFront();
+		arrowText.setY(border.getHeight() - back.getHeight() + 10);
 
+		if (this.relation != null) {
 			relationText = new Text(this.relation.getAbbreviate());
-			relationText.setFill(Dominoes.COLOR_NORMAL_FONT);
 			relationText.setFont(new Font("Times", 10));
-			relationText.toFront();
-			relationText.setX(GRAPH_WIDTH / 2 - 20);
 			relationText.setY(border.getHeight() - back.getHeight() + 33);
-			relationText.setRotate(90);
+		} else {
+			relationText = new Text(this.id.length() >= 3 ? this.id.substring(0, 3) : this.id);
+			relationText.setFont(new Font("Courier New", 12));
+			relationText.setY(border.getHeight() - back.getHeight() + 39);
 		}
+		
+		relationText.setFill(Dominoes.COLOR_NORMAL_FONT);
+		relationText.toFront();
+		relationText.setX(GRAPH_WIDTH / 2 - 20);
+		
+		relationText.setRotate(90);
 
 		Text idRow = new Text(this.getIdRow());
 		idRow.setFill(Dominoes.COLOR_NORMAL_FONT);
@@ -379,12 +385,17 @@ public final class Dominoes {
 
 		Group domino = null;
 		if (this.relation == null) {
-			domino = new Group(border, back, line, historic, groupType, idRow, idCol);
+			domino = new Group(border, back, line, historic, groupType, idRow, idCol, relationText, arrowText);
 			Tooltip.install(domino, new Tooltip(this.idRow + "x" + this.getIdCol()));
 		} else {
 			domino = new Group(border, back, line, historic, groupType, idRow, idCol, relationText, arrowText);
-			Tooltip.install(domino,
-					new Tooltip(this.idRow + " (" + this.relation.getDescription() + ") " + this.getIdCol()));
+			String tooltipDesc = "";
+			if (relation != null) {
+				tooltipDesc = this.relation.getDescription();
+			} else {
+				tooltipDesc = this.id;
+			}
+			Tooltip.install(domino, new Tooltip(this.idRow + " (" + tooltipDesc + ") " + this.getIdCol()));
 		}
 
 		return domino;
@@ -556,31 +567,31 @@ public final class Dominoes {
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_INVERTED;
 	}
-	
+
 	public void sortRows() throws Exception {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortRows();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_ROW_ASC;
 	}
-	
+
 	public void sortCols() throws Exception {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortColumns();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_COL_ASC;
 	}
-	
+
 	public void sortJoinRows() throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.sortJoinRows();
+		MatrixOperations _newMat = mat.sortColumnsFirst();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_JOIN_ROWS;
 	}
-	
+
 	public void sortJoinCols() throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.sortJoinColumns();
+		MatrixOperations _newMat = mat.sortRowsFirst();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_JOIN_COLS;
 	}
@@ -591,7 +602,7 @@ public final class Dominoes {
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_HPF;
 	}
-	
+
 	public void lowPassFilter(double d) throws Exception {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.lowPassFilter(d);
@@ -647,7 +658,7 @@ public final class Dominoes {
 	 * @return the historic invert
 	 * @throws Exception
 	 */
-	public boolean reduceRows() throws Exception {
+	public boolean aggregateDimension() throws Exception {
 		this.setupOperation(true);
 		if (rowIsAggragatable) {
 			return false;
@@ -664,7 +675,7 @@ public final class Dominoes {
 		this.setIdRow(Dominoes.AGGREG_TEXT + idRow);
 		this.historic.reduceRow();
 
-		MatrixOperations _newMat = mat.reduceRows(currentDevice.equalsIgnoreCase("GPU"));
+		MatrixOperations _newMat = mat.aggregateDimension(currentDevice.equalsIgnoreCase("GPU"));
 		setMat(_newMat);
 
 		return true;
@@ -831,7 +842,7 @@ public final class Dominoes {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

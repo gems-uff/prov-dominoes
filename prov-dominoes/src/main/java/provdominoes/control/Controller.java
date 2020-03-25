@@ -247,9 +247,9 @@ public class Controller {
 	 * @return Return the reduced matrix in the parameter
 	 * @throws Exception
 	 */
-	public static Dominoes reduceDominoes(Dominoes domino) throws Exception {
+	public static Dominoes aggregateDimension(Dominoes domino) throws Exception {
 
-		if (domino.reduceRows()) {
+		if (domino.aggregateDimension()) {
 			return domino;
 		}
 		return null;
