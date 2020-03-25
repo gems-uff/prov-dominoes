@@ -25,6 +25,7 @@ public class Configuration {
     public static double height = 600.0f;
     public static double listWidth = 128.0f;
     
+    public static String DATA_SEPARATOR = "	";
     public static String defaultProcessing = GPU_DEVICE;
     public static int gpuDevice = 0;
     
