@@ -47,7 +47,7 @@ public class App extends Application {
 	private static SplitPane mainPane;
 
 	private static ActionHistoryGraphPane topPane;
-	private static ProvDominoesMenuBar menu;
+	private static MainMenuBar menu;
 
 	private static SplitPane bottomPane;
 	private static ListViewDominoes pieceSelectorList;
@@ -71,7 +71,7 @@ public class App extends Application {
 			}
 			App.stage.setResizable(Configuration.resizable);
 
-			App.menu = new ProvDominoesMenuBar();
+			App.menu = new MainMenuBar();
 			if (Configuration.defaultProcessing.equals(Configuration.CPU_DEVICE)) {
 				App.menu.getmCpuProcessing().fire();
 			}
@@ -393,6 +393,37 @@ public class App extends Application {
 		}
 
 	}
+	
+	public static void importMatrices() {
+		try {
+			FileChooser fileChooser = new FileChooser();
+			File folder = new File(Configuration.lastDirectory);
+			if (folder.exists()) {
+				fileChooser.setInitialDirectory(folder);
+			}
+			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Matrix(ces)", "*.matrix"));
+			List<File> files = fileChooser.showOpenMultipleDialog(stage);
+			if (files != null) {
+				String[] fileNames = new String[files.size()];
+				App.clear();
+				App.getTopPane().reset();
+				String dir = "";
+				int i = 0;
+				for (File f : files) {
+					if (f != null) {
+						dir = f.getAbsolutePath().replace(f.getName(), "");
+						fileNames[i] = f.getAbsolutePath();
+						i++;
+						Configuration.lastDirectory = dir;
+					}
+				}
+				getCommandManager().invokeCommand(CommandFactory.getInstance().loadMatrices(fileNames, dir));
+			}
+		} catch (Exception e) {
+			alertException(e, "Erro ao tentar abrir arquivo PROV-N!");
+		}
+
+	}
 
 	public static void exportScript() {
 		try {
@@ -429,6 +460,7 @@ public class App extends Application {
 			File file = fileChooser.showOpenDialog(stage);
 			if (file != null) {
 				getCommandManager().setDir(file.getAbsolutePath().replace(file.getName(), ""));
+				Configuration.lastDirectory = file.getAbsolutePath().replace(file.getName(), "");
 				App.clear();
 				App.getTopPane().reset();
 				FileReader fr = new FileReader(file);
@@ -439,10 +471,10 @@ public class App extends Application {
 					if (cmd instanceof UndoCommand) {
 						UndoCommand undo = (UndoCommand) cmd;
 						for (int i = 0; i < undo.getCount(); i++) {
-							getCommandManager().invokeCommand(cmd, true);
+							getCommandManager().invokeCommand(cmd, false, true);
 						}
 					} else {
-						getCommandManager().invokeCommand(cmd, true);
+						getCommandManager().invokeCommand(cmd, false, true);
 					}
 					commandLine = br.readLine();
 				}
@@ -571,11 +603,11 @@ public class App extends Application {
 		App.tabbedMatrixGraphPane = tabbedMatrixGraphPane;
 	}
 
-	public static ProvDominoesMenuBar getMenu() {
+	public static MainMenuBar getMenu() {
 		return menu;
 	}
 
-	public static void setMenu(ProvDominoesMenuBar menu) {
+	public static void setMenu(MainMenuBar menu) {
 		App.menu = menu;
 	}
 

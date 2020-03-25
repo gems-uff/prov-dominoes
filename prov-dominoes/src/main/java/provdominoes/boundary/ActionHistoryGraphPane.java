@@ -168,7 +168,7 @@ public class ActionHistoryGraphPane extends BorderPane {
 		hBox.getChildren().addAll(btn, lblMouseMode, rbPick, rbTransform);
 		return hBox;
 	}
-	
+
 	public void executeReproduce() {
 		HashMap<String, NodeInfo> tempNodes = new HashMap<>(nodes);
 		for (NodeInfo node : tempNodes.values()) {
@@ -216,7 +216,7 @@ public class ActionHistoryGraphPane extends BorderPane {
 				this.lastCommand = this.rootCommand;
 			} else {
 				if (cmd instanceof Undo) {
-					this.lastCommand = this.lastCommand.getParent();
+						this.lastCommand = this.lastCommand.getParent();
 				} else if (cmd instanceof Redo) {
 					if (lastCommand == null) {
 						this.lastCommand = rootCommand;

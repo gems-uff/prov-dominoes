@@ -54,8 +54,8 @@ public class ReadWrite {
 	}
 
 	public static void main(String[] args) {
-		String filein = "src/main/java/provdominoes/util/prov.xml";
-		String fileout = "src/main/java/provdominoes/util/prov.provn";
+		String filein = "V:\\work-dominoes\\prov-experimenter\\etc\\vistrails\\mta_yankees.xml";
+		String fileout = "V:\\work-dominoes\\prov-experimenter\\etc\\vistrails\\mta_yankees.provn";
 
 		ReadWrite tutorial = new ReadWrite(InteropFramework.newXMLProvFactory());
 		tutorial.openingBanner();

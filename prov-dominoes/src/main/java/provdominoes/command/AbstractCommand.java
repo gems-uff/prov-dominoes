@@ -9,12 +9,13 @@ public abstract class AbstractCommand {
 	public static final String REDO_COMMAND = "REDO";
 	public static final String MOVE_COMMAND = "MOVE";
 	public static final String SAVE_COMMAND = "SAVE";
+	public static final String LOAD_MATRIX_COMMAND = "LOAD_MATRIX";
 	public static final String LOAD_COMMAND = "LOAD";
 	public static final String TRANSPOSE_COMMAND = "TRANSPOSE";
 	public static final String MULTIPLY_COMMAND = "MULTIPLY";
 	public static final String ADD_COMMAND = "ADD";
 	public static final String REMOVE_COMMAND = "REMOVE";
-	public static final String AGGREGATE_LINES_COMMAND = "AGG_LINES";
+	public static final String AGGREGATE_ROWS_COMMAND = "AGG_ROWS";
 	public static final String AGGREGATE_COLUMNS_COMMAND = "AGG_COLUMNS";
 	public static final String CONFIDENCE_COMMAND = "CONFIDENCE";
 	public static final String ZSCORE_COMMAND = "ZSCORE";
@@ -23,8 +24,8 @@ public abstract class AbstractCommand {
 	public static final String INVERT_COMMAND = "INVERT";
 	public static final String SORT_ROW_COMMAND = "SORT_ROW";
 	public static final String SORT_COLUMN_COMMAND = "SORT_COLUMN";
-	public static final String SORT_JOIN_ROWS_COMMAND = "SORT_JROW";
-	public static final String SORT_JOIN_COLS_COMMAND = "SORT_JCOL";
+	public static final String SORT_COLUMNS_FIRST_COMMAND = "SORT_COLS_FIRST";
+	public static final String SORT_ROWS_FIRST_COMMAND = "SORT_ROWS_FIRST";
 	public static final String DIAGONALIZE_COMMAND = "DIAGONALIZE";
 	public static final String UPPER_DIAGONAL_COMMAND = "UPPER_DIAGONAL";
 	public static final String LOWER_DIAGONAL_COMMAND = "LOWER_DIAGONAL";
@@ -61,6 +62,8 @@ public abstract class AbstractCommand {
 	protected abstract boolean undoIt();
 
 	private boolean reproducing;
+	
+	private boolean scripting;
 
 	protected String cmd(Dominoes d) {
 
@@ -74,12 +77,13 @@ public abstract class AbstractCommand {
 		return cmd;
 	}
 
-	public void updateCommandManager(CommandManager cmd, boolean reproducing) {
+	public void updateCommandManager(CommandManager cmd, boolean reproducing, boolean scripting) {
 		setReproducing(reproducing);
+		setScripting(scripting);
 		if (doIt()) {
 			System.out.println(getName());
 			cmd.addToHistory(this);
-			cmd.generateCommandId(this, reproducing);
+			cmd.generateCommandId(this, reproducing, scripting);
 		} else {
 			cmd.getHistory().clear();
 		}
@@ -91,6 +95,14 @@ public abstract class AbstractCommand {
 
 	public void setReproducing(boolean reproducing) {
 		this.reproducing = reproducing;
+	}
+
+	public boolean isScripting() {
+		return scripting;
+	}
+
+	public void setScripting(boolean scripting) {
+		this.scripting = scripting;
 	}
 
 }

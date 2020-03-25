@@ -151,7 +151,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations reduceRows(boolean useGPU) {
+	public MatrixOperations aggregateDimension(boolean useGPU) {
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 
@@ -388,13 +388,13 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations sortJoinRows() {
+	public MatrixOperations sortColumnsFirst() {
 		// TODO Pending GPU implementation
 		return null;
 	}
 
 	@Override
-	public MatrixOperations sortJoinColumns() {
+	public MatrixOperations sortRowsFirst() {
 		// TODO Pending GPU implementation
 		return null;
 	}

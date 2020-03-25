@@ -25,12 +25,12 @@ public class CommandFactory {
 
 	public AddCommand add(String trigram) {
 		AddCommand add = new AddCommand(trigram);
-		add.setKey("p" + getInstance().getPieceCounter());
+		add.setKey("P" + getInstance().getPieceCounter());
 		return add;
 	}
 
-	public MoveCommand move(Group piece, double oldX, double oldY) {
-		MoveCommand move = new MoveCommand(App.getArea().getData().getPieces().indexOf(piece), piece.getTranslateX(),
+	public MoveCommand move(String identifier, Group piece, double oldX, double oldY) {
+		MoveCommand move = new MoveCommand(identifier, piece.getTranslateX(),
 				piece.getTranslateY());
 		move.setOldX(oldX);
 		move.setOldY(oldY);
@@ -51,12 +51,12 @@ public class CommandFactory {
 
 	public AbstractCommand multiply() {
 		MultiplyCommand mul = new MultiplyCommand();
-		mul.setKey("p" + getInstance().getPieceCounter());
+		mul.setKey("P" + getInstance().getPieceCounter());
 		return mul;
 	}
 
-	public AbstractCommand aggLines(Group piece) {
-		return new AggregateLinesCommand(App.getArea().getData().getPieces().indexOf(piece));
+	public AbstractCommand aggRows(Group piece) {
+		return new AggregateRowsCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
 	public AbstractCommand aggColumns(Group piece) {
@@ -123,11 +123,11 @@ public class CommandFactory {
 		return new SortColumnsCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
-	public AbstractCommand sortJoinRows(Group piece) {
+	public AbstractCommand sortColumnsFirst(Group piece) {
 		return new SortJoinRowsCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
-	public AbstractCommand sortJoinCols(Group piece) {
+	public AbstractCommand sortRowsFirst(Group piece) {
 		return new SortJoinColsCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
@@ -141,6 +141,10 @@ public class CommandFactory {
 
 	public AbstractCommand load(String[] filePaths, String dir) {
 		return new LoadCommand(filePaths, dir);
+	}
+	
+	public AbstractCommand loadMatrices(String[] filePaths, String dir) {
+		return new LoadMatricesCommand(filePaths, dir);
 	}
 
 	public AbstractCommand undo(int count) {

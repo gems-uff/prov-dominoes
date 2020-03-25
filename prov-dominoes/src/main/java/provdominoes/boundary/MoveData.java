@@ -21,8 +21,8 @@ public class MoveData {
 	private double srcTranslateY;
 	private double padding;
 	private boolean transposing;
-	private List<MenuItem> menuItemAggregateRow;
-	private List<MenuItem> menuItemAggregateCol;
+	private List<MenuItem> menuItemAggregateRows;
+	private List<MenuItem> menuItemAggregateCols;
 
 	public MoveData(int indexFirstOperatorMultiplication, int indexSecondOperatorMultiplication, double padding,
 			boolean transposing, List<MenuItem> menuItemAggregateRow, List<MenuItem> menuItemAggregateCol) {
@@ -31,8 +31,8 @@ public class MoveData {
 		this.indexSecondOperatorMultiplication = indexSecondOperatorMultiplication;
 		this.padding = padding;
 		this.transposing = transposing;
-		this.menuItemAggregateRow = menuItemAggregateRow;
-		this.menuItemAggregateCol = menuItemAggregateCol;
+		this.menuItemAggregateRows = menuItemAggregateRow;
+		this.menuItemAggregateCols = menuItemAggregateCol;
 	}
 
 	public MoveData clone() {
@@ -41,8 +41,8 @@ public class MoveData {
 
 		this.dominoes = new ArrayList<>(dominoes);
 		this.pieces = new ArrayList<>(pieces);
-		this.menuItemAggregateRow = new ArrayList<>(menuItemAggregateRow);
-		this.menuItemAggregateCol = new ArrayList<>(menuItemAggregateCol);
+		this.menuItemAggregateRows = new ArrayList<>(menuItemAggregateRows);
+		this.menuItemAggregateCols = new ArrayList<>(menuItemAggregateCols);
 		return clone;
 	}
 
@@ -148,20 +148,29 @@ public class MoveData {
 		this.transposing = transposing;
 	}
 
-	public List<MenuItem> getMenuItemAggregateRow() {
-		return menuItemAggregateRow;
+	public List<MenuItem> getMenuItemAggregateRows() {
+		return menuItemAggregateRows;
 	}
 
-	public void setMenuItemAggregateRow(List<MenuItem> menuItemAggregateRow) {
-		this.menuItemAggregateRow = menuItemAggregateRow;
+	public void setMenuItemAggregateRows(List<MenuItem> menuItemAggregateRow) {
+		this.menuItemAggregateRows = menuItemAggregateRow;
 	}
 
-	public List<MenuItem> getMenuItemAggregateCol() {
-		return menuItemAggregateCol;
+	public List<MenuItem> getMenuItemAggregateCols() {
+		return menuItemAggregateCols;
 	}
 
-	public void setMenuItemAggregateCol(List<MenuItem> menuItemAggregateCol) {
-		this.menuItemAggregateCol = menuItemAggregateCol;
+	public void setMenuItemAggregateCols(List<MenuItem> menuItemAggregateCol) {
+		this.menuItemAggregateCols = menuItemAggregateCol;
+	}
+
+	public Group getPiece(String identifier) {
+		for (Dominoes d : dominoes) {
+			if (d.getId().equals(identifier)) {
+				return pieces.get(dominoes.indexOf(d));
+			}
+		}
+		return null;
 	}
 
 }

@@ -17,13 +17,18 @@ public class Prov2DominoesUtil {
 	public static List<Dominoes> convert(List<ProvMatrix> matrices, Map<String, String> labels) throws Exception {
 		List<Dominoes> dominoesList = new ArrayList<>();
 		for (ProvMatrix provMatrix : matrices) {
-			if (provMatrix != null && provMatrix.getRelation() != null && !provMatrix.getRowDescriptors().isEmpty()
-					&& !provMatrix.getColumnDescriptors().isEmpty() && !provMatrix.isEmpty()) {
+			if (provMatrix != null && (provMatrix.getRelation() != null || provMatrix.getIdentifier() != null)
+					&& !provMatrix.getRowDescriptors().isEmpty() && !provMatrix.getColumnDescriptors().isEmpty()
+					&& !provMatrix.isEmpty()) {
 				MatrixDescriptor descriptor = new MatrixDescriptor(provMatrix.getRowDimentionAbbreviate(),
 						provMatrix.getColumnDimentionAbbreviate());
-				System.out.println("Convertendo: " + provMatrix.getRowDimentionAbbreviate() + " | "
-						+ provMatrix.getColumnDimentionAbbreviate() + " : " + provMatrix.getRelation().getDescription()
-						+ " ...");
+				if (provMatrix.getRelation() != null) {
+					System.out.println("Convertendo: " + provMatrix.getRowDimentionAbbreviate() + " | "
+							+ provMatrix.getColumnDimentionAbbreviate() + " : "
+							+ provMatrix.getRelation().getDescription() + " ...");
+				} else if (provMatrix.getIdentifier() != null) {
+					System.out.println("Convertendo: " + provMatrix.getIdentifier() + " ...");
+				}
 				if (labels != null && !labels.keySet().isEmpty()) {
 					List<String> rows = toLabels(provMatrix.getRowDescriptors(), labels);
 					List<String> columns = toLabels(provMatrix.getColumnDescriptors(), labels);
@@ -39,6 +44,9 @@ public class Prov2DominoesUtil {
 				}
 				Dominoes dom = new Dominoes(provMatrix, descriptor,
 						(Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE));
+				if (provMatrix.getIdentifier() != null) {
+					dom.setId(provMatrix.getIdentifier());
+				}
 				dominoesList.add(dom);
 			}
 
