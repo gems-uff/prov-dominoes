@@ -39,9 +39,9 @@ public class TransposeCommand extends AbstractCommand {
 
 			double startAngle = piece.getRotate();
 
-			MenuItem swapMenu = data.getMenuItemAggregateRow().get(pieceIndex);
-			data.getMenuItemAggregateRow().set(pieceIndex, data.getMenuItemAggregateCol().get(pieceIndex));
-			data.getMenuItemAggregateCol().set(pieceIndex, swapMenu);
+			MenuItem swapMenu = data.getMenuItemAggregateRows().get(pieceIndex);
+			data.getMenuItemAggregateRows().set(pieceIndex, data.getMenuItemAggregateCols().get(pieceIndex));
+			data.getMenuItemAggregateCols().set(pieceIndex, swapMenu);
 
 			Dominoes domino = provdominoes.control.Controller
 					.tranposeDominoes(data.getDominoes().get(data.getPieces().indexOf(piece)));

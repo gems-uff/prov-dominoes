@@ -87,7 +87,7 @@ public class ScriptController {
 
 			if (cmdl.contains("=")) {
 				String[] token = cmdl.split("=");
-				String pieceAlias = token[0].toLowerCase();
+				String pieceAlias = token[0].toUpperCase();
 				String cmdName = token[1].split("\\(")[0].toUpperCase();
 				Group piece = null;
 				if (cmdName.equals(AbstractCommand.ADD_COMMAND)) {
@@ -109,11 +109,11 @@ public class ScriptController {
 					int indexLeft = -1;
 					int indexRight = -1;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(operands[0].toLowerCase())) {
+						if (d.getId().equals(operands[0].toUpperCase())) {
 							indexLeft = App.getArea().getData().getDominoes().indexOf(d);
 							App.getArea().getData().setIndexFirstOperatorMultiplication(indexLeft);
 						}
-						if (d.getId().equals(operands[1].toLowerCase())) {
+						if (d.getId().equals(operands[1].toUpperCase())) {
 							indexRight = App.getArea().getData().getDominoes().indexOf(d);
 							App.getArea().getData().setIndexSecondOperatorMultiplication(indexRight);
 						}
@@ -133,10 +133,13 @@ public class ScriptController {
 				if (token[0].equals(AbstractCommand.LOAD_COMMAND)) {
 					String[] fileNames = token[1].split(",");
 					cmd = CommandFactory.getInstance().load(fileNames, dir);
+				} else if (token[0].equals(AbstractCommand.LOAD_MATRIX_COMMAND)) {
+					String[] fileNames = token[1].split(",");
+					cmd = CommandFactory.getInstance().loadMatrices(fileNames, dir);
 				} else if (token[0].equals(AbstractCommand.MOVE_COMMAND)) {
 					Group piece = null;
 					String[] operands = token[1].split(",");
-					String pieceId = operands[0].toLowerCase();
+					String pieceId = operands[0].toUpperCase();
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(pieceId)) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
@@ -144,7 +147,7 @@ public class ScriptController {
 						}
 					}
 					if (piece != null) {
-						MoveCommand move = CommandFactory.getInstance().move(piece, piece.getTranslateX(),
+						MoveCommand move = CommandFactory.getInstance().move(pieceId, piece, piece.getTranslateX(),
 								piece.getTranslateY());
 						move.setX(Double.valueOf(operands[1]));
 						move.setY(Double.valueOf(operands[2]));
@@ -153,7 +156,7 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.TRANSPOSE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -162,7 +165,7 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.TRANSITIVE_CLOSURE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -171,25 +174,25 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.AGGREGATE_COLUMNS_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
 					cmd = CommandFactory.getInstance().aggColumns(piece);
-				} else if (token[0].equals(AbstractCommand.AGGREGATE_LINES_COMMAND)) {
+				} else if (token[0].equals(AbstractCommand.AGGREGATE_ROWS_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().aggLines(piece);
+					cmd = CommandFactory.getInstance().aggRows(piece);
 				} else if (token[0].equals(AbstractCommand.BINARIZE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -198,7 +201,7 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.CONFIDENCE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -207,16 +210,16 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.DIAGONALIZE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().confidence(piece);
+					cmd = CommandFactory.getInstance().filterDiagonal(piece);
 				} else if (token[0].equals(AbstractCommand.INVERT_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -224,10 +227,10 @@ public class ScriptController {
 					cmd = CommandFactory.getInstance().invert(piece);
 				} else if (token[0].equals(AbstractCommand.HPF_COMMAND)) {
 					String[] operands = token[1].split(",");
-					String percent = operands[1].toLowerCase();
+					String percent = operands[1].toUpperCase();
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(operands[0].toLowerCase())) {
+						if (d.getId().equals(operands[0].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -240,10 +243,10 @@ public class ScriptController {
 					}
 				} else if (token[0].equals(AbstractCommand.LPF_COMMAND)) {
 					String[] operands = token[1].split(",");
-					String percent = operands[1].toLowerCase();
+					String percent = operands[1].toUpperCase();
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(operands[0].toLowerCase())) {
+						if (d.getId().equals(operands[0].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -256,8 +259,8 @@ public class ScriptController {
 					}
 				} else if (token[0].equals(AbstractCommand.COLUMN_TEXT_COMMAND)) {
 					String[] operands = token[1].split(",");
-					String isRegexp = operands[1].toLowerCase().replace("\"", "");
-					String isCaseSensitive = operands[2].toLowerCase().replace("\"", "");
+					String isRegexp = operands[1].toUpperCase().replace("\"", "");
+					String isCaseSensitive = operands[2].toUpperCase().replace("\"", "");
 					String exp = operands[3];
 					exp = "\"" + exp + "\"";
 					exp = TokenUtil.getInstance().impressReserved(exp).replace("\"", "");
@@ -265,7 +268,7 @@ public class ScriptController {
 							Boolean.parseBoolean(isCaseSensitive));
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(operands[0].toLowerCase())) {
+						if (d.getId().equals(operands[0].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -273,8 +276,8 @@ public class ScriptController {
 					cmd = CommandFactory.getInstance().filterColumnText(piece, t);
 				} else if (token[0].equals(AbstractCommand.ROW_TEXT_COMMAND)) {
 					String[] operands = token[1].split(",");
-					String isRegexp = operands[1].toLowerCase().replace("\"", "");
-					String isCaseSensitive = operands[2].toLowerCase().replace("\"", "");
+					String isRegexp = operands[1].toUpperCase().replace("\"", "");
+					String isCaseSensitive = operands[2].toUpperCase().replace("\"", "");
 					String exp = operands[3];
 					exp = "\"" + exp + "\"";
 					exp = TokenUtil.getInstance().impressReserved(exp).replace("\"", "");
@@ -282,7 +285,7 @@ public class ScriptController {
 							Boolean.parseBoolean(isCaseSensitive));
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(operands[0].toLowerCase())) {
+						if (d.getId().equals(operands[0].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -291,7 +294,7 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.SORT_ROW_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -300,34 +303,34 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.SORT_COLUMN_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
 					cmd = CommandFactory.getInstance().sortColumns(piece);
-				} else if (token[0].equals(AbstractCommand.SORT_JOIN_ROWS_COMMAND)) {
+				} else if (token[0].equals(AbstractCommand.SORT_COLUMNS_FIRST_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().sortJoinRows(piece);
-				} else if (token[0].equals(AbstractCommand.SORT_JOIN_COLS_COMMAND)) {
+					cmd = CommandFactory.getInstance().sortColumnsFirst(piece);
+				} else if (token[0].equals(AbstractCommand.SORT_ROWS_FIRST_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().sortJoinCols(piece);
+					cmd = CommandFactory.getInstance().sortRowsFirst(piece);
 				} else if (token[0].equals(AbstractCommand.LOWER_DIAGONAL_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -336,7 +339,7 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.UPPER_DIAGONAL_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -345,7 +348,7 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.TRIM_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -354,7 +357,7 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.REMOVE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -363,7 +366,7 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.SAVE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}
@@ -372,7 +375,7 @@ public class ScriptController {
 				} else if (token[0].equals(AbstractCommand.ZSCORE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toLowerCase())) {
+						if (d.getId().equals(token[1].toUpperCase())) {
 							int index = App.getArea().getData().getDominoes().indexOf(d);
 							piece = App.getArea().getData().getPieces().get(index);
 						}

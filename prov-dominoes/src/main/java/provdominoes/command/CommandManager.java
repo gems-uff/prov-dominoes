@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 import provdominoes.boundary.App;
 import provdominoes.boundary.HistoricNodeCommand;
-import provdominoes.boundary.ProvDominoesMenuBar;
+import provdominoes.boundary.MainMenuBar;
 import provdominoes.control.ScriptController;
 
 public class CommandManager {
@@ -16,7 +16,7 @@ public class CommandManager {
 	private LinkedList<AbstractCommand> redoList;
 	private AbstractCommand lastCommand;
 	private AbstractCommand previousCommand;
-	private ProvDominoesMenuBar menu;
+	private MainMenuBar menu;
 	private ScriptController scriptController;
 
 	public CommandManager() {
@@ -33,7 +33,7 @@ public class CommandManager {
 		this.scriptController.setDir(dir);
 	}
 
-	public CommandManager(ProvDominoesMenuBar menu) {
+	public CommandManager(MainMenuBar menu) {
 		this();
 		this.menu = menu;
 	}
@@ -52,11 +52,11 @@ public class CommandManager {
 	}
 
 	public void generateCommandId(AbstractCommand cmd, boolean reproducing) {
-		if (!reproducing) {
+		//if (!reproducing) {
 			this.scriptController.addToScript(cmd);
 			String id = App.getTopPane().addCommand(cmd);
 			cmd.setId(id);
-		}
+		//}
 	}
 
 	public void uptadeMenu() {
