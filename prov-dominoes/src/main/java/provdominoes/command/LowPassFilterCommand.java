@@ -37,7 +37,7 @@ public class LowPassFilterCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toLPF = App.getArea().getData().getDominoes().get(index);
-			if (!super.isReproducing()) {
+			if (!super.isReproducing() && !super.isScripting()) {
 				percent = getPercent();
 			}
 			if (percent != -1.0) {
@@ -59,6 +59,7 @@ public class LowPassFilterCommand extends AbstractCommand {
 			success = false;
 		}
 		super.setReproducing(false);
+		super.setScripting(false);
 		return success;
 	}
 

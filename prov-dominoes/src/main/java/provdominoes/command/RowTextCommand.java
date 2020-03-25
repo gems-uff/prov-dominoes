@@ -44,7 +44,7 @@ public class RowTextCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toText = App.getArea().getData().getDominoes().get(index);
-			if (!super.isReproducing()) {
+			if (!super.isReproducing() && !super.isScripting()) {
 				text = getText();
 			}
 			if (text != null) {
@@ -66,6 +66,7 @@ public class RowTextCommand extends AbstractCommand {
 			success = false;
 		}
 		super.setReproducing(false);
+		super.setScripting(false);
 		return success;
 	}
 
@@ -90,7 +91,12 @@ public class RowTextCommand extends AbstractCommand {
 		expression.setPromptText("String or expression");
 		CheckBox cb = new CheckBox("Regular Expression");
 		CheckBox cs = new CheckBox("Case Sensitive");
-		
+		if (text != null) {
+			expression.setText(this.text.getExpression());
+			cb.setSelected(text.isRegularExpression());
+			cs.setSelected(text.isCaseSensitive());
+		}
+
 		cb.setOnAction((event) -> {
 			if (cb.isSelected()) {
 				cs.setSelected(true);
@@ -104,11 +110,12 @@ public class RowTextCommand extends AbstractCommand {
 		grid.add(expression, 1, 0);
 		grid.add(cb, 2, 0);
 		grid.add(cs, 3, 0);
-		
 
 		// Enable/Disable login button depending on whether a username was entered.
 		Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-		loginButton.setDisable(true);
+		if (expression.getText().isEmpty()) {
+			loginButton.setDisable(true);
+		}
 
 		// Do some validation (using the Java 8 lambda syntax).
 		expression.textProperty().addListener((observable, oldValue, newValue) -> {
