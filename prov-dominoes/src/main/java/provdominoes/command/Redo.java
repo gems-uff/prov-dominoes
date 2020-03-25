@@ -2,6 +2,6 @@ package provdominoes.command;
 
 public interface Redo {
 	
-	public void updateCommandManager(CommandManager cmd, boolean reproducing);
+	public void updateCommandManager(CommandManager cmd, boolean reproducing, boolean scripting);
 
 }
