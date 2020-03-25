@@ -104,7 +104,7 @@ public class LoadCommand extends AbstractCommand {
 		if (filePaths.length > 0) {
 			files = files.substring(0, files.length() - 1);
 		}
-		return "LOAD(\"" + files + "\")";
+		return LOAD_COMMAND + "(\"" + files + "\")";
 	}
 
 }
