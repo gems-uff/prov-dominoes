@@ -9,7 +9,7 @@ import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class AggregateLinesCommand extends AbstractCommand {
+public class AggregateRowsCommand extends AbstractCommand {
 
 	private Group piece;
 	private Dominoes oldDominoes;
@@ -17,11 +17,11 @@ public class AggregateLinesCommand extends AbstractCommand {
 	private double y;
 	private int index;
 
-	public AggregateLinesCommand() {
+	public AggregateRowsCommand() {
 		this.index = -1;
 	}
 
-	public AggregateLinesCommand(int index) {
+	public AggregateRowsCommand(int index) {
 		this();
 		this.index = index;		
 	}
@@ -37,7 +37,7 @@ public class AggregateLinesCommand extends AbstractCommand {
 		try {
 			if (!toReduce.isColAggregatable()) {
 				toReduce.transpose();
-				Dominoes dominoes = provdominoes.control.Controller.reduceDominoes(toReduce);
+				Dominoes dominoes = provdominoes.control.Controller.aggregateDimension(toReduce);
 				dominoes.transpose();
 				App.getArea().getData().getDominoes().set(index, dominoes);
 
@@ -51,7 +51,7 @@ public class AggregateLinesCommand extends AbstractCommand {
 					App.getArea().saveAndSendToList(piece);
 				}
 
-				App.getArea().getData().getMenuItemAggregateCol().get(index).setDisable(true);
+				App.getArea().getData().getMenuItemAggregateCols().get(index).setDisable(true);
 			} else {
 				success = false;
 				System.err.println("this domino is already aggregate by "
@@ -81,7 +81,7 @@ public class AggregateLinesCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return AGGREGATE_LINES_COMMAND + "(" + this.oldDominoes.getId() + ")";
+		return AGGREGATE_ROWS_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
 	
 	private String id;
