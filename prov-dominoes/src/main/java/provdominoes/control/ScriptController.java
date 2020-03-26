@@ -91,16 +91,16 @@ public class ScriptController {
 				String cmdName = token[1].split("\\(")[0].toUpperCase();
 				Group piece = null;
 				if (cmdName.equals(AbstractCommand.ADD_COMMAND)) {
-					String trigram = token[1].split("\\(")[1];
+					String pieceId = token[1].split("\\(")[1];
 					for (Dominoes d : App.getList().getDominoes()) {
-						if (d.getId().equals(trigram)) {
+						if (d.getId().equals(pieceId)) {
 							int index = App.getList().getDominoes().indexOf(d);
 							piece = App.getList().getPieces().get(index);
 							break;
 						}
 					}
 					if (piece != null) {
-						AddCommand add = CommandFactory.getInstance().add(trigram);
+						AddCommand add = CommandFactory.getInstance().add(pieceId);
 						add.setKey(pieceAlias);
 						cmd = add;
 					}

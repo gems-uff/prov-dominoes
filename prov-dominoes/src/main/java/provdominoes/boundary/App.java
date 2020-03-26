@@ -34,7 +34,6 @@ import provdominoes.arch.Session;
 import provdominoes.command.AbstractCommand;
 import provdominoes.command.CommandFactory;
 import provdominoes.command.CommandManager;
-import provdominoes.command.UndoCommand;
 import provdominoes.control.Controller;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
@@ -393,7 +392,7 @@ public class App extends Application {
 		}
 
 	}
-	
+
 	public static void importMatrices() {
 		try {
 			FileChooser fileChooser = new FileChooser();
@@ -442,7 +441,6 @@ public class App extends Application {
 					getCommandManager().getScriptFromGraph(sw, getTopPane().getRootCommand(), 0);
 					fw.write(sw.toString());
 					fw.close();
-					topPane.executeReproduce();
 				}
 			}
 		} catch (Exception e) {
@@ -451,41 +449,43 @@ public class App extends Application {
 
 	}
 
-	public static void importScript() {
-		try {
-			FileChooser fileChooser = new FileChooser();
-			fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
-			fileChooser.getExtensionFilters()
-					.add(new FileChooser.ExtensionFilter("Command Evolution Script (*.ces)", "*.ces"));
-			File file = fileChooser.showOpenDialog(stage);
-			if (file != null) {
+	public static void importScriptFromFile(File file) {
+		if (file != null) {
+			try {
 				getCommandManager().setDir(file.getAbsolutePath().replace(file.getName(), ""));
 				Configuration.lastDirectory = file.getAbsolutePath().replace(file.getName(), "");
 				App.clear();
 				App.getTopPane().reset();
 				FileReader fr = new FileReader(file);
-				BufferedReader br = new BufferedReader(fr);
-				String commandLine = br.readLine();
-				while (commandLine != null) {
-					AbstractCommand cmd = getCommandManager().getScriptController().parseCommand(commandLine);
-					if (cmd instanceof UndoCommand) {
-						UndoCommand undo = (UndoCommand) cmd;
-						for (int i = 0; i < undo.getCount(); i++) {
-							getCommandManager().invokeCommand(cmd, false, true);
+				try (BufferedReader br = new BufferedReader(fr)) {
+					String commandLine = br.readLine();
+					while (commandLine != null) {
+						AbstractCommand cmd = getCommandManager().getScriptController().parseCommand(commandLine);
+						if (cmd == null) {
+							throw new Exception(
+									"Invalid Command Exception! The script contains unrecognized command or invalid reference at this line: "
+											+ commandLine);
 						}
-					} else {
 						getCommandManager().invokeCommand(cmd, false, true);
+						commandLine = br.readLine();
 					}
-					commandLine = br.readLine();
+					App.getCommandManager().getRedoList().clear();
+					App.getCommandManager().uptadeMenu();
 				}
-				App.getCommandManager().getRedoList().clear();
-				App.getCommandManager().uptadeMenu();
-				br.close();
 				fr.close();
+			} catch (Exception e) {
+				alertException(e, "Erro ao tentar importar script!");
 			}
-		} catch (Exception e) {
-			alertException(e, "Erro ao tentar importar script!");
 		}
+	}
+
+	public static void importScript() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
+		fileChooser.getExtensionFilters()
+				.add(new FileChooser.ExtensionFilter("Command Evolution Script (*.ces)", "*.ces"));
+		File file = fileChooser.showOpenDialog(stage);
+		importScriptFromFile(file);
 	}
 
 	public static void start() {

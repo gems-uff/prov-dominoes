@@ -124,11 +124,11 @@ public class CommandFactory {
 	}
 	
 	public AbstractCommand sortColumnsFirst(Group piece) {
-		return new SortJoinRowsCommand(App.getArea().getData().getPieces().indexOf(piece));
+		return new SortColumnsFirstCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
 	public AbstractCommand sortRowsFirst(Group piece) {
-		return new SortJoinColsCommand(App.getArea().getData().getPieces().indexOf(piece));
+		return new SortRowsFirstCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
 	public int getPieceCounter() {
