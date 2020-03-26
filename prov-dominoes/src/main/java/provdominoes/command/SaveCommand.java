@@ -47,6 +47,7 @@ public class SaveCommand extends AbstractCommand {
 		boolean result = false;
 		int listIndex = App.getList().getDominoes().indexOf(savedDominoes);
 		App.getList().remove(App.getList().getPieces().get(listIndex));
+		savedDominoes.setId(prevId);
 		App.getArea().add(savedDominoes, x, y, index);
 		result = true;
 		return result;
