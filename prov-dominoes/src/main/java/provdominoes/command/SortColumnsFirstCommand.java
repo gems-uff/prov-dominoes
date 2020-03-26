@@ -5,7 +5,7 @@ import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class SortJoinRowsCommand extends AbstractCommand {
+public class SortColumnsFirstCommand extends AbstractCommand {
 
 	private Group piece;
 	private double x;
@@ -13,11 +13,11 @@ public class SortJoinRowsCommand extends AbstractCommand {
 	private Dominoes oldDominoes;
 	private int index;
 
-	public SortJoinRowsCommand() {
+	public SortColumnsFirstCommand() {
 		this.index = -1;
 	}
 
-	public SortJoinRowsCommand(int index) {
+	public SortColumnsFirstCommand(int index) {
 		this();
 		this.index = index;
 	}

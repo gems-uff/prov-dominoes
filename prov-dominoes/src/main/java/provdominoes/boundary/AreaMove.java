@@ -105,7 +105,7 @@ public class AreaMove extends Pane {
 
 		MenuItem menuItemSortRows = new MenuItem("Sort by Rows Asc");
 		MenuItem menuItemSortColumns = new MenuItem("Sort by Columns Asc");
-		MenuItem menuItemSortColsFirst = new MenuItem("Sort by Columns-First");
+		MenuItem menuItemSortColumnsFirst = new MenuItem("Sort by Columns-First");
 		MenuItem menuItemSortRowsFirst = new MenuItem("Sort by Rows-First");
 
 		Menu menuOperate = new Menu("Operations");
@@ -370,7 +370,7 @@ public class AreaMove extends Pane {
 					App.getCommandManager().invokeCommand(commandFactory.sortRows(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortColumns.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.sortColumns(piece));
-				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortColsFirst.getText())) {
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortColumnsFirst.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.sortColumnsFirst(piece));
 				}  else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortRowsFirst.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.sortRowsFirst(piece));
@@ -401,7 +401,7 @@ public class AreaMove extends Pane {
 				menuItemHighPassFilter, menuItemLowPassFilter, menuItemRowTextFilter, menuItemColumnTextFilter);
 		menuView.getItems().addAll(menuItemViewChart, menuItemViewLineChart, menuItemViewGraph,
 				menuItemViewEigenCentrality, menuItemViewMatrix);
-		menuSorting.getItems().addAll(menuItemSortRows, menuItemSortColumns, menuItemSortRowsFirst, menuItemSortColsFirst);
+		menuSorting.getItems().addAll(menuItemSortRows, menuItemSortColumns, menuItemSortRowsFirst, menuItemSortColumnsFirst);
 		minimenu.getItems().addAll(menuView, menuOperate, menuFilters, menuSorting, menuItemSaveInList, menuItemClose);
 		this.setVisibleType();
 		return piece;

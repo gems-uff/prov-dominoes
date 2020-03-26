@@ -121,8 +121,10 @@ public class CommandManager {
 				for (HistoricNodeCommand child : root.getChildren()) {
 					if (undoCount > 0) {
 						if (undoCount == 1) {
+							invokeCommand(new UndoCommand(), true, false);
 							sw.append("UNDO()\n");
 						} else {
+							invokeCommand(new UndoCommand(undoCount), true, false);
 							sw.append("UNDO(" + undoCount + ")\n");
 						}
 						undoCount = 0;
