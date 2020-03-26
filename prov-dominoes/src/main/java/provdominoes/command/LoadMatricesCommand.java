@@ -60,13 +60,13 @@ public class LoadMatricesCommand extends AbstractCommand {
 				if (!setup) {
 					this.dir = file.getAbsolutePath().replace(file.getName(), "");
 					App.getCommandManager().setDir(this.dir);
-					App.clear();
-					App.getTopPane().reset();
-					setup = true;
 				}
 				provMatrixList.addAll(importMatrixFile(file));
 			}
 			List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList, null);
+			App.getPieceSelectorList().clear();
+			App.getMovementCanvas().clear();
+			App.getTabbedMatrixGraphPane().clear();
 			Controller.resultLoadMatrices = dominoesList;
 			updateTitle();
 			App.getPieceSelectorList().configure(Controller.resultLoadMatrices);
@@ -119,11 +119,11 @@ public class LoadMatricesCommand extends AbstractCommand {
 									rows.add(row);
 								}
 							} else {
-								matrix.setIdentifier(row[0]);
-								String token = row[0].split("\\(")[1].replace(")", "");
+								matrix.setIdentifier(row[0].replace(" ", ""));
+								String token = row[0].split("\\[")[1].replace("]", "");
 								if (token.contains("/")) {
-									matrix.setRowDimentionAbbreviate(token.split("/")[0]);
-									matrix.setColumnDimentionAbbreviate(token.split("/")[1]);
+									matrix.setRowDimentionAbbreviate(token.split("/")[0].replace(" ", ""));
+									matrix.setColumnDimentionAbbreviate(token.split("/")[1].replace(" ", ""));
 								}
 								List<String> list = new ArrayList<String>(Arrays.asList(row));
 								list.remove(0);
