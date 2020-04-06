@@ -460,6 +460,10 @@ public class App extends Application {
 				try (BufferedReader br = new BufferedReader(fr)) {
 					String commandLine = br.readLine();
 					while (commandLine != null) {
+						if (commandLine.startsWith("#") || commandLine.startsWith("\\n") || commandLine.startsWith("\\r\\n")) {
+							commandLine = br.readLine();
+							continue;
+						}
 						AbstractCommand cmd = getCommandManager().getScriptController().parseCommand(commandLine);
 						if (cmd == null) {
 							throw new Exception(
