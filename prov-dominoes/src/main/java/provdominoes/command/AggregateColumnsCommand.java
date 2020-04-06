@@ -1,5 +1,7 @@
 package provdominoes.command;
 
+import java.io.IOException;
+
 import javafx.scene.Group;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -21,38 +23,47 @@ public class AggregateColumnsCommand extends AbstractCommand {
 
 	public AggregateColumnsCommand(int index) {
 		this();
-		this.index = index;
+		this.index = index;		
 	}
 
 	@Override
 	protected boolean doIt() {
+		boolean success = true;
 		this.oldDominoes = App.getArea().getData().getDominoes().get(index).cloneNoMatrix();
 		this.piece = App.getArea().getData().getPieces().get(index);
 		this.x = this.piece.getTranslateX();
 		this.y = this.piece.getTranslateY();
 		Dominoes toReduce = App.getArea().getData().getDominoes().get(index);
-		boolean success = true;
 		try {
-			if (!toReduce.isRowAggregatable()) {
-				Dominoes domino = provdominoes.control.Controller.aggregateDimension(toReduce);
-				App.getArea().getData().getDominoes().set(index, domino);
+			if (!toReduce.isColAggregatable()) {
+				toReduce.transpose();
+				Dominoes dominoes = provdominoes.control.Controller.aggregateDimension(toReduce);
+				dominoes.transpose();
+				App.getArea().getData().getDominoes().set(index, dominoes);
 
-				((Text) piece.getChildren().get(Dominoes.GRAPH_ID_ROW)).setText(domino.getIdRow());
-				((Text) piece.getChildren().get(Dominoes.GRAPH_ID_ROW))
+				dominoes.drawDominoes();
+
+				((Text) piece.getChildren().get(Dominoes.GRAPH_ID_COL)).setText(dominoes.getIdCol());
+				((Text) piece.getChildren().get(Dominoes.GRAPH_ID_COL))
 						.setFont(new Font(Dominoes.GRAPH_AGGREG_FONT_SIZE));
 
 				if (Configuration.autoSave) {
 					App.getArea().saveAndSendToList(piece);
 				}
-				App.getArea().getData().getMenuItemAggregateRows().get(index).setDisable(true);
+
+				App.getArea().getData().getMenuItemAggregateColumns().get(index).setDisable(true);
 			} else {
 				success = false;
-				System.err.println(
-						"this domino is already aggregate by " + toReduce.getDescriptor().getRowType());
+				System.err.println("this domino is already aggregate by "
+						+ toReduce.getDescriptor().getColType());
 			}
-		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao efetuar agregação de colunas!");
+		} catch (IOException e) {
 			success = false;
+			e.printStackTrace();
+			App.alertException(e, "Erro não identificado ao agregar linhas!");
+		} catch (Exception e) {
+			success = false;
+			App.alertException(e, "Erro não identificado ao agregar linhas!");
 			e.printStackTrace();
 		}
 		return success;
@@ -63,7 +74,7 @@ public class AggregateColumnsCommand extends AbstractCommand {
 		boolean result = false;
 		Group p = App.getArea().getData().getPieces().get(this.index);
 		App.getArea().closePiece(p);
-		App.getArea().add(this.oldDominoes, x, y, this.index);
+		App.getArea().add(this.oldDominoes, x, y, this.index);		
 		result = true;
 		return result;
 	}
@@ -84,4 +95,5 @@ public class AggregateColumnsCommand extends AbstractCommand {
 	public void setId(String id) {
 		this.id = id;
 	}
+
 }
