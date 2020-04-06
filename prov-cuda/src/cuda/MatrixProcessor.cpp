@@ -463,10 +463,10 @@ JNIEXPORT void JNICALL Java_processor_MatrixProcessor_transpose
 
 /*
  * Class:     processor_MatrixProcessor
- * Method:    reduceRow
+ * Method:    reduceDimension
  * Signature: (JJZ)V
  */
-JNIEXPORT void JNICALL Java_processor_MatrixProcessor_reduceRow
+JNIEXPORT void JNICALL Java_processor_MatrixProcessor_reduceDimension
   (JNIEnv *env, jclass obj, jlong pointer, jlong result, jboolean useGPU) {
 	SpMatf* _matrix = (SpMatf*) pointer;
 	SpMatf* _res = (SpMatf*) result;
