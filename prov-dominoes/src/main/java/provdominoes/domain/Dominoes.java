@@ -90,8 +90,8 @@ public final class Dominoes {
 	public static final int TYPE_TEXT = 15;
 	public static final int TYPE_SORT_ROW_ASC = 16;
 	public static final int TYPE_SORT_COL_ASC = 17;
-	public static final int TYPE_SORT_JOIN_ROWS = 18;
-	public static final int TYPE_SORT_JOIN_COLS = 19;
+	public static final int TYPE_SORT_COLUMN_FIRST = 18;
+	public static final int TYPE_SORT_ROW_FIRST = 19;
 	public static final String TYPE_BASIC_CODE = "B";
 	public static final String TYPE_DERIVED_CODE = "D";
 	public static final String TYPE_SUPPORT_CODE = "S";
@@ -110,8 +110,8 @@ public final class Dominoes {
 	public static final String TYPE_TEXT_CODE = "TXT";
 	public static final String TYPE_ROW_ASC_CODE = "RASC";
 	public static final String TYPE_COL_ASC_CODE = "CASC";
-	public static final String TYPE_SORT_JOIN_ROWS_CODE = "JROW";
-	public static final String TYPE_SORT_JOIN_COLS_CODE = "JCOL";
+	public static final String TYPE_SORT_COLUMN_FIRST_CODE = "C1ST";
+	public static final String TYPE_SORT_ROW_FIRST_CODE = "R1ST";
 
 	public static final String AGGREG_TEXT = "/SUM ";
 
@@ -216,11 +216,11 @@ public final class Dominoes {
 			relationText.setFont(new Font("Courier New", 12));
 			relationText.setY(border.getHeight() - back.getHeight() + 39);
 		}
-		
+
 		relationText.setFill(Dominoes.COLOR_NORMAL_FONT);
 		relationText.toFront();
 		relationText.setX(GRAPH_WIDTH / 2 - 20);
-		
+
 		relationText.setRotate(90);
 
 		Text idRow = new Text(this.getIdRow());
@@ -266,6 +266,7 @@ public final class Dominoes {
 		Circle circle = new Circle(0, 0, radius, Dominoes.COLOR_TYPE);
 
 		textType = new Text();
+		int fontSize = 12;
 		textType.setFill(Dominoes.COLOR_NORMAL_FONT);
 
 		int z = 0;
@@ -346,14 +347,14 @@ public final class Dominoes {
 			z = 23;
 			break;
 		}
-		case Dominoes.TYPE_SORT_JOIN_ROWS: {
-			textType.setText(Dominoes.TYPE_SORT_JOIN_ROWS_CODE);
-			z = 23;
+		case Dominoes.TYPE_SORT_COLUMN_FIRST: {
+			textType.setText(Dominoes.TYPE_SORT_COLUMN_FIRST_CODE);
+			z = 21;
 			break;
 		}
-		case Dominoes.TYPE_SORT_JOIN_COLS: {
-			textType.setText(Dominoes.TYPE_SORT_JOIN_COLS_CODE);
-			z = 23;
+		case Dominoes.TYPE_SORT_ROW_FIRST: {
+			textType.setText(Dominoes.TYPE_SORT_ROW_FIRST_CODE);
+			z = 21;
 			break;
 		}
 		case Dominoes.TYPE_UPPER_DIAGONAL: {
@@ -374,6 +375,8 @@ public final class Dominoes {
 		}
 		textType.setX((circle.getCenterX() - circle.getRadius() / 2 - padding));
 		textType.setY(circle.getCenterY() + circle.getRadius() / 2 + padding);
+		Font f = new Font("Times", fontSize);
+		textType.setFont(f);
 
 		circle.toFront();
 		textType.toFront();
@@ -584,16 +587,16 @@ public final class Dominoes {
 
 	public void sortJoinRows() throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.sortColumnsFirst();
+		MatrixOperations _newMat = mat.sortColumnFirst();
 		setMat(_newMat);
-		this.type = Dominoes.TYPE_SORT_JOIN_ROWS;
+		this.type = Dominoes.TYPE_SORT_COLUMN_FIRST;
 	}
 
 	public void sortJoinCols() throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.sortRowsFirst();
+		MatrixOperations _newMat = mat.sortRowFirst();
 		setMat(_newMat);
-		this.type = Dominoes.TYPE_SORT_JOIN_COLS;
+		this.type = Dominoes.TYPE_SORT_ROW_FIRST;
 	}
 
 	public void highPassFilter(double d) throws Exception {
