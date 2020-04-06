@@ -55,12 +55,12 @@ public class CommandFactory {
 		return mul;
 	}
 
-	public AbstractCommand aggRows(Group piece) {
-		return new AggregateRowsCommand(App.getArea().getData().getPieces().indexOf(piece));
-	}
-
 	public AbstractCommand aggColumns(Group piece) {
 		return new AggregateColumnsCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+
+	public AbstractCommand aggRows(Group piece) {
+		return new AggregateRowsCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
 	public AbstractCommand confidence(Group piece) {
@@ -123,12 +123,12 @@ public class CommandFactory {
 		return new SortColumnsCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
-	public AbstractCommand sortColumnsFirst(Group piece) {
-		return new SortColumnsFirstCommand(App.getArea().getData().getPieces().indexOf(piece));
+	public AbstractCommand sortColumnFirst(Group piece) {
+		return new SortColumnFirstCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
-	public AbstractCommand sortRowsFirst(Group piece) {
-		return new SortRowsFirstCommand(App.getArea().getData().getPieces().indexOf(piece));
+	public AbstractCommand sortRowFirst(Group piece) {
+		return new SortRowFirstCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
 	public int getPieceCounter() {

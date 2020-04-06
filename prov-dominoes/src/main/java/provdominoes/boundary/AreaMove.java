@@ -71,13 +71,13 @@ public class AreaMove extends Pane {
 
 		MenuItem menuItemTranspose = new MenuItem("Transpose");
 
-		MenuItem aggRows = new MenuItem("Aggregate " + domino.getDescriptor().getRowType());
-		if (!data.getMenuItemAggregateCols().contains(aggRows)) {
-			data.getMenuItemAggregateCols().add(aggRows);
+		MenuItem aggRows = new MenuItem("Aggregate " + domino.getIdRow());
+		if (!data.getMenuItemAggregateRows().contains(aggRows)) {
+			data.getMenuItemAggregateRows().add(aggRows);
 		}
-		MenuItem aggCols = new MenuItem("Aggregate " + domino.getDescriptor().getColType());
-		if (!data.getMenuItemAggregateRows().contains(aggCols)) {
-			data.getMenuItemAggregateRows().add(aggCols);
+		MenuItem aggCols = new MenuItem("Aggregate " + domino.getIdCol());
+		if (!data.getMenuItemAggregateColumns().contains(aggCols)) {
+			data.getMenuItemAggregateColumns().add(aggCols);
 		}
 		MenuItem menuItemConfidence = new MenuItem("Confidence");
 
@@ -105,8 +105,8 @@ public class AreaMove extends Pane {
 
 		MenuItem menuItemSortRows = new MenuItem("Sort by Rows Asc");
 		MenuItem menuItemSortColumns = new MenuItem("Sort by Columns Asc");
-		MenuItem menuItemSortColumnsFirst = new MenuItem("Sort by Columns-First");
-		MenuItem menuItemSortRowsFirst = new MenuItem("Sort by Rows-First");
+		MenuItem menuItemSortColumnsFirst = new MenuItem("Sort by Column-First");
+		MenuItem menuItemSortRowsFirst = new MenuItem("Sort by Row-First");
 
 		Menu menuOperate = new Menu("Operations");
 		Menu menuFilters = new Menu("Filters");
@@ -321,11 +321,11 @@ public class AreaMove extends Pane {
 						App.getCommandManager().invokeCommand(commandFactory.transpose(piece));
 					}
 				} else if (((MenuItem) event.getTarget()).getText()
+						.equals(data.getMenuItemAggregateColumns().get(index).getText())) {
+					App.getCommandManager().invokeCommand(commandFactory.aggColumns(piece));
+				} else if (((MenuItem) event.getTarget()).getText()
 						.equals(data.getMenuItemAggregateRows().get(index).getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.aggRows(piece));
-				} else if (((MenuItem) event.getTarget()).getText()
-						.equals(data.getMenuItemAggregateCols().get(index).getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.aggColumns(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemConfidence.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.confidence(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemZScore.getText())) {
@@ -371,9 +371,9 @@ public class AreaMove extends Pane {
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortColumns.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.sortColumns(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortColumnsFirst.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.sortColumnsFirst(piece));
+					App.getCommandManager().invokeCommand(commandFactory.sortColumnFirst(piece));
 				}  else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortRowsFirst.getText())) {
-					App.getCommandManager().invokeCommand(commandFactory.sortRowsFirst(piece));
+					App.getCommandManager().invokeCommand(commandFactory.sortRowFirst(piece));
 				}
 			}
 		});
@@ -623,8 +623,8 @@ public class AreaMove extends Pane {
 			this.data.getPieces().get(index).setVisible(false);
 			this.data.getDominoes().remove(index);
 			this.data.getPieces().remove(index);
+			this.data.getMenuItemAggregateColumns().remove(index);
 			this.data.getMenuItemAggregateRows().remove(index);
-			this.data.getMenuItemAggregateCols().remove(index);
 		}
 		return true;
 	}
