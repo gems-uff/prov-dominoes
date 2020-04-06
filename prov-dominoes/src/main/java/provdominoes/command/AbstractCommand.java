@@ -24,8 +24,8 @@ public abstract class AbstractCommand {
 	public static final String INVERT_COMMAND = "INVERT";
 	public static final String SORT_ROW_COMMAND = "SORT_ROW";
 	public static final String SORT_COLUMN_COMMAND = "SORT_COLUMN";
-	public static final String SORT_COLUMNS_FIRST_COMMAND = "SORT_COLS_FIRST";
-	public static final String SORT_ROWS_FIRST_COMMAND = "SORT_ROWS_FIRST";
+	public static final String SORT_COLUMN_FIRST_COMMAND = "SORT_COLUMN_1ST";
+	public static final String SORT_ROW_FIRST_COMMAND = "SORT_ROW_1ST";
 	public static final String DIAGONALIZE_COMMAND = "DIAGONALIZE";
 	public static final String UPPER_DIAGONAL_COMMAND = "UPPER_DIAGONAL";
 	public static final String LOWER_DIAGONAL_COMMAND = "LOWER_DIAGONAL";
