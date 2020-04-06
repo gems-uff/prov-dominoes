@@ -171,15 +171,6 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().transitiveClosure(piece);
-				} else if (token[0].equals(AbstractCommand.AGGREGATE_COLUMNS_COMMAND)) {
-					Group piece = null;
-					for (Dominoes d : App.getArea().getData().getDominoes()) {
-						if (d.getId().equals(token[1].toUpperCase())) {
-							int index = App.getArea().getData().getDominoes().indexOf(d);
-							piece = App.getArea().getData().getPieces().get(index);
-						}
-					}
-					cmd = CommandFactory.getInstance().aggColumns(piece);
 				} else if (token[0].equals(AbstractCommand.AGGREGATE_ROWS_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
@@ -189,6 +180,15 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().aggRows(piece);
+				} else if (token[0].equals(AbstractCommand.AGGREGATE_COLUMNS_COMMAND)) {
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(token[1].toUpperCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					cmd = CommandFactory.getInstance().aggColumns(piece);
 				} else if (token[0].equals(AbstractCommand.BINARIZE_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
@@ -309,7 +309,7 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().sortColumns(piece);
-				} else if (token[0].equals(AbstractCommand.SORT_COLUMNS_FIRST_COMMAND)) {
+				} else if (token[0].equals(AbstractCommand.SORT_COLUMN_FIRST_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(token[1].toUpperCase())) {
@@ -317,8 +317,8 @@ public class ScriptController {
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().sortColumnsFirst(piece);
-				} else if (token[0].equals(AbstractCommand.SORT_ROWS_FIRST_COMMAND)) {
+					cmd = CommandFactory.getInstance().sortColumnFirst(piece);
+				} else if (token[0].equals(AbstractCommand.SORT_ROW_FIRST_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(token[1].toUpperCase())) {
@@ -326,7 +326,7 @@ public class ScriptController {
 							piece = App.getArea().getData().getPieces().get(index);
 						}
 					}
-					cmd = CommandFactory.getInstance().sortRowsFirst(piece);
+					cmd = CommandFactory.getInstance().sortRowFirst(piece);
 				} else if (token[0].equals(AbstractCommand.LOWER_DIAGONAL_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
