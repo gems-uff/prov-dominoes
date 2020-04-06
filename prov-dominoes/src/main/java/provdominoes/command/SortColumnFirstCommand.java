@@ -5,7 +5,7 @@ import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class SortColumnsFirstCommand extends AbstractCommand {
+public class SortColumnFirstCommand extends AbstractCommand {
 
 	private Group piece;
 	private double x;
@@ -13,11 +13,11 @@ public class SortColumnsFirstCommand extends AbstractCommand {
 	private Dominoes oldDominoes;
 	private int index;
 
-	public SortColumnsFirstCommand() {
+	public SortColumnFirstCommand() {
 		this.index = -1;
 	}
 
-	public SortColumnsFirstCommand(int index) {
+	public SortColumnFirstCommand(int index) {
 		this();
 		this.index = index;
 	}
@@ -60,7 +60,7 @@ public class SortColumnsFirstCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return SORT_COLUMNS_FIRST_COMMAND + "(" + this.oldDominoes.getId() + ")";
+		return SORT_COLUMN_FIRST_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
 	private String id;
 

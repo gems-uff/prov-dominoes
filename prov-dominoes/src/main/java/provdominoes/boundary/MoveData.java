@@ -21,8 +21,8 @@ public class MoveData {
 	private double srcTranslateY;
 	private double padding;
 	private boolean transposing;
+	private List<MenuItem> menuItemAggregateColumns;
 	private List<MenuItem> menuItemAggregateRows;
-	private List<MenuItem> menuItemAggregateCols;
 
 	public MoveData(int indexFirstOperatorMultiplication, int indexSecondOperatorMultiplication, double padding,
 			boolean transposing, List<MenuItem> menuItemAggregateRow, List<MenuItem> menuItemAggregateCol) {
@@ -31,8 +31,8 @@ public class MoveData {
 		this.indexSecondOperatorMultiplication = indexSecondOperatorMultiplication;
 		this.padding = padding;
 		this.transposing = transposing;
-		this.menuItemAggregateRows = menuItemAggregateRow;
-		this.menuItemAggregateCols = menuItemAggregateCol;
+		this.menuItemAggregateColumns = menuItemAggregateRow;
+		this.menuItemAggregateRows = menuItemAggregateCol;
 	}
 
 	public MoveData clone() {
@@ -41,8 +41,8 @@ public class MoveData {
 
 		this.dominoes = new ArrayList<>(dominoes);
 		this.pieces = new ArrayList<>(pieces);
+		this.menuItemAggregateColumns = new ArrayList<>(menuItemAggregateColumns);
 		this.menuItemAggregateRows = new ArrayList<>(menuItemAggregateRows);
-		this.menuItemAggregateCols = new ArrayList<>(menuItemAggregateCols);
 		return clone;
 	}
 
@@ -148,20 +148,20 @@ public class MoveData {
 		this.transposing = transposing;
 	}
 
+	public List<MenuItem> getMenuItemAggregateColumns() {
+		return menuItemAggregateColumns;
+	}
+
+	public void setMenuItemAggregateColumns(List<MenuItem> menuItemAggregateColumns) {
+		this.menuItemAggregateColumns = menuItemAggregateColumns;
+	}
+
 	public List<MenuItem> getMenuItemAggregateRows() {
 		return menuItemAggregateRows;
 	}
 
-	public void setMenuItemAggregateRows(List<MenuItem> menuItemAggregateRow) {
-		this.menuItemAggregateRows = menuItemAggregateRow;
-	}
-
-	public List<MenuItem> getMenuItemAggregateCols() {
-		return menuItemAggregateCols;
-	}
-
-	public void setMenuItemAggregateCols(List<MenuItem> menuItemAggregateCol) {
-		this.menuItemAggregateCols = menuItemAggregateCol;
+	public void setMenuItemAggregateRows(List<MenuItem> menuItemAggregateRows) {
+		this.menuItemAggregateRows = menuItemAggregateRows;
 	}
 
 	public Group getPiece(String identifier) {
