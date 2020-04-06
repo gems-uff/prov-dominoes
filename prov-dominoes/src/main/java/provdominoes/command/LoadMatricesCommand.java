@@ -91,6 +91,10 @@ public class LoadMatricesCommand extends AbstractCommand {
 				FileReader fr = new FileReader(file);
 				BufferedReader br = new BufferedReader(fr);
 				String line = br.readLine();
+				if (line != null) {
+					line = line.replace("(", "[");
+					line = line.replace(")", "]");
+				}
 				while (line != null) {
 					if (line.contains("MATRIX") || line.contains(Configuration.DATA_SEPARATOR)) {
 						if (line.equals("END MATRIX")) {
@@ -110,6 +114,10 @@ public class LoadMatricesCommand extends AbstractCommand {
 							matrix = new DefaultMatrix();
 							rows = new ArrayList<>();
 							line = br.readLine();
+							if (line != null) {
+								line = line.replace("(", "[");
+								line = line.replace(")", "]");
+							}
 						}
 						if (line.contains(Configuration.DATA_SEPARATOR)) {
 							String[] row = line.split(Configuration.DATA_SEPARATOR);
@@ -133,6 +141,10 @@ public class LoadMatricesCommand extends AbstractCommand {
 						}
 					}
 					line = br.readLine();
+					if (line != null) {
+						line = line.replace("(", "[");
+						line = line.replace(")", "]");
+					}
 				}
 
 				br.close();
