@@ -1,10 +1,18 @@
 package provdominoes.arch;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.la4j.matrix.sparse.CRSMatrix;
 
 import processor.Cell;
 import processor.MatrixProcessor;
 import provdominoes.command.TextFilterData;
+import provdominoes.util.Prov2DominoesUtil;
+import provdominoes.util.SortIgnoreCase;
 
 public class MatrixOperationsGPU implements MatrixOperations {
 
@@ -77,6 +85,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 		System.out.println(
 				"2) Operation: Multiplication - Using " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
+		setData(this.sortColumns().getData());
+		other.setData(other.sortRows().getData());
 
 		MatrixProcessor.multiply(matPointer, ((MatrixOperationsGPU) other).matPointer, result.matPointer, useGPU);
 		System.out.println("Releasing " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
@@ -165,7 +175,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		try {
 			reduced = new MatrixOperationsGPU(_newDescriptor, true);
 			System.out.println("Operation: Reduction - Using " + getMemUsed() + " KB of GPU Memory.");
-			MatrixProcessor.reduceRow(matPointer, reduced.matPointer, useGPU);
+			MatrixProcessor.reduceDimension(matPointer, reduced.matPointer, useGPU);
 			System.out.println("Releasing " + getMemUsed() + " KB of GPU Memory.");
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -292,18 +302,6 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations standardScoreDense() {
-		// TODO Pending GPU implementation
-		return null;
-	}
-
-	@Override
-	public MatrixOperations meanAndSD() {
-		// TODO Pending GPU implementation
-		return null;
-	}
-
-	@Override
 	public ArrayList<Cell> getData() {
 		if (isSparse) {
 			return getSparseData();
@@ -331,6 +329,18 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 	public void setCols(int[] cols) {
 		this.cols = cols;
+	}
+	
+	@Override
+	public MatrixOperations standardScoreDense() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public MatrixOperations meanAndSD() {
+		// TODO Pending GPU implementation
+		return null;
 	}
 
 	@Override
@@ -364,15 +374,57 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations sortColumns() {
-		// TODO Pending GPU implementation
-		return null;
+	public MatrixOperations sortRows() {
+		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
+				matrixDescriptor.getColType());
+		List<String> rowsDesc = new ArrayList<>(matrixDescriptor.getRowsDesc());
+		Map<String, Integer> rowsIndexes = new HashMap<>();
+		for (int i = 0; i < rowsDesc.size(); i++) {
+			rowsIndexes.put(rowsDesc.get(i), i);
+		}
+		Collections.sort(rowsDesc, new SortIgnoreCase());
+		_matrixDescriptor.setRowsDesc(rowsDesc);
+		_matrixDescriptor.setColumnsDesc(matrixDescriptor.getColumnsDesc());
+
+		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
+
+		double[][] matrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
+		CRSMatrix oldMatrix = Prov2DominoesUtil.cells2Matrix(getData(), matrixDescriptor.getNumRows(), matrixDescriptor.getNumCols());
+		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
+			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
+				matrix[i][j] = oldMatrix.get(rowsIndexes.get(rowsDesc.get(i)), j);
+			}
+		}
+
+		result.setData(new CRSMatrix(matrix));
+		return result;
 	}
 
 	@Override
-	public MatrixOperations sortRows() {
-		// TODO Pending GPU implementation
-		return null;
+	public MatrixOperations sortColumns() {
+		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
+				matrixDescriptor.getColType());
+		List<String> colsDesc = new ArrayList<>(matrixDescriptor.getColumnsDesc());
+		Map<String, Integer> colsIndexes = new HashMap<>();
+		for (int i = 0; i < colsDesc.size(); i++) {
+			colsIndexes.put(colsDesc.get(i), i);
+		}
+		Collections.sort(colsDesc, new SortIgnoreCase());
+		_matrixDescriptor.setColumnsDesc(colsDesc);
+		_matrixDescriptor.setRowsDesc(matrixDescriptor.getRowsDesc());
+
+		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
+
+		double[][] matrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
+		CRSMatrix oldMatrix = Prov2DominoesUtil.cells2Matrix(getData(), matrixDescriptor.getNumRows(), matrixDescriptor.getNumCols());
+		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
+			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
+				matrix[i][j] = oldMatrix.get(i, colsIndexes.get(colsDesc.get(j)));
+			}
+		}
+
+		result.setData(new CRSMatrix(matrix));
+		return result;
 	}
 
 	@Override
@@ -383,18 +435,17 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 	@Override
 	public ArrayList<Cell> getAllData() {
+		return getData();
+	}
+
+	@Override
+	public MatrixOperations sortColumnFirst() {
 		// TODO Pending GPU implementation
 		return null;
 	}
 
 	@Override
-	public MatrixOperations sortColumnsFirst() {
-		// TODO Pending GPU implementation
-		return null;
-	}
-
-	@Override
-	public MatrixOperations sortRowsFirst() {
+	public MatrixOperations sortRowFirst() {
 		// TODO Pending GPU implementation
 		return null;
 	}

@@ -66,9 +66,9 @@ public interface MatrixOperations {
     
 	public MatrixOperations sortRows();
     
-	public MatrixOperations sortColumnsFirst();
+	public MatrixOperations sortColumnFirst();
 	
-	public MatrixOperations sortRowsFirst();
+	public MatrixOperations sortRowFirst();
 	
 	public MatrixOperations standardScoreSparse();
 	

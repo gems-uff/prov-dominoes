@@ -63,6 +63,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		MatrixOperationsCPU otherJava = (MatrixOperationsCPU) other;
 
+		this.data = Prov2DominoesUtil.cells2Matrix(this.sortColumns().getData(), this.matrixDescriptor.getNumRows(), this.matrixDescriptor.getNumCols());
+		other.setData(otherJava.sortRows().getData());
 		result.data = (CRSMatrix) data.multiply(otherJava.data);
 
 		return result;
@@ -744,7 +746,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations sortColumnsFirst() {
+	public MatrixOperations sortColumnFirst() {
 		MatrixOperationsCPU result = null;
 		ArrayList<Cell> newMatrix = new ArrayList<>();
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
@@ -798,7 +800,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations sortRowsFirst() {
+	public MatrixOperations sortRowFirst() {
 		MatrixOperationsCPU result = null;
 		ArrayList<Cell> newMatrix = new ArrayList<>();
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
