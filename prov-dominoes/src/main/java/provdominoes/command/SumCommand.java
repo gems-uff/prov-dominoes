@@ -6,7 +6,7 @@ import provdominoes.boundary.MoveData;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class MultiplyCommand extends AbstractCommand {
+public class SumCommand extends AbstractCommand {
 
 	private String id;
 	private String key;
@@ -22,7 +22,7 @@ public class MultiplyCommand extends AbstractCommand {
 	private int indexResultDominoes;
 	private Group resultPiece;
 
-	public MultiplyCommand() {
+	public SumCommand() {
 		this.indexResultDominoes = -1;
 		this.indexLeftDominoes = -1;
 		this.indexRightDominoes = -1;
@@ -32,11 +32,11 @@ public class MultiplyCommand extends AbstractCommand {
 	protected boolean doIt() {
 		boolean result = false;
 		if (indexLeftDominoes != -1 && indexRightDominoes != -1) {
-			App.getArea().getData().setCombination(MoveData.COMBINATION_MULTIPLICATION);
+			App.getArea().getData().setCombination(MoveData.COMBINATION_SUM);
 			App.getArea().getData().setIndexFirstOperatorCombination(indexLeftDominoes);
 			App.getArea().getData().setIndexSecondOperatorCombination(indexRightDominoes);
 		}
-		if (App.getArea().getData().getCombination() == MoveData.COMBINATION_MULTIPLICATION && App.getArea().getData().getIndexFirstOperatorCombination() != -1
+		if (App.getArea().getData().getCombination() == MoveData.COMBINATION_SUM && App.getArea().getData().getIndexFirstOperatorCombination() != -1
 				&& App.getArea().getData().getIndexSecondOperatorCombination() != -1) {
 			Dominoes d1 = App.getArea().getData().getDominoes()
 					.get(App.getArea().getData().getIndexFirstOperatorCombination());
@@ -49,8 +49,8 @@ public class MultiplyCommand extends AbstractCommand {
 			this.indexRightDominoes = App.getArea().getData().getIndexSecondOperatorCombination();
 
 			try {
-				if (d1.getIdCol().equals(d2.getIdRow())) {
-					Dominoes resultOperation = provdominoes.control.Controller.multiply(d1, d2);
+				if (d1.getIdRow().equals(d2.getIdRow()) && d1.getIdCol().equals(d2.getIdCol())) {
+					Dominoes resultOperation = provdominoes.control.Controller.sum(d1, d2);
 					this.resultDominoes = resultOperation;
 					this.resultDominoes.setId(key);
 
@@ -89,7 +89,7 @@ public class MultiplyCommand extends AbstractCommand {
 				App.getArea().getData().setIndexSecondOperatorCombination(-1);
 				result = true;
 			} catch (Exception e) {
-				App.alertException(e, "Erro desconhecido ao calcular multiplicação das matrizes das peças!");
+				App.alertException(e, "Erro desconhecido ao calcular soma das matrizes das peças!");
 				result = false;
 				e.printStackTrace();
 			}
@@ -156,7 +156,7 @@ public class MultiplyCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		String base = MULTIPLY_COMMAND + "(" + leftDominoes.getId() + ", " + rightDominoes.getId() + ")";
+		String base = SUM_COMMAND + "(" + leftDominoes.getId() + ", " + rightDominoes.getId() + ")";
 		return key + " = " + base;
 	}
 

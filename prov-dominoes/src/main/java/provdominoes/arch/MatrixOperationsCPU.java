@@ -44,6 +44,58 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 	public void finalize() {
 	}
+	
+	@Override
+	public MatrixOperations subtract(MatrixOperations other) throws Exception {
+		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
+
+		if (matrixDescriptor.getNumRows() != otherDescriptor.getNumRows()
+				&& matrixDescriptor.getNumCols() != otherDescriptor.getNumCols())
+			throw new Exception("Matrix cannot be added!");
+
+		MatrixOperations t1 = (MatrixOperationsCPU) this.sortRows();
+		t1 = t1.sortColumns();
+		CRSMatrix crsData = Prov2DominoesUtil.cells2Matrix(t1.getData(), t1.getMatrixDescriptor().getNumRows(),
+				t1.getMatrixDescriptor().getNumCols());
+
+		other = other.sortRows();
+		other = other.sortColumns();
+		CRSMatrix otherData = Prov2DominoesUtil.cells2Matrix(other.getData(), other.getMatrixDescriptor().getNumRows(),
+				other.getMatrixDescriptor().getNumCols());
+
+
+		CRSMatrix crsResult = (CRSMatrix) crsData.subtract(otherData);
+		MatrixOperationsCPU result = new MatrixOperationsCPU(other.getMatrixDescriptor());
+		result.setData(crsResult);
+
+		return result;
+	}
+
+	@Override
+	public MatrixOperations sum(MatrixOperations other) throws Exception {
+		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
+
+		if (matrixDescriptor.getNumRows() != otherDescriptor.getNumRows()
+				&& matrixDescriptor.getNumCols() != otherDescriptor.getNumCols())
+			throw new Exception("Matrix cannot be added!");
+
+		MatrixOperations t1 = (MatrixOperationsCPU) this.sortRows();
+		t1 = t1.sortColumns();
+		CRSMatrix crsData = Prov2DominoesUtil.cells2Matrix(t1.getData(), t1.getMatrixDescriptor().getNumRows(),
+				t1.getMatrixDescriptor().getNumCols());
+
+		other = other.sortRows();
+		other = other.sortColumns();
+		CRSMatrix otherData = Prov2DominoesUtil.cells2Matrix(other.getData(), other.getMatrixDescriptor().getNumRows(),
+				other.getMatrixDescriptor().getNumCols());
+
+
+		CRSMatrix crsResult = (CRSMatrix) crsData.add(otherData);
+		MatrixOperationsCPU result = new MatrixOperationsCPU(other.getMatrixDescriptor());
+		result.setData(crsResult);
+
+		return result;
+	}
 
 	public MatrixOperations multiply(MatrixOperations other, boolean useGPU) throws Exception {
 		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
@@ -63,7 +115,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		MatrixOperationsCPU otherJava = (MatrixOperationsCPU) other;
 
-		this.data = Prov2DominoesUtil.cells2Matrix(this.sortColumns().getData(), this.matrixDescriptor.getNumRows(), this.matrixDescriptor.getNumCols());
+		this.data = Prov2DominoesUtil.cells2Matrix(this.sortColumns().getData(), this.matrixDescriptor.getNumRows(),
+				this.matrixDescriptor.getNumCols());
 		other.setData(otherJava.sortRows().getData());
 		result.data = (CRSMatrix) data.multiply(otherJava.data);
 
@@ -419,7 +472,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
-				if (data.get(i, j) >= data.max() * ((100 - d) / 100.0)) {
+				if (data.get(i, j) > d) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
 					filterMatrix[i][j] = 0.00;
@@ -442,7 +495,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
-				if (data.get(i, j) <= data.max() * ((100 - d) / 100.0)) {
+				if (data.get(i, j) < d) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
 					filterMatrix[i][j] = 0.00;
@@ -1082,6 +1135,21 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	@Override
+	public void setSparse(boolean isSparse) {
+		// TODO Necessary only to GPU
+	}
+
+	public void setRows(int[] rows) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setCols(int[] cols) {
+		// TODO Auto-generated method stub
 
 	}
 

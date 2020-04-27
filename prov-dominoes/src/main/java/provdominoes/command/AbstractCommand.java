@@ -13,6 +13,8 @@ public abstract class AbstractCommand {
 	public static final String LOAD_COMMAND = "LOAD";
 	public static final String TRANSPOSE_COMMAND = "TRANSPOSE";
 	public static final String MULTIPLY_COMMAND = "MULTIPLY";
+	public static final String SUM_COMMAND = "SUM";
+	public static final String SUBTRACT_COMMAND = "SUBTRACT";
 	public static final String ADD_COMMAND = "ADD";
 	public static final String REMOVE_COMMAND = "REMOVE";
 	public static final String AGGREGATE_ROWS_COMMAND = "AGG_ROWS";

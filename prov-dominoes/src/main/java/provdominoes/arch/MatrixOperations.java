@@ -12,6 +12,8 @@ import provdominoes.util.Prov2DominoesUtil;
 
 public interface MatrixOperations {
 
+	public void setSparse(boolean isSparse);
+	
 	public boolean isEmpty();
 
 	public void finalize();
@@ -32,6 +34,9 @@ public interface MatrixOperations {
 
 	public MatrixOperations transpose();
 
+	public MatrixOperations sum(MatrixOperations other) throws Exception;
+	public MatrixOperations subtract(MatrixOperations other) throws Exception;
+	
 	public MatrixOperations multiply(MatrixOperations other, boolean useGPU) throws Exception;
 
 	public MatrixOperations aggregateDimension(boolean useGPU);
@@ -84,7 +89,5 @@ public interface MatrixOperations {
 		mat.setData(Prov2DominoesUtil.matrix2Cells(matrix));
 		return mat;
 	}
-
-
 
 }

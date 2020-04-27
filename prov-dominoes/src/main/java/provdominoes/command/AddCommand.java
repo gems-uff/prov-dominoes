@@ -1,6 +1,8 @@
 package provdominoes.command;
 
 import javafx.scene.Group;
+import provdominoes.arch.MatrixOperations;
+import provdominoes.arch.MatrixOperationsFactory;
 import provdominoes.boundary.App;
 import provdominoes.domain.Dominoes;
 
@@ -33,6 +35,7 @@ public class AddCommand extends AbstractCommand {
 						this.addedDominoes = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece))
 								.cloneNoMatrix();
 						this.addedDominoes.setId(this.key);
+						this.addedDominoes.setMat(MatrixOperations.configureOperation(addedDominoes.getCrsMatrix(), addedDominoes.getDescriptor(), false));
 						break;
 					}
 				}

@@ -7,12 +7,15 @@ import java.text.ParseException;
 
 import javafx.scene.Group;
 import provdominoes.boundary.App;
+import provdominoes.boundary.MoveData;
 import provdominoes.command.AbstractCommand;
 import provdominoes.command.AddCommand;
 import provdominoes.command.CommandFactory;
 import provdominoes.command.MoveCommand;
 import provdominoes.command.MultiplyCommand;
 import provdominoes.command.Redo;
+import provdominoes.command.SubtractCommand;
+import provdominoes.command.SumCommand;
 import provdominoes.command.TextFilterData;
 import provdominoes.command.Undo;
 import provdominoes.domain.Dominoes;
@@ -81,7 +84,7 @@ public class ScriptController {
 
 			commandLine = TokenUtil.getInstance().supressReserved(commandLine);
 			if (commandLine.contains(AbstractCommand.SAVE_COMMAND)) {
-				commandLine = commandLine.substring(0, commandLine.indexOf(")")+1);
+				commandLine = commandLine.substring(0, commandLine.indexOf(")") + 1);
 			}
 			String cmdl = commandLine.replace(" ", "").replace("\"", "").replace(")", "");
 
@@ -111,20 +114,67 @@ public class ScriptController {
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(operands[0].toUpperCase())) {
 							indexLeft = App.getArea().getData().getDominoes().indexOf(d);
-							App.getArea().getData().setIndexFirstOperatorMultiplication(indexLeft);
+							App.getArea().getData().setIndexFirstOperatorCombination(indexLeft);
 						}
 						if (d.getId().equals(operands[1].toUpperCase())) {
 							indexRight = App.getArea().getData().getDominoes().indexOf(d);
-							App.getArea().getData().setIndexSecondOperatorMultiplication(indexRight);
+							App.getArea().getData().setIndexSecondOperatorCombination(indexRight);
 						}
 						if (indexLeft != -1 && indexRight != -1) {
 							break;
 						}
 					}
 					if (indexLeft != -1 && indexRight != -1) {
+						App.getArea().getData().setCombination(MoveData.COMBINATION_MULTIPLICATION);
 						MultiplyCommand mult = new MultiplyCommand();
 						mult.setKey(pieceAlias);
 						cmd = mult;
+					}
+				} else if (cmdName.equals(AbstractCommand.SUM_COMMAND)) {
+					String[] operands = token[1].split("\\(")[1].split(",");
+					int indexLeft = -1;
+					int indexRight = -1;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(operands[0].toUpperCase())) {
+							indexLeft = App.getArea().getData().getDominoes().indexOf(d);
+							App.getArea().getData().setIndexFirstOperatorCombination(indexLeft);
+						}
+						if (d.getId().equals(operands[1].toUpperCase())) {
+							indexRight = App.getArea().getData().getDominoes().indexOf(d);
+							App.getArea().getData().setIndexSecondOperatorCombination(indexRight);
+						}
+						if (indexLeft != -1 && indexRight != -1) {
+							break;
+						}
+					}
+					if (indexLeft != -1 && indexRight != -1) {
+						App.getArea().getData().setCombination(MoveData.COMBINATION_SUM);
+						SumCommand sum = new SumCommand();
+						sum.setKey(pieceAlias);
+						cmd = sum;
+					}
+				} else if (cmdName.equals(AbstractCommand.SUBTRACT_COMMAND)) {
+					String[] operands = token[1].split("\\(")[1].split(",");
+					int indexLeft = -1;
+					int indexRight = -1;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(operands[0].toUpperCase())) {
+							indexLeft = App.getArea().getData().getDominoes().indexOf(d);
+							App.getArea().getData().setIndexFirstOperatorCombination(indexLeft);
+						}
+						if (d.getId().equals(operands[1].toUpperCase())) {
+							indexRight = App.getArea().getData().getDominoes().indexOf(d);
+							App.getArea().getData().setIndexSecondOperatorCombination(indexRight);
+						}
+						if (indexLeft != -1 && indexRight != -1) {
+							break;
+						}
+					}
+					if (indexLeft != -1 && indexRight != -1) {
+						App.getArea().getData().setCombination(MoveData.COMBINATION_SUBTRACTION);
+						SubtractCommand sum = new SubtractCommand();
+						sum.setKey(pieceAlias);
+						cmd = sum;
 					}
 				}
 			} else {
@@ -227,7 +277,8 @@ public class ScriptController {
 					cmd = CommandFactory.getInstance().invert(piece);
 				} else if (token[0].equals(AbstractCommand.HPF_COMMAND)) {
 					String[] operands = token[1].split(",");
-					String percent = operands[1].toUpperCase();
+					String cutoff = operands[1].toUpperCase();
+					cutoff = cutoff.replace(".", ",");
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(operands[0].toUpperCase())) {
@@ -237,13 +288,14 @@ public class ScriptController {
 					}
 					try {
 						cmd = CommandFactory.getInstance().filterHighPass(piece,
-								NumberFormat.getInstance().parse(percent).doubleValue());
+								NumberFormat.getInstance().parse(cutoff).doubleValue());
 					} catch (ParseException e) {
 						App.alertException(e, "Erro desconhecido ao processar comando: " + cmdl);
 					}
 				} else if (token[0].equals(AbstractCommand.LPF_COMMAND)) {
 					String[] operands = token[1].split(",");
-					String percent = operands[1].toUpperCase();
+					String cutoff = operands[1].toUpperCase();
+					cutoff = cutoff.replace(".", ",");
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(operands[0].toUpperCase())) {
@@ -253,7 +305,7 @@ public class ScriptController {
 					}
 					try {
 						cmd = CommandFactory.getInstance().filterLowPass(piece,
-								NumberFormat.getInstance().parse(percent).doubleValue());
+								NumberFormat.getInstance().parse(cutoff).doubleValue());
 					} catch (ParseException e) {
 						App.alertException(e, "Erro desconhecido ao processar comando: " + cmdl);
 					}

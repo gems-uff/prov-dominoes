@@ -62,6 +62,32 @@ public class Controller {
 
 		return null;
 	}
+	
+	/**
+	 * This function has begin when the user want to sum two matrices.
+	 *
+	 * @param dom1 First operator in the sum
+	 * @param dom2 Second operator in the sum
+	 * @return The result of the sum
+	 * @throws Exception
+	 */
+	public static Dominoes sum(Dominoes d1, Dominoes d2) throws Exception {
+		Dominoes result = d1.sum(d2);
+		return result;
+	}
+	
+	/**
+	 * This function has begin when the user want to subtract two matrices.
+	 *
+	 * @param dom1 First operator in the subtraction
+	 * @param dom2 Second operator in the subtraction
+	 * @return The result of the subtraction
+	 * @throws Exception
+	 */
+	public static Dominoes subtract(Dominoes d1, Dominoes d2) throws Exception {
+		Dominoes result = d1.subtract(d2);
+		return result;
+	}
 
 	/**
 	 * This function has begin when the user want to multiply two matrices.
@@ -72,7 +98,6 @@ public class Controller {
 	 * @throws Exception
 	 */
 	public static Dominoes multiply(Dominoes dom1, Dominoes dom2) throws Exception {
-		// call dominoes
 		Dominoes result = dom1.multiply(dom2);
 		return result;
 	}
