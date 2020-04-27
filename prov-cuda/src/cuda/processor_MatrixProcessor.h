@@ -81,6 +81,22 @@ JNIEXPORT void JNICALL Java_processor_MatrixProcessor_setData__J_3F
 
 /*
  * Class:     processor_MatrixProcessor
+ * Method:    subtract
+ * Signature: (JJIJ)V
+ */
+JNIEXPORT void JNICALL Java_processor_MatrixProcessor_subtract
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong);
+
+/*
+ * Class:     processor_MatrixProcessor
+ * Method:    sum
+ * Signature: (JJIJ)V
+ */
+JNIEXPORT void JNICALL Java_processor_MatrixProcessor_sum
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong);
+
+/*
+ * Class:     processor_MatrixProcessor
  * Method:    multiply
  * Signature: (JJJZ)V
  */

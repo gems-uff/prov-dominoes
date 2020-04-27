@@ -27,6 +27,8 @@ extern "C" {
 	void g_StandardDeviation(float* mat, int rows, int cols, float* meanSD, float* result);
 	void g_MeanSD(int rows, int cols, int depth, float *h_data, float *result, bool considerZeros);
 
+	void g_Sum(float* values1, float* values2, int elements, float*result);
+	void g_Subtract(float* values1, float* values2, int elements, float*result);
 	void g_Binarize(float* values, int elements, float* result);
 	void g_Invert(float* values, int elements, float* result);
 	void g_Diagonalize(float* values, int vertices, float* result);
@@ -567,6 +569,32 @@ JNIEXPORT jfloat JNICALL Java_processor_MatrixProcessor_getMax
 		}
 	}
 	return max;
+}
+
+/*
+ * Class:     processor_MatrixProcessor
+ * Method:    sum
+ * Signature: (JJIJ)V
+ */
+JNIEXPORT void JNICALL Java_processor_MatrixProcessor_sum
+  (JNIEnv *env, jclass obj, jlong pointer1, jlong pointer2, jint elements, jlong jresult) {
+	float* values1 = (float*) pointer1;
+	float* values2 = (float*) pointer2;
+	float* result = (float*) jresult;
+	g_Sum(values1, values2, elements, result);
+}
+
+/*
+ * Class:     processor_MatrixProcessor
+ * Method:    subtract
+ * Signature: (JJIJ)V
+ */
+JNIEXPORT void JNICALL Java_processor_MatrixProcessor_subtract
+  (JNIEnv *env, jclass obj, jlong pointer1, jlong pointer2, jint elements, jlong jresult) {
+	float* values1 = (float*) pointer1;
+	float* values2 = (float*) pointer2;
+	float* result = (float*) jresult;
+	g_Subtract(values1, values2, elements, result);
 }
 
 /*
