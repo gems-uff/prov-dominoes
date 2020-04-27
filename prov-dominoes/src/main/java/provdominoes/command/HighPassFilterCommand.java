@@ -9,6 +9,7 @@ import javafx.scene.control.TextInputDialog;
 import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
+import provdominoes.util.Prov2DominoesUtil;
 
 public class HighPassFilterCommand extends AbstractCommand {
 
@@ -17,7 +18,7 @@ public class HighPassFilterCommand extends AbstractCommand {
 	private double y;
 	private Dominoes oldDominoes;
 	private int index;
-	private double percent;
+	private double cutoff;
 
 	public HighPassFilterCommand() {
 		this.index = -1;
@@ -37,11 +38,16 @@ public class HighPassFilterCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toHPF = App.getArea().getData().getDominoes().get(index);
+			int totalNonZero = Prov2DominoesUtil.getNonZeroTotal(toHPF.getCrsMatrix());
+			double minNonZero = Prov2DominoesUtil.getNonZeroMin(toHPF.getCrsMatrix());
+			double averageNonZero = Prov2DominoesUtil.getNonZeroAverage(toHPF.getCrsMatrix());
+			double max = toHPF.getCrsMatrix().max();
+			double sdNonZero = Prov2DominoesUtil.getNonZeroStandardScore(toHPF.getCrsMatrix(), averageNonZero);
 			if (!super.isReproducing() && !super.isScripting()) {
-				percent = getPercent();
+				cutoff = getValue(totalNonZero, minNonZero, max, averageNonZero, sdNonZero);
 			}
-			if (percent != -1.0) {
-				Dominoes domino = provdominoes.control.Controller.highPassFilter(toHPF, percent);
+			if (cutoff != -1.0) {
+				Dominoes domino = provdominoes.control.Controller.highPassFilter(toHPF, cutoff);
 
 				App.getArea().remove(index);
 				this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
@@ -53,8 +59,8 @@ public class HighPassFilterCommand extends AbstractCommand {
 				success = false;
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao efetuar filtro de passa-alta(threshold: " + NumberFormat.getInstance().format(percent)
-					+ " %)!");
+			App.alertException(e, "Erro desconhecido ao efetuar filtro de passa-alta(threshold: "
+					+ NumberFormat.getInstance().format(cutoff) + " %)!");
 			e.printStackTrace();
 			success = false;
 		}
@@ -63,12 +69,16 @@ public class HighPassFilterCommand extends AbstractCommand {
 		return success;
 	}
 
-	private double getPercent() {
+	private double getValue(int totalNonZero, double minNonZero, double max, double averageNonZero, double sdNonZero) {
 		double d = 0.0;
-		TextInputDialog dialog = new TextInputDialog("%");
-		dialog.setTitle("Percent Filter");
-		dialog.setHeaderText("Filter cells that pass the test: CELL >= MAX_CELL x (1 - %)");
-		dialog.setContentText("Please enter the % you want to filter:");
+		TextInputDialog dialog = new TextInputDialog("" + minNonZero);
+		dialog.setTitle("High-Pass Filter");
+		dialog.setHeaderText(
+				"Filter that passes cells with values higher than the cutoff value informed!\nTotal Non-zero: "
+						+ totalNonZero + "\nNon-zero min: " + minNonZero + "\nMax: " + max + "\nNon-zero Average: "
+						+ averageNonZero+ "\nNon-zero Standard Deviation: "
+						+ sdNonZero);
+		dialog.setContentText("Cutoff value:");
 
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent()) {
@@ -96,8 +106,7 @@ public class HighPassFilterCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return HPF_COMMAND + "(" + this.oldDominoes.getId() + ", " + NumberFormat.getInstance().format(percent)
-				+ ")";
+		return HPF_COMMAND + "(" + this.oldDominoes.getId() + ", " + NumberFormat.getInstance().format(cutoff).replace(",", ".") + ")";
 	}
 
 	private String id;
@@ -112,8 +121,8 @@ public class HighPassFilterCommand extends AbstractCommand {
 		this.id = id;
 	}
 
-	public void setPercent(double percent) {
-		this.percent = percent;
+	public void setCutoff(double percent) {
+		this.cutoff = percent;
 	}
 
 }
