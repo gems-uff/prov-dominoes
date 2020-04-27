@@ -9,12 +9,17 @@ import javafx.scene.shape.Rectangle;
 import provdominoes.domain.Dominoes;
 
 public class MoveData {
+	
+	public static final int COMBINATION_SUM = 1;
+	public static final int COMBINATION_SUBTRACTION = 2;
+	public static final int COMBINATION_MULTIPLICATION = 3;
 
 	private ArrayList<Dominoes> dominoes;
 	private ArrayList<Group> pieces;
 	private Rectangle background;
-	private int indexFirstOperatorMultiplication;
-	private int indexSecondOperatorMultiplication;
+	private int combination = 0;
+	private int indexFirstOperatorCombination;
+	private int indexSecondOperatorCombination;
 	private double srcSceneX;
 	private double srcSceneY;
 	private double srcTranslateX;
@@ -24,11 +29,12 @@ public class MoveData {
 	private List<MenuItem> menuItemAggregateColumns;
 	private List<MenuItem> menuItemAggregateRows;
 
-	public MoveData(int indexFirstOperatorMultiplication, int indexSecondOperatorMultiplication, double padding,
+	public MoveData(int indexFirstOperatorMultiplication, int indexSecondOperatorMultiplication,int combination, double padding,
 			boolean transposing, List<MenuItem> menuItemAggregateRow, List<MenuItem> menuItemAggregateCol) {
 
-		this.indexFirstOperatorMultiplication = indexFirstOperatorMultiplication;
-		this.indexSecondOperatorMultiplication = indexSecondOperatorMultiplication;
+		this.indexFirstOperatorCombination = indexFirstOperatorMultiplication;
+		this.indexSecondOperatorCombination = indexSecondOperatorMultiplication;
+		this.combination = combination;
 		this.padding = padding;
 		this.transposing = transposing;
 		this.menuItemAggregateColumns = menuItemAggregateRow;
@@ -36,7 +42,7 @@ public class MoveData {
 	}
 
 	public MoveData clone() {
-		MoveData clone = new MoveData(background, indexFirstOperatorMultiplication, indexSecondOperatorMultiplication,
+		MoveData clone = new MoveData(background, indexFirstOperatorCombination, indexSecondOperatorCombination, combination,
 				padding, transposing, srcSceneX, srcSceneY, srcTranslateX, srcTranslateY);
 
 		this.dominoes = new ArrayList<>(dominoes);
@@ -47,11 +53,12 @@ public class MoveData {
 	}
 
 	public MoveData(Rectangle background2, int indexFirstOperatorMultiplication2,
-			int indexSecondOperatorMultiplication2, double padding2, boolean transposing2, double srcSceneX2,
+			int indexSecondOperatorMultiplication2, int combination2, double padding2, boolean transposing2, double srcSceneX2,
 			double srcSceneY2, double srcTranslateX2, double srcTranslateY2) {
 		this.background = background2;
-		this.indexFirstOperatorMultiplication = indexFirstOperatorMultiplication2;
-		this.indexSecondOperatorMultiplication = indexSecondOperatorMultiplication2;
+		this.indexFirstOperatorCombination = indexFirstOperatorMultiplication2;
+		this.indexSecondOperatorCombination = indexSecondOperatorMultiplication2;
+		this.combination = combination2;
 		this.padding = padding2;
 		this.transposing = transposing2;
 		this.srcSceneX = srcSceneX2;
@@ -84,20 +91,20 @@ public class MoveData {
 		this.background = background;
 	}
 
-	public int getIndexFirstOperatorMultiplication() {
-		return indexFirstOperatorMultiplication;
+	public int getIndexFirstOperatorCombination() {
+		return indexFirstOperatorCombination;
 	}
 
-	public void setIndexFirstOperatorMultiplication(int indexFirstOperatorMultiplication) {
-		this.indexFirstOperatorMultiplication = indexFirstOperatorMultiplication;
+	public void setIndexFirstOperatorCombination(int indexFirstOperatorMultiplication) {
+		this.indexFirstOperatorCombination = indexFirstOperatorMultiplication;
 	}
 
-	public int getIndexSecondOperatorMultiplication() {
-		return indexSecondOperatorMultiplication;
+	public int getIndexSecondOperatorCombination() {
+		return indexSecondOperatorCombination;
 	}
 
-	public void setIndexSecondOperatorMultiplication(int indexSecondOperatorMultiplication) {
-		this.indexSecondOperatorMultiplication = indexSecondOperatorMultiplication;
+	public void setIndexSecondOperatorCombination(int indexSecondOperatorMultiplication) {
+		this.indexSecondOperatorCombination = indexSecondOperatorMultiplication;
 	}
 
 	public double getSrcSceneX() {
@@ -171,6 +178,14 @@ public class MoveData {
 			}
 		}
 		return null;
+	}
+
+	public int getCombination() {
+		return combination;
+	}
+
+	public void setCombination(int combination) {
+		this.combination = combination;
 	}
 
 }

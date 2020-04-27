@@ -35,7 +35,7 @@ public class AreaMove extends Pane {
 	 */
 	public AreaMove() {
 		super();
-		this.data = new MoveData(-1, -1, Configuration.width, false, new ArrayList<>(), new ArrayList<>());
+		this.data = new MoveData(-1, -1, 0, Configuration.width, false, new ArrayList<>(), new ArrayList<>());
 		this.data.setBackground(new Rectangle());
 		this.data.getBackground().setFill(new Color(1, 1, 1, 1));
 
@@ -169,7 +169,8 @@ public class AreaMove extends Pane {
 			public void handle(MouseEvent event) {
 				int index = App.getArea().getData().getPieces().indexOf(piece);
 				String identifier = App.getArea().getData().getDominoes().get(index).getId();
-				currentMove = CommandFactory.getInstance().move(identifier, piece, piece.getTranslateX(), piece.getTranslateY());
+				currentMove = CommandFactory.getInstance().move(identifier, piece, piece.getTranslateX(),
+						piece.getTranslateY());
 			}
 		});
 
@@ -216,17 +217,15 @@ public class AreaMove extends Pane {
 					((Group) (event.getSource())).setTranslateY(newTranslateY);
 				}
 
-				// detect multiplication
+				// detect multiplication or sum
 				int index = data.getPieces().indexOf(piece);
 
 				for (int j = 0; j < data.getPieces().size(); j++) {
 
-					if (index != j && detectMultiplication(index, j)) {
-						// menuItemReduceLines.setDisable(false);
-
+					if (checkAndPrepareMultiplication(index, j)) {
 						break;
-					} else {
-						// menuItemReduceLines.setDisable(true);
+					} else if (checkAndPrepareSumOrSubtraction(index, j)) {
+						break;
 					}
 				}
 			}
@@ -250,9 +249,18 @@ public class AreaMove extends Pane {
 			@Override
 			public void handle(MouseEvent event) {
 				cursorProperty().set(Cursor.OPEN_HAND);
-				if (App.getArea().getData().getIndexFirstOperatorMultiplication() != -1
-						&& App.getArea().getData().getIndexSecondOperatorMultiplication() != -1) {
+				if (App.getArea().getData().getCombination() == MoveData.COMBINATION_MULTIPLICATION
+						&& App.getArea().getData().getIndexFirstOperatorCombination() != -1
+						&& App.getArea().getData().getIndexSecondOperatorCombination() != -1) {
 					App.getCommandManager().invokeCommand(commandFactory.multiply());
+				} else if (App.getArea().getData().getCombination() == MoveData.COMBINATION_SUM
+						&& App.getArea().getData().getIndexFirstOperatorCombination() != -1
+						&& App.getArea().getData().getIndexSecondOperatorCombination() != -1) {
+					App.getCommandManager().invokeCommand(commandFactory.sum());
+				} else if (App.getArea().getData().getCombination() == MoveData.COMBINATION_SUBTRACTION
+						&& App.getArea().getData().getIndexFirstOperatorCombination() != -1
+						&& App.getArea().getData().getIndexSecondOperatorCombination() != -1) {
+					App.getCommandManager().invokeCommand(commandFactory.subtract());
 				} else if (piece != null && currentMove != null && piece.getTranslateX() != currentMove.getOldX()
 						&& piece.getTranslateY() != currentMove.getOldY()) {
 					int index = App.getArea().getData().getPieces().indexOf(piece);
@@ -372,7 +380,7 @@ public class AreaMove extends Pane {
 					App.getCommandManager().invokeCommand(commandFactory.sortColumns(piece));
 				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortColumnsFirst.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.sortColumnFirst(piece));
-				}  else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortRowsFirst.getText())) {
+				} else if (((MenuItem) event.getTarget()).getText().equals(menuItemSortRowsFirst.getText())) {
 					App.getCommandManager().invokeCommand(commandFactory.sortRowFirst(piece));
 				}
 			}
@@ -395,13 +403,14 @@ public class AreaMove extends Pane {
 			}
 		});
 
-		menuOperate.getItems().addAll(menuItemTranspose, aggRows, aggCols, menuItemConfidence, menuItemZScore,
-				menuItemTransitiveClosure, menuItemTrim, menuItemBinarize, menuItemInvert);
+		menuOperate.getItems().addAll(aggRows, aggCols, menuItemConfidence, menuItemZScore, menuItemTransitiveClosure,
+				menuItemTrim, menuItemBinarize, menuItemInvert);
 		menuFilters.getItems().addAll(menuItemDiagonalFilter, menuItemUpperDiagonalFilter, menuItemLowerDiagonalFilter,
 				menuItemHighPassFilter, menuItemLowPassFilter, menuItemRowTextFilter, menuItemColumnTextFilter);
-		menuView.getItems().addAll(menuItemViewChart, menuItemViewLineChart, menuItemViewGraph,
-				menuItemViewEigenCentrality, menuItemViewMatrix);
-		menuSorting.getItems().addAll(menuItemSortRows, menuItemSortColumns, menuItemSortRowsFirst, menuItemSortColumnsFirst);
+		menuView.getItems().addAll(menuItemViewChart, menuItemViewLineChart, menuItemViewEigenCentrality,
+				menuItemViewMatrix);
+		menuSorting.getItems().addAll(menuItemSortRows, menuItemSortColumns, menuItemSortRowsFirst,
+				menuItemSortColumnsFirst);
 		minimenu.getItems().addAll(menuView, menuOperate, menuFilters, menuSorting, menuItemSaveInList, menuItemClose);
 		this.setVisibleType();
 		return piece;
@@ -474,7 +483,7 @@ public class AreaMove extends Pane {
 	 * @param index1 - piece index one
 	 * @param index2 - piece index two
 	 */
-	private boolean detectMultiplication(int index1, int index2) {
+	private boolean checkAndPrepareMultiplication(int index1, int index2) {
 
 		Group g1 = this.data.getPieces().get(index1);
 		Group g2 = this.data.getPieces().get(index2);
@@ -499,8 +508,9 @@ public class AreaMove extends Pane {
 				g1.setTranslateX(g2.getTranslateX() + Dominoes.GRAPH_WIDTH - paddingToCoupling);
 				g1.setTranslateY(g2.getTranslateY());
 
-				this.data.setIndexFirstOperatorMultiplication(index2);
-				this.data.setIndexSecondOperatorMultiplication(index1);
+				this.data.setCombination(MoveData.COMBINATION_MULTIPLICATION);
+				this.data.setIndexFirstOperatorCombination(index2);
+				this.data.setIndexSecondOperatorCombination(index1);
 
 				return true;
 			} else {
@@ -523,8 +533,9 @@ public class AreaMove extends Pane {
 				g1.setTranslateX(g2.getTranslateX() + Dominoes.GRAPH_WIDTH - paddingToCoupling);
 				g1.setTranslateY(g2.getTranslateY());
 
-				this.data.setIndexFirstOperatorMultiplication(index2);
-				this.data.setIndexSecondOperatorMultiplication(index1);
+				this.data.setCombination(MoveData.COMBINATION_MULTIPLICATION);
+				this.data.setIndexFirstOperatorCombination(index2);
+				this.data.setIndexSecondOperatorCombination(index1);
 
 				return true;
 
@@ -548,8 +559,9 @@ public class AreaMove extends Pane {
 				g1.setTranslateX(g2.getTranslateX() - Dominoes.GRAPH_WIDTH + paddingToCoupling);
 				g1.setTranslateY(g2.getTranslateY());
 
-				this.data.setIndexFirstOperatorMultiplication(index1);
-				this.data.setIndexSecondOperatorMultiplication(index2);
+				this.data.setCombination(MoveData.COMBINATION_MULTIPLICATION);
+				this.data.setIndexFirstOperatorCombination(index1);
+				this.data.setIndexSecondOperatorCombination(index2);
 
 				return true;
 			} else {
@@ -572,8 +584,9 @@ public class AreaMove extends Pane {
 				g1.setTranslateX(g2.getTranslateX() - Dominoes.GRAPH_WIDTH + paddingToCoupling);
 				g1.setTranslateY(g2.getTranslateY());
 
-				this.data.setIndexFirstOperatorMultiplication(index1);
-				this.data.setIndexSecondOperatorMultiplication(index2);
+				this.data.setCombination(MoveData.COMBINATION_MULTIPLICATION);
+				this.data.setIndexFirstOperatorCombination(index1);
+				this.data.setIndexSecondOperatorCombination(index2);
 
 				return true;
 			} else {
@@ -590,8 +603,157 @@ public class AreaMove extends Pane {
 			((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NORMAL_FONT);
 			((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NORMAL_FONT);
 
-			this.data.setIndexFirstOperatorMultiplication(-1);
-			this.data.setIndexSecondOperatorMultiplication(-1);
+			this.data.setCombination(-1);
+			this.data.setIndexFirstOperatorCombination(-1);
+			this.data.setIndexSecondOperatorCombination(-1);
+		}
+
+		return false;
+	}
+
+	private boolean checkAndPrepareSumOrSubtraction(int index1, int index2) {
+
+		Group g1 = this.data.getPieces().get(index1);
+		Group g2 = this.data.getPieces().get(index2);
+		Dominoes d1 = this.data.getDominoes().get(index1);
+		Dominoes d2 = this.data.getDominoes().get(index2);
+
+		int paddingToCoupling = 1;
+
+		boolean detect = false;
+
+		if ((g1.getTranslateY() >= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT / 2
+				&& g1.getTranslateY() <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT)
+				&& (g1.getTranslateX() >= g2.getTranslateX()
+						&& g1.getTranslateX() <= g2.getTranslateX() + Dominoes.GRAPH_WIDTH)) {
+
+			if (d1.getIdRow().equals(d2.getIdRow()) && d1.getIdCol().equals(d2.getIdCol())
+					&& d1.getMat().getMatrixDescriptor().getNumRows() == d2.getDescriptor().getNumRows()
+					&& d1.getMat().getMatrixDescriptor().getNumCols() == d2.getDescriptor().getNumCols()) {
+
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
+
+				g1.setTranslateY(g2.getTranslateY() + Dominoes.GRAPH_HEIGHT - paddingToCoupling);
+				g1.setTranslateX(g2.getTranslateX());
+
+				this.data.setCombination(MoveData.COMBINATION_SUBTRACTION);
+				this.data.setIndexFirstOperatorCombination(index2);
+				this.data.setIndexSecondOperatorCombination(index1);
+
+				return true;
+			} else {
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				detect = true;
+			}
+
+		} else if ((g1.getTranslateY() >= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT / 2
+				&& g1.getTranslateY() <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT)
+				&& (g1.getTranslateX() + Dominoes.GRAPH_WIDTH >= g2.getTranslateX()
+						&& g1.getTranslateX() + Dominoes.GRAPH_WIDTH <= g2.getTranslateX() + Dominoes.GRAPH_WIDTH)) {
+
+			if (d1.getIdRow().equals(d2.getIdRow()) && d1.getIdCol().equals(d2.getIdCol())
+					&& d1.getMat().getMatrixDescriptor().getNumRows() == d2.getDescriptor().getNumRows()
+					&& d1.getMat().getMatrixDescriptor().getNumCols() == d2.getDescriptor().getNumCols()) {
+
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
+
+				g1.setTranslateY(g2.getTranslateY() + Dominoes.GRAPH_HEIGHT - paddingToCoupling);
+				g1.setTranslateX(g2.getTranslateX());
+
+				this.data.setCombination(MoveData.COMBINATION_SUBTRACTION);
+				this.data.setIndexFirstOperatorCombination(index2);
+				this.data.setIndexSecondOperatorCombination(index1);
+
+				return true;
+
+			} else {
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				detect = true;
+			}
+
+		} else if ((g1.getTranslateY() + Dominoes.GRAPH_HEIGHT >= g2.getTranslateY()
+				&& g1.getTranslateY() + Dominoes.GRAPH_HEIGHT <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT / 2)
+				&& (g1.getTranslateX() >= g2.getTranslateX()
+						&& g1.getTranslateX() <= g2.getTranslateX() + Dominoes.GRAPH_WIDTH)) {
+
+			if (d1.getIdRow().equals(d2.getIdRow()) && d1.getIdCol().equals(d2.getIdCol())
+					&& d1.getMat().getMatrixDescriptor().getNumRows() == d2.getDescriptor().getNumRows()
+					&& d1.getMat().getMatrixDescriptor().getNumCols() == d2.getDescriptor().getNumCols()) {
+
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
+
+				g1.setTranslateY(g2.getTranslateY() - Dominoes.GRAPH_HEIGHT + paddingToCoupling);
+				g1.setTranslateX(g2.getTranslateX());
+
+				this.data.setCombination(MoveData.COMBINATION_SUM);
+				this.data.setIndexFirstOperatorCombination(index1);
+				this.data.setIndexSecondOperatorCombination(index2);
+
+				return true;
+			} else {
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				detect = true;
+			}
+
+		} else if ((g1.getTranslateY() + Dominoes.GRAPH_HEIGHT >= g2.getTranslateY()
+				&& g1.getTranslateY() + Dominoes.GRAPH_HEIGHT <= g2.getTranslateY() + Dominoes.GRAPH_HEIGHT / 2)
+				&& (g1.getTranslateX() + Dominoes.GRAPH_WIDTH >= g2.getTranslateX()
+						&& g1.getTranslateX() + Dominoes.GRAPH_WIDTH <= g2.getTranslateX() + Dominoes.GRAPH_WIDTH)) {
+
+			if (d1.getIdRow().equals(d2.getIdRow()) && d1.getIdCol().equals(d2.getIdCol())
+					&& d1.getMat().getMatrixDescriptor().getNumRows() == d2.getDescriptor().getNumRows()
+					&& d1.getMat().getMatrixDescriptor().getNumCols() == d2.getDescriptor().getNumCols()) {
+
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_OPERATE_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_OPERATE_FONT);
+
+				g1.setTranslateY(g2.getTranslateY() - Dominoes.GRAPH_HEIGHT + paddingToCoupling);
+				g1.setTranslateX(g2.getTranslateX());
+
+				this.data.setCombination(MoveData.COMBINATION_SUM);
+				this.data.setIndexFirstOperatorCombination(index1);
+				this.data.setIndexSecondOperatorCombination(index2);
+
+				return true;
+			} else {
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+				((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NO_OPERATION_FONT);
+
+				detect = true;
+			}
+		}
+
+		if (!detect) {
+			((Text) g1.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NORMAL_FONT);
+			((Text) g1.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NORMAL_FONT);
+			((Text) g2.getChildren().get(Dominoes.GRAPH_ID_ROW)).setFill(Dominoes.COLOR_NORMAL_FONT);
+			((Text) g2.getChildren().get(Dominoes.GRAPH_ID_COL)).setFill(Dominoes.COLOR_NORMAL_FONT);
+
+			this.data.setCombination(-1);
+			this.data.setIndexFirstOperatorCombination(-1);
+			this.data.setIndexSecondOperatorCombination(-1);
 		}
 
 		return false;
@@ -659,7 +821,7 @@ public class AreaMove extends Pane {
 	public String saveAndSendToList(Group group) throws IOException {
 		Dominoes d = this.data.getDominoes().get(this.data.getPieces().indexOf(group));
 		d.setRelation(null);
-		String id = "PL"+(App.getPieceSelectorList().getAddedPieces()+1);		
+		String id = "PL" + (App.getPieceSelectorList().getAddedPieces() + 1);
 		d.setId(id);
 		provdominoes.control.Controller.saveMatrix(d);
 
