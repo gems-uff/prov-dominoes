@@ -160,7 +160,7 @@ public class LoadMatricesCommand extends AbstractCommand {
 	private void updateTitle() {
 		if (filePaths != null && filePaths.length > 0) {
 			String defaultTitle = "Prov-Dominoes ["
-					+ (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE) + "]";
+					+ (Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING) + "]";
 			if (filePaths.length == 1) {
 				App.getStage().setTitle(defaultTitle + " - " + filePaths[0]);
 			} else {

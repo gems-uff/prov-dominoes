@@ -281,7 +281,7 @@ public class ListViewDominoes extends ListView<Group> {
 			Group sourceGroup = new Group();
 			sourceGroup = this.pieces.get(indexSource);
 			Dominoes sourceDominoes = new Dominoes(
-					(Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE));
+					(Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING));
 			sourceDominoes = this.dominoes.get(indexSource);
 
 			for (int i = indexSource; i < indexTarget; i++) {
@@ -296,7 +296,7 @@ public class ListViewDominoes extends ListView<Group> {
 			Group sourceGroup = new Group();
 			sourceGroup = this.pieces.get(indexSource);
 			Dominoes sourceDominoes = new Dominoes(
-					(Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE));
+					(Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING));
 			sourceDominoes = this.dominoes.get(indexSource);
 
 			for (int i = indexSource; i > indexTarget; i--) {

@@ -3,10 +3,14 @@ package provdominoes.boundary;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.FlowPane;
@@ -219,6 +223,31 @@ public class MatrixPane extends Pane {
 			this.recCells.add(front);
 
 			Group cell = new Group(back, front);
+
+			// Menu de contexto das células
+			if (domino.getUnderlyingElements() != null
+					&& domino.getUnderlyingElements()[_matCell.row][_matCell.col] != null) {
+				ContextMenu cellContextMenu = new ContextMenu();
+				MenuItem cellMenu = new MenuItem("Attach underlying semantics on tooltip...");
+				cellMenu.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+
+						Tooltip.install(cell,
+								new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
+										+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = " + String.valueOf(_matCell.value)+" : "
+										+ domino.getUnderlyingElements()[_matCell.row][_matCell.col]));
+					}
+				});
+				cellContextMenu.getItems().addAll(cellMenu);
+				cell.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+					@Override
+					public void handle(ContextMenuEvent event) {
+						cellContextMenu.show(cell, event.getScreenX(), event.getScreenY());
+					}
+				});
+			}
+
 			cell.setTranslateX(_matCell.col * (cellSpace + padding) + padding);
 			cell.setTranslateY(_matCell.row * (cellSpace + padding) + padding);
 
@@ -241,18 +270,18 @@ public class MatrixPane extends Pane {
 			text.toFront();
 
 			Group cellBlock = new Group(block, text);
-			String tooltip = domino.getDescriptor().getRowType() + " | " + domino.getDescriptor().getColType()+"\n";
+			String tooltip = domino.getDescriptor().getRowType() + " | " + domino.getDescriptor().getColType() + "\n";
 			int totalNonZero = Prov2DominoesUtil.getNonZeroTotal(domino.getCrsMatrix());
-			tooltip+= "Total (non zero): "+totalNonZero+"\n";
+			tooltip += "Total (non zero): " + totalNonZero + "\n";
 			double minNonZero = Prov2DominoesUtil.getNonZeroMin(domino.getCrsMatrix());
-			tooltip+= "Min (non zero): "+minNonZero+"\n";
+			tooltip += "Min (non zero): " + minNonZero + "\n";
 			double averageNonZero = Prov2DominoesUtil.getNonZeroAverage(domino.getCrsMatrix());
-			tooltip+= "Average (non zero): "+averageNonZero+"\n";
+			tooltip += "Average (non zero): " + averageNonZero + "\n";
 			double sdNonZero = Prov2DominoesUtil.getNonZeroStandardScore(domino.getCrsMatrix(), averageNonZero);
-			tooltip+= "Z-Score (non zero): "+sdNonZero+"\n";
+			tooltip += "Z-Score (non zero): " + sdNonZero + "\n";
 			double max = domino.getCrsMatrix().max();
-			tooltip+= "Max: "+max+"\n";
-			Tooltip.install(cellBlock,new Tooltip(tooltip));
+			tooltip += "Max: " + max + "\n";
+			Tooltip.install(cellBlock, new Tooltip(tooltip));
 			group.getChildren().add(cellBlock);
 
 			this.recHeaders.add(front);

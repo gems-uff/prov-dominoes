@@ -64,7 +64,7 @@ public class App extends Application {
 			App.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 			App.stage.centerOnScreen();
 			App.stage.setTitle("Prov-Dominoes ["
-					+ (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE) + "]");
+					+ (Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING) + "]");
 			if (Configuration.isGPUProcessing()) {
 				Session.startSession(Configuration.gpuDevice);
 			}

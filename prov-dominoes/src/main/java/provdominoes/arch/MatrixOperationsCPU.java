@@ -19,6 +19,7 @@ import provdominoes.util.SortIgnoreCase;
 public class MatrixOperationsCPU implements MatrixOperations {
 
 	private CRSMatrix data;
+	private String[][] underlyingElements;
 	private MatrixDescriptor matrixDescriptor;
 
 	public MatrixOperationsCPU(MatrixDescriptor _matrixDescriptor) {
@@ -44,30 +45,31 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 	public void finalize() {
 	}
-	
+
+	public String[][] getUnderlyingElements() {
+		return this.underlyingElements;
+	}
+
 	@Override
 	public MatrixOperations subtract(MatrixOperations other) throws Exception {
 		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
 
 		if (matrixDescriptor.getNumRows() != otherDescriptor.getNumRows()
 				&& matrixDescriptor.getNumCols() != otherDescriptor.getNumCols())
-			throw new Exception("Matrix cannot be added!");
+			throw new Exception("Matrix cannot be subtracted!");
 
-		MatrixOperations t1 = (MatrixOperationsCPU) this.sortRows();
-		t1 = t1.sortColumns();
-		CRSMatrix crsData = Prov2DominoesUtil.cells2Matrix(t1.getData(), t1.getMatrixDescriptor().getNumRows(),
-				t1.getMatrixDescriptor().getNumCols());
+		CRSMatrix crsData = Prov2DominoesUtil.cells2Matrix(this.getData(), this.getMatrixDescriptor().getNumRows(),
+				this.getMatrixDescriptor().getNumCols());
 
-		other = other.sortRows();
-		other = other.sortColumns();
-		CRSMatrix otherData = Prov2DominoesUtil.cells2Matrix(other.getData(), other.getMatrixDescriptor().getNumRows(),
-				other.getMatrixDescriptor().getNumCols());
-
+		MatrixOperationsCPU otherCPU = (MatrixOperationsCPU) other;
+		otherCPU = (MatrixOperationsCPU) otherCPU.sortEqualTo(this.getMatrixDescriptor());
+		CRSMatrix otherData = Prov2DominoesUtil.cells2Matrix(otherCPU.getData(),
+				otherCPU.getMatrixDescriptor().getNumRows(), otherCPU.getMatrixDescriptor().getNumCols());
 
 		CRSMatrix crsResult = (CRSMatrix) crsData.subtract(otherData);
-		MatrixOperationsCPU result = new MatrixOperationsCPU(other.getMatrixDescriptor());
+		MatrixOperationsCPU result = new MatrixOperationsCPU(otherCPU.getMatrixDescriptor());
 		result.setData(crsResult);
-
+		result.setUnderlyingElements(otherCPU.getUnderlyingElements());
 		return result;
 	}
 
@@ -79,25 +81,83 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				&& matrixDescriptor.getNumCols() != otherDescriptor.getNumCols())
 			throw new Exception("Matrix cannot be added!");
 
-		MatrixOperations t1 = (MatrixOperationsCPU) this.sortRows();
-		t1 = t1.sortColumns();
-		CRSMatrix crsData = Prov2DominoesUtil.cells2Matrix(t1.getData(), t1.getMatrixDescriptor().getNumRows(),
-				t1.getMatrixDescriptor().getNumCols());
+		CRSMatrix crsData = Prov2DominoesUtil.cells2Matrix(this.getData(), this.getMatrixDescriptor().getNumRows(),
+				this.getMatrixDescriptor().getNumCols());
 
-		other = other.sortRows();
-		other = other.sortColumns();
-		CRSMatrix otherData = Prov2DominoesUtil.cells2Matrix(other.getData(), other.getMatrixDescriptor().getNumRows(),
-				other.getMatrixDescriptor().getNumCols());
-
+		MatrixOperationsCPU otherCPU = (MatrixOperationsCPU) other;
+		otherCPU = (MatrixOperationsCPU) otherCPU.sortEqualTo(this.getMatrixDescriptor());
+		CRSMatrix otherData = Prov2DominoesUtil.cells2Matrix(otherCPU.getData(),
+				otherCPU.getMatrixDescriptor().getNumRows(), otherCPU.getMatrixDescriptor().getNumCols());
 
 		CRSMatrix crsResult = (CRSMatrix) crsData.add(otherData);
-		MatrixOperationsCPU result = new MatrixOperationsCPU(other.getMatrixDescriptor());
+		MatrixOperationsCPU result = new MatrixOperationsCPU(otherCPU.getMatrixDescriptor());
 		result.setData(crsResult);
-
+		result.setUnderlyingElements(otherCPU.getUnderlyingElements());
 		return result;
 	}
 
 	public MatrixOperations multiply(MatrixOperations other, boolean useGPU) throws Exception {
+		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
+
+		if (matrixDescriptor.getNumCols() != otherDescriptor.getNumRows())
+			throw new Exception("Matrix cannot be multiplied!");
+
+		MatrixDescriptor resultDesc = new MatrixDescriptor(matrixDescriptor.getRowType(), otherDescriptor.getColType());
+
+		for (int i = 0; i < matrixDescriptor.getNumRows(); i++)
+			resultDesc.AddRowDesc(matrixDescriptor.getRowAt(i));
+
+		for (int i = 0; i < otherDescriptor.getNumCols(); i++)
+			resultDesc.AddColDesc(otherDescriptor.getColumnAt(i));
+
+		MatrixOperationsCPU result = new MatrixOperationsCPU(resultDesc);
+
+		MatrixOperationsCPU otherJava = (MatrixOperationsCPU) other;
+
+		this.data = Prov2DominoesUtil.cells2Matrix(this.sortColumns().getData(), this.matrixDescriptor.getNumRows(),
+				this.matrixDescriptor.getNumCols());
+		other.setData(otherJava.sortRows().getData());
+
+		List<String> cols = new ArrayList<>(getMatrixDescriptor().getColumnsDesc());
+		Collections.sort(cols, new SortIgnoreCase());
+
+		result.data = mult(data, otherJava.data, cols);
+		return result;
+	}
+
+	private CRSMatrix mult(CRSMatrix matrix1, CRSMatrix matrix2, List<String> cols) {
+		CRSMatrix result = new CRSMatrix(matrix1.rows(), matrix2.columns());
+		this.underlyingElements = new String[matrix1.rows()][matrix2.columns()];
+		for (int row = 0; row < matrix1.rows(); row++) {
+			for (int col = 0; col < matrix2.columns(); col++) {
+				result.set(row, col, multCells(matrix1, matrix2, row, col, cols));
+			}
+		}
+		return result;
+	}
+
+	private double multCells(CRSMatrix matrix1, CRSMatrix matrix2, int row, int col, List<String> cols) {
+		double cell = 0.0;
+		for (int i = 0; i < matrix1.columns(); i++) {
+			cell += matrix1.get(row, i) * matrix2.get(i, col);
+			if (matrix1.get(row, i) != 0.0 && matrix2.get(i, col) != 0.0) {
+				if (this.underlyingElements[row][col] == null) {
+					this.underlyingElements[row][col] = cols.get(i);
+				} else {
+					if (this.underlyingElements[row][col].chars().filter(ch -> ch == ',').count()>=3) {
+						if (!this.underlyingElements[row][col].contains("...")) {
+							this.underlyingElements[row][col] += "...";
+						}
+					} else {
+						this.underlyingElements[row][col] += ", " + cols.get(i);
+					}
+				}
+			}
+		}
+		return cell;
+	}
+
+	public MatrixOperations multiplyOld(MatrixOperations other, boolean useGPU) throws Exception {
 		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
 
 		if (matrixDescriptor.getNumCols() != otherDescriptor.getNumRows())
@@ -747,11 +807,35 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	}
 
 	@Override
+	public MatrixOperations sortEqualTo(MatrixDescriptor matrixDescriptor) {
+		MatrixOperationsCPU result = new MatrixOperationsCPU(matrixDescriptor);
+		CRSMatrix crsResult = new CRSMatrix(matrixDescriptor.getNumRows(), matrixDescriptor.getNumCols());
+		CRSMatrix oldCRS = Prov2DominoesUtil.cells2Matrix(this.getData(), this.getMatrixDescriptor().getNumRows(),
+				this.getMatrixDescriptor().getNumCols());
+		String[][] updatedUnderlying = this.underlyingElements;
+		for (int i = 0; i < crsResult.rows(); i++) {
+			for (int j = 0; j < crsResult.columns(); j++) {
+				int oldI = this.getMatrixDescriptor().getRowElementIndex(matrixDescriptor.getRowAt(i));
+				int oldJ = this.getMatrixDescriptor().getColElementIndex(matrixDescriptor.getColumnAt(j));
+				crsResult.set(i, j, oldCRS.get(oldI, oldJ));
+				if (updatedUnderlying != null) {
+					updatedUnderlying[i][j] = this.underlyingElements[oldI][oldJ];
+				}
+
+			}
+		}
+		result.setData(crsResult);
+		result.setUnderlyingElements(updatedUnderlying);
+		return result;
+	}
+
+	@Override
 	public MatrixOperations sortRows() {
 		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
 				matrixDescriptor.getColType());
 		List<String> rowsDesc = new ArrayList<>(matrixDescriptor.getRowsDesc());
 		Map<String, Integer> rowsIndexes = new HashMap<>();
+		String[][] updatedUnderlying = this.underlyingElements;
 		for (int i = 0; i < rowsDesc.size(); i++) {
 			rowsIndexes.put(rowsDesc.get(i), i);
 		}
@@ -765,10 +849,14 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		for (int i = 0; i < data.rows(); i++) {
 			for (int j = 0; j < data.columns(); j++) {
 				matrix[i][j] = data.get(rowsIndexes.get(rowsDesc.get(i)), j);
+				if (updatedUnderlying != null) {
+					updatedUnderlying[i][j] = this.underlyingElements[rowsIndexes.get(rowsDesc.get(i))][j];
+				}
 			}
 		}
 
 		result.setData(new CRSMatrix(matrix));
+		result.setUnderlyingElements(updatedUnderlying);
 		return result;
 	}
 
@@ -778,6 +866,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				matrixDescriptor.getColType());
 		List<String> colsDesc = new ArrayList<>(matrixDescriptor.getColumnsDesc());
 		Map<String, Integer> colsIndexes = new HashMap<>();
+		String[][] updatedUnderlying = this.underlyingElements;
 		for (int i = 0; i < colsDesc.size(); i++) {
 			colsIndexes.put(colsDesc.get(i), i);
 		}
@@ -791,10 +880,14 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		for (int i = 0; i < data.rows(); i++) {
 			for (int j = 0; j < data.columns(); j++) {
 				matrix[i][j] = data.get(i, colsIndexes.get(colsDesc.get(j)));
+				if (updatedUnderlying != null) {
+					updatedUnderlying[i][j] = this.underlyingElements[i][colsIndexes.get(colsDesc.get(j))];
+				}
 			}
 		}
 
 		result.setData(new CRSMatrix(matrix));
+		result.setUnderlyingElements(updatedUnderlying);
 		return result;
 	}
 
@@ -804,6 +897,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		ArrayList<Cell> newMatrix = new ArrayList<>();
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
 				this.matrixDescriptor.getColType());
+		String[][] updatedUnderlying = this.underlyingElements;
 		int[] rowInserted = new int[data.rows()];
 		int[] colInserted = new int[data.columns()];
 		for (int i = 0; i < colInserted.length; i++) {
@@ -825,6 +919,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 						rowInserted[i] = _newDescriptor.getNumRows() - 1;
 					}
 					newMatrix.add(new Cell(rowInserted[i], colInserted[j], v.floatValue()));
+					if (updatedUnderlying != null) {
+						updatedUnderlying[rowInserted[i]][colInserted[j]] = this.underlyingElements[i][j];
+					}
 				}
 			}
 		}
@@ -833,6 +930,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
 				for (int j = 0; j < _newDescriptor.getNumCols(); j++) {
 					newMatrix.add(new Cell(_newDescriptor.getNumRows() - 1, j, 0));
+					if (updatedUnderlying != null) {
+						updatedUnderlying[_newDescriptor.getNumRows() - 1][j] = null;
+					}
 				}
 			}
 		}
@@ -842,6 +942,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 				for (int j = 0; j < _newDescriptor.getNumRows(); j++) {
 					newMatrix.add(new Cell(j, _newDescriptor.getNumCols() - 1, 0));
+					if (underlyingElements != null) {
+						updatedUnderlying[j][_newDescriptor.getNumCols() - 1] = null;
+					}
 				}
 			}
 		}
@@ -849,6 +952,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		result = new MatrixOperationsCPU(_newDescriptor);
 		result.setData(
 				Prov2DominoesUtil.cells2Matrix(newMatrix, _newDescriptor.getNumRows(), _newDescriptor.getNumCols()));
+		result.setUnderlyingElements(updatedUnderlying);
 		return result;
 	}
 
@@ -858,6 +962,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		ArrayList<Cell> newMatrix = new ArrayList<>();
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
 				this.matrixDescriptor.getColType());
+		String[][] updatedUnderlying = this.underlyingElements;
 		int[] rowInserted = new int[data.rows()];
 		int[] colInserted = new int[data.columns()];
 		for (int i = 0; i < colInserted.length; i++) {
@@ -879,6 +984,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 						colInserted[j] = _newDescriptor.getNumCols() - 1;
 					}
 					newMatrix.add(new Cell(rowInserted[i], colInserted[j], v.floatValue()));
+					if (updatedUnderlying != null) {
+						updatedUnderlying[rowInserted[i]][colInserted[j]] = this.underlyingElements[i][j];
+					}
 				}
 			}
 		}
@@ -888,6 +996,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 				for (int j = 0; j < _newDescriptor.getNumRows(); j++) {
 					newMatrix.add(new Cell(j, _newDescriptor.getNumCols() - 1, 0));
+					if (updatedUnderlying != null) {
+						updatedUnderlying[j][_newDescriptor.getNumCols() - 1] = null;
+					}
 				}
 			}
 		}
@@ -897,6 +1008,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
 				for (int j = 0; j < _newDescriptor.getNumCols(); j++) {
 					newMatrix.add(new Cell(_newDescriptor.getNumRows() - 1, j, 0));
+					if (updatedUnderlying != null) {
+						updatedUnderlying[_newDescriptor.getNumRows() - 1][j] = null;
+					}
 				}
 			}
 		}
@@ -904,6 +1018,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		result = new MatrixOperationsCPU(_newDescriptor);
 		result.setData(
 				Prov2DominoesUtil.cells2Matrix(newMatrix, _newDescriptor.getNumRows(), _newDescriptor.getNumCols()));
+		result.setUnderlyingElements(updatedUnderlying);
 		return result;
 	}
 
@@ -952,192 +1067,6 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return cells;
 	}
 
-	public static void main(String args[]) {
-
-		ArrayList<Cell> cells1 = new ArrayList<>();
-		cells1.add(new Cell(0, 0, 0));
-		cells1.add(new Cell(0, 1, 1));
-		cells1.add(new Cell(0, 2, 0));
-		cells1.add(new Cell(0, 3, 0));
-		cells1.add(new Cell(1, 0, 0));
-		cells1.add(new Cell(1, 1, 0));
-		cells1.add(new Cell(1, 2, 0));
-		cells1.add(new Cell(1, 3, 1));
-		cells1.add(new Cell(2, 0, 0));
-		cells1.add(new Cell(2, 1, 0));
-		cells1.add(new Cell(2, 2, 0));
-		cells1.add(new Cell(2, 3, 0));
-		cells1.add(new Cell(3, 0, 1));
-		cells1.add(new Cell(3, 1, 0));
-		cells1.add(new Cell(3, 2, 1));
-		cells1.add(new Cell(3, 3, 0));
-
-		ArrayList<Cell> cells2 = new ArrayList<>();
-		cells2.add(new Cell(0, 0, 1));
-		cells2.add(new Cell(0, 1, 0));
-		cells2.add(new Cell(0, 2, 0));
-		cells2.add(new Cell(0, 3, 1));
-		cells2.add(new Cell(1, 0, 1));
-		cells2.add(new Cell(1, 1, 0));
-		cells2.add(new Cell(1, 2, 0));
-		cells2.add(new Cell(1, 3, 1));
-		cells2.add(new Cell(2, 0, 1));
-		cells2.add(new Cell(2, 1, 0));
-		cells2.add(new Cell(2, 2, 0));
-		cells2.add(new Cell(2, 3, 0));
-		cells2.add(new Cell(3, 0, 0));
-		cells2.add(new Cell(3, 1, 0));
-		cells2.add(new Cell(3, 2, 0));
-		cells2.add(new Cell(3, 3, 1));
-
-		ArrayList<Cell> cells3 = new ArrayList<>();
-		cells3.add(new Cell(0, 0, 1));
-		cells3.add(new Cell(1, 0, 0));
-		cells3.add(new Cell(2, 0, 0));
-		cells3.add(new Cell(3, 0, 0));
-		cells3.add(new Cell(4, 0, 0));
-		cells3.add(new Cell(5, 0, 0));
-		cells3.add(new Cell(6, 0, 1));
-		cells3.add(new Cell(7, 0, 0));
-		cells3.add(new Cell(8, 0, 0));
-
-		cells3.add(new Cell(0, 1, 0));
-		cells3.add(new Cell(1, 1, 1));
-		cells3.add(new Cell(2, 1, 0));
-		cells3.add(new Cell(3, 1, 1));
-		cells3.add(new Cell(4, 1, 0));
-		cells3.add(new Cell(5, 1, 0));
-		cells3.add(new Cell(6, 1, 0));
-		cells3.add(new Cell(7, 1, 0));
-		cells3.add(new Cell(8, 1, 0));
-
-		cells3.add(new Cell(0, 2, 1));
-		cells3.add(new Cell(1, 2, 0));
-		cells3.add(new Cell(2, 2, 1));
-		cells3.add(new Cell(3, 2, 0));
-		cells3.add(new Cell(4, 2, 0));
-		cells3.add(new Cell(5, 2, 0));
-		cells3.add(new Cell(6, 2, 0));
-		cells3.add(new Cell(7, 2, 0));
-		cells3.add(new Cell(8, 2, 0));
-
-		cells3.add(new Cell(0, 3, 0));
-		cells3.add(new Cell(1, 3, 0));
-		cells3.add(new Cell(2, 3, 0));
-		cells3.add(new Cell(3, 3, 1));
-		cells3.add(new Cell(4, 3, 0));
-		cells3.add(new Cell(5, 3, 0));
-		cells3.add(new Cell(6, 3, 0));
-		cells3.add(new Cell(7, 3, 0));
-		cells3.add(new Cell(8, 3, 0));
-
-		cells3.add(new Cell(0, 4, 0));
-		cells3.add(new Cell(1, 4, 0));
-		cells3.add(new Cell(2, 4, 1));
-		cells3.add(new Cell(3, 4, 0));
-		cells3.add(new Cell(4, 4, 1));
-		cells3.add(new Cell(5, 4, 0));
-		cells3.add(new Cell(6, 4, 0));
-		cells3.add(new Cell(7, 4, 0));
-		cells3.add(new Cell(8, 4, 0));
-
-		cells3.add(new Cell(0, 5, 0));
-		cells3.add(new Cell(1, 5, 1));
-		cells3.add(new Cell(2, 5, 0));
-		cells3.add(new Cell(3, 5, 0));
-		cells3.add(new Cell(4, 5, 0));
-		cells3.add(new Cell(5, 5, 1));
-		cells3.add(new Cell(6, 5, 0));
-		cells3.add(new Cell(7, 5, 0));
-		cells3.add(new Cell(8, 5, 0));
-
-		cells3.add(new Cell(0, 6, 0));
-		cells3.add(new Cell(1, 6, 0));
-		cells3.add(new Cell(2, 6, 0));
-		cells3.add(new Cell(3, 6, 0));
-		cells3.add(new Cell(4, 6, 0));
-		cells3.add(new Cell(5, 6, 0));
-		cells3.add(new Cell(6, 6, 1));
-		cells3.add(new Cell(7, 6, 0));
-		cells3.add(new Cell(8, 6, 1));
-
-		cells3.add(new Cell(0, 7, 0));
-		cells3.add(new Cell(1, 7, 0));
-		cells3.add(new Cell(2, 7, 1));
-		cells3.add(new Cell(3, 7, 0));
-		cells3.add(new Cell(4, 7, 0));
-		cells3.add(new Cell(5, 7, 1));
-		cells3.add(new Cell(6, 7, 0));
-		cells3.add(new Cell(7, 7, 1));
-		cells3.add(new Cell(8, 7, 0));
-
-		cells3.add(new Cell(0, 8, 1));
-		cells3.add(new Cell(1, 8, 0));
-		cells3.add(new Cell(2, 8, 0));
-		cells3.add(new Cell(3, 8, 0));
-		cells3.add(new Cell(4, 8, 0));
-		cells3.add(new Cell(5, 8, 0));
-		cells3.add(new Cell(6, 8, 0));
-		cells3.add(new Cell(7, 8, 1));
-		cells3.add(new Cell(8, 8, 1));
-
-		MatrixDescriptor desc1 = new MatrixDescriptor("T1", "T2");
-		desc1.AddRowDesc("R1");
-		desc1.AddRowDesc("R2");
-		desc1.AddRowDesc("R3");
-		desc1.AddRowDesc("R4");
-		desc1.AddColDesc("C1");
-		desc1.AddColDesc("C2");
-		desc1.AddColDesc("C3");
-		desc1.AddColDesc("C4");
-
-		MatrixDescriptor desc3 = new MatrixDescriptor("T1", "T2");
-		desc3.AddRowDesc("R1");
-		desc3.AddRowDesc("R2");
-		desc3.AddRowDesc("R3");
-		desc3.AddRowDesc("R4");
-		desc3.AddRowDesc("R5");
-		desc3.AddRowDesc("R6");
-		desc3.AddRowDesc("R7");
-		desc3.AddRowDesc("R8");
-		desc3.AddRowDesc("R9");
-		desc3.AddColDesc("C1");
-		desc3.AddColDesc("C2");
-		desc3.AddColDesc("C3");
-		desc3.AddColDesc("C4");
-		desc3.AddColDesc("C5");
-		desc3.AddColDesc("C6");
-		desc3.AddColDesc("C7");
-		desc3.AddColDesc("C8");
-		desc3.AddColDesc("C9");
-
-		try {
-			MatrixOperations mat1 = new MatrixOperationsCPU(desc1);
-			mat1.setData(cells1);
-
-			MatrixDescriptor desc2 = new MatrixDescriptor("T1", "T2");
-			desc2.AddRowDesc("R1");
-			desc2.AddRowDesc("R2");
-			desc2.AddRowDesc("R3");
-			desc2.AddRowDesc("R4");
-			desc2.AddColDesc("C1");
-			desc2.AddColDesc("C2");
-			desc2.AddColDesc("C3");
-			desc2.AddColDesc("C4");
-			MatrixOperations mat2 = new MatrixOperationsCPU(desc2);
-			mat2.setData(cells2);
-
-			MatrixOperations mat3 = new MatrixOperationsCPU(desc3);
-			mat3.setData(cells3);
-
-			System.out.println(mat3);
-			System.out.println(mat3.transitiveClosure());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
 	@Override
 	public void setSparse(boolean isSparse) {
 		// TODO Necessary only to GPU
@@ -1151,6 +1080,10 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	public void setCols(int[] cols) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setUnderlyingElements(String[][] underlyingElements) {
+		this.underlyingElements = underlyingElements;
 	}
 
 }
