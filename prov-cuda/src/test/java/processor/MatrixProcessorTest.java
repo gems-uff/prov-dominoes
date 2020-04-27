@@ -1,6 +1,7 @@
 package processor;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.text.DecimalFormat;
@@ -70,6 +71,151 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(2, 2) == 0.0);
 		assertTrue(resp.get(2, 3) == 0.0);
 	}
+	
+	@Test
+	void sumTest() {
+		long pointerMatrix1 = MatrixProcessor.createMatrixData(3, 3, false);
+		CRSMatrix matrix1 = new CRSMatrix(3, 3);
+		matrix1.set(0, 0, 1.5);
+		matrix1.set(0, 1, 1.5);
+		matrix1.set(0, 2, 1.5);
+
+		matrix1.set(1, 0, 1.5);
+		matrix1.set(1, 1, 1.5);
+		matrix1.set(1, 2, 1.5);
+
+		matrix1.set(2, 0, 1.5);
+		matrix1.set(2, 1, 1.5);
+		matrix1.set(2, 2, 1.5);
+
+		ArrayList<Cell> cells1 = matrix2cellList(matrix1);
+		
+		int[] rows1 = new int[cells1.size()];
+		int[] cols1 = new int[cells1.size()];
+		float[] values1 = new float[cells1.size()];
+
+		cellList2Arrays(cells1, rows1, cols1, values1);
+
+		MatrixProcessor.setData(pointerMatrix1, values1);
+		
+		long pointerMatrix2 = MatrixProcessor.createMatrixData(3, 3, false);
+		CRSMatrix matrix2 = new CRSMatrix(3, 3);
+		matrix2.set(0, 0, 1.5);
+		matrix2.set(0, 1, 1.5);
+		matrix2.set(0, 2, 1.5);
+
+		matrix2.set(1, 0, 1.5);
+		matrix2.set(1, 1, 1.5);
+		matrix2.set(1, 2, 1.5);
+
+		matrix2.set(2, 0, 1.5);
+		matrix2.set(2, 1, 1.5);
+		matrix2.set(2, 2, 1.5);
+
+		ArrayList<Cell> cells2 = matrix2cellList(matrix2);
+		
+		int[] rows2 = new int[cells2.size()];
+		int[] cols2 = new int[cells2.size()];
+		float[] values2 = new float[cells2.size()];
+
+		cellList2Arrays(cells2, rows2, cols2, values2);
+
+		MatrixProcessor.setData(pointerMatrix2, values2);
+		
+		long pointerResultMatrix = MatrixProcessor.createMatrixData(3, 3, false);
+		
+		MatrixProcessor.sum(pointerMatrix1, pointerMatrix2, 9, pointerResultMatrix);
+
+		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows1, cols1);
+
+		assertNotNull(response);
+		assertTrue(response.length == 9);
+
+		CRSMatrix resp = toCRSMatrix(response, 3, 3);
+		assertTrue(resp.get(0, 0) == 3.0);
+		assertTrue(resp.get(0, 1) == 3.0);
+		assertTrue(resp.get(0, 2) == 3.0);
+
+		assertTrue(resp.get(1, 0) == 3.0);
+		assertTrue(resp.get(1, 1) == 3.0);
+		assertTrue(resp.get(1, 1) == 3.0);
+
+		assertTrue(resp.get(2, 0) == 3.0);
+		assertTrue(resp.get(2, 1) == 3.0);
+		assertTrue(resp.get(2, 2) == 3.0);
+	}
+	
+	@Test
+	void subtractTest() {
+		long pointerMatrix1 = MatrixProcessor.createMatrixData(3, 3, false);
+		CRSMatrix matrix1 = new CRSMatrix(3, 3);
+		matrix1.set(0, 0, 3.0);
+		matrix1.set(0, 1, 3.0);
+		matrix1.set(0, 2, 3.0);
+
+		matrix1.set(1, 0, 3.0);
+		matrix1.set(1, 1, 3.0);
+		matrix1.set(1, 2, 3.0);
+
+		matrix1.set(2, 0, 3.0);
+		matrix1.set(2, 1, 3.0);
+		matrix1.set(2, 2, 3.0);
+
+		ArrayList<Cell> cells1 = matrix2cellList(matrix1);
+		
+		int[] rows1 = new int[cells1.size()];
+		int[] cols1 = new int[cells1.size()];
+		float[] values1 = new float[cells1.size()];
+
+		cellList2Arrays(cells1, rows1, cols1, values1);
+
+		MatrixProcessor.setData(pointerMatrix1, values1);
+		
+		long pointerMatrix2 = MatrixProcessor.createMatrixData(3, 3, false);
+		CRSMatrix matrix2 = new CRSMatrix(3, 3);
+		matrix2.set(0, 0, 1.2);
+		matrix2.set(0, 1, 1.2);
+		matrix2.set(0, 2, 1.2);
+
+		matrix2.set(1, 0, 1.2);
+		matrix2.set(1, 1, 1.2);
+		matrix2.set(1, 2, 1.2);
+
+		matrix2.set(2, 0, 1.2);
+		matrix2.set(2, 1, 1.2);
+		matrix2.set(2, 2, 1.2);
+
+		ArrayList<Cell> cells2 = matrix2cellList(matrix2);
+		
+		int[] rows2 = new int[cells2.size()];
+		int[] cols2 = new int[cells2.size()];
+		float[] values2 = new float[cells2.size()];
+
+		cellList2Arrays(cells2, rows2, cols2, values2);
+
+		MatrixProcessor.setData(pointerMatrix2, values2);
+		
+		long pointerResultMatrix = MatrixProcessor.createMatrixData(3, 3, false);
+		
+		MatrixProcessor.subtract(pointerMatrix1, pointerMatrix2, 9, pointerResultMatrix);
+
+		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows1, cols1);
+
+		assertNotNull(response);
+		assertTrue(response.length == 9);
+
+		CRSMatrix resp = toCRSMatrix(response, 3, 3);
+		assertEquals("1,8", new DecimalFormat("#.#####").format(resp.get(0, 0)));
+		assertEquals("1,8", new DecimalFormat("#.#####").format(resp.get(0, 1)));
+		assertEquals("1,8", new DecimalFormat("#.#####").format(resp.get(0, 2)));
+		assertEquals("1,8", new DecimalFormat("#.#####").format(resp.get(1, 0)));
+		assertEquals("1,8", new DecimalFormat("#.#####").format(resp.get(1, 1)));
+		assertEquals("1,8", new DecimalFormat("#.#####").format(resp.get(1, 2)));
+		assertEquals("1,8", new DecimalFormat("#.#####").format(resp.get(2, 0)));
+		assertEquals("1,8", new DecimalFormat("#.#####").format(resp.get(2, 1)));
+		assertEquals("1,8", new DecimalFormat("#.#####").format(resp.get(2, 2)));
+		
+	}
 
 	@Test
 	void invertTest() {
@@ -125,7 +271,7 @@ class MatrixProcessorTest {
 		assertTrue(resp.get(2, 2) == 1.0);
 		assertTrue(resp.get(2, 3) == 1.0);
 	}
-
+	
 	@Test
 	void diagonalizeTest() {
 		long pointerMatrix = MatrixProcessor.createMatrixData(4, 4, false);
