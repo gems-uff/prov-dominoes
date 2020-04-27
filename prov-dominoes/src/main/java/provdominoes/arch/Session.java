@@ -26,11 +26,12 @@ public class Session {
 	}
 
 	public static void closeSection() {
+		System.out.println("Releasing GPU Memory: "+ getMemUsed() + " KB...");
 		if (matrices != null) {
 			for (int i = 0; i < matrices.size(); i++) {
 				MatrixOperations mat = matrices.get(i);
 				gpuMemoryUsed -= mat.getMemUsed();
-				mat.finalize();
+				//mat.finalize();
 			}
 		}
 

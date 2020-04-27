@@ -13,11 +13,14 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import processor.Cell;
 import provdominoes.arch.MatrixDescriptor;
 import provdominoes.domain.Dominoes;
+import provdominoes.util.Prov2DominoesUtil;
 
 public class MatrixPane extends Pane {
 
@@ -29,32 +32,27 @@ public class MatrixPane extends Pane {
 	private double srcTranslateX;
 	private double srcTranslateY;
 
+	private Rectangle block;
 	private List<Rectangle> recHeaders;
 	private List<Rectangle> recCells;
 	private List<Float> cells;
 	private Color cellColor = new Color(0, 0, 1.0f, 1.0f);
 
-	private float max, min;
+	private double max, min;
 
 	public MatrixPane(Dominoes domino) {
 
 		this.setStyle("-fx-background-color: #B4B4B4");
-		// this.setStyle("-fx-background-color: #969637");
 
 		this.recHeaders = new ArrayList<>();
 		this.recCells = new ArrayList<>();
 		this.cells = new ArrayList<>();
 
-		/*
-		 * System.out.println("Rows: " + domino.getDescriptor().getNumRows() + " Cols: "
-		 * + domino.getDescriptor().getNumCols());
-		 */
-
 		Group group = new Group();
 		MatrixDescriptor _descriptor = domino.getDescriptor();
 
-		this.min = domino.getMat().findMinValue();
-		this.max = domino.getMat().findMaxValue();
+		this.min = domino.getCrsMatrix().min();
+		this.max = domino.getCrsMatrix().max();
 
 		double beginRowHead;
 		double endRowHead;
@@ -107,8 +105,6 @@ public class MatrixPane extends Pane {
 			front.setTranslateX(0);
 			front.setTranslateY(0);
 			front.toFront();
-
-			this.recHeaders.add(front);
 
 			Group cell = new Group(back, front);
 			cell.setTranslateX(beginRowHead);
@@ -226,10 +222,40 @@ public class MatrixPane extends Pane {
 			cell.setTranslateX(_matCell.col * (cellSpace + padding) + padding);
 			cell.setTranslateY(_matCell.row * (cellSpace + padding) + padding);
 
-			Tooltip.install(cell, new Tooltip(domino.getDescriptor().getRowAt(_matCell.row) + " x "
-					+ domino.getDescriptor().getColumnAt(_matCell.col) + " = " + String.valueOf(_matCell.value)));
+			Tooltip.install(cell, new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
+					+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = " + String.valueOf(_matCell.value)));
 
 			group.getChildren().add(cell);
+
+			block = new Rectangle(40, 30);
+			block.setFill(new Color(50 / 255.0, 75 / 255.0, 180.0 / 255.0, 0.5));
+			block.setX(-39.5);
+			block.setY(-30.5);
+			block.toFront();
+			Text text = new Text(domino.getDescriptor().getRowType() + " | " + domino.getDescriptor().getColType());
+
+			text.setFont(Font.font("Times", FontWeight.BOLD, 11));
+			text.setTranslateX(-38);
+			text.setTranslateY(-06);
+			text.setFill(Color.WHITE);
+			text.toFront();
+
+			Group cellBlock = new Group(block, text);
+			String tooltip = domino.getDescriptor().getRowType() + " | " + domino.getDescriptor().getColType()+"\n";
+			int totalNonZero = Prov2DominoesUtil.getNonZeroTotal(domino.getCrsMatrix());
+			tooltip+= "Total (non zero): "+totalNonZero+"\n";
+			double minNonZero = Prov2DominoesUtil.getNonZeroMin(domino.getCrsMatrix());
+			tooltip+= "Min (non zero): "+minNonZero+"\n";
+			double averageNonZero = Prov2DominoesUtil.getNonZeroAverage(domino.getCrsMatrix());
+			tooltip+= "Average (non zero): "+averageNonZero+"\n";
+			double sdNonZero = Prov2DominoesUtil.getNonZeroStandardScore(domino.getCrsMatrix(), averageNonZero);
+			tooltip+= "Z-Score (non zero): "+sdNonZero+"\n";
+			double max = domino.getCrsMatrix().max();
+			tooltip+= "Max: "+max+"\n";
+			Tooltip.install(cellBlock,new Tooltip(tooltip));
+			group.getChildren().add(cellBlock);
+
+			this.recHeaders.add(front);
 		}
 
 		this.setOnScroll(new EventHandler<ScrollEvent>() {

@@ -58,7 +58,7 @@ public class Visual extends BorderPane {
 			Tab tab = new Tab(domino.getIdRow() + "(" + domino.getDescriptor().getNumRows() + ")" + "x"
 					+ domino.getIdCol() + "(" + domino.getDescriptor().getNumCols() + ")" + " " + domino.getHistoric()
 					+ appendType(domino));
-			domino.setupOperation(true);
+			domino.setupOperation(false);
 			MatrixPane graphPane = new MatrixPane(domino);
 
 			tab.setContent(graphPane);

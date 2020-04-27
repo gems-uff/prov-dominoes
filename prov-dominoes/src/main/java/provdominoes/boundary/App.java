@@ -71,9 +71,7 @@ public class App extends Application {
 			App.stage.setResizable(Configuration.resizable);
 
 			App.menu = new MainMenuBar();
-			if (Configuration.defaultProcessing.equals(Configuration.CPU_DEVICE)) {
-				App.menu.getmCpuProcessing().fire();
-			}
+
 			App.commandManager = new CommandManager(menu);
 
 			App.set(true);
@@ -248,6 +246,9 @@ public class App extends Application {
 			Configuration.height = App.stage.getHeight();
 			Configuration.listWidth = App.pieceSelectorList.getWidth();
 			new ConfigurationFile().updateConfiguration();
+			if (Configuration.isGPUProcessing()) {
+				Session.closeSection();
+			}
 		} catch (IOException e) {
 			alert(AlertType.ERROR, "Erro de IO", "Falha na atualização de configuração",
 					"Erro de IO ao tentar atualizar as configurações em configuration.properties");
@@ -460,7 +461,8 @@ public class App extends Application {
 				try (BufferedReader br = new BufferedReader(fr)) {
 					String commandLine = br.readLine();
 					while (commandLine != null) {
-						if (commandLine.startsWith("#") || commandLine.startsWith("\\n") || commandLine.startsWith("\\r\\n")) {
+						if (commandLine.startsWith("#") || commandLine.startsWith("\\n")
+								|| commandLine.startsWith("\\r\\n")) {
 							commandLine = br.readLine();
 							continue;
 						}
@@ -560,8 +562,10 @@ public class App extends Application {
 			provdominoes.control.Controller.loadConfiguration();
 
 			if (!MatrixProcessor.isLibSkipped()) {
-				if (Configuration.gpuDevice + 1 > MatrixProcessor.getDeviceCount()) {
-					Configuration.gpuDevice = 0;
+				if (Configuration.isGPUProcessing()) {
+					if (Configuration.gpuDevice + 1 > MatrixProcessor.getDeviceCount()) {
+						Configuration.gpuDevice = 0;
+					}
 					Session.startSession(Configuration.gpuDevice);
 				}
 			}
