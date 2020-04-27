@@ -1,18 +1,24 @@
 package provdominoes.boundary;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.stage.Stage;
 import processor.MatrixProcessor;
-import provdominoes.arch.Session;
 import provdominoes.command.CommandFactory;
 import provdominoes.domain.Configuration;
+import provdominoes.util.ConfigurationFile;
 
 public class MainMenuBar extends MenuBar {
 
@@ -71,8 +77,8 @@ public class MainMenuBar extends MenuBar {
 
 		this.mainMenuSeparator = new SeparatorMenuItem();
 
-		this.mainMenu.getItems().addAll(this.mainMenuOpenProv, this.mainMenuExportScript, this.mainMenuImportScript, this.mainMenuImportMatrix,
-				this.mainMenuSeparator, this.mainMenuExit);
+		this.mainMenu.getItems().addAll(this.mainMenuOpenProv, this.mainMenuExportScript, this.mainMenuImportScript,
+				this.mainMenuImportMatrix, this.mainMenuSeparator, this.mainMenuExit);
 
 		this.mFactory = new Menu("Factory");
 		this.mDefaultFactory = new CheckMenuItem("Default");
@@ -115,21 +121,48 @@ public class MainMenuBar extends MenuBar {
 				this.devices[i].setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
-						CheckMenuItem target = (CheckMenuItem) event.getTarget();
-						CheckMenuItem[] devices = App.getMenu().getDevices();
-						for (int j = 0; j < devices.length; j++) {
-							if (devices[j].equals(target)) {
-								devices[j].setSelected(true);
-								Configuration.defaultProcessing = Configuration.GPU_DEVICE;
-								Configuration.gpuDevice = j;
-								Session.closeSection();
-								Session.startSession(Configuration.gpuDevice);
-								MatrixProcessor.resetGPU(j);
-								App.getStage().setTitle(
-										"Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
-												: Configuration.CPU_DEVICE) + "]");
+						Alert alert = new Alert(AlertType.CONFIRMATION);
+						alert.setTitle("Are you sure?");
+						alert.setHeaderText("ATTENTION: Update of the processing mode!");
+						alert.setContentText(
+								"The application will be restarted in another processing mode and you will lose the current "
+										+ "state of the application. OK to continue?");
+
+						Optional<ButtonType> result = alert.showAndWait();
+						if (result.get() == ButtonType.OK) {
+							CheckMenuItem target = (CheckMenuItem) event.getTarget();
+							for (int j = 0; j < devices.length; j++) {
+								if (devices[j].equals(target)) {
+									Configuration.defaultProcessing = Configuration.GPU_DEVICE;
+									Configuration.gpuDevice = j;
+									try {
+										new ConfigurationFile().updateConfiguration();
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+							}
+
+							System.out.println("Restarting in GPU Mode (Device = " + Configuration.gpuDevice + ")...");
+							App.getStage().close();
+							Platform.runLater(() -> {
+								try {
+									new App().start(new Stage());
+								} catch (Exception e) {
+									System.err.println("Falha ao reiniciar Prov-Dominoes!");
+									e.printStackTrace();
+								}
+							});
+						} else {
+							CheckMenuItem t = (CheckMenuItem) event.getTarget();
+							if (mCpuProcessing.isSelected()) {
+								t.setSelected(false);
 							} else {
-								devices[j].setSelected(false);
+								t.setSelected(true);
 							}
 						}
 					}
@@ -139,37 +172,91 @@ public class MainMenuBar extends MenuBar {
 				mGpuProcessing.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
-						Configuration.defaultProcessing = Configuration.GPU_DEVICE;
-						Session.closeSection();
-						Session.startSession(Configuration.gpuDevice);
-						App.getStage().setTitle(
-								"Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
-										: Configuration.CPU_DEVICE) + "]");
-						App.getMenu().getmGpuProcessing().setSelected(true);
-						App.getMenu().getmCpuProcessing().setSelected(false);
-						CheckMenuItem[] devices = App.getMenu().getDevices();
-						for (int i = 0; i < devices.length; i++) {
-							devices[i].setSelected(i == Configuration.gpuDevice);
-							devices[i].setDisable(false);
+						Alert alert = new Alert(AlertType.CONFIRMATION);
+						alert.setTitle("Are you sure?");
+						alert.setHeaderText("ATTENTION: Update of the processing mode!");
+						alert.setContentText(
+								"The application will be restarted in another processing mode and you will lose the current state of the application. OK to continue?");
+
+						Optional<ButtonType> result = alert.showAndWait();
+						if (result.get() == ButtonType.OK) {
+							try {
+								Configuration.defaultProcessing = Configuration.GPU_DEVICE;
+								Configuration.gpuDevice = 0;
+								new ConfigurationFile().updateConfiguration();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							System.out.println("Restarting in GPU Mode (Device = 0)...");
+							App.getStage().close();
+							Platform.runLater(() -> {
+								try {
+									new App().start(new Stage());
+								} catch (Exception e) {
+									System.err.println("Falha ao reiniciar Prov-Dominoes!");
+									e.printStackTrace();
+								}
+							});
+						} else {
+							CheckMenuItem t = (CheckMenuItem) event.getTarget();
+							if (mCpuProcessing.isSelected()) {
+								t.setSelected(false);
+							} else {
+								t.setSelected(true);
+							}
 						}
 					}
 				});
 
 				mCpuProcessing.setSelected(Configuration.defaultProcessing.equals(Configuration.CPU_DEVICE));
+				if (Configuration.defaultProcessing.equals(Configuration.CPU_DEVICE)) {
+					for (int k = 0; k < devices.length; k++) {
+						devices[k].setSelected(false);
+						devices[k].setDisable(true);
+					}
+				}
 				mCpuProcessing.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
-						Configuration.defaultProcessing = Configuration.CPU_DEVICE;
-						Session.closeSection();
-						App.getStage().setTitle(
-								"Prov-Dominoes [" + (Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE
-										: Configuration.CPU_DEVICE) + "]");
-						App.getMenu().getmCpuProcessing().setSelected(true);
-						App.getMenu().getmGpuProcessing().setSelected(false);
-						CheckMenuItem[] devices = App.getMenu().getDevices();
-						for (int i = 0; i < devices.length; i++) {
-							devices[i].setSelected(false);
-							devices[i].setDisable(true);
+						Alert alert = new Alert(AlertType.CONFIRMATION);
+						alert.setTitle("Are you sure?");
+						alert.setHeaderText("ATTENTION: Update of the processing mode!");
+						alert.setContentText(
+								"The application will be restarted in another processing mode and you will lose the current state of the application. OK to continue?");
+
+						Optional<ButtonType> result = alert.showAndWait();
+						if (result.get() == ButtonType.OK) {
+							Configuration.defaultProcessing = Configuration.CPU_DEVICE;
+							try {
+								new ConfigurationFile().updateConfiguration();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							System.out.println("Restarting in CPU Mode...");
+							App.getStage().close();
+							Platform.runLater(() -> {
+								try {
+									new App().start(new Stage());
+								} catch (Exception e) {
+									System.err.println("Falha ao reiniciar Prov-Dominoes!");
+									e.printStackTrace();
+								}
+							});
+						} else {
+							CheckMenuItem t = (CheckMenuItem) event.getTarget();
+							if (mGpuProcessing.isSelected()) {
+								t.setSelected(false);
+							} else {
+								t.setSelected(true);
+							}
 						}
 					}
 				});
