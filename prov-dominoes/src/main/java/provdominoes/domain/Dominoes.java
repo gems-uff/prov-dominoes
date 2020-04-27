@@ -13,7 +13,6 @@ import model.ProvMatrix;
 import model.ProvRelation.Relation;
 import provdominoes.arch.MatrixDescriptor;
 import provdominoes.arch.MatrixOperations;
-import provdominoes.boundary.App;
 import provdominoes.command.TextFilterData;
 import provdominoes.util.Prov2DominoesUtil;
 
@@ -686,6 +685,7 @@ public final class Dominoes {
 
 	public Dominoes multiply(Dominoes dom) throws Exception {
 		this.setupOperation(true);
+		dom.setupOperation(true);
 		Dominoes domResult = new Dominoes(dom.getDevice());
 
 		domResult.type = Dominoes.TYPE_DERIVED;
@@ -697,13 +697,60 @@ public final class Dominoes {
 		try {
 			domResult.setMat(getMat().multiply(dom.getMat(), currentDevice.equalsIgnoreCase("GPU")));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		domResult.historic = new Historic(this.getHistoric(), dom.getHistoric());
 
 		domResult.setIdRow(getIdRow());
 		domResult.setIdCol(dom.getIdCol());
+
+		return domResult;
+	}
+	
+	public Dominoes sum(Dominoes dom) throws Exception {
+		this.setupOperation(false);
+		dom.setupOperation(false);
+		Dominoes domResult = new Dominoes(dom.getDevice());
+
+		domResult.type = Dominoes.TYPE_DERIVED;
+
+		if (idRow.equals(dom.getIdCol())) {
+			domResult.type = Dominoes.TYPE_SUPPORT;
+		}
+
+		try {
+			domResult.setMat(getMat().sum(dom.getMat()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		domResult.historic = new Historic(this.getHistoric(), dom.getHistoric());
+
+		domResult.setIdRow(getIdRow());
+		domResult.setIdCol(getIdCol());
+
+		return domResult;
+	}
+	
+	public Dominoes subtract(Dominoes dom) throws Exception {
+		this.setupOperation(false);
+		dom.setupOperation(false);
+		Dominoes domResult = new Dominoes(dom.getDevice());
+
+		domResult.type = Dominoes.TYPE_DERIVED;
+
+		if (idRow.equals(dom.getIdCol())) {
+			domResult.type = Dominoes.TYPE_SUPPORT;
+		}
+
+		try {
+			domResult.setMat(getMat().subtract(dom.getMat()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		domResult.historic = new Historic(this.getHistoric(), dom.getHistoric());
+
+		domResult.setIdRow(getIdRow());
+		domResult.setIdCol(getIdCol());
 
 		return domResult;
 	}
@@ -723,11 +770,6 @@ public final class Dominoes {
 		}
 		cloned.setId(this.id);
 		cloned.setCrsMatrix(new CRSMatrix(this.crsMatrix));
-		try {
-			cloned.setupOperation(true);
-		} catch (Exception e) {
-			App.alertException(e, e.getMessage());
-		}
 		return cloned;
 	}
 

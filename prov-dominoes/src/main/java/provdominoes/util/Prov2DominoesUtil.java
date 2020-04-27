@@ -1,9 +1,11 @@
 package provdominoes.util;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.la4j.matrix.functor.MatrixProcedure;
 import org.la4j.matrix.sparse.CRSMatrix;
 
 import model.ProvMatrix;
@@ -82,6 +84,83 @@ public class Prov2DominoesUtil {
 			matrix.set(cell.row, cell.col, cell.value);
 		}
 		return matrix;
+	}
+
+	public static double getNonZeroMin(CRSMatrix matrix) {
+		double mininum = 0;
+		if (matrix != null) {
+			List<Double> nonzeros = new ArrayList<>();
+			matrix.eachNonZero(new MatrixProcedure() {
+				@Override
+				public void apply(int row, int col, double value) {
+					nonzeros.add(value);
+				}
+			});
+			if (nonzeros.size() > 0) {
+				mininum = nonzeros.stream().min(new Comparator<Double>() {
+					@Override
+					public int compare(Double t1, Double t2) {
+						if (t1.doubleValue() > t2.doubleValue()) {
+							return 1;
+						}
+						if (t1.doubleValue() < t2.doubleValue()) {
+							return -1;
+						} else {
+							return 0;
+						}
+					}
+				}).get();
+			}
+		}
+		return mininum;
+	}
+
+	public static double getNonZeroAverage(CRSMatrix matrix) {
+		double avg = 0;
+		double sum = 0;
+		if (matrix != null) {
+			List<Double> nonzeros = new ArrayList<>();
+			matrix.eachNonZero(new MatrixProcedure() {
+				@Override
+				public void apply(int row, int col, double value) {
+					nonzeros.add(value);
+				}
+			});
+			sum = nonzeros.stream().reduce(0.00, Double::sum);
+			avg = sum / getNonZeroTotal(matrix);
+		}
+		return Math.floor(avg * 100000) / 100000;
+	}
+
+	public static int getNonZeroTotal(CRSMatrix matrix) {
+		int total = 0;
+		if (matrix != null) {
+			List<Double> nonzeros = new ArrayList<>();
+			matrix.eachNonZero(new MatrixProcedure() {
+				@Override
+				public void apply(int row, int col, double value) {
+					nonzeros.add(value);
+				}
+			});
+			total = nonzeros.size();
+		}
+		return total;
+	}
+
+	public static double getNonZeroStandardScore(CRSMatrix matrix, double mean) {
+		double sdScore = 0.0;
+		if (matrix != null) {
+			List<Double> sdDiffs = new ArrayList<>();
+			matrix.eachNonZero(new MatrixProcedure() {
+				@Override
+				public void apply(int row, int col, double value) {
+					sdDiffs.add((value - mean) * (value - mean));
+				}
+			});
+			double sum = sdDiffs.stream().reduce(0.00, Double::sum);
+			sdScore = Math.sqrt(sum / new Double(sdDiffs.size()));
+		}
+		return Math.floor(sdScore * 100000) / 100000;
 	}
 
 }

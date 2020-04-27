@@ -32,6 +32,9 @@ public class MatrixProcessor {
 
 	public native static void setData(long pointer, float values[]);
 
+	public native static void subtract(long pointer1, long pointer2, int elements, long resultPointer);
+	public native static void sum(long pointer1, long pointer2, int elements, long resultPointer);
+	
 	public native static void multiply(long m1, long m2, long result, boolean useGPU);
 
 	public native static void transpose(long m1, long result);
@@ -93,5 +96,6 @@ public class MatrixProcessor {
 			}
 		}
 	}
+
 
 }

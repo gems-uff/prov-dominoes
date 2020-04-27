@@ -103,6 +103,20 @@ __global__ void ConfidenceKernel(float *values, float *diagonal, int elements, f
 
 // INICIO DOS PROV-KERNELS...
 
+__global__ void sumKernel(float* values1, float* values2, int elements, float* result) {
+	int idx = blockDim.x * blockIdx.x + threadIdx.x;
+	if (idx < elements) {
+		result[idx] = values1[idx]+values2[idx];
+	}
+}
+
+__global__ void subtractKernel(float* values1, float* values2, int elements, float* result) {
+	int idx = blockDim.x * blockIdx.x + threadIdx.x;
+	if (idx < elements) {
+		result[idx] = values1[idx]-values2[idx];
+	}
+}
+
 __global__ void binarizeKernel(float* values, int elements, float* result) {
 	int idx = blockDim.x * blockIdx.x + threadIdx.x;
 	if (idx < elements) {
@@ -208,8 +222,8 @@ extern "C" {
 
 	void g_ResetAndSetGPUDevice(int gpuDevice) {
 		checkCudaErrors(cudaSetDevice(gpuDevice));
-		checkCudaErrors (cudaDeviceReset());checkCudaErrors
-		(cudaSetDevice(gpuDevice));
+		checkCudaErrors(cudaDeviceReset());
+		checkCudaErrors(cudaSetDevice(gpuDevice));
 	}
 	
 	int g_getDeviceCount() {
@@ -360,7 +374,54 @@ extern "C" {
 		checkCudaErrors(cudaFree(d_diagonal));
 		checkCudaErrors(cudaFree(d_result));
 	}
+	
+	void g_Sum(float* values1, float* values2, int elements, float* result) {
+		float* d_values1;
+		float* d_values2;
+		float* d_result;
+		checkCudaErrors(cudaMalloc(&d_values1, sizeof(float) * elements));
+		checkCudaErrors(cudaMalloc(&d_values2, sizeof(float) * elements));
+		checkCudaErrors(cudaMemcpy(d_values1, values1, sizeof(float) * elements,cudaMemcpyHostToDevice));
+		checkCudaErrors(cudaMemcpy(d_values2, values2, sizeof(float) * elements,cudaMemcpyHostToDevice));
+	
+		checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * elements));
+		checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * elements));
+	
+		dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1);
+		dim3 gridDim(ceil((float) elements / (N_THREADS_X * N_THREADS_X)), 1, 1);
+	
+		sumKernel<<<gridDim, blockDim>>>(d_values1, d_values2, elements, d_result);
+	
+		checkCudaErrors(cudaMemcpy(result, d_result, sizeof(float) * elements, cudaMemcpyDeviceToHost));
+	
+		checkCudaErrors(cudaFree(d_values1));
+		checkCudaErrors(cudaFree(d_values2));
+		checkCudaErrors(cudaFree(d_result));
+	}
+	
+	void g_Subtract(float* values1, float* values2, int elements, float* result) {
+			float* d_values1;
+			float* d_values2;
+			float* d_result;
+			checkCudaErrors(cudaMalloc(&d_values1, sizeof(float) * elements));
+			checkCudaErrors(cudaMalloc(&d_values2, sizeof(float) * elements));
+			checkCudaErrors(cudaMemcpy(d_values1, values1, sizeof(float) * elements,cudaMemcpyHostToDevice));
+			checkCudaErrors(cudaMemcpy(d_values2, values2, sizeof(float) * elements,cudaMemcpyHostToDevice));
 		
+			checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * elements));
+			checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * elements));
+		
+			dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1);
+			dim3 gridDim(ceil((float) elements / (N_THREADS_X * N_THREADS_X)), 1, 1);
+		
+			subtractKernel<<<gridDim, blockDim>>>(d_values1, d_values2, elements, d_result);
+		
+			checkCudaErrors(cudaMemcpy(result, d_result, sizeof(float) * elements, cudaMemcpyDeviceToHost));
+		
+			checkCudaErrors(cudaFree(d_values1));
+			checkCudaErrors(cudaFree(d_values2));
+			checkCudaErrors(cudaFree(d_result));
+		}
 	
 	void g_Binarize(float* values, int elements, float* result) {
 		float* d_values;
@@ -385,7 +446,7 @@ extern "C" {
 		checkCudaErrors(cudaFree(d_values));
 		checkCudaErrors(cudaFree(d_result));
 	}
-	
+
 	void g_Invert(float* values, int elements, float* result) {
 		float* d_values;
 		float* d_result;

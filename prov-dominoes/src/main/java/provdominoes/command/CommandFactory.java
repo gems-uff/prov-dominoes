@@ -54,6 +54,18 @@ public class CommandFactory {
 		mul.setKey("P" + getInstance().getPieceCounter());
 		return mul;
 	}
+	
+	public AbstractCommand sum() {
+		SumCommand sum = new SumCommand();
+		sum.setKey("P" + getInstance().getPieceCounter());
+		return sum;
+	}
+	
+	public AbstractCommand subtract() {
+		SubtractCommand subtraction = new SubtractCommand();
+		subtraction.setKey("P" + getInstance().getPieceCounter());
+		return subtraction;
+	}
 
 	public AbstractCommand aggColumns(Group piece) {
 		return new AggregateColumnsCommand(App.getArea().getData().getPieces().indexOf(piece));
@@ -153,13 +165,13 @@ public class CommandFactory {
 
 	public AbstractCommand filterHighPass(Group piece, double p) {
 		HighPassFilterCommand pc = new HighPassFilterCommand(App.getArea().getData().getPieces().indexOf(piece));
-		pc.setPercent(p);
+		pc.setCutoff(p);
 		return pc;
 	}
 	
 	public AbstractCommand filterLowPass(Group piece, double p) {
 		LowPassFilterCommand pc = new LowPassFilterCommand(App.getArea().getData().getPieces().indexOf(piece));
-		pc.setPercent(p);
+		pc.setCutoff(p);
 		return pc;
 	}
 	
