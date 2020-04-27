@@ -133,7 +133,7 @@ public class MainMenuBar extends MenuBar {
 							CheckMenuItem target = (CheckMenuItem) event.getTarget();
 							for (int j = 0; j < devices.length; j++) {
 								if (devices[j].equals(target)) {
-									Configuration.defaultProcessing = Configuration.GPU_DEVICE;
+									Configuration.defaultProcessing = Configuration.GPU_PROCESSING;
 									Configuration.gpuDevice = j;
 									try {
 										new ConfigurationFile().updateConfiguration();
@@ -168,7 +168,7 @@ public class MainMenuBar extends MenuBar {
 					}
 				});
 				this.mProcessing.getItems().add(this.devices[i]);
-				mGpuProcessing.setSelected(Configuration.defaultProcessing.equals(Configuration.GPU_DEVICE));
+				mGpuProcessing.setSelected(Configuration.defaultProcessing.equals(Configuration.GPU_PROCESSING));
 				mGpuProcessing.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
@@ -181,7 +181,7 @@ public class MainMenuBar extends MenuBar {
 						Optional<ButtonType> result = alert.showAndWait();
 						if (result.get() == ButtonType.OK) {
 							try {
-								Configuration.defaultProcessing = Configuration.GPU_DEVICE;
+								Configuration.defaultProcessing = Configuration.GPU_PROCESSING;
 								Configuration.gpuDevice = 0;
 								new ConfigurationFile().updateConfiguration();
 							} catch (IOException e) {
@@ -212,8 +212,8 @@ public class MainMenuBar extends MenuBar {
 					}
 				});
 
-				mCpuProcessing.setSelected(Configuration.defaultProcessing.equals(Configuration.CPU_DEVICE));
-				if (Configuration.defaultProcessing.equals(Configuration.CPU_DEVICE)) {
+				mCpuProcessing.setSelected(Configuration.defaultProcessing.equals(Configuration.CPU_PROCESSING));
+				if (Configuration.defaultProcessing.equals(Configuration.CPU_PROCESSING)) {
 					for (int k = 0; k < devices.length; k++) {
 						devices[k].setSelected(false);
 						devices[k].setDisable(true);
@@ -230,7 +230,7 @@ public class MainMenuBar extends MenuBar {
 
 						Optional<ButtonType> result = alert.showAndWait();
 						if (result.get() == ButtonType.OK) {
-							Configuration.defaultProcessing = Configuration.CPU_DEVICE;
+							Configuration.defaultProcessing = Configuration.CPU_PROCESSING;
 							try {
 								new ConfigurationFile().updateConfiguration();
 							} catch (IOException e) {

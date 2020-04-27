@@ -6,8 +6,8 @@ import processor.MatrixProcessor;
 
 public class Configuration {
 	
-	public static final String GPU_DEVICE = "GPU";
-	public static final String CPU_DEVICE = "CPU";
+	public static final String GPU_PROCESSING = "GPU";
+	public static final String CPU_PROCESSING = "CPU";
 	
     // to read file
 	public static String lastDirectory = ".";
@@ -26,7 +26,7 @@ public class Configuration {
     public static double listWidth = 128.0f;
     
     public static String DATA_SEPARATOR = "	";
-    public static String defaultProcessing = GPU_DEVICE;
+    public static String defaultProcessing = GPU_PROCESSING;
     public static int gpuDevice = 0;
     
 	public static Date beginDate = null;
@@ -40,7 +40,7 @@ public class Configuration {
 	public static boolean telemetry = false;
 	
 	public static boolean isGPUProcessing() {
-		return !MatrixProcessor.isLibSkipped() && defaultProcessing.equals(GPU_DEVICE) && MatrixProcessor.isGPUEnabled();
+		return !MatrixProcessor.isLibSkipped() && defaultProcessing.equals(GPU_PROCESSING) && MatrixProcessor.isGPUEnabled();
 	}
 	
 	

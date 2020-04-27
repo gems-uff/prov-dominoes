@@ -31,7 +31,7 @@ public class SortColumnFirstCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toSortJROW = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.sortJoinRows(toSortJROW);
+			Dominoes domino = provdominoes.control.Controller.sortColumnFirst(toSortJROW);
 
 			App.getArea().remove(index);
 			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);

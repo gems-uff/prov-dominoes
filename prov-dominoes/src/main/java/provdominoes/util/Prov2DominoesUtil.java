@@ -45,7 +45,7 @@ public class Prov2DominoesUtil {
 					descriptor.setColumnsDesc(provMatrix.getColumnDescriptors());
 				}
 				Dominoes dom = new Dominoes(provMatrix, descriptor,
-						(Configuration.isGPUProcessing() ? Configuration.GPU_DEVICE : Configuration.CPU_DEVICE));
+						(Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING));
 				if (provMatrix.getIdentifier() != null) {
 					dom.setId(provMatrix.getIdentifier());
 				}

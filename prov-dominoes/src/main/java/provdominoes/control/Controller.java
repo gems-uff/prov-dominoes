@@ -200,13 +200,13 @@ public class Controller {
 		return domino;
 	}
 	
-	public static Dominoes sortJoinRows(Dominoes domino) throws Exception {
-		domino.sortJoinRows();
+	public static Dominoes sortColumnFirst(Dominoes domino) throws Exception {
+		domino.sortColumnFirst();
 		return domino;
 	}
 	
-	public static Dominoes sortJoinCols(Dominoes domino) throws Exception {
-		domino.sortJoinCols();
+	public static Dominoes sortRowFirst(Dominoes domino) throws Exception {
+		domino.sortRowFirst();
 		return domino;
 	}
 

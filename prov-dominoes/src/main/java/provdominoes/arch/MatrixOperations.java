@@ -79,15 +79,16 @@ public interface MatrixOperations {
 	
 	public ArrayList<Cell> getAllData();
 	
+	public MatrixOperations sortEqualTo(MatrixDescriptor matrixDescriptor);
+	
 	public static MatrixOperations configureOperation(CRSMatrix matrix, MatrixDescriptor descriptor, boolean isSparse)
 			throws Exception {
 		MatrixOperations mat = MatrixOperationsFactory
 				.getMatrix2D(
 						!MatrixProcessor.isLibSkipped() && MatrixProcessor.isGPUEnabled()
-								&& Configuration.defaultProcessing.equals(Configuration.GPU_DEVICE),
+								&& Configuration.defaultProcessing.equals(Configuration.GPU_PROCESSING),
 						descriptor, isSparse);
 		mat.setData(Prov2DominoesUtil.matrix2Cells(matrix));
 		return mat;
 	}
-
 }

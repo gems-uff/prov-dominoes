@@ -504,6 +504,22 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 	
 	@Override
+	public MatrixOperations sortEqualTo(MatrixDescriptor matrixDescriptor) {
+		MatrixOperationsCPU result = new MatrixOperationsCPU(matrixDescriptor);
+		CRSMatrix crsResult = new CRSMatrix(matrixDescriptor.getNumRows(), matrixDescriptor.getNumCols());
+		CRSMatrix oldCRS = Prov2DominoesUtil.cells2Matrix(this.getData(), this.getMatrixDescriptor().getNumRows(),
+				this.getMatrixDescriptor().getNumCols());
+		for (int i = 0; i < crsResult.rows(); i++) {
+			for (int j = 0; j < crsResult.columns(); j++) {
+				crsResult.set(i, j, oldCRS.get(this.getMatrixDescriptor().getRowElementIndex(matrixDescriptor.getRowAt(i)),
+						this.getMatrixDescriptor().getColElementIndex(matrixDescriptor.getColumnAt(j))));
+			}
+		}
+		result.setData(crsResult);
+		return result;
+	}
+	
+	@Override
 	public MatrixOperations standardScoreDense() {
 		// TODO Pending GPU implementation
 		return null;
@@ -567,5 +583,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		// TODO Pending GPU implementation
 		return null;
 	}
+
+	
 
 }
