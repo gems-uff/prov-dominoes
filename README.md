@@ -24,6 +24,14 @@ Tool is compatible with the PROV-N notation, allowing its adoption in different 
 
 To run Prov-Dominoes, you can download one ours recent releases and execute the JAR File. It's necessary to have Java Runtime Enviroment on the target machine.
 
+# Compilation
+
+To compile Prov-Dominoes, it is necessary:
+- Install [PROV-Matrix](https://github.com/gems-uff/prov-matrix) maven module; and
+- Compile and install de PROV-CUDA module, available in the prov-cuda directory.
+
+The PROV-CUDA module has precompiled CUDA library for windows x64. For compiling library for other architectures please refer to the [makefile](https://github.com/gems-uff/prov-dominoes/blob/master/prov-cuda/src/cuda/makefile).
+
 # Development
 
 * [Source Code](https://github.com/gems-uff/prov-dominoes)
@@ -35,6 +43,7 @@ To run Prov-Dominoes, you can download one ours recent releases and execute the 
 * [JavaFX](http://docs.oracle.com/javafx/)
 * [Provenance](https://www.w3.org/TR/2013/NOTE-prov-overview-20130430/)
 * [CUDA](http://www.nvidia.com/object/cuda_home_new.html)
+* [PROV-Matrix](https://github.com/gems-uff/prov-matrix)
 
 # License
 
