@@ -22,7 +22,7 @@ Tool is compatible with the PROV-N notation, allowing its adoption in different 
 
 # Usage
 
-To run Prov-Dominoes, you can download one ours recent releases and execute the JAR File. It's necessary to have Java Runtime Enviroment on the target machine.
+To run Prov-Dominoes, you can download one the recent releases and execute the JAR File. It's necessary to have Java Runtime Enviroment on the target machine.
 
 # Compilation
 
@@ -41,9 +41,12 @@ The PROV-CUDA module has precompiled CUDA library for windows x64. For compiling
 
 * [Java](http://java.com)
 * [JavaFX](http://docs.oracle.com/javafx/)
-* [Provenance](https://www.w3.org/TR/2013/NOTE-prov-overview-20130430/)
-* [CUDA](http://www.nvidia.com/object/cuda_home_new.html)
+* [W3C PROV](https://www.w3.org/TR/2013/NOTE-prov-overview-20130430/)
 * [PROV-Matrix](https://github.com/gems-uff/prov-matrix)
+* [CUDA](http://www.nvidia.com/object/cuda_home_new.html)
+  - [CUSP Library](https://cusplibrary.github.io/)
+  - [EIGEN Library](http://eigen.tuxfamily.org/index.php?title=Main_Page)
+
 
 # License
 
