@@ -1,7 +1,10 @@
 package provdominoes.command;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Locale;
 import java.util.Optional;
 
 import javafx.scene.Group;
@@ -59,8 +62,8 @@ public class HighPassFilterCommand extends AbstractCommand {
 				success = false;
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao efetuar filtro de passa-alta(threshold: "
-					+ NumberFormat.getInstance().format(cutoff) + " %)!");
+			App.alertException(e, "Unknown error try to execute High-Pass Filter(cutoff: "
+					+ NumberFormat.getInstance().format(cutoff) + " )!");
 			e.printStackTrace();
 			success = false;
 		}
@@ -70,22 +73,34 @@ public class HighPassFilterCommand extends AbstractCommand {
 	}
 
 	private double getValue(int totalNonZero, double minNonZero, double max, double averageNonZero, double sdNonZero) {
+		Locale loc = Locale.getDefault();
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(loc);
+		char sep = symbols.getDecimalSeparator();
 		double d = 0.0;
-		TextInputDialog dialog = new TextInputDialog("" + minNonZero);
+		TextInputDialog dialog = new TextInputDialog(
+				"" + DecimalFormat.getInstance(Locale.getDefault()).format(minNonZero));
 		dialog.setTitle("High-Pass Filter");
 		dialog.setHeaderText(
 				"Filter that passes cells with values higher than the cutoff value informed!\nTotal Non-zero: "
-						+ totalNonZero + "\nNon-zero min: " + minNonZero + "\nMax: " + max + "\nNon-zero Average: "
-						+ averageNonZero+ "\nNon-zero Standard Deviation: "
-						+ sdNonZero);
-		dialog.setContentText("Cutoff value:");
+						+ DecimalFormat.getInstance(Locale.getDefault()).format(totalNonZero) + "\nNon-zero min: "
+						+ DecimalFormat.getInstance(Locale.getDefault()).format(minNonZero) + "\nMax: " + DecimalFormat.getInstance(Locale.getDefault()).format(max)
+						+ "\nNon-zero Average: "
+						+ DecimalFormat.getInstance(Locale.getDefault()).format(averageNonZero)
+						+ "\nNon-zero Standard Deviation: "
+						+ DecimalFormat.getInstance(Locale.getDefault()).format(sdNonZero));
+		dialog.setContentText("Cutoff value: (Use only the decimal separator. Decimal separator in your region: \""+sep+"\")");
 
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent()) {
 			try {
-				d = NumberFormat.getInstance().parse(result.get()).doubleValue();
+				if (result.get().matches("\\d+((" + sep + "\\d+)|$)")) {
+					d = DecimalFormat.getInstance(Locale.getDefault()).parse(result.get()).doubleValue();
+				} else {
+					App.alertException(new NumberFormatException(), "Invalid Value! Use only decimal separator! (" + result.get() + ")");
+					return -1;
+				}
 			} catch (ParseException e) {
-				App.alertException(e, "Valor inválido!");
+				App.alertException(e, "Invalid Value! Use only decimal separator! (" + result.get() + ")");
 				return -1;
 			}
 		} else {
@@ -106,7 +121,8 @@ public class HighPassFilterCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return HPF_COMMAND + "(" + this.oldDominoes.getId() + ", " + NumberFormat.getInstance().format(cutoff).replace(",", ".") + ")";
+		return HPF_COMMAND + "(" + this.oldDominoes.getId() + ", "
+				+ NumberFormat.getInstance().format(cutoff).replace(",", ".") + ")";
 	}
 
 	private String id;

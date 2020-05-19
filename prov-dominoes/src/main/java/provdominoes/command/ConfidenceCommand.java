@@ -1,6 +1,7 @@
 package provdominoes.command;
 
 import javafx.scene.Group;
+import javafx.scene.control.Alert.AlertType;
 import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
@@ -31,16 +32,21 @@ public class ConfidenceCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toConfidence = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.confidence(toConfidence);
+			if (toConfidence.getCrsMatrix().rows() == toConfidence.getCrsMatrix().columns()) {
+				Dominoes domino = provdominoes.control.Controller.confidence(toConfidence);
 
-			App.getArea().remove(index);
-			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
+				App.getArea().remove(index);
+				this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
 
-			if (Configuration.autoSave) {
-				App.getArea().saveAndSendToList(piece);
+				if (Configuration.autoSave) {
+					App.getArea().saveAndSendToList(piece);
+				}
+			} else {
+				App.alert(AlertType.WARNING,"Piece Square Requirement" ,"Square Piece Required!", "This command is only possible for square pieces (same faces)!");
+				success = false;
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao tentar calcular confiança!");
+			App.alertException(e, "Unknown error trying to perform piece confidence!");
 			e.printStackTrace();
 			success = false;
 		}

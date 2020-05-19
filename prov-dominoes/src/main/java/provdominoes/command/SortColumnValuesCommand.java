@@ -1,11 +1,12 @@
 package provdominoes.command;
 
 import javafx.scene.Group;
+import javafx.scene.text.Text;
 import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class SortRowFirstCommand extends AbstractCommand {
+public class SortColumnValuesCommand extends AbstractCommand {
 
 	private Group piece;
 	private double x;
@@ -13,11 +14,11 @@ public class SortRowFirstCommand extends AbstractCommand {
 	private Dominoes oldDominoes;
 	private int index;
 
-	public SortRowFirstCommand() {
+	public SortColumnValuesCommand() {
 		this.index = -1;
 	}
 
-	public SortRowFirstCommand(int index) {
+	public SortColumnValuesCommand(int index) {
 		this();
 		this.index = index;
 	}
@@ -30,17 +31,27 @@ public class SortRowFirstCommand extends AbstractCommand {
 		x = this.piece.getTranslateX();
 		y = this.piece.getTranslateY();
 		try {
-			Dominoes toSortRowFirst = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.sortRowFirst(toSortRowFirst);
+			Dominoes toSortColumn = App.getArea().getData().getDominoes().get(index);
+			toSortColumn.transpose();
+			Dominoes domino = provdominoes.control.Controller.sortDefaultDimensionValues(toSortColumn);
+			domino.transpose();
+			domino.setType(Dominoes.TYPE_SORT_COLUMN_VALUES);
 
-			App.getArea().remove(index);
-			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
+			App.getArea().getData().getDominoes().set(index, domino);
 
+			domino.drawDominoes();
+			if (piece.getChildren().get(Dominoes.GRAPH_TYPE) instanceof Group) {
+				Group g = (Group) piece.getChildren().get(Dominoes.GRAPH_TYPE);
+				g.setTranslateX(70);
+				((Text) g.getChildren().get(1)).setText(Dominoes.TYPE_SORT_COLUMN_VALUES_CODE);
+			} else if (piece.getChildren().get(Dominoes.GRAPH_TYPE) instanceof Text) {
+				((Text) piece.getChildren().get(Dominoes.GRAPH_TYPE)).setText(Dominoes.TYPE_SORT_COLUMN_VALUES_CODE);
+			}
 			if (Configuration.autoSave) {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Error trying to rearrange cells through Row-First Sorting!");
+			App.alertException(e, "Error trying to sort by column values!");
 			e.printStackTrace();
 			success = false;
 		}
@@ -60,8 +71,9 @@ public class SortRowFirstCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return SORT_ROW_FIRST_COMMAND + "(" + this.oldDominoes.getId() + ")";
+		return SORT_COLUMN_VALUES_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
+
 	private String id;
 
 	@Override

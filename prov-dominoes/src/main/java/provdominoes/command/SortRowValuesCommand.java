@@ -5,20 +5,19 @@ import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class ZScoreCommand extends AbstractCommand {
+public class SortRowValuesCommand extends AbstractCommand {
 
-	private String id;
 	private Group piece;
-	private Dominoes oldDominoes;
 	private double x;
 	private double y;
+	private Dominoes oldDominoes;
 	private int index;
 
-	public ZScoreCommand() {
+	public SortRowValuesCommand() {
 		this.index = -1;
 	}
 
-	public ZScoreCommand(int index) {
+	public SortRowValuesCommand(int index) {
 		this();
 		this.index = index;
 	}
@@ -31,8 +30,8 @@ public class ZScoreCommand extends AbstractCommand {
 		x = this.piece.getTranslateX();
 		y = this.piece.getTranslateY();
 		try {
-			Dominoes toStandardScore = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.standardScore(toStandardScore);
+			Dominoes toSortRow = App.getArea().getData().getDominoes().get(index);
+			Dominoes domino = provdominoes.control.Controller.sortDefaultDimensionValues(toSortRow);
 
 			App.getArea().remove(index);
 			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
@@ -41,7 +40,7 @@ public class ZScoreCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Error trying to perform Z-Score in the piece!");
+			App.alertException(e, "Error trying to sort by row values!");
 			e.printStackTrace();
 			success = false;
 		}
@@ -61,8 +60,9 @@ public class ZScoreCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return ZSCORE_COMMAND + "(" + this.oldDominoes.getId() + ")";
+		return SORT_ROW_VALUES_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
+	private String id;
 
 	@Override
 	public String getId() {
@@ -72,6 +72,14 @@ public class ZScoreCommand extends AbstractCommand {
 	@Override
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Group getPiece() {
+		return piece;
+	}
+
+	public void setPiece(Group piece) {
+		this.piece = piece;
 	}
 
 }

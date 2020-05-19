@@ -17,7 +17,7 @@ import provdominoes.arch.MatrixOperationsCPU;
 import provdominoes.command.TextFilterData;
 import provdominoes.util.Prov2DominoesUtil;
 
-public final class Dominoes {
+public class Dominoes {
 	public final static double GRAPH_WIDTH = 100;
 	public final static double GRAPH_HEIGHT = 50;
 
@@ -89,6 +89,10 @@ public final class Dominoes {
 	public static final int TYPE_SORT_COL_ASC = 17;
 	public static final int TYPE_SORT_COLUMN_FIRST = 18;
 	public static final int TYPE_SORT_ROW_FIRST = 19;
+	public static final int TYPE_SORT_ROW_VALUES = 20;
+	public static final int TYPE_SORT_COLUMN_VALUES = 21;
+	public static final int TYPE_SORT_ROW_COUNT = 22;
+	public static final int TYPE_SORT_COLUMN_COUNT = 23;
 	public static final String TYPE_BASIC_CODE = "B";
 	public static final String TYPE_DERIVED_CODE = "D";
 	public static final String TYPE_SUPPORT_CODE = "S";
@@ -107,13 +111,15 @@ public final class Dominoes {
 	public static final String TYPE_TEXT_CODE = "TXT";
 	public static final String TYPE_ROW_ASC_CODE = "RASC";
 	public static final String TYPE_COL_ASC_CODE = "CASC";
+	public static final String TYPE_ROW_COUNT_CODE = "#R";
+	public static final String TYPE_COL_COUNT_CODE = "#C";
 	public static final String TYPE_SORT_COLUMN_FIRST_CODE = "C1ST";
 	public static final String TYPE_SORT_ROW_FIRST_CODE = "R1ST";
+	public static final String TYPE_SORT_ROW_VALUES_CODE = "RVAL";
+	public static final String TYPE_SORT_COLUMN_VALUES_CODE = "CVAL";
 
 	public static final String AGGREG_TEXT = "/SUM ";
 
-	private boolean rowIsAggragatable = false;
-	private boolean colIsAggragatable = false;
 	private Relation relation;
 	private String id;
 	private String idRow;
@@ -129,14 +135,10 @@ public final class Dominoes {
 	private String[][] underlyingElements;
 
 	public Dominoes(String processingMode) {
-		this.rowIsAggragatable = false;
-		this.colIsAggragatable = false;
 		currentProcessingMode = processingMode;
 	}
 
 	public Dominoes(String idRow, String idCol, String _device) throws IllegalArgumentException {
-		this.rowIsAggragatable = false;
-		this.colIsAggragatable = false;
 		this.setIdRow(idRow);
 		this.setIdCol(idCol);
 
@@ -157,8 +159,6 @@ public final class Dominoes {
 			String _device) throws IllegalArgumentException {
 		this.relation = relation;
 		this.descriptor = descriptor;
-		this.rowIsAggragatable = false;
-		this.colIsAggragatable = false;
 		this.setIdRow(idRow);
 		this.setIdCol(idCol);
 		this.setMat(mat);
@@ -209,15 +209,19 @@ public final class Dominoes {
 			relationText = new Text(this.relation.getAbbreviate());
 			relationText.setFont(new Font("Times", 10));
 			relationText.setY(border.getHeight() - back.getHeight() + 33);
+			relationText.setX(GRAPH_WIDTH / 2 - 20);
 		} else {
-			relationText = new Text(this.id.length() >= 3 ? this.id.substring(0, 3) : this.id);
+			relationText = new Text(this.id);
+			if (relationText.getText().length() >= 4) {
+				relationText.setText(relationText.getText().substring(0, 4));
+			}
 			relationText.setFont(new Font("Courier New", 12));
-			relationText.setY(border.getHeight() - back.getHeight() + 39);
+			relationText.setY(border.getHeight() - back.getHeight() + 35);
+			relationText.setX(GRAPH_WIDTH / 2 - 22);
 		}
 
 		relationText.setFill(Dominoes.COLOR_NORMAL_FONT);
 		relationText.toFront();
-		relationText.setX(GRAPH_WIDTH / 2 - 20);
 
 		relationText.setRotate(90);
 
@@ -345,6 +349,26 @@ public final class Dominoes {
 			z = 23;
 			break;
 		}
+		case Dominoes.TYPE_SORT_ROW_COUNT: {
+			textType.setText(Dominoes.TYPE_ROW_COUNT_CODE);
+			z = 18;
+			break;
+		}
+		case Dominoes.TYPE_SORT_COLUMN_COUNT: {
+			textType.setText(Dominoes.TYPE_COL_COUNT_CODE);
+			z = 18;
+			break;
+		}
+		case Dominoes.TYPE_SORT_ROW_VALUES: {
+			textType.setText(Dominoes.TYPE_SORT_ROW_VALUES_CODE);
+			z = 23;
+			break;
+		}
+		case Dominoes.TYPE_SORT_COLUMN_VALUES: {
+			textType.setText(Dominoes.TYPE_SORT_COLUMN_VALUES_CODE);
+			z = 23;
+			break;
+		}
 		case Dominoes.TYPE_SORT_COLUMN_FIRST: {
 			textType.setText(Dominoes.TYPE_SORT_COLUMN_FIRST_CODE);
 			z = 21;
@@ -447,14 +471,6 @@ public final class Dominoes {
 		return type;
 	}
 
-	public boolean isRowAggregatable() {
-		return this.rowIsAggragatable;
-	}
-
-	public boolean isColAggregatable() {
-		return this.colIsAggragatable;
-	}
-
 	/**
 	 * Used to change the Historic of this Domino
 	 *
@@ -508,10 +524,10 @@ public final class Dominoes {
 					mat.getMatrixDescriptor().getNumCols());
 			this.descriptor = mat.getMatrixDescriptor();
 			if (mat instanceof MatrixOperationsCPU) {
-				this.mat = (MatrixOperationsCPU) mat;
+				this.mat = (MatrixOperations) mat;
 				String[][] ue = ((MatrixOperationsCPU) mat).getUnderlyingElements();
 				if (ue != null) {
-					this.setUnderlyingElements(ue);
+					this.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(ue));
 				}
 			}
 		}
@@ -528,19 +544,9 @@ public final class Dominoes {
 
 	public void transpose() throws Exception {
 		this.setupOperation(true);
-		if (!(this.type == Dominoes.TYPE_BASIC)) {
-			this.type = Dominoes.TYPE_DERIVED;
-			if (this.getIdRow().equals(this.getIdCol())) {
-				this.type = Dominoes.TYPE_SUPPORT;
-			}
-		}
 		this.getHistoric().reverse();
 		this.setIdRow(this.getHistoric().getFirstItem());
 		this.setIdCol(this.getHistoric().getLastItem());
-
-		boolean swap = this.rowIsAggragatable;
-		this.rowIsAggragatable = this.colIsAggragatable;
-		this.colIsAggragatable = swap;
 
 		MatrixOperations _newMat = mat.transpose();
 		setMat(_newMat);
@@ -580,6 +586,13 @@ public final class Dominoes {
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_INVERTED;
 	}
+	
+	public void sortDefaultDimensionValues() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.sortDefaultDimensionValues();
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_SORT_ROW_VALUES;
+	}
 
 	public void sortRows() throws Exception {
 		this.setupOperation(false);
@@ -593,6 +606,20 @@ public final class Dominoes {
 		MatrixOperations _newMat = mat.sortColumns();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_COL_ASC;
+	}
+	
+	public void sortRowCount() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.sortByRowCount();
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_SORT_ROW_COUNT;
+	}
+	
+	public void sortColumnCount() throws Exception {
+		this.setupOperation(false);
+		MatrixOperations _newMat = mat.sortByColumnCount();
+		setMat(_newMat);
+		this.type = Dominoes.TYPE_SORT_COLUMN_COUNT;
 	}
 
 	public void sortColumnFirst() throws Exception {
@@ -674,11 +701,6 @@ public final class Dominoes {
 	 */
 	public boolean aggregateDimension() throws Exception {
 		this.setupOperation(true);
-		if (rowIsAggragatable) {
-			return false;
-		}
-
-		rowIsAggragatable = true;
 
 		if (!(this.type == Dominoes.TYPE_BASIC)) {
 			this.type = Dominoes.TYPE_DERIVED;
@@ -706,17 +728,13 @@ public final class Dominoes {
 		if (idRow.equals(dom.getIdCol())) {
 			domResult.type = Dominoes.TYPE_SUPPORT;
 		}
-
-		try {
-			domResult.setMat(getMat().multiply(dom.getMat(),
-					currentProcessingMode.equalsIgnoreCase(Configuration.GPU_PROCESSING)));
-			if (domResult.getMat() instanceof MatrixOperationsCPU) {
-				MatrixOperationsCPU mocpu = (MatrixOperationsCPU) getMat();
-				domResult.setUnderlyingElements(mocpu.getUnderlyingElements());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		MatrixOperations resultMat = getMat().multiply(dom.getMat(), currentProcessingMode.equalsIgnoreCase(Configuration.GPU_PROCESSING));
+		String[][] resultUnderlying = null;
+		if (!currentProcessingMode.equalsIgnoreCase(Configuration.GPU_PROCESSING)) {
+			resultUnderlying = Prov2DominoesUtil.cloneStringMatrix(((MatrixOperationsCPU) resultMat).getUnderlyingElements());
 		}
+		domResult.setMat(resultMat);
+		domResult.setUnderlyingElements(resultUnderlying);
 		domResult.historic = new Historic(this.getHistoric(), dom.getHistoric());
 
 		domResult.setIdRow(getIdRow());
@@ -735,18 +753,13 @@ public final class Dominoes {
 		if (idRow.equals(dom.getIdCol())) {
 			domResult.type = Dominoes.TYPE_SUPPORT;
 		}
-
-		try {
-			domResult.setMat(getMat().sum(dom.getMat()));
-
-			if (domResult.getMat() instanceof MatrixOperationsCPU) {
-				MatrixOperationsCPU mocpu = (MatrixOperationsCPU) getMat();
-				domResult.setUnderlyingElements(mocpu.getUnderlyingElements());
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		MatrixOperations resultMat = getMat().sum(dom.getMat());
+		String[][] resultUnderlying = null;
+		if (currentProcessingMode.equalsIgnoreCase(Configuration.CPU_PROCESSING)) {
+			resultUnderlying = Prov2DominoesUtil.cloneStringMatrix(((MatrixOperationsCPU) resultMat).getUnderlyingElements());
 		}
+		domResult.setMat(resultMat);
+		domResult.setUnderlyingElements(resultUnderlying);
 		domResult.historic = new Historic(this.getHistoric(), dom.getHistoric());
 
 		domResult.setIdRow(getIdRow());
@@ -765,18 +778,13 @@ public final class Dominoes {
 		if (idRow.equals(dom.getIdCol())) {
 			domResult.type = Dominoes.TYPE_SUPPORT;
 		}
-
-		try {
-			domResult.setMat(getMat().subtract(dom.getMat()));
-
-			if (domResult.getMat() instanceof MatrixOperationsCPU) {
-				MatrixOperationsCPU mocpu = (MatrixOperationsCPU) getMat();
-				domResult.setUnderlyingElements(mocpu.getUnderlyingElements());
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		MatrixOperations resultMat = getMat().subtract(dom.getMat());
+		String[][] resultUnderlying = null;
+		if (currentProcessingMode.equalsIgnoreCase(Configuration.CPU_PROCESSING)) {
+			resultUnderlying = Prov2DominoesUtil.cloneStringMatrix(((MatrixOperationsCPU) resultMat).getUnderlyingElements());
 		}
+		domResult.setMat(resultMat);
+		domResult.setUnderlyingElements(resultUnderlying);
 		domResult.historic = new Historic(this.getHistoric(), dom.getHistoric());
 
 		domResult.setIdRow(getIdRow());
@@ -801,13 +809,12 @@ public final class Dominoes {
 		Dominoes cloned = new Dominoes(getIdRow(), getIdCol(), getRelation(), getDescriptor(), getMat(), getDevice());
 		cloned.setType(this.type);
 		cloned.setCurrentProcessingMode(getCurrentProcessingMode());
-		cloned.setColIsAggragatable(colIsAggragatable);
-		cloned.setRowIsAggragatable(rowIsAggragatable);
 		if (getHistoric() != null) {
 			cloned.setHistoric(getHistoric().clone());
 		}
 		cloned.setId(this.id);
 		cloned.setCrsMatrix(new CRSMatrix(this.crsMatrix));
+		cloned.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
 		return cloned;
 	}
 
@@ -833,22 +840,6 @@ public final class Dominoes {
 
 	public void setType(int type) {
 		this.type = type;
-	}
-
-	public boolean isRowIsAggragatable() {
-		return rowIsAggragatable;
-	}
-
-	public void setRowIsAggragatable(boolean rowIsAggragatable) {
-		this.rowIsAggragatable = rowIsAggragatable;
-	}
-
-	public boolean isColIsAggragatable() {
-		return colIsAggragatable;
-	}
-
-	public void setColIsAggragatable(boolean colIsAggragatable) {
-		this.colIsAggragatable = colIsAggragatable;
 	}
 
 	public String getCurrentProcessingMode() {

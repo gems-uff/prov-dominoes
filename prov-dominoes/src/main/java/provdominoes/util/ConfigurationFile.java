@@ -54,6 +54,13 @@ public class ConfigurationFile {
 						Configuration.autoSave = true;
 					}
 				}
+				if (nameVariable.compareTo("showCellValues") == 0) {
+					if (valueVariable.compareTo("false") == 0) {
+						Configuration.showCellValues = false;
+					} else if (valueVariable.compareTo("true") == 0) {
+						Configuration.showCellValues = true;
+					}
+				}
 				if (nameVariable.compareTo("visibilityHistoric") == 0) {
 					if (valueVariable.compareTo("false") == 0) {
 						Configuration.visibilityHistoric = false;
@@ -102,7 +109,14 @@ public class ConfigurationFile {
 					} else if (valueVariable.compareTo("true") == 0) {
 						Configuration.deriveInfluence = true;
 					}
-				}				
+				}
+				if (nameVariable.compareTo("tuning") == 0) {
+					if (valueVariable.compareTo("false") == 0) {
+						Configuration.tuning = false;
+					} else if (valueVariable.compareTo("true") == 0) {
+						Configuration.tuning = true;
+					}
+				}
 				if (nameVariable.compareTo("width") == 0 && isDouble(valueVariable)) {
 					Configuration.width = Double.parseDouble(valueVariable);
 				}
@@ -121,6 +135,9 @@ public class ConfigurationFile {
 				if (nameVariable.compareTo("lastDirectory") == 0) {
 					Configuration.lastDirectory = valueVariable;
 				}
+				if (nameVariable.compareTo("autoOpen") == 0) {
+					Configuration.autoOpen = valueVariable;
+				}
 				line = br.readLine();
 			}
 
@@ -133,11 +150,12 @@ public class ConfigurationFile {
 
 	private void resetConfiguration(File file) throws IOException, Exception {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-			bw.write("fullScreen=false\r\n"+ "graphHistory=false\r\n" + "autoSave=false\r\n" + "visibilityHistoric=true\r\n"
-					+ "visibilityType=true\r\n" + "resizable=true\r\n" + "automaticCheck=false\r\n"
-					+ "deriveInfluence=false\r\n" + "width=1000.0\r\n" + "height=600.0\r\n" + "listWidth=128.0\r\n"
+			bw.write("fullScreen=false\r\n" + "graphHistory=false\r\n" + "autoSave=false\r\n"
+					+ "showCellValues=false\r\n" + "visibilityHistoric=true\r\n" + "visibilityType=true\r\n"
+					+ "resizable=true\r\n" + "automaticCheck=false\r\n" + "deriveInfluence=false\r\n"
+					+ "tuning=false\r\n" + "width=1000.0\r\n" + "height=600.0\r\n" + "listWidth=128.0\r\n"
 					+ "telemetry=false\r\n" + "defaultFactory=true\r\n" + "defaultProcessing=gpu\r\n"
-					+ "gpuDevice=0\r\n" + "lastDirectory=.");
+					+ "gpuDevice=0\r\n" + "lastDirectory=.\r\n" + "autoOpen=");
 
 		} catch (IOException ex) {
 			throw new IOException(ex.getMessage());
@@ -151,16 +169,18 @@ public class ConfigurationFile {
 		file.delete();
 		file.createNewFile();
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-			bw.write("fullScreen=" + Configuration.fullScreen + "\r\n" + 
-					"graphHistory=" + Configuration.visibilityGraphHistory + "\r\n" + "autoSave=" + Configuration.autoSave + "\r\n"
-					+ "visibilityHistoric=" + Configuration.visibilityHistoric + "\r\n" + "visibilityType="
-					+ Configuration.visibilityType + "\r\n" + "resizable=" + Configuration.resizable + "\r\n"
-					+ "automaticCheck=" + Configuration.automaticCheck + "\r\n" + "deriveInfluence="
-					+ Configuration.deriveInfluence + "\r\n" + "width=" + Configuration.width + "\r\n" + "height="
-					+ Configuration.height + "\r\n" + "listWidth=" + Configuration.listWidth + "\r\n" + "telemetry="
-					+ Configuration.telemetry + "\r\n" + "defaultFactory=" + Configuration.defaultFactory + "\r\n"
-					+ "defaultProcessing=" + Configuration.defaultProcessing + "\r\n" + "gpuDevice="
-					+ Configuration.gpuDevice + "\r\n" + "lastDirectory=" + Configuration.lastDirectory);
+			bw.write("fullScreen=" + Configuration.fullScreen + "\r\n" + "graphHistory="
+					+ Configuration.visibilityGraphHistory + "\r\n" + "autoSave=" + Configuration.autoSave + "\r\n"
+					+ "showCellValues=" + Configuration.showCellValues + "\r\n" + "visibilityHistoric="
+					+ Configuration.visibilityHistoric + "\r\n" + "visibilityType=" + Configuration.visibilityType
+					+ "\r\n" + "resizable=" + Configuration.resizable + "\r\n" + "automaticCheck="
+					+ Configuration.automaticCheck + "\r\n" + "deriveInfluence=" + Configuration.deriveInfluence
+					+ "\r\n" + "tuning=" + Configuration.tuning + "\r\n" + "width=" + Configuration.width + "\r\n"
+					+ "height=" + Configuration.height + "\r\n" + "listWidth=" + Configuration.listWidth + "\r\n"
+					+ "telemetry=" + Configuration.telemetry + "\r\n" + "defaultFactory=" + Configuration.defaultFactory
+					+ "\r\n" + "defaultProcessing=" + Configuration.defaultProcessing + "\r\n" + "gpuDevice="
+					+ Configuration.gpuDevice + "\r\n" + "lastDirectory=" + Configuration.lastDirectory + "\r\n"
+					+ "autoOpen=" + Configuration.autoOpen);
 
 		} catch (IOException ex) {
 			throw new IOException(ex.getMessage());

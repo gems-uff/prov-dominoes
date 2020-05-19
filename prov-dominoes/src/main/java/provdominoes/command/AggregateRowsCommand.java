@@ -33,7 +33,7 @@ public class AggregateRowsCommand extends AbstractCommand {
 		Dominoes toReduce = App.getArea().getData().getDominoes().get(index);
 		boolean success = true;
 		try {
-			if (!toReduce.isRowAggregatable()) {
+			if (toReduce.getCrsMatrix().rows() > 1) {
 				Dominoes domino = provdominoes.control.Controller.aggregateDimension(toReduce);
 				App.getArea().getData().getDominoes().set(index, domino);
 
@@ -44,15 +44,14 @@ public class AggregateRowsCommand extends AbstractCommand {
 				if (Configuration.autoSave) {
 					App.getArea().saveAndSendToList(piece);
 				}
-				App.getArea().getData().getMenuItemAggregateRows().get(index).setDisable(true);
 			} else {
 				success = false;
-				System.err.println(
-						"this domino is already aggregate by " + toReduce.getDescriptor().getRowType());
+				System.err.println("this domino is already aggregated by row ("
+						+ toReduce.getDescriptor().getRowType()+")");
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao efetuar agregação de colunas!");
 			success = false;
+			App.alertException(e, "Unknown error trying to aggregate rows!");
 			e.printStackTrace();
 		}
 		return success;
@@ -72,7 +71,7 @@ public class AggregateRowsCommand extends AbstractCommand {
 	public String getName() {
 		return AGGREGATE_ROWS_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
-	
+
 	private String id;
 
 	@Override

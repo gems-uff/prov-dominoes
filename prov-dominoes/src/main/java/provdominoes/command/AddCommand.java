@@ -2,7 +2,6 @@ package provdominoes.command;
 
 import javafx.scene.Group;
 import provdominoes.arch.MatrixOperations;
-import provdominoes.arch.MatrixOperationsFactory;
 import provdominoes.boundary.App;
 import provdominoes.domain.Dominoes;
 
@@ -85,6 +84,22 @@ public class AddCommand extends AbstractCommand {
 	@Override
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Group getPiece() {
+		return piece;
+	}
+
+	public void setPiece(Group piece) {
+		this.piece = piece;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 
 }

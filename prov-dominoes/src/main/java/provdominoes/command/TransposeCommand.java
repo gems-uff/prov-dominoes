@@ -7,14 +7,13 @@ import javafx.animation.SequentialTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.control.MenuItem;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import provdominoes.boundary.App;
-import provdominoes.boundary.MoveData;
+import provdominoes.boundary.PieceCanvasState;
 import provdominoes.domain.Dominoes;
 
 public class TransposeCommand extends AbstractCommand {
@@ -30,7 +29,7 @@ public class TransposeCommand extends AbstractCommand {
 	@Override
 	protected boolean doIt() {
 		boolean success = true;
-		MoveData data = App.getArea().getData();
+		PieceCanvasState data = App.getArea().getData();
 		this.piece = App.getArea().getData().getPieces().get(pieceIndex);
 		try {
 			data.setTransposing(true);
@@ -38,10 +37,6 @@ public class TransposeCommand extends AbstractCommand {
 			int duration = 500;
 
 			double startAngle = piece.getRotate();
-
-			MenuItem swapMenu = data.getMenuItemAggregateColumns().get(pieceIndex);
-			data.getMenuItemAggregateRows().set(pieceIndex, data.getMenuItemAggregateRows().get(pieceIndex));
-			data.getMenuItemAggregateRows().set(pieceIndex, swapMenu);
 
 			Dominoes domino = provdominoes.control.Controller
 					.tranposeDominoes(data.getDominoes().get(data.getPieces().indexOf(piece)));
@@ -182,7 +177,7 @@ public class TransposeCommand extends AbstractCommand {
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
-			App.alertException(e, "Erro não identificado ao transpor peça!");
+			App.alertException(e, "Error trying to perform piece transposition!");
 			System.err.println(e.getMessage());
 			success = false;
 		}

@@ -30,8 +30,8 @@ public class SortColumnFirstCommand extends AbstractCommand {
 		x = this.piece.getTranslateX();
 		y = this.piece.getTranslateY();
 		try {
-			Dominoes toSortJROW = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.sortColumnFirst(toSortJROW);
+			Dominoes toSortColumnFirst = App.getArea().getData().getDominoes().get(index);
+			Dominoes domino = provdominoes.control.Controller.sortColumnFirst(toSortColumnFirst);
 
 			App.getArea().remove(index);
 			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
@@ -40,7 +40,7 @@ public class SortColumnFirstCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao efetuar ordenamento alinhado!");
+			App.alertException(e, "Error trying to rearrange cells through Column-First Sorting!");
 			e.printStackTrace();
 			success = false;
 		}
@@ -72,6 +72,14 @@ public class SortColumnFirstCommand extends AbstractCommand {
 	@Override
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Group getPiece() {
+		return piece;
+	}
+
+	public void setPiece(Group piece) {
+		this.piece = piece;
 	}
 
 }

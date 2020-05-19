@@ -152,7 +152,7 @@ public class LoadMatricesCommand extends AbstractCommand {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			App.alertException(e, "Erro ao tentar importar matrizes!");
+			App.alertException(e, "Error trying to import matrices!");
 		}
 		return matrices;
 	}

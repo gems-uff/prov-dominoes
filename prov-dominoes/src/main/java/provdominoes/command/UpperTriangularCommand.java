@@ -1,11 +1,12 @@
 package provdominoes.command;
 
 import javafx.scene.Group;
+import javafx.scene.control.Alert.AlertType;
 import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class UpperDiagonalCommand extends AbstractCommand {
+public class UpperTriangularCommand extends AbstractCommand {
 
 	private String id;
 	private Group piece;
@@ -14,11 +15,11 @@ public class UpperDiagonalCommand extends AbstractCommand {
 	private Dominoes oldDominoes;
 	private int index;
 
-	public UpperDiagonalCommand() {
+	public UpperTriangularCommand() {
 		this.index = -1;
 	}
 
-	public UpperDiagonalCommand(int index) {
+	public UpperTriangularCommand(int index) {
 		this();
 		this.index = index;
 	}
@@ -32,16 +33,22 @@ public class UpperDiagonalCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toUpperDiagonal = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.upperDiagonal(toUpperDiagonal);
+			if (toUpperDiagonal.getCrsMatrix().rows() == toUpperDiagonal.getCrsMatrix().columns()) {
+				Dominoes domino = provdominoes.control.Controller.upperDiagonal(toUpperDiagonal);
 
-			App.getArea().remove(index);
-			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
+				App.getArea().remove(index);
+				this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
 
-			if (Configuration.autoSave) {
-				App.getArea().saveAndSendToList(piece);
+				if (Configuration.autoSave) {
+					App.getArea().saveAndSendToList(piece);
+				}
+			} else {
+				App.alert(AlertType.WARNING, "Piece Square Requirement", "Square Piece Required!",
+						"This command is only possible for square pieces (same faces)!");
+				success = false;
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao efetuar filtro de diagonalização superior!");
+			App.alertException(e, "Unknown error trying to filter upper triangular matrix!");
 			e.printStackTrace();
 			success = false;
 		}
@@ -61,9 +68,9 @@ public class UpperDiagonalCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return UPPER_DIAGONAL_COMMAND + "("+ this.oldDominoes.getId() +")";
+		return UPPER_TRIANGULAR_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
-	
+
 	@Override
 	public String getId() {
 		return id;

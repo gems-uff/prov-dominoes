@@ -1,28 +1,41 @@
 package provdominoes.boundary;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import javafx.stage.FileChooser;
 import processor.Cell;
 import provdominoes.arch.MatrixDescriptor;
+import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 import provdominoes.util.Prov2DominoesUtil;
 
@@ -40,9 +53,11 @@ public class MatrixPane extends Pane {
 	private List<Rectangle> recHeaders;
 	private List<Rectangle> recCells;
 	private List<Float> cells;
+	private Group matrixGroup;;
 	private Color cellColor = new Color(0, 0, 1.0f, 1.0f);
 
 	private double max, min;
+	private Group source;
 
 	public MatrixPane(Dominoes domino) {
 
@@ -51,8 +66,8 @@ public class MatrixPane extends Pane {
 		this.recHeaders = new ArrayList<>();
 		this.recCells = new ArrayList<>();
 		this.cells = new ArrayList<>();
+		matrixGroup = new Group();
 
-		Group group = new Group();
 		MatrixDescriptor _descriptor = domino.getDescriptor();
 
 		this.min = domino.getCrsMatrix().min();
@@ -95,7 +110,7 @@ public class MatrixPane extends Pane {
 		width = Math.abs(endRowHead - beginRowHead);
 		height = cellSpace;
 
-		// draw the label of the matrix row/columns
+		// draw the label of the matrix row labels
 		for (int i = 0; i < _nRows; i++) {
 			largerSize = domino.getDescriptor().getRowAt(i).length();
 			Rectangle back = new Rectangle(width, height);
@@ -115,8 +130,9 @@ public class MatrixPane extends Pane {
 			cell.setTranslateY(i * (cellSpace + padding) + padding);
 
 			Text text = new Text(domino.getDescriptor().getRowAt(i));
-			text.setTranslateX(beginRowHead);
-			text.setTranslateY(i * (cellSpace + padding) + padding + height);
+			text.setFont(Font.font("Times", FontWeight.BOLD, 12));
+			text.setTranslateX(beginRowHead + 2);
+			text.setTranslateY(i * (cellSpace + padding) + padding + height - 3);
 			if (i % 2 == 0) {
 				text.setFill(Color.WHITE);
 			} else {
@@ -124,22 +140,22 @@ public class MatrixPane extends Pane {
 			}
 			text.toFront();
 
-			group.getChildren().add(new Group(cell, text));
-
+			matrixGroup.getChildren().add(new Group(cell, text));
 		}
 
 		width = Math.abs(endColumnHead - beginColumnHead);
 		height = cellSpace;
 
+		// draw the label of the matrix column labels
 		for (int i = 0; i < _nCols; i++) {
 			Rectangle back = new Rectangle(width, height);
 			back.setTranslateX(0);
-			back.setTranslateY(0);
+			back.setTranslateY(-1);
 			back.setFill(new Color(1, 1, 1, 1));
 
 			Rectangle front = new Rectangle(width, height);
 			front.setTranslateX(0);
-			front.setTranslateY(0);
+			front.setTranslateY(-1);
 			front.setFill(new Color(0, 0, 1, 0.5 + (0.2 * ((-1) * i % 2))));
 
 			front.toFront();
@@ -149,8 +165,9 @@ public class MatrixPane extends Pane {
 			Group cell = new Group(back, front);
 
 			Text text = new Text(domino.getDescriptor().getColumnAt(i));
-			text.setTranslateX(endColumnHead);
-			text.setTranslateY(height - 5.0);
+			text.setFont(Font.font("Times", FontWeight.BOLD, 12));
+			text.setTranslateX(endColumnHead + 2);
+			text.setTranslateY(height - 7.0);
 
 			if (i % 2 == 0) {
 				text.setFill(Color.WHITE);
@@ -161,10 +178,10 @@ public class MatrixPane extends Pane {
 
 			Group g = new Group(cell, text);
 			g.setTranslateX(1 + (i * (cellSpace + padding) + padding) + (height / 2 - width / 2));
-			g.setTranslateY(-1 + ((-1) * (cellSpace + padding)) - (width / 2 - height / 2));
+			g.setTranslateY(((-1) * (cellSpace + padding)) - (width / 2 - height / 2));
 			g.getTransforms().add(new Rotate(-90, width / 2.0f, height / 2.0f, 1.0f, Rotate.Z_AXIS));
 
-			group.getChildren().add(g);
+			matrixGroup.getChildren().add(g);
 		}
 
 		ArrayList<Cell> cells = null;
@@ -224,42 +241,43 @@ public class MatrixPane extends Pane {
 
 			Group cell = new Group(back, front);
 
-			// Menu de contexto das células
-			if (domino.getUnderlyingElements() != null
-					&& domino.getUnderlyingElements()[_matCell.row][_matCell.col] != null) {
-				ContextMenu cellContextMenu = new ContextMenu();
-				MenuItem cellMenu = new MenuItem("Attach underlying semantics on tooltip...");
-				cellMenu.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-
-						Tooltip.install(cell,
-								new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
-										+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = " + String.valueOf(_matCell.value)+" : "
-										+ domino.getUnderlyingElements()[_matCell.row][_matCell.col]));
-					}
-				});
-				cellContextMenu.getItems().addAll(cellMenu);
-				cell.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
-					@Override
-					public void handle(ContextMenuEvent event) {
-						cellContextMenu.show(cell, event.getScreenX(), event.getScreenY());
-					}
-				});
-			}
-
 			cell.setTranslateX(_matCell.col * (cellSpace + padding) + padding);
 			cell.setTranslateY(_matCell.row * (cellSpace + padding) + padding);
-
-			Tooltip.install(cell, new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
-					+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = " + String.valueOf(_matCell.value)));
-
-			group.getChildren().add(cell);
+			if (domino.getUnderlyingElements() != null
+					&& domino.getUnderlyingElements()[_matCell.row][_matCell.col] != null) {
+				Tooltip.install(cell, new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
+						+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = " + String.valueOf(_matCell.value)
+						+ " : " + domino.getUnderlyingElements()[_matCell.row][_matCell.col]));
+			} else {
+				Tooltip.install(cell, new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
+						+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = " + String.valueOf(_matCell.value)));
+			}
+			// Show cell values...
+			if (Configuration.showCellValues && _matCell.value > 0) {
+				double average = (min + max) / 2;
+				Text textValue = new Text("" + new Double(_matCell.value).intValue());
+				textValue.setFont(Font.font("Times", FontWeight.BOLD, 12));
+				if (_matCell.value < 10) {
+					textValue.setTranslateX(6);
+				} else {
+					textValue.setTranslateX(2.5);
+				}
+				textValue.setTranslateY(15);
+				textValue.toFront();
+				if (_matCell.value >= average) {
+					textValue.setFill(Color.WHITE);
+				} else {
+					textValue.setFill(Color.BLACK);
+				}
+				cell.getChildren().add(textValue);
+			}
+			cell.setId("" + _matCell.row + "," + _matCell.col);
+			matrixGroup.getChildren().add(cell);
 
 			block = new Rectangle(40, 30);
 			block.setFill(new Color(50 / 255.0, 75 / 255.0, 180.0 / 255.0, 0.5));
-			block.setX(-39.5);
-			block.setY(-30.5);
+			block.setX(-40);
+			block.setY(-30);
 			block.toFront();
 			Text text = new Text(domino.getDescriptor().getRowType() + " | " + domino.getDescriptor().getColType());
 
@@ -282,35 +300,409 @@ public class MatrixPane extends Pane {
 			double max = domino.getCrsMatrix().max();
 			tooltip += "Max: " + max + "\n";
 			Tooltip.install(cellBlock, new Tooltip(tooltip));
-			group.getChildren().add(cellBlock);
+			matrixGroup.getChildren().add(cellBlock);
 
 			this.recHeaders.add(front);
+
+			// configure cell context menu...
+			ContextMenu contextCell = new ContextMenu();
+
+			Menu boundMenu = new Menu("Bound");
+			Menu highlightVertical = new Menu("Vertical");
+			Menu highlightHorizontal = new Menu("Horizontal");
+			MenuItem drawLine = new MenuItem("Draw to line...");
+			MenuItem exportPNG = new MenuItem("Export to PNG...");
+
+			Menu unboundMenu = new Menu("Unbound");
+			Menu removeHorizontal = new Menu("Horizontal");
+			Menu removeVertical = new Menu("Vertical");
+			Menu cellMenu = new Menu("Cell");
+			Menu removeCellMenu = new Menu("Cell");
+
+			MenuItem cellTop = new MenuItem("Top");
+			MenuItem cellBottom = new MenuItem("Bottom");
+			MenuItem cellLeft = new MenuItem("Left");
+			MenuItem cellRight = new MenuItem("Right");
+
+			MenuItem removeCellTop = new MenuItem("Top");
+			MenuItem removeCellBottom = new MenuItem("Bottom");
+			MenuItem removeCellLeft = new MenuItem("Left");
+			MenuItem removeCellRight = new MenuItem("Right");
+
+			MenuItem hightlightCell = new MenuItem("Cell");
+			MenuItem hightlightTopRow = new MenuItem("Top Row");
+			MenuItem hightlightBottomRow = new MenuItem("Bottom Row");
+			MenuItem hightlightLeftColumn = new MenuItem("Left Column");
+			MenuItem hightlightRightColumn = new MenuItem("Right Column");
+
+			MenuItem removeCellHighlight = new MenuItem("Cell");
+			MenuItem removeTopRow = new MenuItem("Top Row");
+			MenuItem removeBottomRow = new MenuItem("Bottom Row");
+			MenuItem removeLeftColumn = new MenuItem("Left Column");
+			MenuItem removeRightColumn = new MenuItem("Right Column");
+
+			cellMenu.getItems().addAll(cellTop, cellBottom, cellLeft, cellRight);
+			removeCellMenu.getItems().addAll(removeCellTop, removeCellBottom, removeCellLeft, removeCellRight);
+
+			highlightHorizontal.getItems().addAll(hightlightTopRow, hightlightBottomRow);
+			highlightVertical.getItems().addAll(hightlightLeftColumn, hightlightRightColumn);
+			boundMenu.getItems().addAll(hightlightCell, cellMenu, highlightHorizontal, highlightVertical);
+			removeHorizontal.getItems().addAll(removeTopRow, removeBottomRow);
+			removeVertical.getItems().addAll(removeLeftColumn, removeRightColumn);
+			unboundMenu.getItems().addAll(removeCellHighlight, removeCellMenu, removeHorizontal, removeVertical);
+
+			contextCell.getItems().addAll(boundMenu, unboundMenu, drawLine, exportPNG);
+			drawLine.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					Group cellGroup = (Group) ((MenuItem) event.getSource()).getParentPopup().getOwnerNode();
+					setSource(cellGroup);
+				}
+			});
+			exportPNG.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					Group cellGroup = (Group) ((MenuItem) event.getSource()).getParentPopup().getOwnerNode();
+					saveAsPng((Group) cellGroup.getParent());
+				}
+
+				public void saveAsPng(Group matrix) {
+					WritableImage image = matrix.snapshot(new SnapshotParameters(), null);
+
+					FileChooser fileChooser = new FileChooser();
+					fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
+					fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
+					fileChooser.setInitialFileName("matrix");
+					File file = fileChooser.showSaveDialog(App.getStage());
+
+					try {
+						if (file != null) {
+							ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+						App.alertException(e, "Something wrong exporting matrix to PGN!");
+					}
+				}
+			});
+			boundMenu.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					double x = _matCell.col * (cellSpace + padding) + padding;
+					double y = _matCell.row * (cellSpace + padding) + padding;
+					if (((MenuItem) event.getTarget()).getText().equals(hightlightCell.getText())) {
+						Line topRowCell = new Line(x + 2, y, x + cellSpace - 2, y);
+						Group cellGroup = (Group) ((Menu) event.getSource()).getParentPopup().getOwnerNode();
+						topRowCell.setId(cellGroup.getId() + "topRowCell");
+						topRowCell.setStrokeWidth(4);
+						topRowCell.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(topRowCell);
+
+						Line bottomRowCell = new Line(x + 2, y + cellSpace - 2, x + cellSpace - 2, y + cellSpace - 2);
+						bottomRowCell.setId(cellGroup.getId() + "bottomRowCell");
+						bottomRowCell.setStrokeWidth(4);
+						bottomRowCell.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(bottomRowCell);
+
+						Line leftColumnCell = new Line(x, y, x, y + cellSpace - 2);
+						leftColumnCell.setId(cellGroup.getId() + "leftColumnCell");
+						leftColumnCell.setStrokeWidth(4);
+						leftColumnCell.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(leftColumnCell);
+
+						Line rightColumnCell = new Line(x + cellSpace, y, x + cellSpace, y + cellSpace - 2);
+						rightColumnCell.setId(cellGroup.getId() + "rightColumnCell");
+						rightColumnCell.setStrokeWidth(4);
+						rightColumnCell.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(rightColumnCell);
+
+					}
+				}
+
+			});
+
+			unboundMenu.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					if (((MenuItem) event.getTarget()).getText().equals(removeCellHighlight.getText())) {
+						Group nodeGroup = (Group) ((Menu) event.getSource()).getParentPopup().getOwnerNode();
+						removeNode(nodeGroup, nodeGroup.getId() + "topRowCell");
+						removeNode(nodeGroup, nodeGroup.getId() + "bottomRowCell");
+						removeNode(nodeGroup, nodeGroup.getId() + "leftColumnCell");
+						removeNode(nodeGroup, nodeGroup.getId() + "rightColumnCell");
+					}
+				}
+
+				private void removeNode(Group cellGroup, String nodeId) {
+					Group matrix = (Group) cellGroup.getParent();
+					Line line = null;
+					for (Node matrixNode : matrix.getChildren()) {
+						if (matrixNode != null && matrixNode.getId() != null && matrixNode.getId().equals(nodeId)) {
+							line = (Line) matrixNode;
+							break;
+						}
+					}
+					if (line != null) {
+						((Group) cellGroup.getParent()).getChildren().remove(line);
+					}
+				}
+			});
+
+			cellMenu.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					double x = _matCell.col * (cellSpace + padding) + padding;
+					double y = _matCell.row * (cellSpace + padding) + padding;
+					Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+							.getOwnerNode();
+					if (((MenuItem) event.getTarget()).getText().equals(cellTop.getText())) {
+						Line topRowCell = new Line(x + 2, y, x + cellSpace - 2, y);
+						topRowCell.setId(cellGroup.getId() + "topCell");
+						topRowCell.setStrokeWidth(4);
+						topRowCell.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(topRowCell);
+					} else if (((MenuItem) event.getTarget()).getText().equals(cellBottom.getText())) {
+						Line bottomRowCell = new Line(x + 2, y + cellSpace - 2, x + cellSpace - 2, y + cellSpace - 2);
+						bottomRowCell.setId(cellGroup.getId() + "bottomCell");
+						bottomRowCell.setStrokeWidth(4);
+						bottomRowCell.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(bottomRowCell);
+					} else if (((MenuItem) event.getTarget()).getText().equals(cellLeft.getText())) {
+						Line leftColumnCell = new Line(x, y, x, y + cellSpace - 2);
+						leftColumnCell.setId(cellGroup.getId() + "leftCell");
+						leftColumnCell.setStrokeWidth(4);
+						leftColumnCell.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(leftColumnCell);
+					} else if (((MenuItem) event.getTarget()).getText().equals(cellRight.getText())) {
+						Line rightColumnCell = new Line(x + cellSpace, y, x + cellSpace, y + cellSpace - 2);
+						rightColumnCell.setId(cellGroup.getId() + "rightCell");
+						rightColumnCell.setStrokeWidth(4);
+						rightColumnCell.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(rightColumnCell);
+					}
+				}
+			});
+
+			removeCellMenu.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					if (((MenuItem) event.getTarget()).getText().equals(removeCellTop.getText())) {
+						Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						removeNode(nodeGroup, nodeGroup.getId() + "topCell");
+					} else if (((MenuItem) event.getTarget()).getText().equals(removeCellBottom.getText())) {
+						Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						removeNode(nodeGroup, nodeGroup.getId() + "bottomCell");
+					} else if (((MenuItem) event.getTarget()).getText().equals(removeCellLeft.getText())) {
+						Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						removeNode(nodeGroup, nodeGroup.getId() + "leftCell");
+					} else if (((MenuItem) event.getTarget()).getText().equals(removeCellRight.getText())) {
+						Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						removeNode(nodeGroup, nodeGroup.getId() + "rightCell");
+					}
+				}
+
+				private void removeNode(Group cellGroup, String nodeId) {
+					Group matrix = (Group) cellGroup.getParent();
+					Line line = null;
+					for (Node matrixNode : matrix.getChildren()) {
+						if (matrixNode != null && matrixNode.getId() != null && matrixNode.getId().equals(nodeId)) {
+							line = (Line) matrixNode;
+							break;
+						}
+					}
+					if (line != null) {
+						((Group) cellGroup.getParent()).getChildren().remove(line);
+					}
+				}
+			});
+
+			highlightHorizontal.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					double y = _matCell.row * (cellSpace + padding) + padding;
+					if (((MenuItem) event.getTarget()).getText().equals(hightlightTopRow.getText())) {
+						Line topRow = new Line(2, y, (_nCols * (cellSpace + padding) + padding) - 2, y);
+						Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						topRow.setId(cellGroup.getId().split(",")[0] + "topRow");
+						topRow.setStrokeWidth(4);
+						topRow.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(topRow);
+					} else if (((MenuItem) event.getTarget()).getText().equals(hightlightBottomRow.getText())) {
+						Line bottomRow = new Line(2, y + cellSpace, (_nCols * (cellSpace + padding) + padding) - 2,
+								y + cellSpace);
+						Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						bottomRow.setId(cellGroup.getId().split(",")[0] + "bottomRow");
+						bottomRow.setStrokeWidth(4);
+						bottomRow.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(bottomRow);
+					}
+				}
+
+			});
+
+			removeHorizontal.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					if (((MenuItem) event.getTarget()).getText().equals(removeTopRow.getText())) {
+						Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						removeNode(nodeGroup, nodeGroup.getId().split(",")[0] + "topRow");
+					} else if (((MenuItem) event.getTarget()).getText().equals(removeBottomRow.getText())) {
+						Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						removeNode(nodeGroup, nodeGroup.getId().split(",")[0] + "bottomRow");
+					}
+				}
+
+				private void removeNode(Group cellGroup, String nodeId) {
+					Group matrix = (Group) cellGroup.getParent();
+					Line line = null;
+					for (Node matrixNode : matrix.getChildren()) {
+						if (matrixNode != null && matrixNode.getId() != null && matrixNode.getId().equals(nodeId)) {
+							line = (Line) matrixNode;
+							break;
+						}
+					}
+					if (line != null) {
+						((Group) cellGroup.getParent()).getChildren().remove(line);
+					}
+				}
+			});
+
+			highlightVertical.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					double x = _matCell.col * (cellSpace + padding) + padding;
+					if (((MenuItem) event.getTarget()).getText().equals(hightlightLeftColumn.getText())) {
+						Line leftColumn = new Line(x, 2, x, (_nRows * (cellSpace + padding) + padding) - 2);
+						Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						leftColumn.setId(cellGroup.getId().split(",")[1] + "leftColumn");
+						leftColumn.setStrokeWidth(4);
+						leftColumn.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(leftColumn);
+
+					} else if (((MenuItem) event.getTarget()).getText().equals(hightlightRightColumn.getText())) {
+						Line rightColumn = new Line(x + cellSpace, 2, x + cellSpace,
+								(_nRows * (cellSpace + padding) + padding) - 2);
+						Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						rightColumn.setId(cellGroup.getId().split(",")[1] + "rightColumn");
+						rightColumn.setStrokeWidth(4);
+						rightColumn.setStrokeLineCap(StrokeLineCap.ROUND);
+						matrixGroup.getChildren().add(rightColumn);
+					}
+				}
+			});
+
+			removeVertical.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					if (((MenuItem) event.getTarget()).getText().equals(removeLeftColumn.getText())) {
+						Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						removeNode(nodeGroup, nodeGroup.getId().split(",")[1] + "leftColumn");
+					} else if (((MenuItem) event.getTarget()).getText().equals(removeRightColumn.getText())) {
+						Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
+								.getOwnerNode();
+						removeNode(nodeGroup, nodeGroup.getId().split(",")[1] + "rightColumn");
+					}
+				}
+
+				private void removeNode(Group cellGroup, String nodeId) {
+					Group matrix = (Group) cellGroup.getParent();
+					Line line = null;
+					for (Node matrixNode : matrix.getChildren()) {
+						if (matrixNode != null && matrixNode.getId() != null && matrixNode.getId().equals(nodeId)) {
+							line = (Line) matrixNode;
+							break;
+						}
+					}
+					if (line != null) {
+						((Group) cellGroup.getParent()).getChildren().remove(line);
+					}
+				}
+			});
+
+			cell.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent e) {
+					if (e.getButton() == MouseButton.SECONDARY) {
+						contextCell.show(cell, e.getScreenX(), e.getScreenY());
+					} else {
+						contextCell.hide();
+					}
+				}
+			});
+			// TODO Remove Line...
+			cell.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent e) {
+					if (e.getButton() == MouseButton.PRIMARY) {
+						Group source = getSource();
+						if (source != null) {
+							Line line = null;
+							double srcRowCell = Double.valueOf(source.getId().split(",")[0]);
+							double srcColCell = Double.valueOf(source.getId().split(",")[1]);
+							double x = srcColCell * (cellSpace + padding) + padding;
+							double y = srcRowCell * (cellSpace + padding) + padding;
+
+							double dstRowCell = Double.valueOf(cell.getId().split(",")[0]);
+							double dstColCell = Double.valueOf(cell.getId().split(",")[1]);
+							if (source.getTranslateX() == cell.getTranslateX()) {
+								double diff = dstRowCell - srcRowCell;
+								line = new Line(x + 10, y + 9 + ((diff > 0 ? 2 : 0)), x + 10,
+										(y + (diff + 1) * cellSpace - 9) + (diff > 0 ? -2 : 0));
+
+							} else if (source.getTranslateY() == cell.getTranslateY()) {
+								double diff = dstColCell - srcColCell;
+								line = new Line((x + (diff + 1) * cellSpace - 10), y + 9, x + 10, y + 9);
+							}
+							if (line != null) {
+								line.setId(source.getId() + "-" + cell.getId() + "line");
+								line.setStrokeWidth(4);
+								line.setStrokeLineCap(StrokeLineCap.ROUND);
+								matrixGroup.getChildren().add(line);
+							}
+						} else {
+							source = null;
+						}
+					}
+				}
+			});
+
 		}
 
 		this.setOnScroll(new EventHandler<ScrollEvent>() {
 
 			@Override
 			public void handle(ScrollEvent event) {
-				double srcX = event.getX() - group.getTranslateX() - group.prefWidth(-1) / 2;
-				double srcY = event.getY() - group.getTranslateY() - group.prefHeight(-1) / 2;
+				double srcX = event.getX() - matrixGroup.getTranslateX() - matrixGroup.prefWidth(-1) / 2;
+				double srcY = event.getY() - matrixGroup.getTranslateY() - matrixGroup.prefHeight(-1) / 2;
 				double trgX = srcX;
 				double trgY = srcY;
 
 				double factor = 0.05;
 
-				if (event.getDeltaY() < 0 && group.getScaleX() > minZoom) {
-					group.setScaleX(group.getScaleX() * (1 - factor));
-					group.setScaleY(group.getScaleY() * (1 - factor));
+				if (event.getDeltaY() < 0 && matrixGroup.getScaleX() > minZoom) {
+					matrixGroup.setScaleX(matrixGroup.getScaleX() * (1 - factor));
+					matrixGroup.setScaleY(matrixGroup.getScaleY() * (1 - factor));
 					trgX = srcX * (1 - factor);
 					trgY = srcY * (1 - factor);
-				} else if (event.getDeltaY() > 0 && group.getScaleX() < maxZoom) {
-					group.setScaleX(group.getScaleX() * (1 + factor));
-					group.setScaleY(group.getScaleY() * (1 + factor));
+				} else if (event.getDeltaY() > 0 && matrixGroup.getScaleX() < maxZoom) {
+					matrixGroup.setScaleX(matrixGroup.getScaleX() * (1 + factor));
+					matrixGroup.setScaleY(matrixGroup.getScaleY() * (1 + factor));
 					trgX = srcX * (1 + factor);
 					trgY = srcY * (1 + factor);
 				}
-				group.setTranslateX(group.getTranslateX() - (trgX - srcX));
-				group.setTranslateY(group.getTranslateY() - (trgY - srcY));
+				matrixGroup.setTranslateX(matrixGroup.getTranslateX() - (trgX - srcX));
+				matrixGroup.setTranslateY(matrixGroup.getTranslateY() - (trgY - srcY));
 
 			}
 		});
@@ -324,8 +716,8 @@ public class MatrixPane extends Pane {
 				double newTranslateX = srcTranslateX + offsetX;
 				double newTranslateY = srcTranslateY + offsetY;
 
-				group.setTranslateX(newTranslateX);
-				group.setTranslateY(newTranslateY);
+				matrixGroup.setTranslateX(newTranslateX);
+				matrixGroup.setTranslateY(newTranslateY);
 
 			}
 		});
@@ -336,8 +728,8 @@ public class MatrixPane extends Pane {
 
 				srcSceneX = event.getSceneX();
 				srcSceneY = event.getSceneY();
-				srcTranslateX = group.getTranslateX();
-				srcTranslateY = group.getTranslateY();
+				srcTranslateX = matrixGroup.getTranslateX();
+				srcTranslateY = matrixGroup.getTranslateY();
 
 				cursorProperty().set(Cursor.CLOSED_HAND);
 			}
@@ -351,8 +743,16 @@ public class MatrixPane extends Pane {
 			}
 		});
 
-		this.getChildren().add(new FlowPane(group));
+		this.getChildren().add(new FlowPane(matrixGroup));
 
+	}
+
+	protected Group getSource() {
+		return this.source;
+	}
+
+	protected void setSource(Group cellGroup) {
+		this.source = cellGroup;
 	}
 
 }

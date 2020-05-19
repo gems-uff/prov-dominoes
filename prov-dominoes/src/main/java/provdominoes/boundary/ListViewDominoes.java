@@ -80,7 +80,7 @@ public class ListViewDominoes extends ListView<Group> {
 		}
 
 		ContextMenu minimenu = new ContextMenu();
-		MenuItem menuItemToAreaMove = new MenuItem("Copy To Area Move");
+		MenuItem menuItemToAreaMove = new MenuItem("Copy To Piece Canvas");
 		MenuItem menuItemRemove = new MenuItem("Remove");
 
 		Group group = domino.drawDominoes();
@@ -245,7 +245,7 @@ public class ListViewDominoes extends ListView<Group> {
 	}
 
 	/**
-	 * This function remove all parts in this area move
+	 * This function remove all parts in this Piece Canvas
 	 */
 	public void clear() {
 		for (int i = 0; i < this.pieces.size(); i++) {
@@ -354,6 +354,18 @@ public class ListViewDominoes extends ListView<Group> {
 	 */
 	public boolean remove(Group group) {
 		int index = this.pieces.indexOf(group);
+		if (index > -1) {
+			group.setVisible(false);
+			this.dominoes.remove(index);
+			this.pieces.remove(index);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean remove(Dominoes d) {
+		int index = this.dominoes.indexOf(d);
+		Group group = pieces.get(index);
 		if (index > -1) {
 			group.setVisible(false);
 			this.dominoes.remove(index);

@@ -1,5 +1,6 @@
 package provdominoes.arch;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import org.la4j.matrix.sparse.CRSMatrix;
 import processor.Cell;
 import processor.MatrixProcessor;
 import provdominoes.command.TextFilterData;
+import provdominoes.domain.Configuration;
 import provdominoes.util.Prov2DominoesUtil;
 import provdominoes.util.SortIgnoreCase;
 
@@ -58,7 +60,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	public void finalize() {
 		MatrixProcessor.deleteMatrixData(matPointer);
 	}
-	
+
 	@Override
 	public MatrixOperations subtract(MatrixOperations other) throws Exception {
 		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
@@ -67,7 +69,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 				&& matrixDescriptor.getNumCols() != otherDescriptor.getNumCols())
 			throw new Exception("Matrix cannot be added!");
 
-		MatrixDescriptor resultDesc = new MatrixDescriptor(matrixDescriptor.getRowType(), matrixDescriptor.getColType());
+		MatrixDescriptor resultDesc = new MatrixDescriptor(matrixDescriptor.getRowType(),
+				matrixDescriptor.getColType());
 
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++)
 			resultDesc.AddRowDesc(matrixDescriptor.getRowAt(i));
@@ -80,38 +83,43 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		System.out.println("Matrix 2: Rows: " + otherDescriptor.getNumRows() + " Cols: " + otherDescriptor.getNumCols()
 				+ " Size: " + other.getMemUsed());
 
-		System.out.println(
-				"1) Operation: Sum - Memory use before this operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
+		System.out.println("1) Operation: Sum - Memory use before this operation: " + getMemUsed() + other.getMemUsed()
+				+ " KB of GPU Memory.");
 
 		MatrixOperationsGPU result = new MatrixOperationsGPU(resultDesc, false, rows, cols);
 
-		System.out.println(
-				"2) Operation: Sum - Memory use before this operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
-		
-		
-		this.setSparse(false);
-		MatrixOperationsCPU temp1 = new MatrixOperationsCPU(getMatrixDescriptor());
-		temp1.setData(this.getData());
-		temp1 = (MatrixOperationsCPU) temp1.sortRows();
-		temp1 = (MatrixOperationsCPU) temp1.sortColumns();
-		
-		other.setSparse(false);
-		MatrixOperationsCPU temp2 = new MatrixOperationsCPU(other.getMatrixDescriptor());
-		temp2.setData(other.getData());
-		temp2 = (MatrixOperationsCPU) temp2.sortRows();
-		temp2 = (MatrixOperationsCPU)temp2.sortColumns();
+		System.out.println("2) Operation: Sum - Memory use before this operation: " + getMemUsed() + other.getMemUsed()
+				+ " KB of GPU Memory.");
 
-		CRSMatrix crs1 = Prov2DominoesUtil.cells2Matrix(temp1.getData(), temp1.getMatrixDescriptor().getNumRows(), temp1.getMatrixDescriptor().getNumCols());
-		MatrixOperationsGPU tempg1 = (MatrixOperationsGPU) MatrixOperations.configureOperation(crs1, temp1.getMatrixDescriptor(), false);
-		
-		CRSMatrix crs2 = Prov2DominoesUtil.cells2Matrix(temp2.getData(), temp2.getMatrixDescriptor().getNumRows(), temp2.getMatrixDescriptor().getNumCols());
-		MatrixOperationsGPU tempg2 = (MatrixOperationsGPU) MatrixOperations.configureOperation(crs2, temp2.getMatrixDescriptor(), false);
-		
-		MatrixProcessor.subtract(((MatrixOperationsGPU) tempg1).matPointer, ((MatrixOperationsGPU) tempg2).matPointer, matrixDescriptor.getNumRows()*matrixDescriptor.getNumCols(), result.matPointer);
+		this.setSparse(false);
+		MatrixOperations temp1 = new MatrixOperationsCPU(getMatrixDescriptor());
+		temp1.setData(this.getData());
+		temp1 = (MatrixOperations) temp1.sortRows();
+		temp1 = (MatrixOperations) temp1.sortColumns();
+
+		other.setSparse(false);
+		MatrixOperations temp2 = new MatrixOperationsCPU(other.getMatrixDescriptor());
+		temp2.setData(other.getData());
+		temp2 = (MatrixOperations) temp2.sortRows();
+		temp2 = (MatrixOperations) temp2.sortColumns();
+
+		CRSMatrix crs1 = Prov2DominoesUtil.cells2Matrix(temp1.getData(), temp1.getMatrixDescriptor().getNumRows(),
+				temp1.getMatrixDescriptor().getNumCols());
+		MatrixOperationsGPU tempg1 = (MatrixOperationsGPU) MatrixOperations.configureOperation(crs1,
+				temp1.getMatrixDescriptor(), false);
+
+		CRSMatrix crs2 = Prov2DominoesUtil.cells2Matrix(temp2.getData(), temp2.getMatrixDescriptor().getNumRows(),
+				temp2.getMatrixDescriptor().getNumCols());
+		MatrixOperationsGPU tempg2 = (MatrixOperationsGPU) MatrixOperations.configureOperation(crs2,
+				temp2.getMatrixDescriptor(), false);
+
+		MatrixProcessor.subtract(((MatrixOperationsGPU) tempg1).matPointer, ((MatrixOperationsGPU) tempg2).matPointer,
+				matrixDescriptor.getNumRows() * matrixDescriptor.getNumCols(), result.matPointer);
 		result.getMatrixDescriptor().setRowsDesc(temp2.getMatrixDescriptor().getRowsDesc());
 		result.getMatrixDescriptor().setColumnsDesc(temp2.getMatrixDescriptor().getColumnsDesc());
-		
-		System.out.println("Updated memory use after operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
+
+		System.out.println(
+				"Updated memory use after operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
 
 		return result;
 	}
@@ -124,7 +132,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 				&& matrixDescriptor.getNumCols() != otherDescriptor.getNumCols())
 			throw new Exception("Matrix cannot be added!");
 
-		MatrixDescriptor resultDesc = new MatrixDescriptor(matrixDescriptor.getRowType(), matrixDescriptor.getColType());
+		MatrixDescriptor resultDesc = new MatrixDescriptor(matrixDescriptor.getRowType(),
+				matrixDescriptor.getColType());
 
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++)
 			resultDesc.AddRowDesc(matrixDescriptor.getRowAt(i));
@@ -137,49 +146,56 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		System.out.println("Matrix 2: Rows: " + otherDescriptor.getNumRows() + " Cols: " + otherDescriptor.getNumCols()
 				+ " Size: " + other.getMemUsed());
 
-		System.out.println(
-				"1) Operation: Sum - Memory use before this operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
+		System.out.println("1) Operation: Sum - Memory use before this operation: " + getMemUsed() + other.getMemUsed()
+				+ " KB of GPU Memory.");
 
 		MatrixOperationsGPU result = new MatrixOperationsGPU(resultDesc, false, rows, cols);
 
-		System.out.println(
-				"2) Operation: Sum - Memory use before this operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
-		
-		
-		this.setSparse(false);
-		MatrixOperationsCPU temp1 = new MatrixOperationsCPU(getMatrixDescriptor());
-		temp1.setData(this.getData());
-		temp1 = (MatrixOperationsCPU) temp1.sortRows();
-		temp1 = (MatrixOperationsCPU) temp1.sortColumns();
-		
-		other.setSparse(false);
-		MatrixOperationsCPU temp2 = new MatrixOperationsCPU(other.getMatrixDescriptor());
-		temp2.setData(other.getData());
-		temp2 = (MatrixOperationsCPU) temp2.sortRows();
-		temp2 = (MatrixOperationsCPU)temp2.sortColumns();
+		System.out.println("2) Operation: Sum - Memory use before this operation: " + getMemUsed() + other.getMemUsed()
+				+ " KB of GPU Memory.");
 
-		CRSMatrix crs1 = Prov2DominoesUtil.cells2Matrix(temp1.getData(), temp1.getMatrixDescriptor().getNumRows(), temp1.getMatrixDescriptor().getNumCols());
-		MatrixOperationsGPU tempg1 = (MatrixOperationsGPU) MatrixOperations.configureOperation(crs1, temp1.getMatrixDescriptor(), false);
-		
-		CRSMatrix crs2 = Prov2DominoesUtil.cells2Matrix(temp2.getData(), temp2.getMatrixDescriptor().getNumRows(), temp2.getMatrixDescriptor().getNumCols());
-		MatrixOperationsGPU tempg2 = (MatrixOperationsGPU) MatrixOperations.configureOperation(crs2, temp2.getMatrixDescriptor(), false);
-		
-		MatrixProcessor.sum(((MatrixOperationsGPU) tempg1).matPointer, ((MatrixOperationsGPU) tempg2).matPointer, matrixDescriptor.getNumRows()*matrixDescriptor.getNumCols(), result.matPointer);
+		this.setSparse(false);
+		MatrixOperations temp1 = new MatrixOperationsCPU(getMatrixDescriptor());
+		temp1.setData(this.getData());
+		temp1 = (MatrixOperations) temp1.sortRows();
+		temp1 = (MatrixOperations) temp1.sortColumns();
+
+		other.setSparse(false);
+		MatrixOperations temp2 = new MatrixOperationsCPU(other.getMatrixDescriptor());
+		temp2.setData(other.getData());
+		temp2 = (MatrixOperations) temp2.sortRows();
+		temp2 = (MatrixOperations) temp2.sortColumns();
+
+		CRSMatrix crs1 = Prov2DominoesUtil.cells2Matrix(temp1.getData(), temp1.getMatrixDescriptor().getNumRows(),
+				temp1.getMatrixDescriptor().getNumCols());
+		MatrixOperationsGPU tempg1 = (MatrixOperationsGPU) MatrixOperations.configureOperation(crs1,
+				temp1.getMatrixDescriptor(), false);
+
+		CRSMatrix crs2 = Prov2DominoesUtil.cells2Matrix(temp2.getData(), temp2.getMatrixDescriptor().getNumRows(),
+				temp2.getMatrixDescriptor().getNumCols());
+		MatrixOperationsGPU tempg2 = (MatrixOperationsGPU) MatrixOperations.configureOperation(crs2,
+				temp2.getMatrixDescriptor(), false);
+
+		MatrixProcessor.sum(((MatrixOperationsGPU) tempg1).matPointer, ((MatrixOperationsGPU) tempg2).matPointer,
+				matrixDescriptor.getNumRows() * matrixDescriptor.getNumCols(), result.matPointer);
 		result.getMatrixDescriptor().setRowsDesc(temp2.getMatrixDescriptor().getRowsDesc());
 		result.getMatrixDescriptor().setColumnsDesc(temp2.getMatrixDescriptor().getColumnsDesc());
-		
-		System.out.println("Updated memory use after operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
+
+		System.out.println(
+				"Updated memory use after operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
 
 		return result;
 	}
-	
+
 	public void setSparse(boolean b) {
 		this.isSparse = b;
 	}
 
 	public MatrixOperations multiply(MatrixOperations other, boolean useGPU) throws Exception {
-		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
+		long startTime = 0;
+		long endTime = 0;
 
+		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
 		if (matrixDescriptor.getNumCols() != otherDescriptor.getNumRows())
 			throw new Exception("Matrix cannot be multiplied!");
 
@@ -191,24 +207,26 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		for (int i = 0; i < otherDescriptor.getNumCols(); i++)
 			resultDesc.AddColDesc(otherDescriptor.getColumnAt(i));
 
-		System.out.println("Matrix 1: Rows: " + matrixDescriptor.getNumRows() + " Cols: "
-				+ matrixDescriptor.getNumCols() + " Size: " + getMemUsed());
-		System.out.println("Matrix 2: Rows: " + otherDescriptor.getNumRows() + " Cols: " + otherDescriptor.getNumCols()
-				+ " Size: " + other.getMemUsed());
-
-		System.out.println(
-				"1) Operation: Multiplication - Memory use before this operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
-
 		MatrixOperationsGPU result = new MatrixOperationsGPU(resultDesc, useGPU);
 
-		System.out.println(
-				"2) Operation: Multiplication - Memory use before this operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
+		System.out.println("Operation: Load Data - Memory use after this operation: " + getMemUsed()
+				+ other.getMemUsed() + " KB of GPU Memory.");
 		setData(this.sortColumns().getData());
 		other.setData(other.sortRows().getData());
 
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixProcessor.multiply(matPointer, ((MatrixOperationsGPU) other).matPointer, result.matPointer, useGPU);
-		System.out.println("Updated memory use after operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
-
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for multiplication in ms: " + df.format(d));
+		}
+		System.out.println(
+				"Updated memory use after operation: " + getMemUsed() + other.getMemUsed() + " KB of GPU Memory.");
 		return result;
 	}
 
@@ -226,7 +244,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 		try {
 			transpose = new MatrixOperationsGPU(_newDescriptor, true);
-			System.out.println("Operation: Transposing - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
+			System.out.println("Operation: Transposing - Memory use before this operation: " + getMemUsed()
+					+ " KB of GPU Memory.");
 			MatrixProcessor.transpose(matPointer, transpose.matPointer);
 			System.out.println("Updated memory use after operation: " + getMemUsed() + " KB of GPU Memory.");
 		} catch (Exception ex) {
@@ -292,7 +311,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 
 		try {
 			reduced = new MatrixOperationsGPU(_newDescriptor, true);
-			System.out.println("Operation: Reduction - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
+			System.out.println(
+					"Operation: Reduction - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
 			MatrixProcessor.reduceDimension(matPointer, reduced.matPointer, useGPU);
 			System.out.println("Updated memory use after operation: " + getMemUsed() + " KB of GPU Memory.");
 		} catch (Exception ex) {
@@ -309,7 +329,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		MatrixOperationsGPU confidence = null;
 
 		try {
-			System.out.println("Operation: Confidence - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
+			System.out.println(
+					"Operation: Confidence - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
 			confidence = new MatrixOperationsGPU(_newDescriptor, true);
 			MatrixProcessor.confidence(matPointer, confidence.matPointer, useGPU);
 			System.out.println("Updated memory use after operation: " + getMemUsed() + " KB of GPU Memory.");
@@ -326,9 +347,22 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		MatrixOperationsGPU transitiveClosure = null;
 
 		try {
-			System.out.println("Operation: TransitiveClosure - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
+			System.out.println("Operation: TransitiveClosure - Memory use before this operation: " + getMemUsed()
+					+ " KB of GPU Memory.");
 			transitiveClosure = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
+			long startTime = 0;
+			long endTime = 0;
+			if (Configuration.telemetry) {
+				startTime = System.nanoTime();
+			}
 			MatrixProcessor.transitiveClosure(matrixDescriptor.getNumRows(), matPointer, transitiveClosure.matPointer);
+			if (Configuration.telemetry) {
+				endTime = System.nanoTime();
+				long timeElapsed = endTime - startTime;
+				double d = timeElapsed / 1000000d;
+				DecimalFormat df = new DecimalFormat("#.##");
+				System.out.println("Time elapsed for transitive closure in ms: " + df.format(d));
+			}
 			System.out.println("Updated memory use after operation: " + getMemUsed() + " KB of GPU Memory.");
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -347,7 +381,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		MatrixOperationsGPU binarize = null;
 
 		try {
-			System.out.println("Operation: Binarize - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
+			System.out.println(
+					"Operation: Binarize - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
 			binarize = new MatrixOperationsGPU(_newDescriptor, true);
 			MatrixProcessor.binarize(matPointer, binarize.matPointer);
 			System.out.println("Updated memory use after operation: " + getMemUsed() + " KB of GPU Memory.");
@@ -362,7 +397,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
 		MatrixOperationsGPU invert = null;
 		try {
-			System.out.println("Operation: Invert - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
+			System.out.println(
+					"Operation: Invert - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
 			invert = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
 			MatrixProcessor.invert(_newDescriptor.getNumRows() * _newDescriptor.getNumCols(), matPointer,
 					invert.matPointer);
@@ -378,7 +414,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
 		MatrixOperationsGPU lowerDiagonal = null;
 		try {
-			System.out.println("Operation: LowerDiagonal - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
+			System.out.println("Operation: LowerDiagonal - Memory use before this operation: " + getMemUsed()
+					+ " KB of GPU Memory.");
 			lowerDiagonal = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
 			MatrixProcessor.lowerDiagonal(this.matrixDescriptor.getNumRows(), matPointer, lowerDiagonal.matPointer);
 			System.out.println("Updated memory use after operation: " + getMemUsed() + " KB of GPU Memory.");
@@ -393,7 +430,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
 		MatrixOperationsGPU upperDiagonal = null;
 		try {
-			System.out.println("Operation: UpperDiagonal - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
+			System.out.println("Operation: UpperDiagonal - Memory use before this operation: " + getMemUsed()
+					+ " KB of GPU Memory.");
 			upperDiagonal = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
 			MatrixProcessor.upperDiagonal(this.matrixDescriptor.getNumRows(), matPointer, upperDiagonal.matPointer);
 			System.out.println("Updated memory use after operation: " + getMemUsed() + " KB of GPU Memory.");
@@ -408,7 +446,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		MatrixDescriptor _newDescriptor = this.matrixDescriptor;
 		MatrixOperationsGPU diagonalize = null;
 		try {
-			System.out.println("Operation: Diagonalize - Memory use before this operation: " + getMemUsed() + " KB of GPU Memory.");
+			System.out.println("Operation: Diagonalize - Memory use before this operation: " + getMemUsed()
+					+ " KB of GPU Memory.");
 			diagonalize = new MatrixOperationsGPU(_newDescriptor, false, rows, cols);
 			MatrixProcessor.diagonalize(this.matrixDescriptor.getNumRows() * this.matrixDescriptor.getNumCols(),
 					matPointer, diagonalize.matPointer);
@@ -448,7 +487,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	public void setCols(int[] cols) {
 		this.cols = cols;
 	}
-	
+
 	@Override
 	public MatrixOperations sortRows() {
 		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
@@ -465,7 +504,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
 
 		double[][] matrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
-		CRSMatrix oldMatrix = Prov2DominoesUtil.cells2Matrix(getData(), matrixDescriptor.getNumRows(), matrixDescriptor.getNumCols());
+		CRSMatrix oldMatrix = Prov2DominoesUtil.cells2Matrix(getData(), matrixDescriptor.getNumRows(),
+				matrixDescriptor.getNumCols());
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
 				matrix[i][j] = oldMatrix.get(rowsIndexes.get(rowsDesc.get(i)), j);
@@ -492,7 +532,8 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
 
 		double[][] matrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
-		CRSMatrix oldMatrix = Prov2DominoesUtil.cells2Matrix(getData(), matrixDescriptor.getNumRows(), matrixDescriptor.getNumCols());
+		CRSMatrix oldMatrix = Prov2DominoesUtil.cells2Matrix(getData(), matrixDescriptor.getNumRows(),
+				matrixDescriptor.getNumCols());
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
 				matrix[i][j] = oldMatrix.get(i, colsIndexes.get(colsDesc.get(j)));
@@ -502,7 +543,7 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		result.setData(new CRSMatrix(matrix));
 		return result;
 	}
-	
+
 	@Override
 	public MatrixOperations sortEqualTo(MatrixDescriptor matrixDescriptor) {
 		MatrixOperationsCPU result = new MatrixOperationsCPU(matrixDescriptor);
@@ -511,14 +552,15 @@ public class MatrixOperationsGPU implements MatrixOperations {
 				this.getMatrixDescriptor().getNumCols());
 		for (int i = 0; i < crsResult.rows(); i++) {
 			for (int j = 0; j < crsResult.columns(); j++) {
-				crsResult.set(i, j, oldCRS.get(this.getMatrixDescriptor().getRowElementIndex(matrixDescriptor.getRowAt(i)),
-						this.getMatrixDescriptor().getColElementIndex(matrixDescriptor.getColumnAt(j))));
+				crsResult.set(i, j,
+						oldCRS.get(this.getMatrixDescriptor().getRowElementIndex(matrixDescriptor.getRowAt(i)),
+								this.getMatrixDescriptor().getColElementIndex(matrixDescriptor.getColumnAt(j))));
 			}
 		}
 		result.setData(crsResult);
 		return result;
 	}
-	
+
 	@Override
 	public MatrixOperations standardScoreDense() {
 		// TODO Pending GPU implementation
@@ -584,6 +626,22 @@ public class MatrixOperationsGPU implements MatrixOperations {
 		return null;
 	}
 
-	
+	@Override
+	public MatrixOperations sortDefaultDimensionValues() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public MatrixOperations sortByRowCount() {
+		// TODO Pending GPU implementation
+		return null;
+	}
+
+	@Override
+	public MatrixOperations sortByColumnCount() {
+		// TODO Pending GPU implementation
+		return null;
+	}
 
 }

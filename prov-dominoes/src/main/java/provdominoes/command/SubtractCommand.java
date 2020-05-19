@@ -2,7 +2,7 @@ package provdominoes.command;
 
 import javafx.scene.Group;
 import provdominoes.boundary.App;
-import provdominoes.boundary.MoveData;
+import provdominoes.boundary.PieceCanvasState;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
@@ -32,11 +32,11 @@ public class SubtractCommand extends AbstractCommand {
 	protected boolean doIt() {
 		boolean result = false;
 		if (indexLeftDominoes != -1 && indexRightDominoes != -1) {
-			App.getArea().getData().setCombination(MoveData.COMBINATION_SUBTRACTION);
+			App.getArea().getData().setCombination(PieceCanvasState.COMBINATION_SUBTRACTION);
 			App.getArea().getData().setIndexFirstOperatorCombination(indexLeftDominoes);
 			App.getArea().getData().setIndexSecondOperatorCombination(indexRightDominoes);
 		}
-		if (App.getArea().getData().getCombination() == MoveData.COMBINATION_SUBTRACTION && App.getArea().getData().getIndexFirstOperatorCombination() != -1
+		if (App.getArea().getData().getCombination() == PieceCanvasState.COMBINATION_SUBTRACTION && App.getArea().getData().getIndexFirstOperatorCombination() != -1
 				&& App.getArea().getData().getIndexSecondOperatorCombination() != -1) {
 			Dominoes d1 = App.getArea().getData().getDominoes()
 					.get(App.getArea().getData().getIndexFirstOperatorCombination());

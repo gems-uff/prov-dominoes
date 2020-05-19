@@ -7,7 +7,7 @@ import java.text.ParseException;
 
 import javafx.scene.Group;
 import provdominoes.boundary.App;
-import provdominoes.boundary.MoveData;
+import provdominoes.boundary.PieceCanvasState;
 import provdominoes.command.AbstractCommand;
 import provdominoes.command.AddCommand;
 import provdominoes.command.CommandFactory;
@@ -125,7 +125,7 @@ public class ScriptController {
 						}
 					}
 					if (indexLeft != -1 && indexRight != -1) {
-						App.getArea().getData().setCombination(MoveData.COMBINATION_MULTIPLICATION);
+						App.getArea().getData().setCombination(PieceCanvasState.COMBINATION_MULTIPLICATION);
 						MultiplyCommand mult = new MultiplyCommand();
 						mult.setKey(pieceAlias);
 						cmd = mult;
@@ -148,7 +148,7 @@ public class ScriptController {
 						}
 					}
 					if (indexLeft != -1 && indexRight != -1) {
-						App.getArea().getData().setCombination(MoveData.COMBINATION_SUM);
+						App.getArea().getData().setCombination(PieceCanvasState.COMBINATION_SUM);
 						SumCommand sum = new SumCommand();
 						sum.setKey(pieceAlias);
 						cmd = sum;
@@ -171,7 +171,7 @@ public class ScriptController {
 						}
 					}
 					if (indexLeft != -1 && indexRight != -1) {
-						App.getArea().getData().setCombination(MoveData.COMBINATION_SUBTRACTION);
+						App.getArea().getData().setCombination(PieceCanvasState.COMBINATION_SUBTRACTION);
 						SubtractCommand sum = new SubtractCommand();
 						sum.setKey(pieceAlias);
 						cmd = sum;
@@ -290,7 +290,7 @@ public class ScriptController {
 						cmd = CommandFactory.getInstance().filterHighPass(piece,
 								NumberFormat.getInstance().parse(cutoff).doubleValue());
 					} catch (ParseException e) {
-						App.alertException(e, "Erro desconhecido ao processar comando: " + cmdl);
+						App.alertException(e, "Unknown erro trying to parse command: " + cmdl);
 					}
 				} else if (token[0].equals(AbstractCommand.LPF_COMMAND)) {
 					String[] operands = token[1].split(",");
@@ -307,7 +307,7 @@ public class ScriptController {
 						cmd = CommandFactory.getInstance().filterLowPass(piece,
 								NumberFormat.getInstance().parse(cutoff).doubleValue());
 					} catch (ParseException e) {
-						App.alertException(e, "Erro desconhecido ao processar comando: " + cmdl);
+						App.alertException(e, "Unknown erro trying to parse command: " + cmdl);
 					}
 				} else if (token[0].equals(AbstractCommand.COLUMN_TEXT_COMMAND)) {
 					String[] operands = token[1].split(",");
@@ -343,6 +343,15 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().filterRowText(piece, t);
+				} else if (token[0].equals(AbstractCommand.SORT_ROW_VALUES_COMMAND)) {
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(token[1].toUpperCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					cmd = CommandFactory.getInstance().sortRowValues(piece);
 				} else if (token[0].equals(AbstractCommand.SORT_ROW_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
@@ -361,6 +370,24 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().sortColumns(piece);
+				} else if (token[0].equals(AbstractCommand.SORT_ROW_COUNT_COMMAND)) {
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(token[1].toUpperCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					cmd = CommandFactory.getInstance().sortRowCount(piece);
+				} else if (token[0].equals(AbstractCommand.SORT_COLUMN_COUNT_COMMAND)) {
+					Group piece = null;
+					for (Dominoes d : App.getArea().getData().getDominoes()) {
+						if (d.getId().equals(token[1].toUpperCase())) {
+							int index = App.getArea().getData().getDominoes().indexOf(d);
+							piece = App.getArea().getData().getPieces().get(index);
+						}
+					}
+					cmd = CommandFactory.getInstance().sortColumnCount(piece);
 				} else if (token[0].equals(AbstractCommand.SORT_COLUMN_FIRST_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
@@ -379,7 +406,7 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().sortRowFirst(piece);
-				} else if (token[0].equals(AbstractCommand.LOWER_DIAGONAL_COMMAND)) {
+				} else if (token[0].equals(AbstractCommand.LOWER_TRIANGULAR_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(token[1].toUpperCase())) {
@@ -388,7 +415,7 @@ public class ScriptController {
 						}
 					}
 					cmd = CommandFactory.getInstance().filterLowerDiagonal(piece);
-				} else if (token[0].equals(AbstractCommand.UPPER_DIAGONAL_COMMAND)) {
+				} else if (token[0].equals(AbstractCommand.UPPER_TRIANGULAR_COMMAND)) {
 					Group piece = null;
 					for (Dominoes d : App.getArea().getData().getDominoes()) {
 						if (d.getId().equals(token[1].toUpperCase())) {

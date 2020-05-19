@@ -48,8 +48,9 @@ public class MainMenuBar extends MenuBar {
 
 	// ------VIEW MENU ITENS----------------------------------------------------
 	private final Menu mView;
-	private final CheckMenuItem mHistoryFullscreen;
-	public final CheckMenuItem mHistoryShowGraph;
+	private final CheckMenuItem mViewFullscreen;
+	private final CheckMenuItem mViewShowCellValues;
+	public final CheckMenuItem mViewShowGraph;
 
 	// ------FACTORY MENU ITENS----------------------------------------------------
 	private final Menu mFactory;
@@ -62,6 +63,8 @@ public class MainMenuBar extends MenuBar {
 	private final CheckMenuItem mCpuProcessing;
 	private final CheckMenuItem mGpuProcessing;
 	private CheckMenuItem[] devices;
+
+	private CheckMenuItem mTuning;
 
 	public MainMenuBar() {
 		this.setHeight(30);
@@ -88,10 +91,29 @@ public class MainMenuBar extends MenuBar {
 		this.mFactory.getItems().addAll(this.mDefaultFactory, this.mExtendedFactory);
 
 		this.mProcessing = new Menu("Processing");
+		this.mTuning = new CheckMenuItem("Tuning");
 		this.mDeriveInfluence = new CheckMenuItem("Derive influence");
 		this.mCpuProcessing = new CheckMenuItem("CPU");
 		this.mGpuProcessing = new CheckMenuItem("GPU");
 
+		this.mTuning.setSelected(Configuration.tuning);
+		mTuning.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				if (((CheckMenuItem) e.getSource()).isSelected()) {
+					Configuration.tuning = true;
+				} else {
+					Configuration.tuning = false;
+				}
+				try {
+					new ConfigurationFile().updateConfiguration();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
 		this.mDeriveInfluence.setSelected(Configuration.deriveInfluence);
 		mDeriveInfluence.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -112,8 +134,8 @@ public class MainMenuBar extends MenuBar {
 		if (deviceCount > 0) {
 			SeparatorMenuItem influenceSeparator = new SeparatorMenuItem();
 			SeparatorMenuItem deviceSeparator = new SeparatorMenuItem();
-			this.mProcessing.getItems().addAll(this.mDeriveInfluence, influenceSeparator, this.mCpuProcessing,
-					this.mGpuProcessing, deviceSeparator);
+			this.mProcessing.getItems().addAll(this.mTuning, this.mDeriveInfluence, influenceSeparator,
+					this.mCpuProcessing, this.mGpuProcessing, deviceSeparator);
 			this.devices = new CheckMenuItem[deviceCount];
 			for (int i = 0; i < devices.length; i++) {
 				this.devices[i] = new CheckMenuItem("Device " + i);
@@ -285,12 +307,16 @@ public class MainMenuBar extends MenuBar {
 				this.editMenuShowHistoric, this.editMenuShowType);
 
 		// ------VIEW MENU ITENS----------------------------------------------------
-		this.mHistoryShowGraph = new CheckMenuItem("View History Graph");
-		this.mHistoryShowGraph.setSelected(Configuration.visibilityGraphHistory);
-		this.mHistoryFullscreen = new CheckMenuItem("Full Screen");
-		this.mHistoryFullscreen.setSelected(Configuration.fullScreen);
+		this.mViewShowGraph = new CheckMenuItem("View History Graph");
+		this.mViewShowGraph.setSelected(Configuration.visibilityGraphHistory);
+		this.mViewFullscreen = new CheckMenuItem("Full Screen");
+		this.mViewFullscreen.setSelected(Configuration.fullScreen);
+
+		this.mViewShowCellValues = new CheckMenuItem("Show Cell Values");
+		this.mViewShowCellValues.setSelected(Configuration.showCellValues);
+
 		this.mView = new Menu("View");
-		this.mView.getItems().addAll(mHistoryFullscreen, mHistoryShowGraph);
+		this.mView.getItems().addAll(mViewFullscreen, mViewShowGraph, mViewShowCellValues);
 
 		// ------MENU
 		// ITENS--------------------------------------------------------------
@@ -370,7 +396,7 @@ public class MainMenuBar extends MenuBar {
 				try {
 					App.getCommandManager().clear(true);
 				} catch (IOException e) {
-					App.alertException(e, "Erro ao acessar script de comandos");
+					App.alertException(e, "Error trying to access CES file");
 				}
 				App.getArea().clear();
 				App.getTopPane().reset();
@@ -381,34 +407,67 @@ public class MainMenuBar extends MenuBar {
 		this.editMenuShowHistoric.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
-			public void handle(ActionEvent event) {
-				Configuration.visibilityHistoric = editMenuShowHistoric.isSelected();
-				App.setVisibleHistoric();
+			public void handle(ActionEvent e) {
+				if (((CheckMenuItem) e.getSource()).isSelected()) {
+					Configuration.visibilityHistoric = true;
+					App.setVisibleHistoric();
+				} else {
+					Configuration.visibilityHistoric = false;
+					App.setVisibleHistoric();
+				}
 			}
 		});
 
 		this.editMenuShowType.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
-			public void handle(ActionEvent event) {
-				Configuration.visibilityType = editMenuShowType.isSelected();
-				App.setVisibleType();
+			public void handle(ActionEvent e) {
+				if (((CheckMenuItem) e.getSource()).isSelected()) {
+					Configuration.visibilityType = true;
+					App.setVisibleType();
+				} else {
+					Configuration.visibilityType = false;
+					App.setVisibleType();
+				}
 			}
 		});
 
 		// ----------CONFIGURATION MENU
 		// ITENS------------------------------------------------
-		this.mHistoryFullscreen.setOnAction(new EventHandler<ActionEvent>() {
+		this.mViewFullscreen.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
-			public void handle(ActionEvent event) {
-				App.setSize(mHistoryFullscreen.isSelected());
+			public void handle(ActionEvent e) {				
+				if (((CheckMenuItem) e.getSource()).isSelected()) {
+					Configuration.fullScreen = true;
+					App.setSize(true);
+				} else {
+					Configuration.fullScreen = false;
+					App.setSize(false);
+				}
 			}
 		});
-		mHistoryShowGraph.setOnAction(new EventHandler<ActionEvent>() {
+		this.mViewShowCellValues.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
-			public void handle(ActionEvent event) {
+			public void handle(ActionEvent e) {
+				if (((CheckMenuItem) e.getSource()).isSelected()) {
+					Configuration.showCellValues = true;
+				} else {
+					Configuration.showCellValues = false;
+				}
+
+			}
+		});
+		mViewShowGraph.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent e) {
+				if (((CheckMenuItem) e.getSource()).isSelected()) {					
+					Configuration.visibilityGraphHistory = true;
+				} else {
+					Configuration.visibilityGraphHistory = false;
+				}
 				App.changeVisibleGraphHistory();
 			}
 		});
@@ -468,8 +527,16 @@ public class MainMenuBar extends MenuBar {
 		return mDeriveInfluence;
 	}
 
-	public CheckMenuItem getmHistoryShowGraph() {
-		return mHistoryShowGraph;
+	public CheckMenuItem getmViewShowGraph() {
+		return mViewShowGraph;
+	}
+
+	public CheckMenuItem getmTuning() {
+		return mTuning;
+	}
+
+	public void setmTuning(CheckMenuItem mTuning) {
+		this.mTuning = mTuning;
 	}
 
 }

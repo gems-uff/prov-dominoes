@@ -1,6 +1,7 @@
 package provdominoes.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,8 @@ public class Prov2DominoesUtil {
 					descriptor.setColumnsDesc(provMatrix.getColumnDescriptors());
 				}
 				Dominoes dom = new Dominoes(provMatrix, descriptor,
-						(Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING));
+						(Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING
+								: Configuration.CPU_PROCESSING));
 				if (provMatrix.getIdentifier() != null) {
 					dom.setId(provMatrix.getIdentifier());
 				}
@@ -163,4 +165,55 @@ public class Prov2DominoesUtil {
 		return Math.floor(sdScore * 100000) / 100000;
 	}
 
+	public static String[][] cloneStringMatrix(String[][] stringMatrix) {
+		String[][] clonedStringMatrix = null;
+		if (stringMatrix != null) {
+			clonedStringMatrix = new String[stringMatrix.length][stringMatrix[0].length];
+			for (int i = 0; i < clonedStringMatrix.length; i++) {
+				clonedStringMatrix[i] = Arrays.copyOf(stringMatrix[i], stringMatrix[i].length);
+			}
+		}
+		return clonedStringMatrix;
+	}
+
+	public static List<String> sortWithLabels(double[] numbers, List<String> labels) {
+		quickSort(numbers, 0, numbers.length - 1,  labels);
+		return labels;
+	}
+
+	public static void quickSort(double arr[], int begin, int end, List<String> newLabels) {
+		if (begin < end) {
+			int partitionIndex = partition(arr, begin, end, newLabels);
+
+			quickSort(arr, begin, partitionIndex - 1,  newLabels);
+			quickSort(arr, partitionIndex + 1, end, newLabels);
+		}
+	}
+
+	private static int partition(double arr[], int begin, int end, List<String> newLabels) {
+		double pivot = arr[end];
+		int i = (begin - 1);
+
+		for (int j = begin; j < end; j++) {
+			if (arr[j] > pivot) {
+				i++;
+
+				double swapTemp = arr[i];
+				String swapLabel = newLabels.get(i); 
+				arr[i] = arr[j];
+				newLabels.set(i, newLabels.get(j));
+				arr[j] = swapTemp;
+				newLabels.set(j, swapLabel);
+			}
+		}
+
+		double swapTemp = arr[i + 1];
+		String swapLabel = newLabels.get(i+1); 
+		arr[i + 1] = arr[end];
+		newLabels.set(i+1, newLabels.get(end));
+		arr[end] = swapTemp;
+		newLabels.set(end, swapLabel);
+
+		return i + 1;
+	}
 }

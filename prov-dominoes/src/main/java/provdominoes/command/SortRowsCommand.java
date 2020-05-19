@@ -30,8 +30,8 @@ public class SortRowsCommand extends AbstractCommand {
 		x = this.piece.getTranslateX();
 		y = this.piece.getTranslateY();
 		try {
-			Dominoes toSortRow = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.sortRows(toSortRow);
+			Dominoes toSortRowValues = App.getArea().getData().getDominoes().get(index);
+			Dominoes domino = provdominoes.control.Controller.sortRows(toSortRowValues);
 
 			App.getArea().remove(index);
 			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
@@ -40,7 +40,7 @@ public class SortRowsCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao efetuar ordenamento das linhas!");
+			App.alertException(e, "Error trying to perform sort by rows asc!");
 			e.printStackTrace();
 			success = false;
 		}

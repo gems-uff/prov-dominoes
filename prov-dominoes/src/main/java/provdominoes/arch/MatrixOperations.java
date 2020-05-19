@@ -91,4 +91,10 @@ public interface MatrixOperations {
 		mat.setData(Prov2DominoesUtil.matrix2Cells(matrix));
 		return mat;
 	}
+
+	MatrixOperations sortDefaultDimensionValues();
+
+	MatrixOperations sortByRowCount();
+
+	public MatrixOperations sortByColumnCount();
 }

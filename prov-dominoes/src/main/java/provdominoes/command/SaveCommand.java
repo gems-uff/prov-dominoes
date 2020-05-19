@@ -3,6 +3,7 @@ package provdominoes.command;
 import java.io.IOException;
 
 import javafx.scene.Group;
+import provdominoes.arch.MatrixOperations;
 import provdominoes.boundary.App;
 import provdominoes.domain.Dominoes;
 
@@ -30,14 +31,20 @@ public class SaveCommand extends AbstractCommand {
 		Group piece = App.getArea().getData().getPieces().get(index);
 		x = piece.getTranslateX();
 		y = piece.getTranslateY();
-		this.savedDominoes = App.getArea().getData().getDominoes().get(index);
-		this.prevId = savedDominoes.getId();
+		this.savedDominoes = App.getArea().getData().getDominoes().get(index).cloneNoMatrix();
 		try {
-			intoId = App.getArea().saveAndSendToList(piece);
-			App.getArea().close(piece);
+			this.savedDominoes.setMat(MatrixOperations.configureOperation(savedDominoes.getCrsMatrix(),
+					savedDominoes.getDescriptor(), false));
+			this.prevId = savedDominoes.getId();
+			intoId = App.getArea().saveAndSendToList(piece, savedDominoes);
 		} catch (IOException e) {
 			success = false;
 			e.printStackTrace();
+			App.alertException(e, "Failed trying to save piece!");
+		} catch (Exception e) {
+			success = false;
+			e.printStackTrace();
+			App.alertException(e, "Failed trying to save piece!");
 		}
 		return success;
 	}
@@ -68,6 +75,22 @@ public class SaveCommand extends AbstractCommand {
 	@Override
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getIntoId() {
+		return intoId;
+	}
+
+	public void setIntoId(String intoId) {
+		this.intoId = intoId;
+	}
+
+	public Dominoes getSavedDominoes() {
+		return savedDominoes;
+	}
+
+	public void setSavedDominoes(Dominoes savedDominoes) {
+		this.savedDominoes = savedDominoes;
 	}
 
 }

@@ -1,7 +1,5 @@
 package provdominoes.command;
 
-import java.io.IOException;
-
 import javafx.scene.Group;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -35,7 +33,7 @@ public class AggregateColumnsCommand extends AbstractCommand {
 		this.y = this.piece.getTranslateY();
 		Dominoes toReduce = App.getArea().getData().getDominoes().get(index);
 		try {
-			if (!toReduce.isColAggregatable()) {
+			if (toReduce.getCrsMatrix().columns() > 1) {
 				toReduce.transpose();
 				Dominoes dominoes = provdominoes.control.Controller.aggregateDimension(toReduce);
 				dominoes.transpose();
@@ -50,20 +48,14 @@ public class AggregateColumnsCommand extends AbstractCommand {
 				if (Configuration.autoSave) {
 					App.getArea().saveAndSendToList(piece);
 				}
-
-				App.getArea().getData().getMenuItemAggregateColumns().get(index).setDisable(true);
 			} else {
 				success = false;
-				System.err.println("this domino is already aggregate by "
-						+ toReduce.getDescriptor().getColType());
+				System.err.println("this domino is already aggregated by column ("
+						+ toReduce.getDescriptor().getColType()+")");
 			}
-		} catch (IOException e) {
-			success = false;
-			e.printStackTrace();
-			App.alertException(e, "Erro não identificado ao agregar linhas!");
 		} catch (Exception e) {
 			success = false;
-			App.alertException(e, "Erro não identificado ao agregar linhas!");
+			App.alertException(e, "Unknown error trying to aggregate columns!");
 			e.printStackTrace();
 		}
 		return success;

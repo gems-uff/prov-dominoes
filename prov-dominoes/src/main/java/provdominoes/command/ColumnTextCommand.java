@@ -61,7 +61,7 @@ public class ColumnTextCommand extends AbstractCommand {
 			}
 		} catch (Exception e) {
 			App.alertException(e,
-					"Erro desconhecido ao efetuar filtro de linhas e colunas contendo palavra: " + text + ".");
+					"Unknown error trying to apply word on column filter to word: " + text + ".");
 			e.printStackTrace();
 			success = false;
 		}

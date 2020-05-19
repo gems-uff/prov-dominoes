@@ -40,7 +40,7 @@ public class SortColumnsCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao efetuar ordenamento das colunas!");
+			App.alertException(e, "Error trying to rearrange cells through Column Ascending Sorting!");
 			e.printStackTrace();
 			success = false;
 		}

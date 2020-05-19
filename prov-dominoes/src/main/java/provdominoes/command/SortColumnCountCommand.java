@@ -5,20 +5,19 @@ import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class ZScoreCommand extends AbstractCommand {
+public class SortColumnCountCommand extends AbstractCommand {
 
-	private String id;
 	private Group piece;
-	private Dominoes oldDominoes;
 	private double x;
 	private double y;
+	private Dominoes oldDominoes;
 	private int index;
 
-	public ZScoreCommand() {
+	public SortColumnCountCommand() {
 		this.index = -1;
 	}
 
-	public ZScoreCommand(int index) {
+	public SortColumnCountCommand(int index) {
 		this();
 		this.index = index;
 	}
@@ -31,8 +30,8 @@ public class ZScoreCommand extends AbstractCommand {
 		x = this.piece.getTranslateX();
 		y = this.piece.getTranslateY();
 		try {
-			Dominoes toStandardScore = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.standardScore(toStandardScore);
+			Dominoes toSortColumnCount = App.getArea().getData().getDominoes().get(index);
+			Dominoes domino = provdominoes.control.Controller.sortColumnCount(toSortColumnCount);
 
 			App.getArea().remove(index);
 			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
@@ -41,7 +40,7 @@ public class ZScoreCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Error trying to perform Z-Score in the piece!");
+			App.alertException(e, "Error trying to rearrange cells through Row Count Sorting!");
 			e.printStackTrace();
 			success = false;
 		}
@@ -61,8 +60,9 @@ public class ZScoreCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return ZSCORE_COMMAND + "(" + this.oldDominoes.getId() + ")";
+		return SORT_COLUMN_COUNT_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
+	private String id;
 
 	@Override
 	public String getId() {
@@ -72,6 +72,14 @@ public class ZScoreCommand extends AbstractCommand {
 	@Override
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Group getPiece() {
+		return piece;
+	}
+
+	public void setPiece(Group piece) {
+		this.piece = piece;
 	}
 
 }
