@@ -22,7 +22,7 @@ Tool is compatible with the PROV-N notation, allowing its adoption in different 
 
 # Usage
 
-To run Prov-Dominoes, you can download one the recent releases and execute the JAR File. It's necessary to have Java Runtime Enviroment on the target machine.
+To run Prov-Dominoes, you can download one of the recent releases and execute the JAR File. It's necessary to have Java Runtime Environment on the target machine.
 
 # Compilation
 
@@ -51,6 +51,7 @@ The PROV-CUDA module has precompiled CUDA library for windows x64. For compiling
 # License
 
 Copyright (c) 2018-2020 Universidade Federal Fluminense (UFF)
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
