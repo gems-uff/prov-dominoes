@@ -1,14 +1,18 @@
 # About
 
-Prov-Dominoes is fork/extension that includes support for Provenance on the [Dominoes](https://github.com/gems-uff/dominoes) tool, an approach for analyzing software repositories with thousands of artifacts by considering multiple perspectives of the software development data. We model the data extracted from software repositories and its relationships as matrices, making possible to efficiently process them with a GPUs (Graphics Processing Unit) based architectures.
+Prov-Dominoes, an approach designed to explore provenance data interactively, by organizing its relationships into multiple matrices treated as domino tiles. The tiles can be visually connected to derive additional domino tiles or have its contents explored through a set of matrix operations. Besides the operations, a set of filters can be applied to the matrix contents to ease visualization or prepare for some combination.
 
-Prov-Dominoes can support automated exploration of different relationships of the [Provenance Data-Model](https://www.w3.org/TR/prov-dm/).
+The domino-matrix abstraction was first conceived by [Dominoes](https://github.com/gems-uff/dominoes), a tool designed to assist exploratory analysis on data from Git repositories. Dominoes uses GPU capabilities to achieve efficient processing of large matrices that represent Git repository data (developers, commits, modified files, etc.). Prov-Dominoes distinguishes itself by forking Dominoes to allow data combination and visualization over provenance data, but retaining the GPU capabilities of the latter. Extending the operations over domino tiles introduced by Dominoes, our tool aggregates other features such as filters, \textit{Eigenvector Centrality} and \textit{Transitive Closure}.
+
+Tool is compatible with the PROV-N notation, allowing its adoption in different domains and applications. The provenance data is processed to generate provenance pieces, the building blocks of the tool. 
 
 # Team
 
-* Jose Ricardo da Silva Junior (joined in January 2013)
-* Leonardo Gresta Paulino Murta (joined in January 2013)
 * Victor Alencar (joined in January 2019)
+* Jose Ricardo da Silva Junior (joined in January 2019)
+* Leonardo Gresta Paulino Murta (joined in January 2019)
+* Troy Kohwalter (joined in January 2020)
+* Vanessa Braganholo (joined in January 2020)
 
 # Documentation
 
@@ -18,28 +22,12 @@ Prov-Dominoes can support automated exploration of different relationships of th
 
 # Usage
 
-In order to ease Dominoes usage, it can be loaded over internet by using the Java Web Start technology. It will automatically detect for a GPU enable device and switch to a CPU processing in case of fail. 
-
-In order to start Dominoes, please follow the steps:
-
-1. Install [Armadillo] (http://arma.sourceforge.net) (linear algebra for CPU processing). It can be installed through a package manger in Linux or Unix using the following commands:
-
-* sudo yum install armadillo (Fedora)
-* sudo apt-get install armadillo (Ubuntu)
-* [brew](https://github.com/Homebrew/install) install armadillo (OSX)
-
-2. Install CUDA Video Driver for supported Nvidia Graphics Card ([Linux](https://developer.nvidia.com/cuda-downloads) and [OSX](http://www.nvidia.com/object/mac-driver-archive.html)). 
-
-3. Due to the security issues imposed by Java Web Start technology, it is necessary to add a new entry to the exception site list. In order to perform this, open the Java Panel and select **Security** tab. In there, select **"Edit Site List"** button and add http://josericardojunior.com/Dominoes/ site.
-
-4. After adding this site to the list of exception, Dominoes can be loaded directly through [here](http://josericardojunior.com/Dominoes/Dominoes.jnlp).
-
-**Observation**: *Please notice that right now the library is just available for MacOSX and Linux.*
+To run Prov-Dominoes, you can download one ours recent releases and execute the JAR File. It's necessary to have Java Runtime Enviroment on the target machine.
 
 # Development
 
-* [Source Code](https://github.com/gems-uff/dominoes)
-* [Issue Tracking](https://github.com/gems-uff/dominoes/issues)
+* [Source Code](https://github.com/gems-uff/prov-dominoes)
+* [Issue Tracking](https://github.com/gems-uff/prov-dominoes/issues)
 
 # Technologies
 
@@ -50,8 +38,7 @@ In order to start Dominoes, please follow the steps:
 
 # License
 
-Copyright (c) 2015-2017 Universidade Federal Fluminense (UFF), University of Nebraska-Lincoln (UNL)
-
+Copyright (c) 2018-2020 Universidade Federal Fluminense (UFF)
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
