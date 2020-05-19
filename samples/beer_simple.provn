@@ -1,0 +1,34 @@
+document
+
+default <http://example.org/simple_beer>
+
+agent(John)
+agent(Bill, [prov:type="brewer"])
+entity(Water)
+entity(Barley)
+entity(Hops)
+entity(Yeast)
+entity(Priming_Sugars)
+entity(Wort)
+entity(Sugary_Wort)
+entity(Beer)
+activity(Mashing)
+activity(Boiling)
+activity(Fermentation)
+
+used(Mashing, Water, -)
+used(Mashing, Barley, -)
+used(Boiling, Wort, -)
+used(Boiling, Hops, -)
+used(Fermentation, Yeast, -)
+used(Fermentation, Sugary_Wort, -)
+used(Fermentation, Priming_Sugars, -)
+wasGeneratedBy(Wort, Mashing, -)
+wasGeneratedBy(Sugary_Wort, Boiling, -)
+wasGeneratedBy(Beer, Fermentation, -)
+wasAssociatedWith(Mashing, John, -)
+wasAssociatedWith(Boiling, Bill, -)
+wasAssociatedWith(Fermentation, Bill, -)
+actedOnBehalfOf(John, Bill)
+
+endDocument

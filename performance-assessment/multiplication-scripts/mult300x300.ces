@@ -1,4 +1,4 @@
-LOAD_MATRIX("..\matrix300x300.matrix")
+LOAD_MATRIX("performance-assessment\matrix300x300.matrix")
 P1 = ADD(R-MATRIX[300/300])
 P2 = ADD(R-MATRIX[300/300])
 P3 = MULTIPLY(P1, P2)

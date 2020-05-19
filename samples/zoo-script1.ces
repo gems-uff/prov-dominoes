@@ -1,4 +1,4 @@
-LOAD("zoo.provn")
+LOAD("samples\zoo.provn")
 P1 = ADD(AgT)
 P2 = ADD(AgT)
 TRANSPOSE(P1)

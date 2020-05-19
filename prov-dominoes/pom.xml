@@ -81,7 +81,7 @@
 		<dependency>
 			<groupId>gems.ic.uff.br</groupId>
 			<artifactId>prov-matrix</artifactId>
-			<version>1.4</version>
+			<version>1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.la4j</groupId>

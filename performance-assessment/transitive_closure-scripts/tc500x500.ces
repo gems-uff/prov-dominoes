@@ -1,3 +1,3 @@
-LOAD_MATRIX("..\matrix500x500.matrix")
+LOAD_MATRIX("performance-assessment\matrix500x500.matrix")
 P1 = ADD(R-MATRIX[500/500])
 TRANSITIVE_CLOSURE(P1)
