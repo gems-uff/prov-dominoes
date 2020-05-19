@@ -50,7 +50,7 @@ public class App extends Application {
 
 	private static SplitPane bottomPane;
 	private static ListViewDominoes pieceSelectorList;
-	private static AreaMove movementCanvas;
+	private static PieceCanvas movementCanvas;
 	private static Visual tabbedMatrixGraphPane;
 
 	private static Scene scene;
@@ -64,7 +64,8 @@ public class App extends Application {
 			App.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 			App.stage.centerOnScreen();
 			App.stage.setTitle("Prov-Dominoes ["
-					+ (Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING) + "]");
+					+ (Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING)
+					+ "]");
 			if (Configuration.isGPUProcessing()) {
 				Session.startSession(Configuration.gpuDevice);
 			}
@@ -81,10 +82,17 @@ public class App extends Application {
 			}
 
 		} catch (Exception ex) {
-			alertException(ex, "Erro ao iniciar Prov-Dominoes!");
+			alertException(ex, "Error starting Prov-Dominoes!");
 		}
 
 		App.stage.show();
+		if (Configuration.autoOpen.length() > 0) {
+			if (new File(Configuration.autoOpen).exists()) {
+				App.importScriptFromFile(new File(Configuration.autoOpen));
+			} else {
+				alertException(new Exception("Inexistent CES script for auto open!"), "Inexistent CES script for auto open!");
+			}
+		}
 
 	}
 
@@ -174,7 +182,6 @@ public class App extends Application {
 	}
 
 	static void changeVisibleGraphHistory() {
-		Configuration.visibilityGraphHistory = !Configuration.visibilityGraphHistory;
 		App.topPane.setVisible(Configuration.visibilityGraphHistory);
 		set(false);
 		setSize(Configuration.fullScreen);
@@ -187,7 +194,7 @@ public class App extends Application {
 		if (start) {
 			App.pieceSelectorList = new ListViewDominoes(null);
 			App.tabbedMatrixGraphPane = new Visual();
-			App.movementCanvas = new AreaMove();
+			App.movementCanvas = new PieceCanvas();
 			topPane = new ActionHistoryGraphPane();
 		}
 
@@ -289,7 +296,7 @@ public class App extends Application {
 	}
 
 	/**
-	 * This function remove all parts in this area move
+	 * This function remove all parts in this Piece Canvas
 	 * 
 	 * @throws IOException
 	 */
@@ -477,12 +484,26 @@ public class App extends Application {
 					}
 					App.getCommandManager().getRedoList().clear();
 					App.getCommandManager().uptadeMenu();
+					updatePieceCounter();
 				}
 				fr.close();
 			} catch (Exception e) {
 				alertException(e, "Erro ao tentar importar script!");
 			}
 		}
+	}
+
+	private static void updatePieceCounter() {
+		List<Dominoes> domList = App.getArea().getData().getDominoes();
+		int count = 0;
+		for (Dominoes dominoes : domList) {
+			if (dominoes.getId().substring(1).matches("\\d+")) {
+				if (count < Integer.valueOf(dominoes.getId().substring(1))) {
+					count = Integer.valueOf(dominoes.getId().substring(1));
+				}
+			}
+		}
+		CommandFactory.getInstance().setPieceCounter(count + 1);
 	}
 
 	public static void importScript() {
@@ -538,11 +559,11 @@ public class App extends Application {
 		App.pieceSelectorList = list;
 	}
 
-	public static AreaMove getArea() {
+	public static PieceCanvas getArea() {
 		return movementCanvas;
 	}
 
-	public static void setArea(AreaMove area) {
+	public static void setArea(PieceCanvas area) {
 		App.movementCanvas = area;
 	}
 
@@ -595,11 +616,11 @@ public class App extends Application {
 		App.pieceSelectorList = pieceSelectorList;
 	}
 
-	public static AreaMove getMovementCanvas() {
+	public static PieceCanvas getMovementCanvas() {
 		return movementCanvas;
 	}
 
-	public static void setMovementCanvas(AreaMove movementCanvas) {
+	public static void setMovementCanvas(PieceCanvas movementCanvas) {
 		App.movementCanvas = movementCanvas;
 	}
 

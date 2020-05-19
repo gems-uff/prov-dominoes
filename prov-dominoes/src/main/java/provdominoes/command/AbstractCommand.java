@@ -25,12 +25,16 @@ public abstract class AbstractCommand {
 	public static final String BINARIZE_COMMAND = "BINARIZE";
 	public static final String INVERT_COMMAND = "INVERT";
 	public static final String SORT_ROW_COMMAND = "SORT_ROW";
+	public static final String SORT_ROW_VALUES_COMMAND = "SORT_ROW_VALUES";
+	public static final String SORT_COLUMN_VALUES_COMMAND = "SORT_COLUMN_VALUES";
 	public static final String SORT_COLUMN_COMMAND = "SORT_COLUMN";
 	public static final String SORT_COLUMN_FIRST_COMMAND = "SORT_COLUMN_1ST";
 	public static final String SORT_ROW_FIRST_COMMAND = "SORT_ROW_1ST";
+	public static final String SORT_ROW_COUNT_COMMAND = "SORT_ROW_COUNT";
+	public static final String SORT_COLUMN_COUNT_COMMAND = "SORT_COLUMN_COUNT";
 	public static final String DIAGONALIZE_COMMAND = "DIAGONALIZE";
-	public static final String UPPER_DIAGONAL_COMMAND = "UPPER_DIAGONAL";
-	public static final String LOWER_DIAGONAL_COMMAND = "LOWER_DIAGONAL";
+	public static final String UPPER_TRIANGULAR_COMMAND = "UPPER_TRIANGULAR";
+	public static final String LOWER_TRIANGULAR_COMMAND = "LOWER_TRIANGULAR";
 	public static final String TRIM_COMMAND = "TRIM";
 	public static final String HPF_COMMAND = "HPF";
 	public static final String LPF_COMMAND = "LPF";
@@ -86,8 +90,6 @@ public abstract class AbstractCommand {
 			System.out.println(getName());
 			cmd.addToHistory(this);
 			cmd.generateCommandId(this, reproducing, scripting);
-		} else {
-			cmd.getHistory().clear();
 		}
 	}
 

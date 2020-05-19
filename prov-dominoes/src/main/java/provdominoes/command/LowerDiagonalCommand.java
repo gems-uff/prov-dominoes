@@ -1,6 +1,7 @@
 package provdominoes.command;
 
 import javafx.scene.Group;
+import javafx.scene.control.Alert.AlertType;
 import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
@@ -31,16 +32,22 @@ public class LowerDiagonalCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toLowerDiagonal = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.lowerDiagonal(toLowerDiagonal);
+			if (toLowerDiagonal.getCrsMatrix().rows() == toLowerDiagonal.getCrsMatrix().columns()) {
+				Dominoes domino = provdominoes.control.Controller.lowerDiagonal(toLowerDiagonal);
 
-			App.getArea().remove(index);
-			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
+				App.getArea().remove(index);
+				this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
 
-			if (Configuration.autoSave) {
-				App.getArea().saveAndSendToList(piece);
+				if (Configuration.autoSave) {
+					App.getArea().saveAndSendToList(piece);
+				}
+			} else {
+				App.alert(AlertType.WARNING, "Piece Square Requirement", "Square Piece Required!",
+						"This command is only possible for square pieces (same faces)!");
+				success = false;
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao tentar efetuar filtro de diagonalização inferior!");
+			App.alertException(e, "Unknown error trying to filter lower triangular matrix!");
 			e.printStackTrace();
 			success = false;
 		}
@@ -60,7 +67,7 @@ public class LowerDiagonalCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return LOWER_DIAGONAL_COMMAND + "(" + this.oldDominoes.getId() + ")";
+		return LOWER_TRIANGULAR_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
 
 	private String id;

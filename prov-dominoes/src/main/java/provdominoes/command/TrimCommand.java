@@ -40,7 +40,7 @@ public class TrimCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao tentar efetuar filtro de poda!");
+			App.alertException(e, "Error trying to perform piece trim!");
 			e.printStackTrace();
 			success = false;
 		}

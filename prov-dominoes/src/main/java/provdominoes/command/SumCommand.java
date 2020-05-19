@@ -2,7 +2,7 @@ package provdominoes.command;
 
 import javafx.scene.Group;
 import provdominoes.boundary.App;
-import provdominoes.boundary.MoveData;
+import provdominoes.boundary.PieceCanvasState;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
@@ -32,11 +32,11 @@ public class SumCommand extends AbstractCommand {
 	protected boolean doIt() {
 		boolean result = false;
 		if (indexLeftDominoes != -1 && indexRightDominoes != -1) {
-			App.getArea().getData().setCombination(MoveData.COMBINATION_SUM);
+			App.getArea().getData().setCombination(PieceCanvasState.COMBINATION_SUM);
 			App.getArea().getData().setIndexFirstOperatorCombination(indexLeftDominoes);
 			App.getArea().getData().setIndexSecondOperatorCombination(indexRightDominoes);
 		}
-		if (App.getArea().getData().getCombination() == MoveData.COMBINATION_SUM && App.getArea().getData().getIndexFirstOperatorCombination() != -1
+		if (App.getArea().getData().getCombination() == PieceCanvasState.COMBINATION_SUM && App.getArea().getData().getIndexFirstOperatorCombination() != -1
 				&& App.getArea().getData().getIndexSecondOperatorCombination() != -1) {
 			Dominoes d1 = App.getArea().getData().getDominoes()
 					.get(App.getArea().getData().getIndexFirstOperatorCombination());
@@ -89,7 +89,7 @@ public class SumCommand extends AbstractCommand {
 				App.getArea().getData().setIndexSecondOperatorCombination(-1);
 				result = true;
 			} catch (Exception e) {
-				App.alertException(e, "Erro desconhecido ao calcular soma das matrizes das peças!");
+				App.alertException(e, "Error trying to perform piece combination through matrix sum!");
 				result = false;
 				e.printStackTrace();
 			}

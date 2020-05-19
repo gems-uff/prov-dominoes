@@ -1,5 +1,6 @@
 package provdominoes.boundary;
 
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
@@ -43,14 +44,19 @@ public class Visual extends BorderPane {
 	}
 
 	public void addTabCentralityGraph(Dominoes domino) {
-		Tab tab = new Tab("Centrality Graph: " + domino.getIdRow() + "x" + domino.getIdCol() + " "
-				+ this.tabPane.getTabs().size());
-		GraphCentralityPane graphCentralityPane = new GraphCentralityPane(domino);
+		if (domino.getCrsMatrix().rows() == domino.getCrsMatrix().columns()) {
+			Tab tab = new Tab("Centrality Graph: " + domino.getIdRow() + "x" + domino.getIdCol() + " "
+					+ this.tabPane.getTabs().size());
+			GraphCentralityPane graphCentralityPane = new GraphCentralityPane(domino);
 
-		tab.setContent(graphCentralityPane);
-		Tooltip.install(tab.getGraphic(), new Tooltip(domino.getHistoric().toString()));
+			tab.setContent(graphCentralityPane);
+			Tooltip.install(tab.getGraphic(), new Tooltip(domino.getHistoric().toString()));
 
-		this.tabPane.getTabs().add(tab);
+			this.tabPane.getTabs().add(tab);
+		} else {
+			App.alert(AlertType.WARNING, "Piece Square Requirement", "Square Piece Required!",
+					"This visualization is only possible for square pieces (same dimensions)!");
+		}
 	}
 
 	void addTabMatrix(Dominoes domino) {
@@ -67,7 +73,7 @@ public class Visual extends BorderPane {
 			this.tabPane.getTabs().add(tab);
 			this.tabPane.getSelectionModel().selectLast();
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao tentar carregar peça no canvas!");
+			App.alertException(e, "Error trying to load provenance piece into the Piece Canvas!");
 			e.printStackTrace();
 		}
 	}

@@ -1,6 +1,7 @@
 package provdominoes.command;
 
 import javafx.scene.Group;
+import javafx.scene.control.Alert.AlertType;
 import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
@@ -32,16 +33,22 @@ public class TransitiveClosureCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toClosure = App.getArea().getData().getDominoes().get(index);
-			Dominoes domino = provdominoes.control.Controller.transitiveClosure(toClosure);
+			if (toClosure.getCrsMatrix().rows() == toClosure.getCrsMatrix().columns()) {
+				Dominoes domino = provdominoes.control.Controller.transitiveClosure(toClosure);
 
-			App.getArea().remove(index);
-			this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
+				App.getArea().remove(index);
+				this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
 
-			if (Configuration.autoSave) {
-				App.getArea().saveAndSendToList(piece);
+				if (Configuration.autoSave) {
+					App.getArea().saveAndSendToList(piece);
+				}
+			} else {
+				App.alert(AlertType.WARNING, "Piece Square Requirement", "Square Piece Required!",
+						"This command is only possible for square pieces (same faces)!");
+				success = false;
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao calcular fecho transitivo!");
+			App.alertException(e, "Unwnown error trying to perform transitive closure!");
 			e.printStackTrace();
 			success = false;
 		}

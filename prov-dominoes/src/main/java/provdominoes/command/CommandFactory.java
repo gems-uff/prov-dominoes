@@ -116,7 +116,7 @@ public class CommandFactory {
 	}
 
 	public AbstractCommand filterUpperDiagonal(Group piece) {
-		return new UpperDiagonalCommand(App.getArea().getData().getPieces().indexOf(piece));
+		return new UpperTriangularCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
 	public AbstractCommand filterLowerDiagonal(Group piece) {
@@ -133,6 +133,15 @@ public class CommandFactory {
 	
 	public AbstractCommand sortColumns(Group piece) {
 		return new SortColumnsCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+	
+	
+	public AbstractCommand sortRowCount(Group piece) {
+		return new SortRowCountCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+	
+	public AbstractCommand sortColumnCount(Group piece) {
+		return new SortColumnCountCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 	
 	public AbstractCommand sortColumnFirst(Group piece) {
@@ -185,6 +194,14 @@ public class CommandFactory {
 		RowTextCommand tc = new RowTextCommand(App.getArea().getData().getPieces().indexOf(piece));
 		tc.setText(t);
 		return tc;
+	}
+
+	public AbstractCommand sortRowValues(Group piece) {
+		return new SortRowValuesCommand(App.getArea().getData().getPieces().indexOf(piece));
+	}
+
+	public AbstractCommand sortColumnValues(Group piece) {
+		return new SortColumnValuesCommand(App.getArea().getData().getPieces().indexOf(piece));
 	}
 
 }

@@ -195,6 +195,16 @@ public class Controller {
 		return domino;
 	}
 	
+	public static Dominoes sortRowCount(Dominoes domino) throws Exception {
+		domino.sortRowCount();
+		return domino;
+	}
+	
+	public static Dominoes sortColumnCount(Dominoes domino) throws Exception {
+		domino.sortColumnCount();
+		return domino;
+	}
+	
 	public static Dominoes sortCols(Dominoes domino) throws Exception {
 		domino.sortCols();
 		return domino;
@@ -280,7 +290,12 @@ public class Controller {
 		return null;
 
 	}
-
+	
+	public static Dominoes sortDefaultDimensionValues(Dominoes domino) throws Exception {
+		domino.sortDefaultDimensionValues();
+		return domino;
+	}
+	
 	public static double opposite(double size, double index) {
 		if (size < 0 || index < 0 || index > size) {
 			throw new IllegalArgumentException(

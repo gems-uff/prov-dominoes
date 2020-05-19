@@ -11,6 +11,7 @@ public class Configuration {
 	
     // to read file
 	public static String lastDirectory = ".";
+	public static String autoOpen = "";
 	public static boolean fullScreen = false;
     public static boolean autoSave = false;
     public static boolean visibilityHistoric = true;
@@ -20,6 +21,7 @@ public class Configuration {
     public static boolean resizableTimeOnFullScreen = false;
     public static boolean defaultFactory = true;
     public static boolean deriveInfluence = false;
+    public static boolean tuning = false;
     
     public static double width = 1000.0f;
     public static double height = 600.0f;
@@ -38,6 +40,7 @@ public class Configuration {
     
     public static boolean visibilityGraphHistory = false;
 	public static boolean telemetry = false;
+	public static boolean showCellValues = false;
 	
 	public static boolean isGPUProcessing() {
 		return !MatrixProcessor.isLibSkipped() && defaultProcessing.equals(GPU_PROCESSING) && MatrixProcessor.isGPUEnabled();

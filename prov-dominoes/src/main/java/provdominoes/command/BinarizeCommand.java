@@ -40,7 +40,7 @@ public class BinarizeCommand extends AbstractCommand {
 				App.getArea().saveAndSendToList(piece);
 			}
 		} catch (Exception e) {
-			App.alertException(e, "Erro desconhecido ao efetuar filtro de binarização da peça!");
+			App.alertException(e, "Error trying to perform piece binarization!");
 			e.printStackTrace();
 			success = false;
 		}

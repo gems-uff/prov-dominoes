@@ -8,7 +8,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.shape.Rectangle;
 import provdominoes.domain.Dominoes;
 
-public class MoveData {
+public class PieceCanvasState {
 	
 	public static final int COMBINATION_SUM = 1;
 	public static final int COMBINATION_SUBTRACTION = 2;
@@ -26,10 +26,8 @@ public class MoveData {
 	private double srcTranslateY;
 	private double padding;
 	private boolean transposing;
-	private List<MenuItem> menuItemAggregateColumns;
-	private List<MenuItem> menuItemAggregateRows;
 
-	public MoveData(int indexFirstOperatorMultiplication, int indexSecondOperatorMultiplication,int combination, double padding,
+	public PieceCanvasState(int indexFirstOperatorMultiplication, int indexSecondOperatorMultiplication,int combination, double padding,
 			boolean transposing, List<MenuItem> menuItemAggregateRow, List<MenuItem> menuItemAggregateCol) {
 
 		this.indexFirstOperatorCombination = indexFirstOperatorMultiplication;
@@ -37,22 +35,18 @@ public class MoveData {
 		this.combination = combination;
 		this.padding = padding;
 		this.transposing = transposing;
-		this.menuItemAggregateColumns = menuItemAggregateRow;
-		this.menuItemAggregateRows = menuItemAggregateCol;
 	}
 
-	public MoveData clone() {
-		MoveData clone = new MoveData(background, indexFirstOperatorCombination, indexSecondOperatorCombination, combination,
+	public PieceCanvasState clone() {
+		PieceCanvasState clone = new PieceCanvasState(background, indexFirstOperatorCombination, indexSecondOperatorCombination, combination,
 				padding, transposing, srcSceneX, srcSceneY, srcTranslateX, srcTranslateY);
 
 		this.dominoes = new ArrayList<>(dominoes);
 		this.pieces = new ArrayList<>(pieces);
-		this.menuItemAggregateColumns = new ArrayList<>(menuItemAggregateColumns);
-		this.menuItemAggregateRows = new ArrayList<>(menuItemAggregateRows);
 		return clone;
 	}
 
-	public MoveData(Rectangle background2, int indexFirstOperatorMultiplication2,
+	public PieceCanvasState(Rectangle background2, int indexFirstOperatorMultiplication2,
 			int indexSecondOperatorMultiplication2, int combination2, double padding2, boolean transposing2, double srcSceneX2,
 			double srcSceneY2, double srcTranslateX2, double srcTranslateY2) {
 		this.background = background2;
@@ -153,22 +147,6 @@ public class MoveData {
 
 	public void setTransposing(boolean transposing) {
 		this.transposing = transposing;
-	}
-
-	public List<MenuItem> getMenuItemAggregateColumns() {
-		return menuItemAggregateColumns;
-	}
-
-	public void setMenuItemAggregateColumns(List<MenuItem> menuItemAggregateColumns) {
-		this.menuItemAggregateColumns = menuItemAggregateColumns;
-	}
-
-	public List<MenuItem> getMenuItemAggregateRows() {
-		return menuItemAggregateRows;
-	}
-
-	public void setMenuItemAggregateRows(List<MenuItem> menuItemAggregateRows) {
-		this.menuItemAggregateRows = menuItemAggregateRows;
 	}
 
 	public Group getPiece(String identifier) {
