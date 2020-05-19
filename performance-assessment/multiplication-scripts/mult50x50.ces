@@ -1,0 +1,4 @@
+LOAD_MATRIX("..\matrix50x50.matrix")
+P1 = ADD(R-MATRIX[50/50])
+P2 = ADD(R-MATRIX[50/50])
+P3 = MULTIPLY(P1, P2)
