@@ -1,4 +1,4 @@
-LOAD("vt_head.provn")
+LOAD("samples\vt_head.provn")
 p1 = ADD(USD)
 p2 = ADD(WGB)
 p3 = MULTIPLY(p2, p1)

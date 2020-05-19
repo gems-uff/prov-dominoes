@@ -1,4 +1,4 @@
-LOAD("zoo.provn")
+LOAD("samples\zoo.provn")
 P1 = ADD(AgT)
 P2 = ADD(WAW)
 P3 = MULTIPLY(P2, P1)
