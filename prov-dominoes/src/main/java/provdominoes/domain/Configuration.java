@@ -10,7 +10,7 @@ public class Configuration {
 	public static final String CPU_PROCESSING = "CPU";
 	
     // to read file
-	public static String lastDirectory = ".";
+	public static String lastDirectory = "samples\\";
 	public static String autoOpen = "";
 	public static boolean fullScreen = false;
     public static boolean autoSave = false;
@@ -28,7 +28,7 @@ public class Configuration {
     public static double listWidth = 128.0f;
     
     public static String DATA_SEPARATOR = "	";
-    public static String defaultProcessing = GPU_PROCESSING;
+    public static String defaultProcessing = CPU_PROCESSING;
     public static int gpuDevice = 0;
     
 	public static Date beginDate = null;

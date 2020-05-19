@@ -154,8 +154,8 @@ public class ConfigurationFile {
 					+ "showCellValues=false\r\n" + "visibilityHistoric=true\r\n" + "visibilityType=true\r\n"
 					+ "resizable=true\r\n" + "automaticCheck=false\r\n" + "deriveInfluence=false\r\n"
 					+ "tuning=false\r\n" + "width=1000.0\r\n" + "height=600.0\r\n" + "listWidth=128.0\r\n"
-					+ "telemetry=false\r\n" + "defaultFactory=true\r\n" + "defaultProcessing=gpu\r\n"
-					+ "gpuDevice=0\r\n" + "lastDirectory=.\r\n" + "autoOpen=");
+					+ "telemetry=false\r\n" + "defaultFactory=true\r\n" + "defaultProcessing=CPU\r\n"
+					+ "gpuDevice=0\r\n" + "lastDirectory=samples\\\r\n" + "autoOpen=");
 
 		} catch (IOException ex) {
 			throw new IOException(ex.getMessage());
