@@ -3,7 +3,7 @@ document
 default <http://example.org/simple_beer>
 
 agent(John)
-agent(Bill, [prov:type="brewer"])
+agent(Bill, [prov:type="brewer", brewerSince="2017"])
 entity(Water)
 entity(Barley)
 entity(Hops)
