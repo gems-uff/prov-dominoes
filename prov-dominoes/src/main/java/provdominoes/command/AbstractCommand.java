@@ -30,8 +30,8 @@ public abstract class AbstractCommand {
 	public static final String SORT_COLUMN_COMMAND = "SORT_COLUMN";
 	public static final String SORT_COLUMN_FIRST_COMMAND = "SORT_COLUMN_1ST";
 	public static final String SORT_ROW_FIRST_COMMAND = "SORT_ROW_1ST";
-	public static final String SORT_ROW_COUNT_COMMAND = "SORT_ROW_COUNT";
-	public static final String SORT_COLUMN_COUNT_COMMAND = "SORT_COLUMN_COUNT";
+	public static final String SORT_ROW_GROUP_COMMAND = "SORT_ROW_GROUP";
+	public static final String SORT_COLUMN_GROUP_COMMAND = "SORT_COLUMN_GROUP";
 	public static final String DIAGONALIZE_COMMAND = "DIAGONALIZE";
 	public static final String UPPER_TRIANGULAR_COMMAND = "UPPER_TRIANGULAR";
 	public static final String LOWER_TRIANGULAR_COMMAND = "LOWER_TRIANGULAR";

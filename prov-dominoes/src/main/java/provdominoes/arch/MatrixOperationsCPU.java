@@ -920,7 +920,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations sortByRowCount() {
+	public MatrixOperations sortByRowGroup() {
 		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
 				matrixDescriptor.getColType());
 		List<String> rowsDesc = new ArrayList<>(matrixDescriptor.getRowsDesc());
@@ -946,7 +946,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			int oldIndex = rowsDesc.indexOf(row);
 			for (int j = 0; j < data.columns(); j++) {
 				crsResult.set(index, j, data.get(oldIndex, j));
-				updatedUnderlying[index][j] = this.underlyingElements[oldIndex][j];
+				if (!isTuning()) {
+					updatedUnderlying[index][j] = this.underlyingElements[oldIndex][j];
+				}
 			}
 			index++;
 		}
@@ -954,9 +956,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		result.setUnderlyingElements(updatedUnderlying);
 		return result;
 	}
-	
+
 	@Override
-	public MatrixOperations sortByColumnCount() {
+	public MatrixOperations sortByColumnGroup() {
 		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
 				matrixDescriptor.getColType());
 		List<String> columnsDesc = new ArrayList<>(matrixDescriptor.getColumnsDesc());
@@ -982,7 +984,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			int oldIndex = columnsDesc.indexOf(column);
 			for (int i = 0; i < data.rows(); i++) {
 				crsResult.set(i, index, data.get(i, oldIndex));
-				updatedUnderlying[i][index] = this.underlyingElements[i][oldIndex];
+				if (!isTuning()) {
+					updatedUnderlying[i][index] = this.underlyingElements[i][oldIndex];
+				}
 			}
 			index++;
 		}
