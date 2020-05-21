@@ -633,13 +633,13 @@ public class MatrixOperationsGPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations sortByRowCount() {
+	public MatrixOperations sortByRowGroup() {
 		// TODO Pending GPU implementation
 		return null;
 	}
 
 	@Override
-	public MatrixOperations sortByColumnCount() {
+	public MatrixOperations sortByColumnGroup() {
 		// TODO Pending GPU implementation
 		return null;
 	}

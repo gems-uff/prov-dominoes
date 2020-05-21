@@ -109,8 +109,8 @@ public class PieceCanvas extends Pane {
 
 		MenuItem menuItemSortRows = new MenuItem("Sort by Rows Asc");
 		MenuItem menuItemSortColumns = new MenuItem("Sort by Columns Asc");
-		MenuItem menuItemSortRowCount = new MenuItem("Sort by Row Count");
-		MenuItem menuItemSortColumnCount = new MenuItem("Sort by Column Count");
+		MenuItem menuItemSortRowCount = new MenuItem("Sort by Row Group");
+		MenuItem menuItemSortColumnCount = new MenuItem("Sort by Column Group");
 		// MenuItem menuItemSortRowsFirst = new MenuItem("Sort by Row-First");
 		// MenuItem menuItemSortColumnsFirst = new MenuItem("Sort by Column-First");
 		// MenuItem menuItemSortRowValues = new MenuItem("Sort by Row Values");

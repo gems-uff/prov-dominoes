@@ -94,7 +94,7 @@ public interface MatrixOperations {
 
 	MatrixOperations sortDefaultDimensionValues();
 
-	MatrixOperations sortByRowCount();
+	MatrixOperations sortByRowGroup();
 
-	public MatrixOperations sortByColumnCount();
+	public MatrixOperations sortByColumnGroup();
 }

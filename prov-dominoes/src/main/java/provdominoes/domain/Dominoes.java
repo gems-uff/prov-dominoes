@@ -610,14 +610,14 @@ public class Dominoes {
 	
 	public void sortRowCount() throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.sortByRowCount();
+		MatrixOperations _newMat = mat.sortByRowGroup();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_ROW_COUNT;
 	}
 	
 	public void sortColumnCount() throws Exception {
 		this.setupOperation(false);
-		MatrixOperations _newMat = mat.sortByColumnCount();
+		MatrixOperations _newMat = mat.sortByColumnGroup();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_COLUMN_COUNT;
 	}

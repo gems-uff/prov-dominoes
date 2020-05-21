@@ -5,7 +5,7 @@ import provdominoes.boundary.App;
 import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
 
-public class SortColumnCountCommand extends AbstractCommand {
+public class SortColumnGroupCommand extends AbstractCommand {
 
 	private Group piece;
 	private double x;
@@ -13,11 +13,11 @@ public class SortColumnCountCommand extends AbstractCommand {
 	private Dominoes oldDominoes;
 	private int index;
 
-	public SortColumnCountCommand() {
+	public SortColumnGroupCommand() {
 		this.index = -1;
 	}
 
-	public SortColumnCountCommand(int index) {
+	public SortColumnGroupCommand(int index) {
 		this();
 		this.index = index;
 	}
@@ -60,7 +60,7 @@ public class SortColumnCountCommand extends AbstractCommand {
 
 	@Override
 	public String getName() {
-		return SORT_COLUMN_COUNT_COMMAND + "(" + this.oldDominoes.getId() + ")";
+		return SORT_COLUMN_GROUP_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
 	private String id;
 
