@@ -18,15 +18,6 @@ public class Main {
 			// read the configuration file
 			Controller.loadConfiguration();
 
-			if (!MatrixProcessor.isLibSkipped()) {
-				if (Configuration.isGPUProcessing()) {
-					if (Configuration.gpuDevice + 1 > MatrixProcessor.getDeviceCount()) {
-						Configuration.gpuDevice = 0;
-					}
-					Session.startSession(Configuration.gpuDevice);
-				}
-			}
-
 			App.start();
 
 			if (!MatrixProcessor.isLibSkipped()) {

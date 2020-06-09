@@ -35,7 +35,7 @@ GOTO BUILD
 
 :PREP
 @ECHO ON
-call %VC%\Auxiliary\Build\vcvars64.bat
+call %VC%\Auxiliary\Build\vcvarsx86_amd64.bat
 ECHO.
 
 :BUILD

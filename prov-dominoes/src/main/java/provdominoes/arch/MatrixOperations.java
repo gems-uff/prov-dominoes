@@ -12,7 +12,6 @@ import provdominoes.util.Prov2DominoesUtil;
 
 public interface MatrixOperations {
 
-	public void setSparse(boolean isSparse);
 	
 	public boolean isEmpty();
 
@@ -97,4 +96,8 @@ public interface MatrixOperations {
 	MatrixOperations sortByRowGroup();
 
 	public MatrixOperations sortByColumnGroup();
+
+	void setMatrix(CRSMatrix matrix);
+
+	CRSMatrix getMatrix();
 }

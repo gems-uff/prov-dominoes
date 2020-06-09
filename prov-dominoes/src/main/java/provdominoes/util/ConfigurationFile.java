@@ -129,7 +129,7 @@ public class ConfigurationFile {
 				if (nameVariable.compareTo("defaultProcessing") == 0) {
 					Configuration.defaultProcessing = valueVariable.toUpperCase();
 				}
-				if (nameVariable.compareTo("gpuDevice") == 0) {
+				if (nameVariable.compareTo("gpuDevice") == 0 && isInt(valueVariable)) {
 					Configuration.gpuDevice = Integer.parseInt(valueVariable);
 				}
 				if (nameVariable.compareTo("lastDirectory") == 0) {
@@ -153,8 +153,8 @@ public class ConfigurationFile {
 			bw.write("fullScreen=false\r\n" + "graphHistory=false\r\n" + "autoSave=false\r\n"
 					+ "showCellValues=false\r\n" + "visibilityHistoric=true\r\n" + "visibilityType=true\r\n"
 					+ "resizable=true\r\n" + "automaticCheck=false\r\n" + "deriveInfluence=false\r\n"
-					+ "tuning=false\r\n" + "width=1000.0\r\n" + "height=600.0\r\n" + "listWidth=128.0\r\n"
-					+ "telemetry=false\r\n" + "defaultFactory=true\r\n" + "defaultProcessing=CPU\r\n"
+					+ "tuning=false\r\n" + "telemetry=false\r\n" + "width=1000.0\r\n" + "height=600.0\r\n"
+					+ "listWidth=128.0\r\n" + "defaultFactory=true\r\n" + "defaultProcessing=CPU\r\n"
 					+ "gpuDevice=0\r\n" + "lastDirectory=samples\\\r\n" + "autoOpen=");
 
 		} catch (IOException ex) {
@@ -175,9 +175,9 @@ public class ConfigurationFile {
 					+ Configuration.visibilityHistoric + "\r\n" + "visibilityType=" + Configuration.visibilityType
 					+ "\r\n" + "resizable=" + Configuration.resizable + "\r\n" + "automaticCheck="
 					+ Configuration.automaticCheck + "\r\n" + "deriveInfluence=" + Configuration.deriveInfluence
-					+ "\r\n" + "tuning=" + Configuration.tuning + "\r\n" + "width=" + Configuration.width + "\r\n"
-					+ "height=" + Configuration.height + "\r\n" + "listWidth=" + Configuration.listWidth + "\r\n"
-					+ "telemetry=" + Configuration.telemetry + "\r\n" + "defaultFactory=" + Configuration.defaultFactory
+					+ "\r\n" + "telemetry=" + Configuration.telemetry + "\r\n" + "tuning=" + Configuration.tuning
+					+ "\r\n" + "width=" + Configuration.width + "\r\n" + "height=" + Configuration.height + "\r\n"
+					+ "listWidth=" + Configuration.listWidth + "\r\n" + "defaultFactory=" + Configuration.defaultFactory
 					+ "\r\n" + "defaultProcessing=" + Configuration.defaultProcessing + "\r\n" + "gpuDevice="
 					+ Configuration.gpuDevice + "\r\n" + "lastDirectory=" + Configuration.lastDirectory + "\r\n"
 					+ "autoOpen=" + Configuration.autoOpen);
@@ -193,6 +193,16 @@ public class ConfigurationFile {
 		boolean result = true;
 		try {
 			Double.parseDouble(valueVariable);
+		} catch (NumberFormatException ex) {
+			result = false;
+		}
+		return result;
+	}
+
+	private boolean isInt(String valueVariable) {
+		boolean result = true;
+		try {
+			Integer.parseInt(valueVariable);
 		} catch (NumberFormatException ex) {
 			result = false;
 		}

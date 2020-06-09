@@ -1,4 +1,0 @@
-LOAD_MATRIX("performance-assessment\matrix100x100.matrix")
-P1 = ADD(R-MATRIX[100/100])
-P2 = ADD(R-MATRIX[100/100])
-P3 = MULTIPLY(P1, P2)

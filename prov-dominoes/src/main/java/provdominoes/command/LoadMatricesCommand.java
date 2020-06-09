@@ -63,7 +63,7 @@ public class LoadMatricesCommand extends AbstractCommand {
 				}
 				provMatrixList.addAll(importMatrixFile(file));
 			}
-			List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList, null);
+			List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList, null, null);
 			App.getPieceSelectorList().clear();
 			App.getMovementCanvas().clear();
 			App.getTabbedMatrixGraphPane().clear();

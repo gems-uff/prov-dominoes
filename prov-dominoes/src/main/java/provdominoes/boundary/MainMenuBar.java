@@ -65,6 +65,7 @@ public class MainMenuBar extends MenuBar {
 	private CheckMenuItem[] devices;
 
 	private CheckMenuItem mTuning;
+	private CheckMenuItem mTelemetry;
 
 	public MainMenuBar() {
 		this.setHeight(30);
@@ -91,6 +92,7 @@ public class MainMenuBar extends MenuBar {
 		this.mFactory.getItems().addAll(this.mDefaultFactory, this.mExtendedFactory);
 
 		this.mProcessing = new Menu("Processing");
+		this.mTelemetry = new CheckMenuItem("Telemetry");
 		this.mTuning = new CheckMenuItem("Tuning");
 		this.mDeriveInfluence = new CheckMenuItem("Derive influence");
 		this.mCpuProcessing = new CheckMenuItem("CPU");
@@ -104,6 +106,24 @@ public class MainMenuBar extends MenuBar {
 					Configuration.tuning = true;
 				} else {
 					Configuration.tuning = false;
+				}
+				try {
+					new ConfigurationFile().updateConfiguration();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		this.mTelemetry.setSelected(Configuration.telemetry);
+		mTelemetry.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				if (((CheckMenuItem) e.getSource()).isSelected()) {
+					Configuration.telemetry = true;
+				} else {
+					Configuration.telemetry = false;
 				}
 				try {
 					new ConfigurationFile().updateConfiguration();
@@ -134,7 +154,7 @@ public class MainMenuBar extends MenuBar {
 		if (deviceCount > 0) {
 			SeparatorMenuItem influenceSeparator = new SeparatorMenuItem();
 			SeparatorMenuItem deviceSeparator = new SeparatorMenuItem();
-			this.mProcessing.getItems().addAll(this.mTuning, this.mDeriveInfluence, influenceSeparator,
+			this.mProcessing.getItems().addAll(this.mTelemetry, this.mTuning, this.mDeriveInfluence, influenceSeparator,
 					this.mCpuProcessing, this.mGpuProcessing, deviceSeparator);
 			this.devices = new CheckMenuItem[deviceCount];
 			for (int i = 0; i < devices.length; i++) {

@@ -1,5 +1,0 @@
-LOAD_MATRIX("performance-assessment\matrix200x200.matrix")
-P1 = ADD(R-MATRIX[200/200])
-MOVE(P1, 158, 71)
-P2 = ADD(R-MATRIX[200/200])
-P3 = MULTIPLY(P1, P2)
