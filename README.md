@@ -1,10 +1,12 @@
 # About
 
-Prov-Dominoes is a tool designed to explore provenance data interactively, by organizing its relationships into multiple matrices treated as domino tiles. The tiles can be visually connected to derive additional domino tiles or have its contents explored through a set of matrix operations. Besides the operations, a set of filters can be applied to the matrix contents to ease visualization or prepare for some combination.
+Prov-Dominoes is a tool designed to explore provenance data interactively, by organizing its relationships into multiple matrices treated as dominoes. The tiles can be visually connected to derive additional domino or have its contents explored through a set of matrix operations and transformations. The tool allows data combination and visualization over provenance data with GPU capabilities. Among the exploratory analysis features are: filters, Eigenvector Centrality, and Transitive Closure. Finally, the tool is compatible with the [PROV-N notation](https://www.w3.org/TR/prov-n/), allowing its adoption in different domains and applications. The provenance data is processed to generate dominoes, the building blocks of the tool. 
 
-The domino-matrix abstraction was first conceived by [Dominoes](https://github.com/gems-uff/dominoes), a tool designed to assist exploratory analysis on data from Git repositories. Dominoes uses GPU capabilities to achieve efficient processing of large matrices that represent Git repository data (developers, commits, modified files, etc.). Prov-Dominoes distinguishes itself by forking Dominoes to allow data combination and visualization over provenance data, but retaining the GPU capabilities of the latter. Extending the operations over domino tiles introduced by Dominoes, our tool aggregates other features such as filters, Eigenvector Centrality and Transitive Closure.
+This project was initiated by Victor Alencar and professors Leonardo Murta and Jose Ricardo da Silva Junior during Victor's master course at Universidade Federal Fluminense.
 
-The tool is compatible with the PROV-N notation, allowing its adoption in different domains and applications. The provenance data is processed to generate provenance pieces, the building blocks of the tool. 
+![Prov-Dominoes GUI](https://github.com/gems-uff/prov-dominoes/blob/media/pd.png)
+
+*This tool is a fork of [Dominoes](https://github.com/gems-uff/dominoes), a tool designed to assist exploratory analysis on data from Git repositories.*
 
 # Team
 
@@ -14,40 +16,15 @@ The tool is compatible with the PROV-N notation, allowing its adoption in differ
 * Troy Kohwalter (joined in January 2020)
 * Vanessa Braganholo (joined in January 2020)
 
+# Instalation
+
+* [Prov-Dominoes Releases](https://github.com/gems-uff/prov-dominoes/releases)
+* [Prov-Dominoes Installation Guide](https://github.com/gems-uff/prov-viewer/wiki/Installation)
+
 # Documentation
 
-* [Prov-Dominoes: An Exploratory Analysis Approach for Provenance Data](http://http://www2.ic.uff.br/~leomurta/papers/provdominoes2020.pdf)
-* [Dominoes: An Interactive Exploratory Data Analysis tool for Software Relationships](http://www2.ic.uff.br/~leomurta/papers/silvajunior2020.pdf)
-* [Niche vs. breadth: Calculating expertise over time through a fine-grained analysis](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=7081851&tag=1)
-* [Multi-Perspective Exploratory Analysis of Software Development Data](http://www.worldscientific.com/doi/abs/10.1142/S0218194015400033)
-* [Exploratory Data Analysis of Software Repositories via GPU Processing](http://ksiresearchorg.ipage.com/seke/seke14paper/seke14paper_173.pdf)
-
-# Usage
-
-To run Prov-Dominoes, you can download one of the recent releases (latest: [v1.6](https://github.com/gems-uff/prov-dominoes/releases/download/v1.6/prov-dominoes-v1.6.zip)) and execute the JAR File or the prov-dominoes.bat for Windows. It's necessary to have Java Runtime Environment on the target machine.
-
-# Performance Assessment
-
-To execute the performance assesment for CPU, type the following in a command prompt (Windows):
-
-```
-prov-dominoes.bat eval:cpu
-```
-Estimated time for completion: ~20 minutes. At the end, a [performance-results-cpu.txt](https://github.com/gems-uff/prov-dominoes/blob/master/performance-assessment/performance-results-cpu.txt) file will be generated in the same directory of the batch script.
-
-To execute the performance assesment for GPU, type the following in a command prompt (Windows):
-```
-prov-dominoes.bat eval:gpu
-```
-Estimated time for completion: ~5 minutes. At the end, a [performance-results-gpu.txt](https://github.com/gems-uff/prov-dominoes/blob/master/performance-assessment/performance-results-gpu.txt) file will be generated in the same directory of the batch script.
-
-# Compilation
-
-To compile Prov-Dominoes, it is necessary:
-- Install [PROV-Matrix](https://github.com/gems-uff/prov-matrix) maven module; and
-- Compile and install de PROV-CUDA module, available in the prov-cuda directory.
-
-The PROV-CUDA module has precompiled CUDA library for windows x64. For compiling library for other architectures please refer to the [makefile](https://github.com/gems-uff/prov-dominoes/blob/master/prov-cuda/src/cuda/makefile).
+* [Prov-Dominoes Wiki](https://github.com/gems-uff/prov-dominoes/wiki)
+* [Prov-Dominoes Paper](http://http://www2.ic.uff.br/~leomurta/papers/provdominoes2020.pdf)
 
 # Development
 
