@@ -1,0 +1,13 @@
+document
+
+default <http://example.org/beer_types>
+
+entity(Budweiser, [prov:type="Pale Lager"])
+entity(FranziskanerHefe, [prov:type="Wheat Beer"])
+entity(Heineken, [prov:type="Pale Lager"])
+entity(HocusPocusOrange, [prov:type="Blond Ale"])
+entity(HoegaardenWhite, [prov:type="Wheat Beer"])
+entity(MaredsousBlonde, [prov:type="Blond Ale"])
+entity(StellaArtois, [prov:type="Pale Lager"])
+
+endDocument

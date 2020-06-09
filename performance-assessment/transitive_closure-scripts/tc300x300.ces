@@ -1,3 +1,0 @@
-LOAD_MATRIX("performance-assessment\matrix300x300.matrix")
-P1 = ADD(R-MATRIX[300/300])
-TRANSITIVE_CLOSURE(P1)

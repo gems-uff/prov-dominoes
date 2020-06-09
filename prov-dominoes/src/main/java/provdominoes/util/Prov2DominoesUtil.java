@@ -3,6 +3,7 @@ package provdominoes.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,8 @@ import provdominoes.domain.Dominoes;
 
 public class Prov2DominoesUtil {
 
-	public static List<Dominoes> convert(List<ProvMatrix> matrices, Map<String, String> labels) throws Exception {
+	public static List<Dominoes> convert(List<ProvMatrix> matrices, Map<String, String> dimensionLabels,
+			HashMap<String, String> cellParams) throws Exception {
 		List<Dominoes> dominoesList = new ArrayList<>();
 		for (ProvMatrix provMatrix : matrices) {
 			if (provMatrix != null && (provMatrix.getRelation() != null || provMatrix.getIdentifier() != null)
@@ -25,29 +27,16 @@ public class Prov2DominoesUtil {
 					&& !provMatrix.isEmpty()) {
 				MatrixDescriptor descriptor = new MatrixDescriptor(provMatrix.getRowDimentionAbbreviate(),
 						provMatrix.getColumnDimentionAbbreviate());
-				if (provMatrix.getRelation() != null) {
-					System.out.println("Convertendo: " + provMatrix.getRowDimentionAbbreviate() + " | "
-							+ provMatrix.getColumnDimentionAbbreviate() + " : "
-							+ provMatrix.getRelation().getDescription() + " ...");
-				} else if (provMatrix.getIdentifier() != null) {
-					System.out.println("Convertendo: " + provMatrix.getIdentifier() + " ...");
-				}
-				if (labels != null && !labels.keySet().isEmpty()) {
-					List<String> rows = toLabels(provMatrix.getRowDescriptors(), labels);
-					List<String> columns = toLabels(provMatrix.getColumnDescriptors(), labels);
-					System.out.println(rows);
-					System.out.println(columns);
-					descriptor.setRowsDesc(rows);
-					descriptor.setColumnsDesc(columns);
-				} else {
-					System.out.println(provMatrix.getRowDescriptors());
-					System.out.println(provMatrix.getColumnDescriptors());
-					descriptor.setRowsDesc(provMatrix.getRowDescriptors());
-					descriptor.setColumnsDesc(provMatrix.getColumnDescriptors());
+				descriptor.setRowsDesc(toCaptions(provMatrix.getRowDescriptors(), dimensionLabels, true));
+				descriptor.setColumnsDesc(toCaptions(provMatrix.getColumnDescriptors(), dimensionLabels, true));
+				if (dimensionLabels != null && !dimensionLabels.keySet().isEmpty()) {
+					descriptor.setRowsTooltips(toCaptions(provMatrix.getRowDescriptors(), dimensionLabels, false));
+					descriptor.setColumnsTooltips(toCaptions(provMatrix.getColumnDescriptors(), dimensionLabels, false));
 				}
 				Dominoes dom = new Dominoes(provMatrix, descriptor,
 						(Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING
 								: Configuration.CPU_PROCESSING));
+				dom.setCellParams(cellParams);
 				if (provMatrix.getIdentifier() != null) {
 					dom.setId(provMatrix.getIdentifier());
 				}
@@ -58,11 +47,24 @@ public class Prov2DominoesUtil {
 		return dominoesList;
 	}
 
-	private static List<String> toLabels(List<String> descriptors, Map<String, String> labels) {
+	private static List<String> toCaptions(List<String> descriptors, Map<String, String> labels, boolean isLabel) {
 		List<String> result = new ArrayList<>();
 		for (String desc : descriptors) {
 			if (labels.containsKey(desc)) {
-				result.add(labels.get(desc));
+				String token = labels.get(desc);
+				if (isLabel) {
+					if (!token.split(",")[0].isEmpty()) {
+						result.add(token.split(",")[0]);
+					} else {
+						result.add(desc);
+					}
+				} else {
+					if (token.contains(",") && !token.endsWith(",")) {
+						result.add(token.split(",")[1]);
+					} else {
+						result.add(desc);
+					}
+				}
 			} else {
 				result.add(desc);
 			}
@@ -177,7 +179,7 @@ public class Prov2DominoesUtil {
 	}
 
 	public static List<String> sortWithLabels(double[] numbers, List<String> labels) {
-		quickSort(numbers, 0, numbers.length - 1,  labels);
+		quickSort(numbers, 0, numbers.length - 1, labels);
 		return labels;
 	}
 
@@ -185,7 +187,7 @@ public class Prov2DominoesUtil {
 		if (begin < end) {
 			int partitionIndex = partition(arr, begin, end, newLabels);
 
-			quickSort(arr, begin, partitionIndex - 1,  newLabels);
+			quickSort(arr, begin, partitionIndex - 1, newLabels);
 			quickSort(arr, partitionIndex + 1, end, newLabels);
 		}
 	}
@@ -199,7 +201,7 @@ public class Prov2DominoesUtil {
 				i++;
 
 				double swapTemp = arr[i];
-				String swapLabel = newLabels.get(i); 
+				String swapLabel = newLabels.get(i);
 				arr[i] = arr[j];
 				newLabels.set(i, newLabels.get(j));
 				arr[j] = swapTemp;
@@ -208,9 +210,9 @@ public class Prov2DominoesUtil {
 		}
 
 		double swapTemp = arr[i + 1];
-		String swapLabel = newLabels.get(i+1); 
+		String swapLabel = newLabels.get(i + 1);
 		arr[i + 1] = arr[end];
-		newLabels.set(i+1, newLabels.get(end));
+		newLabels.set(i + 1, newLabels.get(end));
 		arr[end] = swapTemp;
 		newLabels.set(end, swapLabel);
 

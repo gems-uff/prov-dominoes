@@ -4,43 +4,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MatrixDescriptor {
-	
-	enum Equality{
-		ROW,
-		COL
+
+	enum Equality {
+		ROW, COL
 	}
 
 	private List<String> columnsDesc = new ArrayList<String>();
 	private List<String> rowsDesc = new ArrayList<String>();
+	private List<String> columnsTooltips = new ArrayList<String>();
+	private List<String> rowsTooltips = new ArrayList<String>();
 	private String rowType;
 	private String colType;
-	
+
 	public MatrixDescriptor(String _rowType, String _colType) {
 		rowType = _rowType;
 		colType = _colType;
 	}
-	
-	public boolean CheckEquality(Equality desc1, Equality desc2, 
-			MatrixDescriptor other){
-		
-		List<String> thisDesc = 
-				desc1 == Equality.ROW ? rowsDesc : columnsDesc;
-		List<String> otherDesc = 
-				desc2 == Equality.ROW ? other.rowsDesc : other.columnsDesc; 
-		
-		
+
+	public boolean CheckEquality(Equality desc1, Equality desc2, MatrixDescriptor other) {
+
+		List<String> thisDesc = desc1 == Equality.ROW ? rowsDesc : columnsDesc;
+		List<String> otherDesc = desc2 == Equality.ROW ? other.rowsDesc : other.columnsDesc;
+
 		if (thisDesc.size() != otherDesc.size())
 			return false;
-		
-		for (int i = 0; i < thisDesc.size(); i++ ){
-			
+
+		for (int i = 0; i < thisDesc.size(); i++) {
+
 			if (!thisDesc.get(i).equals(otherDesc.get(i)))
 				return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	public String getRowType() {
 		return rowType;
 	}
@@ -49,43 +46,43 @@ public class MatrixDescriptor {
 		return colType;
 	}
 
-	public int getNumRows(){ 
+	public int getNumRows() {
 		return rowsDesc.size();
 	}
-	
-	public int getNumCols(){
+
+	public int getNumCols() {
 		return columnsDesc.size();
 	}
-	
-	public void AddRowDesc(String _rowDesc){
+
+	public void AddRowDesc(String _rowDesc) {
 		rowsDesc.add(_rowDesc);
 	}
-	
-	public void AddColDesc(String _colDesc){
+
+	public void AddColDesc(String _colDesc) {
 		columnsDesc.add(_colDesc);
 	}
-	
-	public int getRowElementIndex(String _name){
+
+	public int getRowElementIndex(String _name) {
 		return rowsDesc.indexOf(_name);
 	}
-	
-	public int getColElementIndex(String _name){
+
+	public int getColElementIndex(String _name) {
 		return columnsDesc.indexOf(_name);
 	}
-	
-	public String getColumnAt(int colIndex){
+
+	public String getColumnAt(int colIndex) {
 		return columnsDesc.get(colIndex);
 	}
-	
-	public String getRowAt(int rowIndex){
+
+	public String getRowAt(int rowIndex) {
 		return rowsDesc.get(rowIndex);
 	}
-	
-	public boolean hasRow(String row){
+
+	public boolean hasRow(String row) {
 		return rowsDesc.contains(row);
 	}
-	
-	public boolean hasCol(String col){
+
+	public boolean hasCol(String col) {
 		return columnsDesc.contains(col);
 	}
 
@@ -103,5 +100,21 @@ public class MatrixDescriptor {
 
 	public void setRowsDesc(List<String> rowsDesc) {
 		this.rowsDesc = rowsDesc;
+	}
+
+	public List<String> getColumnsTooltips() {
+		return columnsTooltips;
+	}
+
+	public void setColumnsTooltips(List<String> columnsLabels) {
+		this.columnsTooltips = columnsLabels;
+	}
+
+	public List<String> getRowsTooltips() {
+		return rowsTooltips;
+	}
+
+	public void setRowsTooltips(List<String> rowsLabels) {
+		this.rowsTooltips = rowsLabels;
 	}
 }

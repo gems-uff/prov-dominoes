@@ -53,6 +53,12 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 	@Override
 	public MatrixOperations subtract(MatrixOperations other) throws Exception {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
 
 		if (matrixDescriptor.getNumRows() != otherDescriptor.getNumRows()
@@ -63,7 +69,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				this.getMatrixDescriptor().getNumCols());
 
 		MatrixOperationsCPU result = null;
-		if (!isTuning()) {
+		if (!Configuration.tuning) {
 			MatrixOperationsCPU otherCPU = (MatrixOperationsCPU) other;
 			otherCPU = (MatrixOperationsCPU) otherCPU.sortEqualTo(this.getMatrixDescriptor());
 			CRSMatrix otherData = Prov2DominoesUtil.cells2Matrix(otherCPU.getData(),
@@ -81,11 +87,22 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			result.setData(crsResult);
 			result.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
 		}
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for subtraction in ms: " + df.format(d));
+		}
 		return result;
 	}
 
 	@Override
 	public MatrixOperations sum(MatrixOperations other) throws Exception {
+		long startTime = 0;
+		long endTime = 0;
+
 		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
 
 		if (matrixDescriptor.getNumRows() != otherDescriptor.getNumRows()
@@ -96,22 +113,52 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				this.getMatrixDescriptor().getNumCols());
 
 		MatrixOperationsCPU result = null;
-		if (!isTuning()) {
+		if (!Configuration.tuning) {
 			MatrixOperationsCPU otherCPU = (MatrixOperationsCPU) other;
 			otherCPU = (MatrixOperationsCPU) otherCPU.sortEqualTo(this.getMatrixDescriptor());
 			CRSMatrix otherData = Prov2DominoesUtil.cells2Matrix(otherCPU.getData(),
 					otherCPU.getMatrixDescriptor().getNumRows(), otherCPU.getMatrixDescriptor().getNumCols());
+			if (Configuration.telemetry) {
+				startTime = System.nanoTime();
+			}
 			CRSMatrix crsResult = (CRSMatrix) crsData.add(otherData);
+			if (Configuration.telemetry) {
+				endTime = System.nanoTime();
+				long timeElapsed = endTime - startTime;
+				double d = timeElapsed / 1000000d;
+				DecimalFormat df = new DecimalFormat("#.##");
+				df = new DecimalFormat("#.##");
+				System.out.println("Time elapsed for sum in ms: " + df.format(d));
+			}
 			result = new MatrixOperationsCPU(otherCPU.getMatrixDescriptor());
 			result.setData(crsResult);
 			result.setUnderlyingElements(otherCPU.getUnderlyingElements());
 		} else {
 			CRSMatrix otherData = Prov2DominoesUtil.cells2Matrix(other.getData(),
 					other.getMatrixDescriptor().getNumRows(), other.getMatrixDescriptor().getNumCols());
+			if (Configuration.telemetry) {
+				startTime = System.nanoTime();
+			}
 			CRSMatrix crsResult = (CRSMatrix) crsData.add(otherData);
+			if (Configuration.telemetry) {
+				endTime = System.nanoTime();
+				long timeElapsed = endTime - startTime;
+				double d = timeElapsed / 1000000d;
+				DecimalFormat df = new DecimalFormat("#.##");
+				df = new DecimalFormat("#.##");
+				System.out.println("Time elapsed for sum in ms: " + df.format(d));
+			}
 			result = new MatrixOperationsCPU(getMatrixDescriptor());
 			result.setData(crsResult);
 			result.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		}
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for sum in ms: " + df.format(d));
 		}
 		return result;
 	}
@@ -134,7 +181,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		MatrixOperationsCPU otherJava = (MatrixOperationsCPU) other;
 
-		if (!isTuning()) {
+		if (!Configuration.tuning) {
 			this.data = Prov2DominoesUtil.cells2Matrix(this.sortColumns().getData(), this.matrixDescriptor.getNumRows(),
 					this.matrixDescriptor.getNumCols());
 			other.setData(otherJava.sortRows().getData());
@@ -169,14 +216,14 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 	private double multCells(CRSMatrix matrix1, CRSMatrix matrix2, int row, int col, String[][] resultUnderLying) {
 		List<String> cols = null;
-		if (!isTuning()) {
+		if (!Configuration.tuning) {
 			cols = new ArrayList<>(getMatrixDescriptor().getColumnsDesc());
 			Collections.sort(cols, new SortIgnoreCase());
 		}
 		double cell = 0.0;
 		for (int i = 0; i < matrix1.columns(); i++) {
 			cell += matrix1.get(row, i) * matrix2.get(i, col);
-			if (!isTuning()) {
+			if (!Configuration.tuning) {
 				if (matrix1.get(row, i) != 0.0 && matrix2.get(i, col) != 0.0) {
 					if (resultUnderLying[row][col] == null) {
 						resultUnderLying[row][col] = cols.get(i);
@@ -195,11 +242,9 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return cell;
 	}
 
-	private boolean isTuning() {
-		return Configuration.tuning;
-	}
-
 	public MatrixOperations transpose() {
+		long startTime = 0;
+		long endTime = 0;
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 
@@ -210,7 +255,18 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getRowAt(i));
 
 		MatrixOperationsCPU transpose = new MatrixOperationsCPU(_newDescriptor);
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		transpose.data = (CRSMatrix) data.transpose();
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for transposition in ms: " + df.format(d));
+		}
 		String[][] resultUnderlyingElements = null;
 		if (this.underlyingElements != null) {
 			resultUnderlyingElements = new String[this.underlyingElements[0].length][this.underlyingElements.length];
@@ -224,31 +280,11 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return transpose;
 	}
 
-	public void debug() {
-
-		ArrayList<Cell> cells = getData();
-
-		int currentLine = -1;
-
-		for (int i = 0; i < cells.size(); i++) {
-			Cell cell = cells.get(i);
-
-			if (currentLine != cell.row) {
-				System.out.println();
-				currentLine = cell.row;
-			}
-
-			System.out.print(cell.value + "\t");
-		}
-	}
-
 	public float findMinValue() {
-
 		return (float) data.min();
 	}
 
 	public float findMaxValue() {
-
 		return (float) data.max();
 	}
 
@@ -263,8 +299,14 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 	@Override
 	public MatrixOperations aggregateDimension(boolean useGPU) {
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 
 		_newDescriptor.AddRowDesc("SUM");
 
@@ -274,26 +316,39 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		MatrixOperationsCPU reduced = new MatrixOperationsCPU(_newDescriptor);
 
 		float[] rowSum = new float[this.matrixDescriptor.getNumCols()];
-		ArrayList<Cell> nz = getData();
-
-		for (Cell c : nz) {
-			rowSum[c.col] += c.value;
-		}
-
-		ArrayList<Cell> resCells = new ArrayList<Cell>();
-
+		data.eachNonZero(new MatrixProcedure() {
+			@Override
+			public void apply(int row, int col, double value) {
+				rowSum[col] += value;
+			}
+		});
+		CRSMatrix result = new CRSMatrix(1, rowSum.length);
 		for (int i = 0; i < rowSum.length; i++) {
 			if (Math.abs(rowSum[i]) > 0) {
-				resCells.add(new Cell(0, i, rowSum[i]));
+				result.set(0, i, rowSum[i]);
 			}
 		}
-		reduced.setData(resCells);
+		reduced.setData(result);
 		reduced.setUnderlyingElements(null);
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for aggregate dimension in ms: " + df.format(d));
+		}
 		return reduced;
 	}
 
 	@Override
 	public MatrixOperations confidence(boolean useGPU) {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		List<Cell> nonZeros = getData();
 
 		ArrayList<Cell> newValues = new ArrayList<Cell>();
@@ -314,11 +369,25 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		MatrixOperationsCPU confidenceM = new MatrixOperationsCPU(getMatrixDescriptor());
 		confidenceM.setData(newValues);
 		confidenceM.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for confidence in ms: " + df.format(d));
+		}
 		return confidenceM;
 	}
 
 	@Override
 	public MatrixOperations meanAndSD() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 
@@ -368,12 +437,25 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		meanSD.setData(_data);
 		meanSD.setUnderlyingElements(null);
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for mean & standard deviation in ms: " + df.format(d));
+		}
 		return meanSD;
 	}
 
 	@Override
 	public MatrixOperations standardScoreDense() {
+		long startTime = 0;
+		long endTime = 0;
 
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
 				this.matrixDescriptor.getColType());
 
@@ -429,12 +511,25 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		standardScoreDense.setData(_data);
 		standardScoreDense.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for standard score dense in ms: " + df.format(d));
+		}
 		return standardScoreDense;
 	}
 
 	@Override
 	public MatrixOperations standardScoreSparse() {
+		long startTime = 0;
+		long endTime = 0;
 
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
 				this.matrixDescriptor.getColType());
 
@@ -493,10 +588,24 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		standardScoreSparse.setData(_data);
 		standardScoreSparse.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for standard score sparse in ms: " + df.format(d));
+		}
 		return standardScoreSparse;
 	}
 
 	public MatrixOperations binarize() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
@@ -520,10 +629,24 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		binarizeFilter.setData(new CRSMatrix(filterMatrix));
 		binarizeFilter.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for binarization in ms: " + df.format(d));
+		}
 		return binarizeFilter;
 	}
 
 	public MatrixOperations invert() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
@@ -545,12 +668,26 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		}
 		invertFilter.setData(new CRSMatrix(filterMatrix));
 		invertFilter.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for invertion in ms: " + df.format(d));
+		}
 		return invertFilter;
 	}
 
-	public MatrixOperations highPassFilter(double d) {
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
+	public MatrixOperations highPassFilter(double cutoff) {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -559,7 +696,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
-				if (data.get(i, j) > d) {
+				if (data.get(i, j) > cutoff) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
 					filterMatrix[i][j] = 0.00;
@@ -568,13 +705,27 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		}
 		highPassFilter.setData(new CRSMatrix(filterMatrix));
 		highPassFilter.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for HPF in ms: " + df.format(d));
+		}
 		return highPassFilter;
 	}
 
 	@Override
-	public MatrixOperations lowPassFilter(double d) {
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
+	public MatrixOperations lowPassFilter(double cutoff) {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -583,7 +734,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		double[][] filterMatrix = new double[matrixDescriptor.getNumRows()][matrixDescriptor.getNumCols()];
 		for (int i = 0; i < matrixDescriptor.getNumRows(); i++) {
 			for (int j = 0; j < matrixDescriptor.getNumCols(); j++) {
-				if (data.get(i, j) < d) {
+				if (data.get(i, j) < cutoff) {
 					filterMatrix[i][j] = data.get(i, j);
 				} else {
 					filterMatrix[i][j] = 0.00;
@@ -592,10 +743,24 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		}
 		lowPassFilter.setData(new CRSMatrix(filterMatrix));
 		lowPassFilter.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for LPF in ms: " + df.format(d));
+		}
 		return lowPassFilter;
 	}
 
 	public MatrixOperations filterColumnText(TextFilterData t) {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
 				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -616,10 +781,24 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		}
 		_columnFilter.setData(new CRSMatrix(filterMatrix));
 		_columnFilter.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for Word on Column Filter in ms: " + df.format(d));
+		}
 		return _columnFilter;
 	}
 
 	public MatrixOperations filterRowText(TextFilterData t) {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
 				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -640,6 +819,14 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		}
 		_rowFilter.setData(new CRSMatrix(filterMatrix));
 		_rowFilter.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for Word on Row Filter in ms: " + df.format(d));
+		}
 		return _rowFilter;
 	}
 
@@ -660,6 +847,12 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	}
 
 	public MatrixOperations diagonalize() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
@@ -679,11 +872,25 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		}
 		_diagonalizeFilter.setData(new CRSMatrix(filterMatrix));
 		_diagonalizeFilter.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for Diagonalize Filter in ms: " + df.format(d));
+		}
 		return _diagonalizeFilter;
 	}
 
 	@Override
 	public MatrixOperations upperDiagonal() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
@@ -698,11 +905,25 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			}
 		}
 		_upperDiagonal.setData(new CRSMatrix(filterMatrix));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for build upper triangular matrix in ms: " + df.format(d));
+		}
 		return _upperDiagonal;
 	}
 
 	@Override
 	public MatrixOperations lowerDiagonal() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
@@ -717,10 +938,24 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			}
 		}
 		_lowerDiagonal.setData(new CRSMatrix(filterMatrix));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for build lower triangular matrix in ms: " + df.format(d));
+		}
 		return _lowerDiagonal;
 	}
 
 	public MatrixOperations trim() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixOperationsCPU result = null;
 		ArrayList<Cell> newMatrix = new ArrayList<>();
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
@@ -759,7 +994,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 					_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(j));
 				}
 				newMatrix.add(new Cell(i - di, j - dj, v.floatValue()));
-				if (!isTuning() && this.underlyingElements != null) {
+				if (!Configuration.tuning && this.underlyingElements != null) {
 					updatedUnderlying.add(new StringCell(i - di, j - dj, this.underlyingElements[i][j]));
 				}
 			}
@@ -781,11 +1016,24 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			}
 		}
 		result.setUnderlyingElements(resultUnderlyingElements);
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for TRIM in ms: " + df.format(d));
+		}
 		return result;
 	}
 
 	// Transitive closure of graph[][] using Floyd Warshall algorithm
 	public MatrixOperations transitiveClosure() {
+		long startTime = 0;
+		long endTime = 0;
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
 				this.matrixDescriptor.getRowType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
@@ -793,11 +1041,6 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
 			_newDescriptor.AddRowDesc(this.matrixDescriptor.getRowAt(i));
 		MatrixOperationsCPU _transitiveClosure = new MatrixOperationsCPU(_newDescriptor);
-		long startTime = 0;
-		long endTime = 0;
-		if (Configuration.telemetry) {
-			startTime = System.nanoTime();
-		}
 		/*
 		 * reach[][] will be the output matrix that will finally have the shortest
 		 * distances between every pair of vertices
@@ -854,6 +1097,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 				}
 			}
 		}
+		_transitiveClosure.setData(new CRSMatrix(reach));
 		if (Configuration.telemetry) {
 			endTime = System.nanoTime();
 			long timeElapsed = endTime - startTime;
@@ -861,7 +1105,6 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			DecimalFormat df = new DecimalFormat("#.##");
 			System.out.println("Time elapsed for transitive closure in ms: " + df.format(d));
 		}
-		_transitiveClosure.setData(new CRSMatrix(reach));
 		return _transitiveClosure;
 	}
 
@@ -890,6 +1133,12 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 	@Override
 	public MatrixOperations sortRows() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
 				matrixDescriptor.getColType());
 		List<String> rowsDesc = new ArrayList<>(matrixDescriptor.getRowsDesc());
@@ -916,87 +1165,25 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		result.setData(crsResult);
 		result.setUnderlyingElements(updatedUnderlying);
-		return result;
-	}
-
-	@Override
-	public MatrixOperations sortByRowGroup() {
-		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
-				matrixDescriptor.getColType());
-		List<String> rowsDesc = new ArrayList<>(matrixDescriptor.getRowsDesc());
-		String[][] updatedUnderlying = Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements);
-		double[] rowsCount = new double[rowsDesc.size()];
-
-		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
-		result.getMatrixDescriptor().setColumnsDesc(matrixDescriptor.getColumnsDesc());
-
-		CRSMatrix crsResult = new CRSMatrix(data.rows(), data.columns());
-		for (int i = 0; i < data.rows(); i++) {
-			for (int j = 0; j < data.columns(); j++) {
-				if (data.get(i, j) > 0) {
-					rowsCount[i]++;
-				}
-			}
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for Sort by Rows Asc in ms: " + df.format(d));
 		}
-		List<String> newRows = new ArrayList<>(rowsDesc);
-		Prov2DominoesUtil.quickSort(rowsCount, 0, rowsCount.length - 1, newRows);
-		result.getMatrixDescriptor().setRowsDesc(newRows);
-		int index = 0;
-		for (String row : newRows) {
-			int oldIndex = rowsDesc.indexOf(row);
-			for (int j = 0; j < data.columns(); j++) {
-				crsResult.set(index, j, data.get(oldIndex, j));
-				if (!isTuning()) {
-					updatedUnderlying[index][j] = this.underlyingElements[oldIndex][j];
-				}
-			}
-			index++;
-		}
-		result.setData(crsResult);
-		result.setUnderlyingElements(updatedUnderlying);
-		return result;
-	}
-
-	@Override
-	public MatrixOperations sortByColumnGroup() {
-		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
-				matrixDescriptor.getColType());
-		List<String> columnsDesc = new ArrayList<>(matrixDescriptor.getColumnsDesc());
-		String[][] updatedUnderlying = Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements);
-		double[] columnsCount = new double[columnsDesc.size()];
-
-		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
-		result.getMatrixDescriptor().setRowsDesc(matrixDescriptor.getRowsDesc());
-
-		CRSMatrix crsResult = new CRSMatrix(data.rows(), data.columns());
-		for (int i = 0; i < data.columns(); i++) {
-			for (int j = 0; j < data.rows(); j++) {
-				if (data.get(i, j) > 0) {
-					columnsCount[i]++;
-				}
-			}
-		}
-		List<String> newColumns = new ArrayList<>(columnsDesc);
-		Prov2DominoesUtil.quickSort(columnsCount, 0, columnsCount.length - 1, newColumns);
-		result.getMatrixDescriptor().setColumnsDesc(newColumns);
-		int index = 0;
-		for (String column : newColumns) {
-			int oldIndex = columnsDesc.indexOf(column);
-			for (int i = 0; i < data.rows(); i++) {
-				crsResult.set(i, index, data.get(i, oldIndex));
-				if (!isTuning()) {
-					updatedUnderlying[i][index] = this.underlyingElements[i][oldIndex];
-				}
-			}
-			index++;
-		}
-		result.setData(crsResult);
-		result.setUnderlyingElements(updatedUnderlying);
 		return result;
 	}
 
 	@Override
 	public MatrixOperations sortColumns() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
 				matrixDescriptor.getColType());
 		List<String> colsDesc = new ArrayList<>(matrixDescriptor.getColumnsDesc());
@@ -1023,11 +1210,129 @@ public class MatrixOperationsCPU implements MatrixOperations {
 
 		result.setData(new CRSMatrix(matrix));
 		result.setUnderlyingElements(updatedUnderlying);
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for Sort by Columns Asc in ms: " + df.format(d));
+		}
+		return result;
+	}
+
+	@Override
+	public MatrixOperations sortByRowGroup() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
+		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
+				matrixDescriptor.getColType());
+		List<String> rowsDesc = new ArrayList<>(matrixDescriptor.getRowsDesc());
+		String[][] updatedUnderlying = Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements);
+		double[] rowsCount = new double[rowsDesc.size()];
+
+		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
+		result.getMatrixDescriptor().setColumnsDesc(matrixDescriptor.getColumnsDesc());
+
+		CRSMatrix crsResult = new CRSMatrix(data.rows(), data.columns());
+		for (int i = 0; i < data.rows(); i++) {
+			for (int j = 0; j < data.columns(); j++) {
+				if (data.get(i, j) > 0) {
+					rowsCount[i]++;
+				}
+			}
+		}
+		List<String> newRows = new ArrayList<>(rowsDesc);
+		Prov2DominoesUtil.quickSort(rowsCount, 0, rowsCount.length - 1, newRows);
+		result.getMatrixDescriptor().setRowsDesc(newRows);
+		int index = 0;
+		for (String row : newRows) {
+			int oldIndex = rowsDesc.indexOf(row);
+			for (int j = 0; j < data.columns(); j++) {
+				crsResult.set(index, j, data.get(oldIndex, j));
+				if (!Configuration.tuning) {
+					updatedUnderlying[index][j] = this.underlyingElements[oldIndex][j];
+				}
+			}
+			index++;
+		}
+		result.setData(crsResult);
+		result.setUnderlyingElements(updatedUnderlying);
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for Sort by Descending Row Group in ms: " + df.format(d));
+		}
+		return result;
+	}
+
+	@Override
+	public MatrixOperations sortByColumnGroup() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
+		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
+				matrixDescriptor.getColType());
+		List<String> columnsDesc = new ArrayList<>(matrixDescriptor.getColumnsDesc());
+		String[][] updatedUnderlying = Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements);
+		double[] columnsCount = new double[columnsDesc.size()];
+
+		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
+		result.getMatrixDescriptor().setRowsDesc(matrixDescriptor.getRowsDesc());
+
+		CRSMatrix crsResult = new CRSMatrix(data.rows(), data.columns());
+		for (int i = 0; i < data.columns(); i++) {
+			for (int j = 0; j < data.rows(); j++) {
+				if (data.get(j, i) > 0) {
+					columnsCount[i]++;
+				}
+			}
+		}
+		List<String> newColumns = new ArrayList<>(columnsDesc);
+		Prov2DominoesUtil.quickSort(columnsCount, 0, columnsCount.length - 1, newColumns);
+		result.getMatrixDescriptor().setColumnsDesc(newColumns);
+		int index = 0;
+		for (String column : newColumns) {
+			int oldIndex = columnsDesc.indexOf(column);
+			for (int i = 0; i < data.rows(); i++) {
+				crsResult.set(i, index, data.get(i, oldIndex));
+				if (!Configuration.tuning) {
+					updatedUnderlying[i][index] = this.underlyingElements[i][oldIndex];
+				}
+			}
+			index++;
+		}
+		result.setData(crsResult);
+		result.setUnderlyingElements(updatedUnderlying);
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for Sort by Descending Column Group in ms: " + df.format(d));
+		}
 		return result;
 	}
 
 	@Override
 	public MatrixOperations sortDefaultDimensionValues() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixDescriptor _matrixDescriptor = new MatrixDescriptor(matrixDescriptor.getRowType(),
 				matrixDescriptor.getColType());
 		List<String> columnsDesc = new ArrayList<>(this.matrixDescriptor.getColumnsDesc());
@@ -1042,11 +1347,25 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		_matrixDescriptor.setColumnsDesc(columnsDesc);
 		MatrixOperationsCPU result = new MatrixOperationsCPU(_matrixDescriptor);
 		result.setData(new CRSMatrix(matrix));
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for Default Dimension Sort in ms: " + df.format(d));
+		}
 		return result;
 	}
 
 	@Override
 	public MatrixOperations sortColumnFirst() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixOperationsCPU result = null;
 		ArrayList<Cell> newMatrix = new ArrayList<>();
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
@@ -1107,11 +1426,25 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		result.setData(
 				Prov2DominoesUtil.cells2Matrix(newMatrix, _newDescriptor.getNumRows(), _newDescriptor.getNumCols()));
 		result.setUnderlyingElements(updatedUnderlying);
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for Column First Sorting in ms: " + df.format(d));
+		}
 		return result;
 	}
 
 	@Override
 	public MatrixOperations sortRowFirst() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		MatrixOperationsCPU result = null;
 		ArrayList<Cell> newMatrix = new ArrayList<>();
 		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
@@ -1173,6 +1506,14 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		result.setData(
 				Prov2DominoesUtil.cells2Matrix(newMatrix, _newDescriptor.getNumRows(), _newDescriptor.getNumCols()));
 		result.setUnderlyingElements(updatedUnderlying);
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for Row First Sorting in ms: " + df.format(d));
+		}
 		return result;
 	}
 
@@ -1221,23 +1562,19 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return cells;
 	}
 
-	@Override
-	public void setSparse(boolean isSparse) {
-		// TODO Necessary only to GPU
-	}
-
-	public void setRows(int[] rows) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setCols(int[] cols) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public void setUnderlyingElements(String[][] underlyingElements) {
 		this.underlyingElements = underlyingElements;
+	}
+
+	@Override
+	public void setMatrix(CRSMatrix matrix) {
+		this.data = matrix;
+
+	}
+
+	@Override
+	public CRSMatrix getMatrix() {
+		return data;
 	}
 
 }

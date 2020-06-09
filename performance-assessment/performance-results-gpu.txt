@@ -1,0 +1,409 @@
+====== GPU PERFORMANCE ASSESMENT FOR 100 TWEETS COLLECTION ====== 
+Telemetry is on...
+LOAD("twitter-governadores_en.provn")
+P1 = ADD(WGB)
+P2 = ADD(WAW)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4,42
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4,62
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,09
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,09
+Time elapsed for multiplication in ms: 111,77
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,14
+P3 = MULTIPLY(P1, P2)
+P4 = ADD(WAT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4,72
+Time elapsed for transposition in ms: 0,59
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 4,51
+TRANSPOSE(P4)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4,67
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4,55
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,08
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,09
+Time elapsed for multiplication in ms: 6,56
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,07
+P5 = MULTIPLY(P4, P3)
+P6 = ADD(AgT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 5,69
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,31
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,09
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,07
+Time elapsed for multiplication in ms: 6,03
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,04
+P7 = MULTIPLY(P5, P6)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,67
+Time elapsed for transposition in ms: 0,48
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,44
+TRANSPOSE(P7)
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,39
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,06
+Time elapsed for Word on Column Filter in ms: 7,69
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,03
+# cells removed: 616. % cells removed: 98,72%
+Time elapsed for TRIM in ms: 1,66
+TRIM(P7)
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,01
+Time elapsed for Sort by Descending Column Group in ms: 0,09
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 1071,89
+Releasing GPU Memory: 391136.0 KB...
+====== END OF RESULTS ====== 
+ 
+====== GPU PERFORMANCE ASSESMENT FOR 200 TWEETS COLLECTION ====== 
+Telemetry is on...
+LOAD("twitter-governadores_en.provn")
+P1 = ADD(WGB)
+P2 = ADD(WAW)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 18,12
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 17,87
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,27
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,15
+Time elapsed for multiplication in ms: 100,44
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,18
+P3 = MULTIPLY(P1, P2)
+P4 = ADD(WAT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 15,78
+Time elapsed for transposition in ms: 2,48
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 18,24
+TRANSPOSE(P4)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 15,1
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 14,68
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,15
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,43
+Time elapsed for multiplication in ms: 6,48
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,13
+P5 = MULTIPLY(P4, P3)
+P6 = ADD(AgT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 16,48
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,49
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,26
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,1
+Time elapsed for multiplication in ms: 6,38
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,04
+P7 = MULTIPLY(P5, P6)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,62
+Time elapsed for transposition in ms: 0,1
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,61
+TRANSPOSE(P7)
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,7
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,04
+Time elapsed for Word on Column Filter in ms: 8,54
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,02
+# cells removed: 1204. % cells removed: 99,34%
+Time elapsed for TRIM in ms: 2,03
+TRIM(P7)
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0
+Time elapsed for Sort by Descending Column Group in ms: 0,49
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 1295,69
+Releasing GPU Memory: 1485152.0 KB...
+====== END OF RESULTS ====== 
+ 
+====== GPU PERFORMANCE ASSESMENT FOR 300 TWEETS COLLECTION ====== 
+Telemetry is on...
+LOAD("twitter-governadores_en.provn")
+P1 = ADD(WGB)
+P2 = ADD(WAW)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 40,47
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 33,96
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,36
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,33
+Time elapsed for multiplication in ms: 99,82
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,23
+P3 = MULTIPLY(P1, P2)
+P4 = ADD(WAT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 32,47
+Time elapsed for transposition in ms: 4,85
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 36,03
+TRANSPOSE(P4)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 33,74
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 34,07
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,33
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,37
+Time elapsed for multiplication in ms: 6,52
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,19
+P5 = MULTIPLY(P4, P3)
+P6 = ADD(AgT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 31,29
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,67
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,16
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,13
+Time elapsed for multiplication in ms: 6,57
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,1
+P7 = MULTIPLY(P5, P6)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1,33
+Time elapsed for transposition in ms: 0,19
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,87
+TRANSPOSE(P7)
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,96
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,06
+Time elapsed for Word on Column Filter in ms: 13,86
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,03
+# cells removed: 1742. % cells removed: 99,09%
+Time elapsed for TRIM in ms: 2,36
+TRIM(P7)
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0
+Time elapsed for Sort by Descending Column Group in ms: 0,32
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 1523,37
+Releasing GPU Memory: 3198648.0 KB...
+====== END OF RESULTS ====== 
+ 
+====== GPU PERFORMANCE ASSESMENT FOR 500 TWEETS COLLECTION ====== 
+Telemetry is on...
+LOAD("twitter-governadores_en.provn")
+P1 = ADD(WGB)
+P2 = ADD(WAW)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 106,55
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 93,09
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,53
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,49
+Time elapsed for multiplication in ms: 105,35
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,32
+P3 = MULTIPLY(P1, P2)
+P4 = ADD(WAT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 90,81
+Time elapsed for transposition in ms: 14,63
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 95,41
+TRANSPOSE(P4)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 93,06
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 91,64
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,73
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,5
+Time elapsed for multiplication in ms: 7,41
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,33
+P5 = MULTIPLY(P4, P3)
+P6 = ADD(AgT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 89,26
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1,05
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,56
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,22
+Time elapsed for multiplication in ms: 6,44
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,14
+P7 = MULTIPLY(P5, P6)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 2,39
+Time elapsed for transposition in ms: 0,21
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 1,29
+TRANSPOSE(P7)
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 1,59
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,06
+Time elapsed for Word on Column Filter in ms: 13,73
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,04
+# cells removed: 2843. % cells removed: 99,13%
+Time elapsed for TRIM in ms: 2,5
+TRIM(P7)
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0
+Time elapsed for Sort by Descending Column Group in ms: 0,33
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 2581,37
+Releasing GPU Memory: 8632804.0 KB...
+====== END OF RESULTS ====== 
+ 
+====== GPU PERFORMANCE ASSESMENT FOR 1000 TWEETS COLLECTION ====== 
+Telemetry is on...
+LOAD("twitter-governadores_en.provn")
+P1 = ADD(WGB)
+P2 = ADD(WAW)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 406,61
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 376,6
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1,51
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1,29
+Time elapsed for multiplication in ms: 100,9
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,59
+P3 = MULTIPLY(P1, P2)
+P4 = ADD(WAT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 375,27
+Time elapsed for transposition in ms: 61,98
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 356,87
+TRANSPOSE(P4)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 366,38
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 375,8
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1,29
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1,41
+Time elapsed for multiplication in ms: 10,28
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 1,85
+P5 = MULTIPLY(P4, P3)
+P6 = ADD(AgT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 343,05
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1,98
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1,22
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,37
+Time elapsed for multiplication in ms: 6,93
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 1,02
+P7 = MULTIPLY(P5, P6)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 2,37
+Time elapsed for transposition in ms: 0,44
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 2,55
+TRANSPOSE(P7)
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 4,18
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,09
+Time elapsed for Word on Column Filter in ms: 27,67
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,08
+# cells removed: 5466. % cells removed: 99,35%
+Time elapsed for TRIM in ms: 6,57
+TRIM(P7)
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0
+Time elapsed for Sort by Descending Column Group in ms: 2,19
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 6497,33
+Releasing GPU Memory: 3.2867304E7 KB...
+====== END OF RESULTS ====== 
+ 
+====== GPU PERFORMANCE ASSESMENT FOR 2000 TWEETS COLLECTION ====== 
+Telemetry is on...
+LOAD("twitter-governadores_en.provn")
+P1 = ADD(WGB)
+P2 = ADD(WAW)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1679,08
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1402,46
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4,67
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4,01
+Time elapsed for multiplication in ms: 120,89
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 0,98
+P3 = MULTIPLY(P1, P2)
+P4 = ADD(WAT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1378,4
+Time elapsed for transposition in ms: 276,16
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 1229,99
+TRANSPOSE(P4)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1573,06
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1386,13
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 3,66
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 3,68
+Time elapsed for multiplication in ms: 13,59
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 7,26
+P5 = MULTIPLY(P4, P3)
+P6 = ADD(AgT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1203,14
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4,1
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 3,47
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,72
+Time elapsed for multiplication in ms: 7,37
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 6,35
+P7 = MULTIPLY(P5, P6)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4,23
+Time elapsed for transposition in ms: 0,87
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 10,69
+TRANSPOSE(P7)
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 11,92
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,13
+Time elapsed for Word on Column Filter in ms: 29,96
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,09
+# cells removed: 11927. % cells removed: 99,7%
+Time elapsed for TRIM in ms: 20,75
+TRIM(P7)
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0
+Time elapsed for Sort by Descending Column Group in ms: 12,28
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 33879,31
+Releasing GPU Memory: 1.21684704E8 KB...
+====== END OF RESULTS ====== 
+ 
+====== GPU PERFORMANCE ASSESMENT FOR 3000 TWEETS COLLECTION ====== 
+Telemetry is on...
+LOAD("twitter-governadores_en.provn")
+P1 = ADD(WGB)
+P2 = ADD(WAW)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4231,6
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 3067,32
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 8,74
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 7,15
+Time elapsed for multiplication in ms: 169,17
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 1,49
+P3 = MULTIPLY(P1, P2)
+P4 = ADD(WAT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 3278,47
+Time elapsed for transposition in ms: 616,91
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 2589,01
+TRANSPOSE(P4)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 2990,2
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 3031,16
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 7,15
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 7,31
+Time elapsed for multiplication in ms: 26,47
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 16,35
+P5 = MULTIPLY(P4, P3)
+P6 = ADD(AgT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 2476,51
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 5,84
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 5,95
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 0,99
+Time elapsed for multiplication in ms: 17,68
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 15,47
+P7 = MULTIPLY(P5, P6)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 6,08
+Time elapsed for transposition in ms: 1,18
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 21,11
+TRANSPOSE(P7)
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 22,09
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,2
+Time elapsed for Word on Column Filter in ms: 50,85
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,16
+# cells removed: 16946. % cells removed: 99,79%
+Time elapsed for TRIM in ms: 51,9
+TRIM(P7)
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0
+Time elapsed for Sort by Descending Column Group in ms: 33,84
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 83976,07
+Releasing GPU Memory: 2.5816352E8 KB...
+====== END OF RESULTS ====== 
+ 
+====== GPU PERFORMANCE ASSESMENT FOR 4176 TWEETS COLLECTION ====== 
+Telemetry is on...
+LOAD("twitter-governadores_en.provn")
+P1 = ADD(WGB)
+P2 = ADD(WAW)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 7230,23
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 5626,56
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 15,31
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 13,67
+Time elapsed for multiplication in ms: 126,05
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 1,96
+P3 = MULTIPLY(P1, P2)
+P4 = ADD(WAT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 6099,46
+Time elapsed for transposition in ms: 1123,83
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 5091,68
+TRANSPOSE(P4)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 5849,9
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 5617,8
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 11,98
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 11,68
+Time elapsed for multiplication in ms: 30,92
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 31,13
+P5 = MULTIPLY(P4, P3)
+P6 = ADD(AgT)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 4240,5
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 7,83
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 9,35
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 1,24
+Time elapsed for multiplication in ms: 18,34
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 28,45
+P7 = MULTIPLY(P5, P6)
+Time elapsed for sparse mem-transfer (CPU->DEVICE) in ms: 7,79
+Time elapsed for transposition in ms: 1,6
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 36,73
+TRANSPOSE(P7)
+Time elapsed for sparse mem-transfer (DEVICE->CPU) in ms: 37,51
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,27
+Time elapsed for Word on Column Filter in ms: 42,54
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0,16
+# cells removed: 22169. % cells removed: 99,81%
+Time elapsed for TRIM in ms: 89,45
+TRIM(P7)
+Time elapsed for mem-transfer (CPU->DEVICE) in ms: 0
+Time elapsed for Sort by Descending Column Group in ms: 56,8
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 161046,58
+Releasing GPU Memory: 4.6348448E8 KB...
+====== END OF RESULTS ====== 
+ 
+OVERALL TIME EXECUTION: 0:5:8.46 (308.46s total)

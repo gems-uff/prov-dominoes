@@ -1,5 +1,7 @@
 package provdominoes.domain;
 
+import java.util.HashMap;
+
 import org.la4j.matrix.sparse.CRSMatrix;
 
 import javafx.scene.Group;
@@ -132,6 +134,7 @@ public class Dominoes {
 	private String currentProcessingMode = Configuration.CPU_PROCESSING;
 	private CRSMatrix crsMatrix;
 	private MatrixDescriptor descriptor;
+	private HashMap<String, String> cellParams;
 	private String[][] underlyingElements;
 
 	public Dominoes(String processingMode) {
@@ -540,6 +543,9 @@ public class Dominoes {
 			_newMatCPU.setUnderlyingElements(this.underlyingElements);
 			setMat(_newMatCPU);
 		}
+		if (currentProcessingMode.equalsIgnoreCase("GPU")) {
+			this.mat.setMatrix(this.crsMatrix);
+		}
 	}
 
 	public void transpose() throws Exception {
@@ -549,6 +555,7 @@ public class Dominoes {
 		this.setIdCol(this.getHistoric().getLastItem());
 
 		MatrixOperations _newMat = mat.transpose();
+		this.cellParams = null;
 		setMat(_newMat);
 	}
 
@@ -586,12 +593,13 @@ public class Dominoes {
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_INVERTED;
 	}
-	
+
 	public void sortDefaultDimensionValues() throws Exception {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortDefaultDimensionValues();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_ROW_VALUES;
+		this.cellParams = null;
 	}
 
 	public void sortRows() throws Exception {
@@ -599,6 +607,7 @@ public class Dominoes {
 		MatrixOperations _newMat = mat.sortRows();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_ROW_ASC;
+		this.cellParams = null;
 	}
 
 	public void sortCols() throws Exception {
@@ -606,20 +615,23 @@ public class Dominoes {
 		MatrixOperations _newMat = mat.sortColumns();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_COL_ASC;
+		this.cellParams = null;
 	}
-	
+
 	public void sortRowCount() throws Exception {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortByRowGroup();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_ROW_COUNT;
+		this.cellParams = null;
 	}
-	
+
 	public void sortColumnCount() throws Exception {
 		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortByColumnGroup();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_COLUMN_COUNT;
+		this.cellParams = null;
 	}
 
 	public void sortColumnFirst() throws Exception {
@@ -627,6 +639,7 @@ public class Dominoes {
 		MatrixOperations _newMat = mat.sortColumnFirst();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_COLUMN_FIRST;
+		this.cellParams = null;
 	}
 
 	public void sortRowFirst() throws Exception {
@@ -635,6 +648,7 @@ public class Dominoes {
 		_newMat = mat.sortRowFirst();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_SORT_ROW_FIRST;
+		this.cellParams = null;
 	}
 
 	public void highPassFilter(double d) throws Exception {
@@ -691,6 +705,7 @@ public class Dominoes {
 		MatrixOperations _newMat = mat.trim();
 		setMat(_newMat);
 		this.type = Dominoes.TYPE_TRIMMED;
+		this.cellParams = null;
 	}
 
 	/**
@@ -714,7 +729,7 @@ public class Dominoes {
 		MatrixOperations _newMat = mat
 				.aggregateDimension(currentProcessingMode.equalsIgnoreCase(Configuration.GPU_PROCESSING));
 		setMat(_newMat);
-
+		this.cellParams = null;
 		return true;
 	}
 
@@ -728,10 +743,12 @@ public class Dominoes {
 		if (idRow.equals(dom.getIdCol())) {
 			domResult.type = Dominoes.TYPE_SUPPORT;
 		}
-		MatrixOperations resultMat = getMat().multiply(dom.getMat(), currentProcessingMode.equalsIgnoreCase(Configuration.GPU_PROCESSING));
+		MatrixOperations resultMat = getMat().multiply(dom.getMat(),
+				currentProcessingMode.equalsIgnoreCase(Configuration.GPU_PROCESSING));
 		String[][] resultUnderlying = null;
 		if (!currentProcessingMode.equalsIgnoreCase(Configuration.GPU_PROCESSING)) {
-			resultUnderlying = Prov2DominoesUtil.cloneStringMatrix(((MatrixOperationsCPU) resultMat).getUnderlyingElements());
+			resultUnderlying = Prov2DominoesUtil
+					.cloneStringMatrix(((MatrixOperationsCPU) resultMat).getUnderlyingElements());
 		}
 		domResult.setMat(resultMat);
 		domResult.setUnderlyingElements(resultUnderlying);
@@ -756,7 +773,8 @@ public class Dominoes {
 		MatrixOperations resultMat = getMat().sum(dom.getMat());
 		String[][] resultUnderlying = null;
 		if (currentProcessingMode.equalsIgnoreCase(Configuration.CPU_PROCESSING)) {
-			resultUnderlying = Prov2DominoesUtil.cloneStringMatrix(((MatrixOperationsCPU) resultMat).getUnderlyingElements());
+			resultUnderlying = Prov2DominoesUtil
+					.cloneStringMatrix(((MatrixOperationsCPU) resultMat).getUnderlyingElements());
 		}
 		domResult.setMat(resultMat);
 		domResult.setUnderlyingElements(resultUnderlying);
@@ -781,7 +799,8 @@ public class Dominoes {
 		MatrixOperations resultMat = getMat().subtract(dom.getMat());
 		String[][] resultUnderlying = null;
 		if (currentProcessingMode.equalsIgnoreCase(Configuration.CPU_PROCESSING)) {
-			resultUnderlying = Prov2DominoesUtil.cloneStringMatrix(((MatrixOperationsCPU) resultMat).getUnderlyingElements());
+			resultUnderlying = Prov2DominoesUtil
+					.cloneStringMatrix(((MatrixOperationsCPU) resultMat).getUnderlyingElements());
 		}
 		domResult.setMat(resultMat);
 		domResult.setUnderlyingElements(resultUnderlying);
@@ -805,6 +824,7 @@ public class Dominoes {
 		return getDescriptor().getNumRows() == getDescriptor().getNumCols();
 	}
 
+	@SuppressWarnings("unchecked")
 	public Dominoes cloneNoMatrix() {
 		Dominoes cloned = new Dominoes(getIdRow(), getIdCol(), getRelation(), getDescriptor(), getMat(), getDevice());
 		cloned.setType(this.type);
@@ -815,6 +835,9 @@ public class Dominoes {
 		cloned.setId(this.id);
 		cloned.setCrsMatrix(new CRSMatrix(this.crsMatrix));
 		cloned.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
+		if (cellParams != null) {
+			cloned.setCellParams((HashMap<String, String>) cellParams.clone());
+		}
 		return cloned;
 	}
 
@@ -926,6 +949,14 @@ public class Dominoes {
 		result = prime * result + ((idRow == null) ? 0 : idRow.hashCode());
 		result = prime * result + ((relation == null) ? 0 : relation.hashCode());
 		return result;
+	}
+
+	public HashMap<String, String> getCellParams() {
+		return cellParams;
+	}
+
+	public void setCellParams(HashMap<String, String> cellParams) {
+		this.cellParams = cellParams;
 	}
 
 }

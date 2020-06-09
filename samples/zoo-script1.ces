@@ -1,5 +1,0 @@
-LOAD("samples\zoo.provn")
-P1 = ADD(AgT)
-P2 = ADD(AgT)
-TRANSPOSE(P1)
-P4 = MULTIPLY(P1, P2)

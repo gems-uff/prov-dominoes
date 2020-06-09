@@ -2,8 +2,10 @@ package provdominoes.command;
 
 import javafx.scene.Group;
 import provdominoes.arch.MatrixOperations;
+import provdominoes.arch.MatrixOperationsFactory;
 import provdominoes.boundary.App;
 import provdominoes.domain.Dominoes;
+import provdominoes.util.Prov2DominoesUtil;
 
 public class AddCommand extends AbstractCommand {
 
@@ -34,7 +36,10 @@ public class AddCommand extends AbstractCommand {
 						this.addedDominoes = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece))
 								.cloneNoMatrix();
 						this.addedDominoes.setId(this.key);
-						this.addedDominoes.setMat(MatrixOperations.configureOperation(addedDominoes.getCrsMatrix(), addedDominoes.getDescriptor(), false));
+						MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(false, addedDominoes.getDescriptor(), false);
+						mat.setData(Prov2DominoesUtil.matrix2Cells(this.addedDominoes.getCrsMatrix()));
+						this.addedDominoes.setMat(mat);
+						//this.addedDominoes.setMat(MatrixOperations.configureOperation(addedDominoes.getCrsMatrix(), addedDominoes.getDescriptor(), false));
 						break;
 					}
 				}

@@ -1,8 +1,0 @@
-LOAD("samples\vt_head.provn")
-p1 = ADD(USD)
-p2 = ADD(WGB)
-p3 = MULTIPLY(p2, p1)
-TRANSITIVE_CLOSURE(p3)
-ROW_TEXT(p3, false, false, "output")
-TRIM(p3)
-SORT_COLUMN(p3)

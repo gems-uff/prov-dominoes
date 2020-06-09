@@ -1,7 +1,9 @@
 package provdominoes.boundary;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,8 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -83,28 +87,30 @@ public class MatrixPane extends Pane {
 
 		double padding = 0;
 		double cellSpace = 20;
-		double charSpace = 7;
-		double largerSize = 0;
+		double charSpaceRow = (domino.getDescriptor().getRowsDesc().size()>0 && domino.getDescriptor().getRowAt(0).equals("SUM")) ? 13.5 : 7;
+		double charSpaceColumn = (domino.getDescriptor().getColumnsDesc().size()>0 && domino.getDescriptor().getColumnAt(0).equals("SUM")) ? 10 : 7;
+		double largerSizeRow = 0;
+		double largerSizeColumn = 0;
 
 		int _nRows = _descriptor.getNumRows();
 		int _nCols = _descriptor.getNumCols();
 
 		for (int i = 0; i < _nRows; i++) {
-			if (domino.getDescriptor().getRowAt(i).length() > largerSize) {
-				largerSize = domino.getDescriptor().getRowAt(i).length();
+			if (domino.getDescriptor().getRowAt(i).length() > largerSizeRow) {
+				largerSizeRow = domino.getDescriptor().getRowAt(i).length();
 			}
 		}
 
-		beginRowHead = -1 * largerSize * charSpace;
+		beginRowHead = -1 * largerSizeRow * charSpaceRow;
 		endRowHead = 0;
 
 		for (int i = 0; i < _nCols; i++) {
-			if (domino.getDescriptor().getColumnAt(i).length() > largerSize) {
-				largerSize = domino.getDescriptor().getColumnAt(i).length();
+			if (domino.getDescriptor().getColumnAt(i).length() > largerSizeColumn) {
+				largerSizeColumn = domino.getDescriptor().getColumnAt(i).length();
 			}
 		}
 
-		beginColumnHead = -1 * largerSize * charSpace;
+		beginColumnHead = -1 * largerSizeColumn * charSpaceColumn;
 		endColumnHead = 0;
 
 		width = Math.abs(endRowHead - beginRowHead);
@@ -112,7 +118,7 @@ public class MatrixPane extends Pane {
 
 		// draw the label of the matrix row labels
 		for (int i = 0; i < _nRows; i++) {
-			largerSize = domino.getDescriptor().getRowAt(i).length();
+			largerSizeRow = domino.getDescriptor().getRowAt(i).length();
 			Rectangle back = new Rectangle(width, height);
 			back.setFill(new Color(1, 1, 1, 1));
 			back.setTranslateX(0);
@@ -129,7 +135,8 @@ public class MatrixPane extends Pane {
 			cell.setTranslateX(beginRowHead);
 			cell.setTranslateY(i * (cellSpace + padding) + padding);
 
-			Text text = new Text(domino.getDescriptor().getRowAt(i));
+			String labelText = domino.getDescriptor().getRowAt(i);
+			Text text = new Text(labelText);
 			text.setFont(Font.font("Times", FontWeight.BOLD, 12));
 			text.setTranslateX(beginRowHead + 2);
 			text.setTranslateY(i * (cellSpace + padding) + padding + height - 3);
@@ -139,13 +146,56 @@ public class MatrixPane extends Pane {
 				text.setFill(Color.BLACK);
 			}
 			text.toFront();
+			Group rowLabel = new Group(cell, text);
+			if (domino.getDescriptor().getRowsTooltips() != null
+					&& domino.getDescriptor().getRowsTooltips().size() > i) {
+				Tooltip.install(rowLabel, new Tooltip(domino.getDescriptor().getRowsTooltips().get(i)));
+			}
 
-			matrixGroup.getChildren().add(new Group(cell, text));
+			ContextMenu contextLabel = new ContextMenu();
+			MenuItem copyToClipboard = new MenuItem("Copy to Clipboard");
+			MenuItem gotoURL = new MenuItem("Go to URL");
+			String urlMatch = "(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})";
+			contextLabel.getItems().add(copyToClipboard);
+			if (text.getText().matches(urlMatch)) {
+				contextLabel.getItems().add(gotoURL);
+			}
+			rowLabel.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent e) {
+					if (e.getButton() == MouseButton.SECONDARY) {
+						contextLabel.show(cell, e.getScreenX(), e.getScreenY());
+					} else {
+						contextLabel.hide();
+					}
+				}
+			});
+			copyToClipboard.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					final ClipboardContent content = new ClipboardContent();
+					content.putString(text.getText());
+					Clipboard.getSystemClipboard().setContent(content);
+				}
+			});
+			gotoURL.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+				    if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+				        try {
+				            desktop.browse(new URI(text.getText()));
+				        } catch (Exception e) {
+				            e.printStackTrace();
+				        }
+				    }
+				}
+			});
+			matrixGroup.getChildren().add(rowLabel);
 		}
 
 		width = Math.abs(endColumnHead - beginColumnHead);
 		height = cellSpace;
-
 		// draw the label of the matrix column labels
 		for (int i = 0; i < _nCols; i++) {
 			Rectangle back = new Rectangle(width, height);
@@ -176,12 +226,56 @@ public class MatrixPane extends Pane {
 			}
 			text.toFront();
 
-			Group g = new Group(cell, text);
-			g.setTranslateX(1 + (i * (cellSpace + padding) + padding) + (height / 2 - width / 2));
-			g.setTranslateY(((-1) * (cellSpace + padding)) - (width / 2 - height / 2));
-			g.getTransforms().add(new Rotate(-90, width / 2.0f, height / 2.0f, 1.0f, Rotate.Z_AXIS));
+			Group columnLabel = new Group(cell, text);
+			columnLabel.setTranslateX(1 + (i * (cellSpace + padding) + padding) + (height / 2 - width / 2));
+			columnLabel.setTranslateY(((-1) * (cellSpace + padding)) - (width / 2 - height / 2));
+			columnLabel.getTransforms().add(new Rotate(-90, width / 2.0f, height / 2.0f, 1.0f, Rotate.Z_AXIS));
 
-			matrixGroup.getChildren().add(g);
+			if (domino.getDescriptor().getColumnsTooltips() != null
+					&& domino.getDescriptor().getColumnsTooltips().size() > i) {
+				Tooltip.install(columnLabel, new Tooltip(domino.getDescriptor().getColumnsTooltips().get(i)));
+			}
+
+			ContextMenu contextLabel = new ContextMenu();
+			MenuItem copyToClipboard = new MenuItem("Copy to Clipboard");
+			MenuItem gotoURL = new MenuItem("Go to URL");
+			String urlMatch = "(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})";
+			contextLabel.getItems().add(copyToClipboard);
+			if (text.getText().matches(urlMatch)) {
+				contextLabel.getItems().add(gotoURL);
+			}
+			columnLabel.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent e) {
+					if (e.getButton() == MouseButton.SECONDARY) {
+						contextLabel.show(cell, e.getScreenX(), e.getScreenY());
+					} else {
+						contextLabel.hide();
+					}
+				}
+			});
+			copyToClipboard.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					final ClipboardContent content = new ClipboardContent();
+					content.putString(text.getText());
+					Clipboard.getSystemClipboard().setContent(content);
+				}
+			});
+			gotoURL.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+				    if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+				        try {
+				            desktop.browse(new URI(text.getText()));
+				        } catch (Exception e) {
+				            e.printStackTrace();
+				        }
+				    }
+				}
+			});
+			matrixGroup.getChildren().add(columnLabel);
 		}
 
 		ArrayList<Cell> cells = null;
@@ -189,6 +283,10 @@ public class MatrixPane extends Pane {
 			cells = domino.getMat().getData();
 		} else {
 			cells = domino.getMat().getAllData();
+			if (cells.size() < domino.getDescriptor().getNumRows() * domino.getDescriptor().getNumCols()) {
+				cells = Prov2DominoesUtil.matrix2Cells(Prov2DominoesUtil.cells2Matrix(cells,
+						domino.getDescriptor().getNumRows(), domino.getDescriptor().getNumCols()));
+			}
 		}
 
 		for (Cell _matCell : cells) {
@@ -243,24 +341,49 @@ public class MatrixPane extends Pane {
 
 			cell.setTranslateX(_matCell.col * (cellSpace + padding) + padding);
 			cell.setTranslateY(_matCell.row * (cellSpace + padding) + padding);
+			String cellParams = "";
+			if (domino.getCellParams() != null) {
+				String idx = domino.getRelation().getAbbreviate().replace(" ", "") + "(" + _matCell.row + ","
+						+ _matCell.col + ")";
+				if (domino.getCellParams().get(idx) != null) {
+					cellParams = domino.getCellParams().get(idx);
+				}
+			}
 			if (domino.getUnderlyingElements() != null
 					&& domino.getUnderlyingElements()[_matCell.row][_matCell.col] != null) {
 				Tooltip.install(cell, new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
 						+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = " + String.valueOf(_matCell.value)
-						+ " : " + domino.getUnderlyingElements()[_matCell.row][_matCell.col]));
+						+ " : " + domino.getUnderlyingElements()[_matCell.row][_matCell.col] + "\n" + cellParams));
 			} else {
-				Tooltip.install(cell, new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
-						+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = " + String.valueOf(_matCell.value)));
+				Tooltip.install(cell,
+						new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
+								+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = "
+								+ String.valueOf(_matCell.value) + "\n" + cellParams));
 			}
 			// Show cell values...
 			if (Configuration.showCellValues && _matCell.value > 0) {
 				double average = (min + max) / 2;
 				Text textValue = new Text("" + new Double(_matCell.value).intValue());
-				textValue.setFont(Font.font("Times", FontWeight.BOLD, 12));
+				if (_matCell.value >= 100) {
+					textValue.setFont(Font.font("Times", FontWeight.BOLD, 10));
+				}
+				if (_matCell.value >= 1000) {
+					textValue.setFont(Font.font("Times", FontWeight.BOLD, 9));
+				}
+				if (_matCell.value < 100) {
+					textValue.setFont(Font.font("Times", FontWeight.BOLD, 12));
+				}
 				if (_matCell.value < 10) {
 					textValue.setTranslateX(6);
-				} else {
+				}
+				if (_matCell.value >= 10) {
 					textValue.setTranslateX(2.5);
+				}
+				if (_matCell.value >= 100) {
+					textValue.setTranslateX(1.0);
+				}
+				if (_matCell.value >= 1000) {
+					textValue.setTranslateX(-1.5);
 				}
 				textValue.setTranslateY(15);
 				textValue.toFront();
@@ -311,6 +434,7 @@ public class MatrixPane extends Pane {
 			Menu highlightVertical = new Menu("Vertical");
 			Menu highlightHorizontal = new Menu("Horizontal");
 			MenuItem drawLine = new MenuItem("Draw to line...");
+			MenuItem undrawLine = new MenuItem("Undraw to line...");
 			MenuItem exportPNG = new MenuItem("Export to PNG...");
 
 			Menu unboundMenu = new Menu("Unbound");
@@ -351,7 +475,7 @@ public class MatrixPane extends Pane {
 			removeVertical.getItems().addAll(removeLeftColumn, removeRightColumn);
 			unboundMenu.getItems().addAll(removeCellHighlight, removeCellMenu, removeHorizontal, removeVertical);
 
-			contextCell.getItems().addAll(boundMenu, unboundMenu, drawLine, exportPNG);
+			contextCell.getItems().addAll(boundMenu, unboundMenu, drawLine, undrawLine, exportPNG);
 			drawLine.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
@@ -640,7 +764,6 @@ public class MatrixPane extends Pane {
 					}
 				}
 			});
-			// TODO Remove Line...
 			cell.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
@@ -676,7 +799,31 @@ public class MatrixPane extends Pane {
 					}
 				}
 			});
+			undrawLine.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					if (((MenuItem) event.getTarget()).getText().equals(undrawLine.getText())) {
+						Group nodeGroup = (Group) ((MenuItem) event.getSource()).getParentPopup().getOwnerNode();
+						removeNode(nodeGroup, nodeGroup.getId());
+					}
+				}
 
+				private void removeNode(Group cellGroup, String nodeId) {
+					Group matrix = (Group) cellGroup.getParent();
+					Line line = null;
+					for (Node matrixNode : matrix.getChildren()) {
+						if (matrixNode != null && matrixNode.getId() != null && matrixNode.getId().endsWith("line")
+								&& (matrixNode.getId().split("-")[0].equals(nodeId)
+										|| matrixNode.getId().split("-")[1].contains(nodeId))) {
+							line = (Line) matrixNode;
+							break;
+						}
+					}
+					if (line != null) {
+						((Group) cellGroup.getParent()).getChildren().remove(line);
+					}
+				}
+			});
 		}
 
 		this.setOnScroll(new EventHandler<ScrollEvent>() {

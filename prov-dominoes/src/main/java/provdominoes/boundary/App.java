@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javafx.application.Application;
@@ -63,12 +64,6 @@ public class App extends Application {
 			App.stage = primaryStage;
 			App.stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 			App.stage.centerOnScreen();
-			App.stage.setTitle("Prov-Dominoes ["
-					+ (Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING)
-					+ "]");
-			if (Configuration.isGPUProcessing()) {
-				Session.startSession(Configuration.gpuDevice);
-			}
 			App.stage.setResizable(Configuration.resizable);
 
 			App.menu = new MainMenuBar();
@@ -84,14 +79,56 @@ public class App extends Application {
 		} catch (Exception ex) {
 			alertException(ex, "Error starting Prov-Dominoes!");
 		}
-
-		App.stage.show();
+		String mode = null;
+		String autoOpen = null;
+		if (getParameters() != null) {
+			mode = getParameters().getNamed().get("mode");
+			autoOpen = getParameters().getNamed().get("script");
+		}
+		if (mode != null) {
+			Configuration.defaultProcessing = mode;
+			Configuration.tuning = true;
+			Configuration.telemetry = true;
+		}
+		if (autoOpen != null) {
+			Configuration.autoOpen = autoOpen;
+		}
+		if (!MatrixProcessor.isLibSkipped()) {
+			if (Configuration.isGPUProcessing()) {
+				if (Configuration.gpuDevice + 1 > MatrixProcessor.getDeviceCount()) {
+					Configuration.gpuDevice = 0;
+				}
+				Session.startSession(Configuration.gpuDevice);
+			}
+		}
+		App.stage.setTitle("Prov-Dominoes ["
+				+ (Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING)
+				+ "]");
 		if (Configuration.autoOpen.length() > 0) {
 			if (new File(Configuration.autoOpen).exists()) {
-				App.importScriptFromFile(new File(Configuration.autoOpen));
+
+				if (Configuration.telemetry) {
+					System.out.println("Telemetry is on...");
+					long startTime = System.nanoTime();
+					App.importScriptFromFile(new File(Configuration.autoOpen));
+					long endTime = System.nanoTime();
+					long timeElapsed = endTime - startTime;
+					double d = timeElapsed / 1000000d;
+					DecimalFormat df = new DecimalFormat("#.##");
+					System.out.println("Time elapsed for script execution in ms: " + df.format(d));
+				} else {
+					App.importScriptFromFile(new File(Configuration.autoOpen));
+				}
 			} else {
-				alertException(new Exception("Inexistent CES script for auto open!"), "Inexistent CES script for auto open!");
+				alertException(new Exception("Inexistent CES script for auto open!"),
+						"Inexistent CES script for auto open!");
 			}
+		}
+		if (mode == null) {
+			App.stage.show();
+		} else {
+			Configuration.autoOpen = "";
+			App.executeExit();
 		}
 
 	}
@@ -185,6 +222,7 @@ public class App extends Application {
 		App.topPane.setVisible(Configuration.visibilityGraphHistory);
 		set(false);
 		setSize(Configuration.fullScreen);
+		stage.show();
 	}
 
 	/**
@@ -222,7 +260,6 @@ public class App extends Application {
 			}
 		});
 		App.setSize(Configuration.fullScreen);
-
 	}
 
 	private static void adjustTopPane() {
@@ -251,7 +288,9 @@ public class App extends Application {
 		try {
 			Configuration.width = App.stage.getWidth();
 			Configuration.height = App.stage.getHeight();
-			Configuration.listWidth = App.pieceSelectorList.getWidth();
+			if (App.pieceSelectorList.getWidth() != 0) {
+				Configuration.listWidth = App.pieceSelectorList.getWidth();
+			}
 			new ConfigurationFile().updateConfiguration();
 			if (Configuration.isGPUProcessing()) {
 				Session.closeSection();
@@ -366,7 +405,6 @@ public class App extends Application {
 		App.pieceSelectorList.setSize(Configuration.listWidth, App.stage.getHeight() - padding);
 		App.tabbedMatrixGraphPane.setSize(900, App.stage.getHeight() - padding);
 		App.movementCanvas.setSize(400, App.stage.getHeight() - padding);
-		stage.show();
 	}
 
 	public static void openProv() {

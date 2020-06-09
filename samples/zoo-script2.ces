@@ -1,7 +1,0 @@
-LOAD("samples\zoo.provn")
-P1 = ADD(WAW)
-P2 = ADD(AgT)
-P3 = MULTIPLY(P1, P2)
-TRANSPOSE(P3)
-SORT_ROW_1ST(P3)
-SORT_COLUMN_1ST(P3)

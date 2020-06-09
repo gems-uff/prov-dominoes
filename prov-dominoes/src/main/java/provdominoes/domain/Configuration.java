@@ -23,9 +23,9 @@ public class Configuration {
     public static boolean deriveInfluence = false;
     public static boolean tuning = false;
     
-    public static double width = 1000.0f;
-    public static double height = 600.0f;
-    public static double listWidth = 128.0f;
+    public static double width = 1000.0;
+    public static double height = 600.0;
+    public static double listWidth = 128.0;
     
     public static String DATA_SEPARATOR = "	";
     public static String defaultProcessing = CPU_PROCESSING;
@@ -34,7 +34,6 @@ public class Configuration {
 	public static Date beginDate = null;
     public static Date endDate = null; 
     
-    // not save/read file 
     public static double fullscreenWidth = Configuration.width;
     public static double fullscreenHeight = Configuration.height;
     
