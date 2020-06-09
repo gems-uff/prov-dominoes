@@ -24,7 +24,7 @@ This project was initiated by Victor Alencar and professors Leonardo Murta and J
 # Documentation
 
 * [Prov-Dominoes Wiki](https://github.com/gems-uff/prov-dominoes/wiki)
-* [Prov-Dominoes Paper](http://http://www2.ic.uff.br/~leomurta/papers/provdominoes2020.pdf)
+* [Prov-Dominoes Paper](http://#pending)
 
 # Development
 
