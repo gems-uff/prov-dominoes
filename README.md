@@ -16,10 +16,10 @@ This project was initiated by Victor Alencar and professors Leonardo Murta and J
 * Troy Kohwalter (joined in January 2020)
 * Vanessa Braganholo (joined in January 2020)
 
-# Instalation
+# Installation
 
 * [Prov-Dominoes Releases](https://github.com/gems-uff/prov-dominoes/releases)
-* [Prov-Dominoes Installation Guide](https://github.com/gems-uff/prov-viewer/wiki/Installation)
+* [Prov-Dominoes Installation Guide](https://github.com/gems-uff/prov-dominoes/wiki/Installation)
 
 # Documentation
 
