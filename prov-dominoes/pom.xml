@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gems.ic.uff</groupId>
 	<artifactId>prov-dominoes</artifactId>
-	<version>1.5</version>
+	<version>1.6</version>
 	<packaging>jar</packaging>
 	<properties>
 		<jdk.version>1.8</jdk.version>
@@ -81,7 +81,7 @@
 		<dependency>
 			<groupId>gems.ic.uff.br</groupId>
 			<artifactId>prov-matrix</artifactId>
-			<version>1.5</version>
+			<version>1.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.la4j</groupId>
