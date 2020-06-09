@@ -24,7 +24,7 @@ The tool is compatible with the PROV-N notation, allowing its adoption in differ
 
 # Usage
 
-To run Prov-Dominoes, you can download one of the recent releases and execute the JAR File or the prov-dominoes.bat for Windows. It's necessary to have Java Runtime Environment on the target machine.
+To run Prov-Dominoes, you can download one of the recent releases (latest: [v1.6](https://github.com/gems-uff/prov-dominoes/releases/tag/v1.6)) and execute the JAR File or the prov-dominoes.bat for Windows. It's necessary to have Java Runtime Environment on the target machine.
 
 # Performance Assessment
 
