@@ -40,8 +40,8 @@ public class MainMenuBar extends MenuBar {
 	// ITENS---------------------------------------------------------
 	private final Menu editMenu;
 
-	private final CheckMenuItem editMenuShowHistoric;
-	private final CheckMenuItem editMenuShowType;
+	private final CheckMenuItem mViewShowHistoric;
+	private final CheckMenuItem nViewShowType;
 
 	// ------COFIGURATION MENU
 	// ITENS-------------------------------------------------
@@ -51,11 +51,6 @@ public class MainMenuBar extends MenuBar {
 	private final CheckMenuItem mViewFullscreen;
 	private final CheckMenuItem mViewShowCellValues;
 	public final CheckMenuItem mViewShowGraph;
-
-	// ------FACTORY MENU ITENS----------------------------------------------------
-	private final Menu mFactory;
-	private final CheckMenuItem mDefaultFactory;
-	private final CheckMenuItem mExtendedFactory;
 
 	// ------PROCESSING ITENS----------------------------------------------------
 	private final Menu mProcessing;
@@ -83,13 +78,6 @@ public class MainMenuBar extends MenuBar {
 
 		this.mainMenu.getItems().addAll(this.mainMenuOpenProv, this.mainMenuExportScript, this.mainMenuImportScript,
 				this.mainMenuImportMatrix, this.mainMenuSeparator, this.mainMenuExit);
-
-		this.mFactory = new Menu("Factory");
-		this.mDefaultFactory = new CheckMenuItem("Default");
-		this.mDefaultFactory.setSelected(Configuration.defaultFactory);
-		this.mExtendedFactory = new CheckMenuItem("Extended");
-		this.mExtendedFactory.setSelected(!Configuration.defaultFactory);
-		this.mFactory.getItems().addAll(this.mDefaultFactory, this.mExtendedFactory);
 
 		this.mProcessing = new Menu("Processing");
 		this.mTelemetry = new CheckMenuItem("Telemetry");
@@ -317,14 +305,7 @@ public class MainMenuBar extends MenuBar {
 		this.editMenuLimpar = new MenuItem("Clear");
 		this.editMenuRedo.setDisable(true);
 
-		this.editMenuShowHistoric = new CheckMenuItem("Show Historic");
-		this.editMenuShowHistoric.setSelected(Configuration.visibilityHistoric);
-
-		editMenuShowType = new CheckMenuItem("Show Type");
-		editMenuShowType.setSelected(Configuration.visibilityType);
-
-		this.editMenu.getItems().addAll(this.editMenuUndo, this.editMenuRedo, this.editMenuLimpar,
-				this.editMenuShowHistoric, this.editMenuShowType);
+		this.editMenu.getItems().addAll(this.editMenuUndo, this.editMenuRedo, this.editMenuLimpar);
 
 		// ------VIEW MENU ITENS----------------------------------------------------
 		this.mViewShowGraph = new CheckMenuItem("View History Graph");
@@ -334,18 +315,21 @@ public class MainMenuBar extends MenuBar {
 
 		this.mViewShowCellValues = new CheckMenuItem("Show Cell Values");
 		this.mViewShowCellValues.setSelected(Configuration.showCellValues);
+		this.mViewShowHistoric = new CheckMenuItem("Show Historic");
+		this.mViewShowHistoric.setSelected(Configuration.visibilityHistoric);
+		this.nViewShowType = new CheckMenuItem("Show Type");
+		this.nViewShowType.setSelected(Configuration.visibilityType);
 
 		this.mView = new Menu("View");
-		this.mView.getItems().addAll(mViewFullscreen, mViewShowGraph, mViewShowCellValues);
+		this.mView.getItems().addAll(mViewFullscreen, mViewShowGraph, mViewShowCellValues,this.mViewShowHistoric, this.nViewShowType);
 
 		// ------MENU
 		// ITENS--------------------------------------------------------------
 		if (deviceCount > 0) {
-			this.getMenus().addAll(this.mainMenu, this.editMenu, mProcessing, mFactory, mView);
+			this.getMenus().addAll(this.mainMenu, this.editMenu, mProcessing, mView);
 		} else {
-			this.getMenus().addAll(this.mainMenu, this.editMenu, mFactory, mView);
+			this.getMenus().addAll(this.mainMenu, this.editMenu, mView);
 		}
-		// this.getMenus().addAll(this.mainMenu, this.mEdit, this.mConfiguration);
 
 		// ------ADD
 		// LISTENERS-----------------------------------------------------------
@@ -424,7 +408,7 @@ public class MainMenuBar extends MenuBar {
 			}
 		});
 
-		this.editMenuShowHistoric.setOnAction(new EventHandler<ActionEvent>() {
+		this.mViewShowHistoric.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent e) {
@@ -438,7 +422,7 @@ public class MainMenuBar extends MenuBar {
 			}
 		});
 
-		this.editMenuShowType.setOnAction(new EventHandler<ActionEvent>() {
+		this.nViewShowType.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent e) {
@@ -491,24 +475,6 @@ public class MainMenuBar extends MenuBar {
 				App.changeVisibleGraphHistory();
 			}
 		});
-		// ----------FACTORY MENU
-		// ITENS------------------------------------------------
-		this.mDefaultFactory.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				App.getMenu().getmExtendedFactory().setSelected(false);
-				Configuration.defaultFactory = true;
-			}
-		});
-		this.mExtendedFactory.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				App.getMenu().getmDefaultFactory().setSelected(false);
-				Configuration.defaultFactory = false;
-			}
-		});
 	}
 
 	public MenuItem getEditMenuUndo() {
@@ -517,14 +483,6 @@ public class MainMenuBar extends MenuBar {
 
 	public MenuItem getEditMenuRedo() {
 		return editMenuRedo;
-	}
-
-	public CheckMenuItem getmDefaultFactory() {
-		return mDefaultFactory;
-	}
-
-	public CheckMenuItem getmExtendedFactory() {
-		return mExtendedFactory;
 	}
 
 	public CheckMenuItem[] getDevices() {
