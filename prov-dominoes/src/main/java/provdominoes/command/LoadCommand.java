@@ -3,9 +3,8 @@ package provdominoes.command;
 import java.io.IOException;
 import java.util.List;
 
-import convertion.ProvMatrixFactory;
 import convertion.ProvMatrixDefaultFactory;
-import convertion.ProvMatrixExtendedFactory;
+import convertion.ProvMatrixFactory;
 import model.ProvMatrix;
 import provdominoes.boundary.App;
 import provdominoes.control.Controller;
@@ -49,13 +48,10 @@ public class LoadCommand extends AbstractCommand {
 		boolean result = true;
 		try {
 			ProvMatrixFactory provFactory = null;
-			if (Configuration.defaultFactory) {
-				provFactory = new ProvMatrixDefaultFactory(filePaths, dir);
-			} else {
-				provFactory = new ProvMatrixExtendedFactory(filePaths, dir);
-			}
+			provFactory = new ProvMatrixDefaultFactory(filePaths, dir);
 			List<ProvMatrix> provMatrixList = provFactory.buildMatrices(Configuration.deriveInfluence);
-			List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList, provFactory.getDimensionLabels(), provFactory.getCellParams());
+			List<Dominoes> dominoesList = Prov2DominoesUtil.convert(provMatrixList, provFactory.getDimensionLabels(),
+					provFactory.getCellParams());
 			App.getPieceSelectorList().clear();
 			App.getMovementCanvas().clear();
 			App.getTabbedMatrixGraphPane().clear();
@@ -76,7 +72,8 @@ public class LoadCommand extends AbstractCommand {
 	private void updateTitle() {
 		if (filePaths != null && filePaths.length > 0) {
 			String defaultTitle = "Prov-Dominoes ["
-					+ (Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING) + "]";
+					+ (Configuration.isGPUProcessing() ? Configuration.GPU_PROCESSING : Configuration.CPU_PROCESSING)
+					+ "]";
 			if (filePaths.length == 1) {
 				App.getStage().setTitle(defaultTitle + " - " + filePaths[0]);
 			} else {

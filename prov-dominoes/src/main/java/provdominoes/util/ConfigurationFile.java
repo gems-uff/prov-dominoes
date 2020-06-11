@@ -82,13 +82,6 @@ public class ConfigurationFile {
 						Configuration.resizable = true;
 					}
 				}
-				if (nameVariable.compareTo("defaultFactory") == 0) {
-					if (valueVariable.compareTo("false") == 0) {
-						Configuration.defaultFactory = false;
-					} else if (valueVariable.compareTo("true") == 0) {
-						Configuration.defaultFactory = true;
-					}
-				}
 				if (nameVariable.compareTo("telemetry") == 0) {
 					if (valueVariable.compareTo("false") == 0) {
 						Configuration.telemetry = false;
@@ -177,10 +170,9 @@ public class ConfigurationFile {
 					+ Configuration.automaticCheck + "\r\n" + "deriveInfluence=" + Configuration.deriveInfluence
 					+ "\r\n" + "telemetry=" + Configuration.telemetry + "\r\n" + "tuning=" + Configuration.tuning
 					+ "\r\n" + "width=" + Configuration.width + "\r\n" + "height=" + Configuration.height + "\r\n"
-					+ "listWidth=" + Configuration.listWidth + "\r\n" + "defaultFactory=" + Configuration.defaultFactory
-					+ "\r\n" + "defaultProcessing=" + Configuration.defaultProcessing + "\r\n" + "gpuDevice="
-					+ Configuration.gpuDevice + "\r\n" + "lastDirectory=" + Configuration.lastDirectory + "\r\n"
-					+ "autoOpen=" + Configuration.autoOpen);
+					+ "listWidth=" + Configuration.listWidth + "\r\n" + "defaultProcessing="
+					+ Configuration.defaultProcessing + "\r\n" + "gpuDevice=" + Configuration.gpuDevice + "\r\n"
+					+ "lastDirectory=" + Configuration.lastDirectory + "\r\n" + "autoOpen=" + Configuration.autoOpen);
 
 		} catch (IOException ex) {
 			throw new IOException(ex.getMessage());

@@ -19,7 +19,6 @@ public class Configuration {
     public static boolean resizable = true;
     public static boolean automaticCheck = false;
     public static boolean resizableTimeOnFullScreen = false;
-    public static boolean defaultFactory = true;
     public static boolean deriveInfluence = false;
     public static boolean tuning = false;
     
