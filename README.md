@@ -36,16 +36,18 @@ java -jar prov-dominoes-vX.YY.jar
 
 # Performance Assessment
 
-To execute the performance assessment for CPU, type the following in a command prompt (Windows):
+## Requirements
+**It's necessary Java Runtime Environment 1.8+ 64bits to run the performance assessment.**
 
-**It's necessary Java Runtime Environment 64bits to run the performance assessment.**
-
+## Running the performance assessment for CPU...
+Type the following in a command prompt (Windows):
 ```
 prov-dominoes.bat eval:cpu
 ```
 Estimated time for completion: ~20 minutes. In the end, a [performance-results-cpu.txt](https://github.com/gems-uff/prov-dominoes/blob/master/performance-assessment/performance-results-cpu.txt) file will be generated in the same directory of the batch script.
 
-To execute the performance assessment for GPU, type the following in a command prompt (Windows):
+## Running the performance assessment for GPU...
+Type the following in a command prompt (Windows):
 ```
 prov-dominoes.bat eval:gpu
 ```
