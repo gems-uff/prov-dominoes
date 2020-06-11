@@ -15,8 +15,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-1\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,3%
 
-ECHO RUNNING CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
+ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-1\script2-user-types-mentions.ces >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
@@ -25,8 +25,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-2\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,3%
 
-ECHO RUNNING CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
+ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-2\script2-user-types-mentions.ces >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
@@ -35,8 +35,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-3\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,3%
 
-ECHO RUNNING CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
+ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-3\script2-user-types-mentions.ces >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
@@ -45,8 +45,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-4\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,3%
 
-ECHO RUNNING CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
+ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-4\script2-user-types-mentions.ces >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
@@ -55,8 +55,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-5\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,4%
 
-ECHO RUNNING CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
+ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-5\script2-user-types-mentions.ces >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
@@ -65,8 +65,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-6\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,4%
 
-ECHO RUNNING CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
+ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-6\script2-user-types-mentions.ces >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
@@ -75,8 +75,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-7\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,4%
 
-ECHO RUNNING CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
+ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-7\script2-user-types-mentions.ces >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
@@ -85,8 +85,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~58,4%
 
-ECHO RUNNING CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== CPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
+ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\script2-user-types-mentions.ces >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
@@ -100,8 +100,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-1\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,3%
 
-ECHO RUNNING GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
+ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-1\script2-user-types-mentions.ces >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
@@ -110,8 +110,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-2\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,3%
 
-ECHO RUNNING GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
+ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-2\script2-user-types-mentions.ces >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
@@ -120,8 +120,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-3\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,3%
 
-ECHO RUNNING GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
+ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-3\script2-user-types-mentions.ces >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
@@ -130,8 +130,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-4\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,3%
 
-ECHO RUNNING GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
+ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-4\script2-user-types-mentions.ces >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
@@ -140,8 +140,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-5\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,4%
 
-ECHO RUNNING GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
+ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-5\script2-user-types-mentions.ces >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
@@ -150,8 +150,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-6\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,4%
 
-ECHO RUNNING GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
+ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-6\script2-user-types-mentions.ces >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
@@ -160,8 +160,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\subcollection-7\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~74,4%
 
-ECHO RUNNING GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
+ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-7\script2-user-types-mentions.ces >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
@@ -170,8 +170,8 @@ ECHO.
 FOR /F "delims=" %%i IN ('find/C "entity(" samples\twitter\twitter-governadores_en.provn') DO SET RESFIND=%%i
 SET TWEETS=%RESFIND:~58,4%
 
-ECHO RUNNING GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION...
-ECHO ====== GPU PERFORMANCE ASSESMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
+ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
+ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
 java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\script2-user-types-mentions.ces >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO.
