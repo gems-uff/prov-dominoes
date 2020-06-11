@@ -44,14 +44,14 @@ java -jar prov-dominoes-vX.YY.jar
 ### Running the performance assessment for CPU...
 Type the following in a command prompt (Windows):
 ```
-prov-dominoes.bat eval:cpu
+> prov-dominoes.bat eval:cpu
 ```
 Estimated time for completion: ~20 minutes. In the end, a [performance-results-cpu.txt](https://github.com/gems-uff/prov-dominoes/blob/master/performance-assessment/performance-results-cpu.txt) file will be generated in the same directory of the batch script.
 
 ### Running the performance assessment for GPU...
 Type the following in a command prompt (Windows):
 ```
-prov-dominoes.bat eval:gpu
+> prov-dominoes.bat eval:gpu
 ```
 Estimated time for completion: ~5 minutes. In the end, a [performance-results-gpu.txt](https://github.com/gems-uff/prov-dominoes/blob/master/performance-assessment/performance-results-gpu.txt) file will be generated in the same directory of the batch script.
 
@@ -59,25 +59,25 @@ Estimated time for completion: ~5 minutes. In the end, a [performance-results-gp
 
 ### Running the performance assessment for CPU...
 ```
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-1\script2-user-types-mentions.ces >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-2\script2-user-types-mentions.ces >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-3\script2-user-types-mentions.ces >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-4\script2-user-types-mentions.ces >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-5\script2-user-types-mentions.ces >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-6\script2-user-types-mentions.ces >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-7\script2-user-types-mentions.ces >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\script2-user-types-mentions.ces >> performance-results-cpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-1\script2-user-types-mentions.ces >> performance-results-cpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-2\script2-user-types-mentions.ces >> performance-results-cpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-3\script2-user-types-mentions.ces >> performance-results-cpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-4\script2-user-types-mentions.ces >> performance-results-cpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-5\script2-user-types-mentions.ces >> performance-results-cpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-6\script2-user-types-mentions.ces >> performance-results-cpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\subcollection-7\script2-user-types-mentions.ces >> performance-results-cpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=CPU --script=samples\twitter\script2-user-types-mentions.ces >> performance-results-cpu.txt
 ```
 ### Running the performance assessment for GPU...
 ```
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-1\script2-user-types-mentions.ces >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-2\script2-user-types-mentions.ces >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-3\script2-user-types-mentions.ces >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-4\script2-user-types-mentions.ces >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-5\script2-user-types-mentions.ces >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-6\script2-user-types-mentions.ces >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-7\script2-user-types-mentions.ces >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\script2-user-types-mentions.ces >> performance-results-gpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-1\script2-user-types-mentions.ces >> performance-results-gpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-2\script2-user-types-mentions.ces >> performance-results-gpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-3\script2-user-types-mentions.ces >> performance-results-gpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-4\script2-user-types-mentions.ces >> performance-results-gpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-5\script2-user-types-mentions.ces >> performance-results-gpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-6\script2-user-types-mentions.ces >> performance-results-gpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\subcollection-7\script2-user-types-mentions.ces >> performance-results-gpu.txt
+$ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --script=samples\twitter\script2-user-types-mentions.ces >> performance-results-gpu.txt
 ```
 
 # Documentation
