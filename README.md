@@ -18,8 +18,38 @@ This project was initiated by Victor Alencar and professors Leonardo Murta and J
 
 # Installation
 
-* [Prov-Dominoes Releases](https://github.com/gems-uff/prov-dominoes/releases)
-* [Prov-Dominoes Installation Guide](https://github.com/gems-uff/prov-dominoes/wiki/Installation)
+## Requirements
+
+We assume you have Java SE 8 installed on your computer. 
+
+If GPU is available, the proper CUDA Runtime should be on the same directory of the application. Our releases come, by default, with the CUDA Runtime for Windows 64-bits. 
+
+If you intend to run the GPU capabilities from other environments, please refer to [Compilation for other environments](https://github.com/gems-uff/prov-dominoes/wiki/Compilation).
+
+**CUDA Runtime for Windows 64-bits: [cudart64_101.dll](https://github.com/gems-uff/prov-dominoes/blob/master/prov-cuda/src/main/resources/lib/win_64/cudart64_101.dll)**
+
+## Usage
+To use Prov-Dominoes, you can download one of the [latest releases](https://github.com/gems-uff/prov-dominoes/releases/latest), extract it and execute the JAR File:
+```
+java -jar prov-dominoes-vX.YY.jar
+```
+
+# Performance Assessment
+
+To execute the performance assesment for CPU, type the following in a command prompt (Windows):
+
+**It's necessary Java Runtime Environment 64bits to run the performance assessment.**
+
+```
+prov-dominoes.bat eval:cpu
+```
+Estimated time for completion: ~20 minutes. At the end, a [performance-results-cpu.txt](https://github.com/gems-uff/prov-dominoes/blob/master/performance-assessment/performance-results-cpu.txt) file will be generated in the same directory of the batch script.
+
+To execute the performance assesment for GPU, type the following in a command prompt (Windows):
+```
+prov-dominoes.bat eval:gpu
+```
+Estimated time for completion: ~5 minutes. At the end, a [performance-results-gpu.txt](https://github.com/gems-uff/prov-dominoes/blob/master/performance-assessment/performance-results-gpu.txt) file will be generated in the same directory of the batch script.
 
 # Documentation
 
