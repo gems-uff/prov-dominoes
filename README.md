@@ -42,14 +42,14 @@ java -jar prov-dominoes-vX.YY.jar
 ## On windows...
 
 ### Running the performance assessment for CPU...
-Type the following in a command prompt (Windows):
+Type the following in a command prompt (do not work on PowerShell!):
 ```
 > prov-dominoes.bat eval:cpu
 ```
 Estimated time for completion: ~20 minutes. In the end, a [performance-results-cpu.txt](https://github.com/gems-uff/prov-dominoes/blob/master/performance-assessment/performance-results-cpu.txt) file will be generated in the same directory of the batch script.
 
 ### Running the performance assessment for GPU...
-Type the following in a command prompt (Windows):
+Type the following in a command prompt (do not work on PowerShell!):
 ```
 > prov-dominoes.bat eval:gpu
 ```
