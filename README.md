@@ -20,7 +20,7 @@ This project was initiated by Victor Alencar and professors Leonardo Murta and J
 
 ## Requirements
 
-We assume you have Java SE 8 installed on your computer. 
+We assume you have [Java SE Runtime Enviroment 8](https://www.oracle.com/java/technologies/javase-jre8-downloads.html) installed on your computer. 
 
 If GPU is available, the proper CUDA Runtime should be on the same directory of the application. Our releases come, by default, with the CUDA Runtime for Windows 64-bits. 
 
@@ -37,7 +37,7 @@ java -jar prov-dominoes-vX.YY.jar
 # Performance Assessment
 
 ## Requirements
-**It's necessary Java Runtime Environment 1.8+ 64bits to run the performance assessment.**
+**It's necessary [Java SE Runtime Environment 8](https://www.oracle.com/java/technologies/javase-jre8-downloads.html) 64bits to run the performance assessment.**
 
 ## On windows...
 
