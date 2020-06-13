@@ -46,12 +46,12 @@ public abstract class AbstractCommand {
 	public static final String CMD_PARAM_INVALIDATION = "WVB";
 	public static final String CMD_PARAM_START = "STD";
 	public static final String CMD_PARAM_END = "END ";
-	public static final String CMD_PARAM_COMMUNICATION = "WFB";
+	public static final String CMD_PARAM_COMMUNICATION = "WIB";
 	public static final String CMD_PARAM_DERIVATION = "WDF";
 	public static final String CMD_PARAM_ASSOCIATION = "WAW";
 	public static final String CMD_PARAM_ATTRIBUTION = "WAT";
 	public static final String CMD_PARAM_DELEGATION = "AOB";
-	public static final String CMD_PARAM_INFLUENCE = "WIB";
+	public static final String CMD_PARAM_INFLUENCE = "WFB";
 	public static final String CMD_PARAM_ALTERNATE = "AOF";
 	public static final String CMD_PARAM_SPECIALIZATION = "SOF";
 	public static final String CMD_PARAM_MENTION = "MOF";

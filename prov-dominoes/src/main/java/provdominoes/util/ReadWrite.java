@@ -24,6 +24,8 @@ public class ReadWrite {
 	public static final String JIM_PREFIX = "jim";
 	public static final String JIM_NS = "http://www.cs.rpi.edu/~hendler/";
 
+	
+	@SuppressWarnings("unused")
 	private final ProvFactory pFactory;
 	private final Namespace ns;
 

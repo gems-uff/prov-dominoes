@@ -4,7 +4,7 @@ Prov-Dominoes is a tool designed to explore provenance data interactively, by or
 
 This project was initiated by Victor Alencar and professors Leonardo Murta and Jose Ricardo da Silva Junior during Victor's master course at Universidade Federal Fluminense.
 
-![Prov-Dominoes GUI](../media/pd.png)
+![Prov-Dominoes GUI](https://github.com/gems-uff/prov-dominoes/blob/media/gui.png?raw=true)
 
 *This tool is a fork of [Dominoes](https://github.com/gems-uff/dominoes), a tool designed to assist exploratory analysis on data from Git repositories.*
 
