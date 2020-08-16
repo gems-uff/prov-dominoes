@@ -19,7 +19,7 @@ class MatrixProcessorTest {
 
 	@Test
 	void binarizeTest() {
-		long pointerMatrix = MatrixProcessor.createMatrixData(3, 4, true);
+		long pointerMatrix = MatrixProcessor.createSparseMatrix(3, 4);
 		CRSMatrix matrix = new CRSMatrix(3, 4);
 		matrix.set(0, 0, 0);
 		matrix.set(0, 1, -3);
@@ -44,9 +44,9 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells, rows, cols, values);
 
-		MatrixProcessor.setData(pointerMatrix, rows, cols, values);
+		MatrixProcessor.setSparseData(pointerMatrix, rows, cols, values);
 
-		long pointerResultMatrix = MatrixProcessor.createMatrixData(3, 4, true);
+		long pointerResultMatrix = MatrixProcessor.createSparseMatrix(3, 4);
 
 		MatrixProcessor.binarize(pointerMatrix, pointerResultMatrix);
 
@@ -73,8 +73,65 @@ class MatrixProcessorTest {
 	}
 	
 	@Test
+	void transposeTest() {
+		long pointerMatrix = MatrixProcessor.createSparseMatrix(3, 4);
+		CRSMatrix matrix = new CRSMatrix(3, 4);
+		matrix.set(0, 0, 0);
+		matrix.set(0, 1, 1);
+		matrix.set(0, 2, 1);
+		matrix.set(0, 3, 0);
+
+		matrix.set(1, 0, 0);
+		matrix.set(1, 1, 0);
+		matrix.set(1, 2, 0);
+		matrix.set(1, 3, 1);
+
+		matrix.set(2, 0, 1);
+		matrix.set(2, 1, 1);
+		matrix.set(2, 2, 1);
+		matrix.set(2, 3, 0);
+
+		ArrayList<Cell> cells = matrix2cellList(matrix);
+
+		int[] rows = new int[cells.size()];
+		int[] cols = new int[cells.size()];
+		float[] values = new float[cells.size()];
+
+		cellList2Arrays(cells, rows, cols, values);
+
+		MatrixProcessor.setSparseData(pointerMatrix, rows, cols, values);
+
+		long pointerResultMatrix = MatrixProcessor.createSparseMatrix(4, 3);
+
+		MatrixProcessor.transpose(pointerMatrix, pointerResultMatrix);
+
+		Cell[] response = MatrixProcessor.getSparseData(pointerResultMatrix);
+
+		assertNotNull(response);
+		assertTrue(response.length == 12);
+
+		CRSMatrix resp = toCRSMatrix(response, 4, 3);
+		assertTrue(resp.get(0, 0) == 0.0);
+		assertTrue(resp.get(0, 1) == 0.0);
+		assertTrue(resp.get(0, 2) == 1.0);
+
+		assertTrue(resp.get(1, 0) == 1.0);
+		assertTrue(resp.get(1, 1) == 0.0);
+		assertTrue(resp.get(1, 2) == 1.0);
+
+		assertTrue(resp.get(2, 0) == 1.0);
+		assertTrue(resp.get(2, 1) == 0.0);
+		assertTrue(resp.get(2, 2) == 1.0);
+		
+		assertTrue(resp.get(3, 0) == 0.0);
+		assertTrue(resp.get(3, 1) == 1.0);
+		assertTrue(resp.get(3, 2) == 0.0);
+	}
+	
+	
+	@Test
 	void sumTest() {
-		long pointerMatrix1 = MatrixProcessor.createMatrixData(3, 3, false);
+		long pointerMatrix1 = MatrixProcessor.createDenseMatrix(3, 3);
 		CRSMatrix matrix1 = new CRSMatrix(3, 3);
 		matrix1.set(0, 0, 1.5);
 		matrix1.set(0, 1, 1.5);
@@ -96,9 +153,9 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells1, rows1, cols1, values1);
 
-		MatrixProcessor.setData(pointerMatrix1, values1);
+		MatrixProcessor.setDenseData(pointerMatrix1, values1);
 		
-		long pointerMatrix2 = MatrixProcessor.createMatrixData(3, 3, false);
+		long pointerMatrix2 = MatrixProcessor.createDenseMatrix(3, 3);
 		CRSMatrix matrix2 = new CRSMatrix(3, 3);
 		matrix2.set(0, 0, 1.5);
 		matrix2.set(0, 1, 1.5);
@@ -120,13 +177,13 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells2, rows2, cols2, values2);
 
-		MatrixProcessor.setData(pointerMatrix2, values2);
+		MatrixProcessor.setDenseData(pointerMatrix2, values2);
 		
-		long pointerResultMatrix = MatrixProcessor.createMatrixData(3, 3, false);
+		long pointerResultMatrix = MatrixProcessor.createDenseMatrix(3, 3);
 		
 		MatrixProcessor.sum(pointerMatrix1, pointerMatrix2, 9, pointerResultMatrix);
 
-		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows1, cols1);
+		Cell[] response = MatrixProcessor.getDenseData(pointerResultMatrix, rows1, cols1);
 
 		assertNotNull(response);
 		assertTrue(response.length == 9);
@@ -147,7 +204,7 @@ class MatrixProcessorTest {
 	
 	@Test
 	void subtractTest() {
-		long pointerMatrix1 = MatrixProcessor.createMatrixData(3, 3, false);
+		long pointerMatrix1 = MatrixProcessor.createDenseMatrix(3, 3);
 		CRSMatrix matrix1 = new CRSMatrix(3, 3);
 		matrix1.set(0, 0, 3.0);
 		matrix1.set(0, 1, 3.0);
@@ -169,9 +226,9 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells1, rows1, cols1, values1);
 
-		MatrixProcessor.setData(pointerMatrix1, values1);
+		MatrixProcessor.setDenseData(pointerMatrix1, values1);
 		
-		long pointerMatrix2 = MatrixProcessor.createMatrixData(3, 3, false);
+		long pointerMatrix2 = MatrixProcessor.createDenseMatrix(3, 3);
 		CRSMatrix matrix2 = new CRSMatrix(3, 3);
 		matrix2.set(0, 0, 1.2);
 		matrix2.set(0, 1, 1.2);
@@ -193,13 +250,13 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells2, rows2, cols2, values2);
 
-		MatrixProcessor.setData(pointerMatrix2, values2);
+		MatrixProcessor.setDenseData(pointerMatrix2, values2);
 		
-		long pointerResultMatrix = MatrixProcessor.createMatrixData(3, 3, false);
+		long pointerResultMatrix = MatrixProcessor.createDenseMatrix(3, 3);
 		
 		MatrixProcessor.subtract(pointerMatrix1, pointerMatrix2, 9, pointerResultMatrix);
 
-		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows1, cols1);
+		Cell[] response = MatrixProcessor.getDenseData(pointerResultMatrix, rows1, cols1);
 
 		assertNotNull(response);
 		assertTrue(response.length == 9);
@@ -219,7 +276,7 @@ class MatrixProcessorTest {
 
 	@Test
 	void invertTest() {
-		long pointerMatrix = MatrixProcessor.createMatrixData(3, 4, false);
+		long pointerMatrix = MatrixProcessor.createDenseMatrix(3, 4);
 		CRSMatrix matrix = new CRSMatrix(3, 4);
 		matrix.set(0, 0, 0);
 		matrix.set(0, 1, -3);
@@ -244,13 +301,13 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells, rows, cols, values);
 
-		MatrixProcessor.setData(pointerMatrix, values);
+		MatrixProcessor.setDenseData(pointerMatrix, values);
 
-		long pointerResultMatrix = MatrixProcessor.createMatrixData(3, 4, false);
+		long pointerResultMatrix = MatrixProcessor.createDenseMatrix(3, 4);
 
 		MatrixProcessor.invert(3* 4, pointerMatrix, pointerResultMatrix);
 
-		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
+		Cell[] response = MatrixProcessor.getDenseData(pointerResultMatrix, rows, cols);
 
 		assertNotNull(response);
 		assertTrue(response.length == 12);
@@ -274,7 +331,7 @@ class MatrixProcessorTest {
 	
 	@Test
 	void diagonalizeTest() {
-		long pointerMatrix = MatrixProcessor.createMatrixData(4, 4, false);
+		long pointerMatrix = MatrixProcessor.createDenseMatrix(4, 4);
 		CRSMatrix matrix = new CRSMatrix(4, 4);
 		matrix.set(0, 0, 5);
 		matrix.set(0, 1, -7);
@@ -304,13 +361,13 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells, rows, cols, values);
 
-		MatrixProcessor.setData(pointerMatrix, values);
+		MatrixProcessor.setDenseData(pointerMatrix, values);
 
-		long pointerResultMatrix = MatrixProcessor.createMatrixData(4, 4, false);
+		long pointerResultMatrix = MatrixProcessor.createDenseMatrix(4, 4);
 
 		MatrixProcessor.diagonalize(4, pointerMatrix, pointerResultMatrix);
 
-		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
+		Cell[] response = MatrixProcessor.getDenseData(pointerResultMatrix, rows, cols);
 
 		assertNotNull(response);
 		assertTrue(response.length == 16);
@@ -340,7 +397,7 @@ class MatrixProcessorTest {
 
 	@Test
 	void upperDiagonalTest() {
-		long pointerMatrix = MatrixProcessor.createMatrixData(4, 4, false);
+		long pointerMatrix = MatrixProcessor.createDenseMatrix(4, 4);
 		CRSMatrix matrix = new CRSMatrix(4, 4);
 		matrix.set(0, 0, 5);
 		matrix.set(0, 1, -7);
@@ -370,13 +427,13 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells, rows, cols, values);
 
-		MatrixProcessor.setData(pointerMatrix, values);
+		MatrixProcessor.setDenseData(pointerMatrix, values);
 
-		long pointerResultMatrix = MatrixProcessor.createMatrixData(4, 4, false);
+		long pointerResultMatrix = MatrixProcessor.createDenseMatrix(4, 4);
 
 		MatrixProcessor.upperDiagonal(4, pointerMatrix, pointerResultMatrix);
 
-		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
+		Cell[] response = MatrixProcessor.getDenseData(pointerResultMatrix, rows, cols);
 
 		assertNotNull(response);
 		assertTrue(response.length == 16);
@@ -405,7 +462,7 @@ class MatrixProcessorTest {
 
 	@Test
 	void lowerDiagonalTest() {
-		long pointerMatrix = MatrixProcessor.createMatrixData(4, 4, false);
+		long pointerMatrix = MatrixProcessor.createDenseMatrix(4, 4);
 		CRSMatrix matrix = new CRSMatrix(4, 4);
 		matrix.set(0, 0, 5);
 		matrix.set(0, 1, -7);
@@ -435,13 +492,13 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells, rows, cols, values);
 
-		MatrixProcessor.setData(pointerMatrix, values);
+		MatrixProcessor.setDenseData(pointerMatrix, values);
 
-		long pointerResultMatrix = MatrixProcessor.createMatrixData(4, 4, false);
+		long pointerResultMatrix = MatrixProcessor.createDenseMatrix(4, 4);
 
 		MatrixProcessor.lowerDiagonal(4, pointerMatrix, pointerResultMatrix);
 
-		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
+		Cell[] response = MatrixProcessor.getDenseData(pointerResultMatrix, rows, cols);
 
 		assertNotNull(response);
 		assertTrue(response.length == 16);
@@ -471,7 +528,7 @@ class MatrixProcessorTest {
 	@Test
 	void transitiveClosureTest1() {
 		int v = 9;
-		long pointerMatrix = MatrixProcessor.createMatrixData(v, v, false);
+		long pointerMatrix = MatrixProcessor.createDenseMatrix(v, v);
 		CRSMatrix matrix = new CRSMatrix(v, v);
 		matrix.set(0, 0, 1);
 		matrix.set(1, 0, 0);
@@ -571,13 +628,13 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells, rows, cols, values);
 
-		MatrixProcessor.setData(pointerMatrix, values);
+		MatrixProcessor.setDenseData(pointerMatrix, values);
 
-		long pointerResultMatrix = MatrixProcessor.createMatrixData(v, v, false);
+		long pointerResultMatrix = MatrixProcessor.createDenseMatrix(v, v);
 
 		MatrixProcessor.transitiveClosure(v, pointerMatrix, pointerResultMatrix);
 
-		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
+		Cell[] response = MatrixProcessor.getDenseData(pointerResultMatrix, rows, cols);
 
 		assertNotNull(response);
 		assertTrue(response.length == v * v);
@@ -678,7 +735,7 @@ class MatrixProcessorTest {
 	@Test
 	void transitiveClosureTest2() {
 		int v = 5;
-		long pointerMatrix = MatrixProcessor.createMatrixData(v, v, false);
+		long pointerMatrix = MatrixProcessor.createDenseMatrix(v, v);
 		CRSMatrix matrix = new CRSMatrix(v, v);
 		matrix.set(0, 0, 1);
 		matrix.set(1, 0, 0);
@@ -718,13 +775,13 @@ class MatrixProcessorTest {
 
 		cellList2Arrays(cells, rows, cols, values);
 
-		MatrixProcessor.setData(pointerMatrix, values);
+		MatrixProcessor.setDenseData(pointerMatrix, values);
 
-		long pointerResultMatrix = MatrixProcessor.createMatrixData(v, v, false);
+		long pointerResultMatrix = MatrixProcessor.createDenseMatrix(v, v);
 
 		MatrixProcessor.transitiveClosure(v, pointerMatrix, pointerResultMatrix);
 
-		Cell[] response = MatrixProcessor.getData(pointerResultMatrix, rows, cols);
+		Cell[] response = MatrixProcessor.getDenseData(pointerResultMatrix, rows, cols);
 
 		assertNotNull(response);
 		assertTrue(response.length == v * v);

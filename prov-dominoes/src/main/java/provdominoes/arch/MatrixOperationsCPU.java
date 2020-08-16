@@ -163,7 +163,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return result;
 	}
 
-	public MatrixOperations multiply(MatrixOperations other, boolean useGPU) throws Exception {
+	public MatrixOperations multiply(MatrixOperations other) throws Exception {
 		MatrixDescriptor otherDescriptor = other.getMatrixDescriptor();
 
 		if (matrixDescriptor.getNumCols() != otherDescriptor.getNumRows())
@@ -298,7 +298,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations aggregateDimension(boolean useGPU) {
+	public MatrixOperations aggregateDimension() {
 		long startTime = 0;
 		long endTime = 0;
 
@@ -342,7 +342,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	}
 
 	@Override
-	public MatrixOperations confidence(boolean useGPU) {
+	public MatrixOperations confidence() {
 		long startTime = 0;
 		long endTime = 0;
 
@@ -388,8 +388,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		if (Configuration.telemetry) {
 			startTime = System.nanoTime();
 		}
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 
 		_newDescriptor.AddRowDesc("MEAN");
 		_newDescriptor.AddRowDesc("SD");
@@ -606,8 +606,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		if (Configuration.telemetry) {
 			startTime = System.nanoTime();
 		}
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -647,8 +647,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		if (Configuration.telemetry) {
 			startTime = System.nanoTime();
 		}
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -853,8 +853,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		if (Configuration.telemetry) {
 			startTime = System.nanoTime();
 		}
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -891,8 +891,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		if (Configuration.telemetry) {
 			startTime = System.nanoTime();
 		}
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -924,8 +924,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		if (Configuration.telemetry) {
 			startTime = System.nanoTime();
 		}
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -1034,8 +1034,8 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		if (Configuration.telemetry) {
 			startTime = System.nanoTime();
 		}
-		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getColType(),
-				this.matrixDescriptor.getRowType());
+		MatrixDescriptor _newDescriptor = new MatrixDescriptor(this.matrixDescriptor.getRowType(),
+				this.matrixDescriptor.getColType());
 		for (int i = 0; i < this.matrixDescriptor.getNumCols(); i++)
 			_newDescriptor.AddColDesc(this.matrixDescriptor.getColumnAt(i));
 		for (int i = 0; i < this.matrixDescriptor.getNumRows(); i++)
@@ -1108,8 +1108,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return _transitiveClosure;
 	}
 
-	@Override
-	public MatrixOperations sortEqualTo(MatrixDescriptor matrixDescriptor) {
+	private MatrixOperations sortEqualTo(MatrixDescriptor matrixDescriptor) {
 		MatrixOperationsCPU result = new MatrixOperationsCPU(matrixDescriptor);
 		CRSMatrix crsResult = new CRSMatrix(matrixDescriptor.getNumRows(), matrixDescriptor.getNumCols());
 		CRSMatrix oldCRS = Prov2DominoesUtil.cells2Matrix(this.getData(), this.getMatrixDescriptor().getNumRows(),
@@ -1543,25 +1542,6 @@ public class MatrixOperationsCPU implements MatrixOperations {
 		return cells;
 	}
 
-	@Override
-	public ArrayList<Cell> getAllData() {
-		ArrayList<Cell> cells = new ArrayList<Cell>();
-
-		data.each(new MatrixProcedure() {
-
-			@Override
-			public void apply(int row, int col, double value) {
-				Cell cell = new Cell();
-				cell.row = row;
-				cell.col = col;
-				cell.value = (float) value;
-				cells.add(cell);
-			}
-		});
-
-		return cells;
-	}
-
 	public void setUnderlyingElements(String[][] underlyingElements) {
 		this.underlyingElements = underlyingElements;
 	}
@@ -1575,6 +1555,35 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	@Override
 	public CRSMatrix getMatrix() {
 		return data;
+	}
+
+	@Override
+	public ArrayList<Cell> getData(boolean isSparse) {
+		return Prov2DominoesUtil.matrix2Cells(this.data);
+	}
+
+	@Override
+	public void updateMatrix(boolean denseToSparse) {
+		// TODO GPU only
+		
+	}
+
+	@Override
+	public int[] getRows() {
+		// TODO GPU only
+		return null;
+	}
+
+	@Override
+	public int[] getCols() {
+		// TODO GPU only
+		return null;
+	}
+
+	@Override
+	public float[] getValues() {
+		// TODO GPU only
+		return null;
 	}
 
 }

@@ -50,7 +50,7 @@ public class Prov2DominoesUtil {
 	private static List<String> toCaptions(List<String> descriptors, Map<String, String> labels, boolean isLabel) {
 		List<String> result = new ArrayList<>();
 		for (String desc : descriptors) {
-			if (labels.containsKey(desc)) {
+			if (labels!=null && labels.containsKey(desc)) {
 				String token = labels.get(desc);
 				if (isLabel) {
 					if (!token.split(",")[0].isEmpty()) {
@@ -82,7 +82,7 @@ public class Prov2DominoesUtil {
 		return cells;
 	}
 
-	public static CRSMatrix cells2Matrix(ArrayList<Cell> cells, int rows, int cols) {
+	public static CRSMatrix cells2Matrix(List<Cell> cells, int rows, int cols) {
 		CRSMatrix matrix = new CRSMatrix(rows, cols);
 		for (Cell cell : cells) {
 			matrix.set(cell.row, cell.col, cell.value);

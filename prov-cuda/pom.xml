@@ -5,7 +5,7 @@
 	<groupId>gems.ic.uff.br</groupId>
 	<artifactId>prov-cuda</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0</version>
+	<version>1.1</version>
 	<name>prov-cuda</name>
 	<url>http://maven.apache.org</url>
 	<properties>

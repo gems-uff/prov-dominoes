@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.util.Locale;
 import java.util.Optional;
 
+import org.la4j.matrix.sparse.CRSMatrix;
+
 import javafx.scene.Group;
 import javafx.scene.control.TextInputDialog;
 import provdominoes.boundary.App;
@@ -41,11 +43,17 @@ public class HighPassFilterCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toHPF = App.getArea().getData().getDominoes().get(index);
-			int totalNonZero = Prov2DominoesUtil.getNonZeroTotal(toHPF.getCrsMatrix());
-			double minNonZero = Prov2DominoesUtil.getNonZeroMin(toHPF.getCrsMatrix());
-			double averageNonZero = Prov2DominoesUtil.getNonZeroAverage(toHPF.getCrsMatrix());
-			double max = toHPF.getCrsMatrix().max();
-			double sdNonZero = Prov2DominoesUtil.getNonZeroStandardScore(toHPF.getCrsMatrix(), averageNonZero);
+			CRSMatrix mtx = toHPF.getCrsMatrix();
+			if (Configuration.isGPUProcessing()) {
+				toHPF.getMat().updateMatrix(false);
+				mtx = toHPF.getMat().getMatrix();
+				toHPF.setCrsMatrix(mtx);
+			}
+			int totalNonZero = Prov2DominoesUtil.getNonZeroTotal(mtx);
+			double minNonZero = Prov2DominoesUtil.getNonZeroMin(mtx);
+			double averageNonZero = Prov2DominoesUtil.getNonZeroAverage(mtx);
+			double max = mtx.max();
+			double sdNonZero = Prov2DominoesUtil.getNonZeroStandardScore(mtx, averageNonZero);
 			if (!super.isReproducing() && !super.isScripting()) {
 				cutoff = getValue(totalNonZero, minNonZero, max, averageNonZero, sdNonZero);
 			}

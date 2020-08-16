@@ -32,7 +32,7 @@ public class DiagonalizeCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toDiagonal = App.getArea().getData().getDominoes().get(index);
-			if (toDiagonal.getCrsMatrix().rows() == toDiagonal.getCrsMatrix().columns()) {
+			if (toDiagonal.getMat().getMatrixDescriptor().getNumRows() == toDiagonal.getMat().getMatrixDescriptor().getNumCols()) {
 				Dominoes domino = provdominoes.control.Controller.diagonalize(toDiagonal);
 
 				App.getArea().remove(index);

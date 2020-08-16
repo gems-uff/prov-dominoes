@@ -32,7 +32,8 @@ public class LowerDiagonalCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toLowerDiagonal = App.getArea().getData().getDominoes().get(index);
-			if (toLowerDiagonal.getCrsMatrix().rows() == toLowerDiagonal.getCrsMatrix().columns()) {
+			if (toLowerDiagonal.getMat().getMatrixDescriptor().getNumRows() == toLowerDiagonal.getMat()
+					.getMatrixDescriptor().getNumCols()) {
 				Dominoes domino = provdominoes.control.Controller.lowerDiagonal(toLowerDiagonal);
 
 				App.getArea().remove(index);

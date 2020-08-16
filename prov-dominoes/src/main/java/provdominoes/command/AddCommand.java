@@ -1,11 +1,17 @@
 package provdominoes.command;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import org.la4j.matrix.functor.MatrixProcedure;
+
 import javafx.scene.Group;
+import processor.Cell;
 import provdominoes.arch.MatrixOperations;
 import provdominoes.arch.MatrixOperationsFactory;
 import provdominoes.boundary.App;
+import provdominoes.domain.Configuration;
 import provdominoes.domain.Dominoes;
-import provdominoes.util.Prov2DominoesUtil;
 
 public class AddCommand extends AbstractCommand {
 
@@ -26,6 +32,11 @@ public class AddCommand extends AbstractCommand {
 
 	@Override
 	protected boolean doIt() {
+		long startTime = 0;
+		long endTime = 0;
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		boolean success = true;
 		try {
 			if (trigram != null) {
@@ -36,10 +47,25 @@ public class AddCommand extends AbstractCommand {
 						this.addedDominoes = App.getList().getDominoes().get(App.getList().getPieces().indexOf(piece))
 								.cloneNoMatrix();
 						this.addedDominoes.setId(this.key);
-						MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(false, addedDominoes.getDescriptor(), false);
-						mat.setData(Prov2DominoesUtil.matrix2Cells(this.addedDominoes.getCrsMatrix()));
+						MatrixOperations mat = MatrixOperationsFactory.getMatrix2D(Configuration.isGPUProcessing(),
+								addedDominoes.getDescriptor());
+						if (Configuration.isGPUProcessing()) {
+							ArrayList<Cell> cells = new ArrayList<Cell>();
+							this.addedDominoes.getCrsMatrix().eachNonZero(new MatrixProcedure() {
+								@Override
+								public void apply(int row, int col, double value) {
+									Cell cell = new Cell();
+									cell.row = row;
+									cell.col = col;
+									cell.value = (float) value;
+									cells.add(cell);
+								}
+							});
+							mat.setData(cells);
+						} else {
+							mat.setMatrix(this.addedDominoes.getCrsMatrix());
+						}
 						this.addedDominoes.setMat(mat);
-						//this.addedDominoes.setMat(MatrixOperations.configureOperation(addedDominoes.getCrsMatrix(), addedDominoes.getDescriptor(), false));
 						break;
 					}
 				}
@@ -55,6 +81,14 @@ public class AddCommand extends AbstractCommand {
 		} catch (Exception e) {
 			App.alertException(e, e.getMessage());
 			success = false;
+		}
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for adding " + trigram + " on Canvas in ms: " + df.format(d));
 		}
 		return success;
 	}

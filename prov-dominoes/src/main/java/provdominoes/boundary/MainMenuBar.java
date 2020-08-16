@@ -400,7 +400,7 @@ public class MainMenuBar extends MenuBar {
 				try {
 					App.getCommandManager().clear(true);
 				} catch (IOException e) {
-					App.alertException(e, "Error trying to access CES file");
+					App.alertException(e, "Error trying to access EPS file");
 				}
 				App.getArea().clear();
 				App.getTopPane().reset();

@@ -1,0 +1,9 @@
+LOAD("V:\work-dominoes\prov-dominoes\prov-dominoes\samples\guiding-example\beer_simple.provn")
+P1 = ADD(USD)
+P2 = ADD(WGB)
+P3 = MULTIPLY(P2, P1)
+TRANSITIVE_CLOSURE(P3)
+SAVE(P3) => PL6
+P4 = ADD(PL6)
+DIAGONALIZE(P4)
+P5 = SUBTRACT(P3, P4)

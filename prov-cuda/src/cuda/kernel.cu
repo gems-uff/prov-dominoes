@@ -128,6 +128,13 @@ __global__ void binarizeKernel(float* values, int elements, float* result) {
 	}
 }
 
+__global__ void transposeKernel(float* values, int elements, float* result) {
+	int idx = blockDim.x * blockIdx.x + threadIdx.x;
+	if (idx < elements) {
+		result[idx] = values[idx];
+	}
+}
+
 __global__ void invertKernel(float* values, int elements, float* result) {
 	int idx = blockDim.x * blockIdx.x + threadIdx.x;
 	if (idx < elements) {
@@ -438,6 +445,30 @@ extern "C" {
 		dim3 gridDim(ceil((float) elements / (N_THREADS_X * N_THREADS_X)), 1, 1);
 	
 		binarizeKernel<<<gridDim, blockDim>>>(d_values, elements, d_result);
+	
+		checkCudaErrors(
+				cudaMemcpy(result, d_result, sizeof(float) * elements,
+						cudaMemcpyDeviceToHost));
+	
+		checkCudaErrors(cudaFree(d_values));
+		checkCudaErrors(cudaFree(d_result));
+	}
+	
+	void g_Transpose(float* values, int elements, float* result) {
+		float* d_values;
+		float* d_result;
+		checkCudaErrors(cudaMalloc(&d_values, sizeof(float) * elements));
+		checkCudaErrors(
+				cudaMemcpy(d_values, values, sizeof(float) * elements,
+						cudaMemcpyHostToDevice));
+	
+		checkCudaErrors(cudaMalloc(&d_result, sizeof(float) * elements));
+		checkCudaErrors(cudaMemset(d_result, 0, sizeof(float) * elements));
+	
+		dim3 blockDim(N_THREADS_X * N_THREADS_Y, 1);
+		dim3 gridDim(ceil((float) elements / (N_THREADS_X * N_THREADS_X)), 1, 1);
+	
+		transposeKernel<<<gridDim, blockDim>>>(d_values, elements, d_result);
 	
 		checkCudaErrors(
 				cudaMemcpy(result, d_result, sizeof(float) * elements,

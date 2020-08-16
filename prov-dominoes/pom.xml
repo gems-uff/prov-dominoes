@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gems.ic.uff</groupId>
 	<artifactId>prov-dominoes</artifactId>
-	<version>1.6</version>
+	<version>1.7</version>
 	<packaging>jar</packaging>
 	<properties>
 		<jdk.version>1.8</jdk.version>
@@ -142,7 +142,7 @@
 		<dependency>
 			<groupId>gems.ic.uff.br</groupId>
 			<artifactId>prov-cuda</artifactId>
-			<version>1.0</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.xerial</groupId>

@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import org.la4j.matrix.sparse.CRSMatrix;
 
 import processor.Cell;
-import processor.MatrixProcessor;
 import provdominoes.command.TextFilterData;
-import provdominoes.domain.Configuration;
-import provdominoes.util.Prov2DominoesUtil;
 
 public interface MatrixOperations {
 
-	
 	public boolean isEmpty();
 
 	public void finalize();
@@ -23,6 +19,8 @@ public interface MatrixOperations {
 
 	public MatrixDescriptor getMatrixDescriptor();
 
+	public ArrayList<Cell> getData(boolean isSparse);
+	
 	public ArrayList<Cell> getData();
 
 	public void setData(ArrayList<Cell> cells);
@@ -31,73 +29,69 @@ public interface MatrixOperations {
 
 	public float findMaxValue();
 
-	public MatrixOperations transpose();
+	public MatrixOperations transpose() throws Exception;
 
 	public MatrixOperations sum(MatrixOperations other) throws Exception;
+
 	public MatrixOperations subtract(MatrixOperations other) throws Exception;
+
+	public MatrixOperations multiply(MatrixOperations other) throws Exception;
+
+	public MatrixOperations aggregateDimension() throws Exception;
+
+	public MatrixOperations confidence() throws Exception;
+
+	public MatrixOperations standardScoreDense() throws Exception;
 	
-	public MatrixOperations multiply(MatrixOperations other, boolean useGPU) throws Exception;
+	public MatrixOperations standardScoreSparse() throws Exception;
 
-	public MatrixOperations aggregateDimension(boolean useGPU);
+	public MatrixOperations meanAndSD() throws Exception;
 
-	public MatrixOperations confidence(boolean useGPU);
+	public MatrixOperations transitiveClosure() throws Exception;
 
-	public MatrixOperations standardScoreDense();
+	public MatrixOperations invert() throws Exception;
 
-	public MatrixOperations meanAndSD();
+	public MatrixOperations binarize() throws Exception;
 
-	public MatrixOperations transitiveClosure();
-
-	public MatrixOperations invert();
-
-	public MatrixOperations binarize();
+	public MatrixOperations diagonalize() throws Exception;
 	
+	public MatrixOperations lowerDiagonal() throws Exception;
 
-	public MatrixOperations diagonalize();
+	public MatrixOperations upperDiagonal() throws Exception;
 
-	public MatrixOperations lowerDiagonal();
+	public MatrixOperations trim() throws Exception;
 
-	public MatrixOperations upperDiagonal();
-	
-	public MatrixOperations trim();
-	public MatrixOperations highPassFilter(double d);
-	public MatrixOperations lowPassFilter(double d);
+	public MatrixOperations highPassFilter(double d) throws Exception;
 
-	public MatrixOperations filterColumnText(TextFilterData t);
-	public MatrixOperations filterRowText(TextFilterData t);
-    
-	public MatrixOperations sortColumns();
-    
-	public MatrixOperations sortRows();
-    
-	public MatrixOperations sortColumnFirst();
-	
-	public MatrixOperations sortRowFirst();
-	
-	public MatrixOperations standardScoreSparse();
-	
-	public ArrayList<Cell> getAllData();
-	
-	public MatrixOperations sortEqualTo(MatrixDescriptor matrixDescriptor);
-	
-	public static MatrixOperations configureOperation(CRSMatrix matrix, MatrixDescriptor descriptor, boolean isSparse)
-			throws Exception {
-		MatrixOperations mat = MatrixOperationsFactory
-				.getMatrix2D(
-						!MatrixProcessor.isLibSkipped() && MatrixProcessor.isGPUEnabled()
-								&& Configuration.defaultProcessing.equals(Configuration.GPU_PROCESSING),
-						descriptor, isSparse);
-		mat.setData(Prov2DominoesUtil.matrix2Cells(matrix));
-		return mat;
-	}
+	public MatrixOperations lowPassFilter(double d) throws Exception;
 
-	MatrixOperations sortDefaultDimensionValues();
+	public MatrixOperations filterColumnText(TextFilterData t) throws Exception;
 
-	MatrixOperations sortByRowGroup();
+	public MatrixOperations filterRowText(TextFilterData t) throws Exception;
 
-	public MatrixOperations sortByColumnGroup();
+	public MatrixOperations sortColumns() throws Exception;
 
-	void setMatrix(CRSMatrix matrix);
+	public MatrixOperations sortRows() throws Exception;
 
-	CRSMatrix getMatrix();
+	public MatrixOperations sortColumnFirst() throws Exception;
+
+	public MatrixOperations sortRowFirst() throws Exception;
+
+	public MatrixOperations sortDefaultDimensionValues() throws Exception;
+
+	public MatrixOperations sortByRowGroup() throws Exception;
+
+	public MatrixOperations sortByColumnGroup() throws Exception;
+
+	public void setMatrix(CRSMatrix matrix);
+
+	public CRSMatrix getMatrix();
+
+	public void updateMatrix(boolean denseToSparse);
+
+	public int[] getRows();
+
+	public int[] getCols();
+
+	public float[] getValues();
 }

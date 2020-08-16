@@ -20,36 +20,27 @@ public class MatrixProcessor {
 
 	public native static int getDeviceCount();
 
+	public native static long createSparseMatrix(int rows, int cols);
+	public native static long createDenseMatrix(int rows, int cols);
+
+	public native static boolean deleteSparseMatrix(long pointer);
+	public native static boolean deleteDenseMatrix(long pointer);
+
 	public native static Cell[] getSparseData(long pointer);
 
-	public native static Cell[] getData(long pointer, int rows[], int cols[]);
+	public native static Cell[] getDenseData(long pointer, int rows[], int cols[]);
 
-	public native static long createMatrixData(int rows, int cols, boolean isSparse);
-
-	public native static boolean deleteMatrixData(long pointer);
-
-	public native static void setData(long pointer, int rows[], int cols[], float values[]);
-
-	public native static void setData(long pointer, float values[]);
+	public native static void setSparseData(long pointer, int rows[], int cols[], float values[]);
+	
+	public native static void setDenseData(long pointer, float values[]);
 
 	public native static void subtract(long pointer1, long pointer2, int elements, long resultPointer);
+	
 	public native static void sum(long pointer1, long pointer2, int elements, long resultPointer);
 	
-	public native static void multiply(long m1, long m2, long result, boolean useGPU);
+	public native static void multiply(long m1, long m2, long result);
 
-	public native static void transpose(long m1, long result);
-
-	public native static void reduceDimension(long m1, long result, boolean useGPU);
-
-	public native static void confidence(long m1, long result, boolean useGPU);
-
-	public native static void mean(long pointer, long result, boolean useGPU);
-
-	public native static void meanSD(long pointer, long result, boolean useGPU);
-
-	public native static void standardScore(long pointer, long result, boolean useGPU);
-
-	public native static void standardDeviation(long pointer, long result, boolean useGPU);
+	public native static void confidence(long m1, long result);
 
 	public native static float getMin(long pointer);
 
@@ -57,6 +48,8 @@ public class MatrixProcessor {
 
 	public native static void binarize(long matrixPointer, long resultPointer);
 
+	public native static void transpose(long matrixPointer, long resultPointer);
+	
 	public native static void invert(int elements, long matrixPointer, long resultPointer);
 
 	public native static void diagonalize(int vertices, long matrixPointer, long resultPointer);

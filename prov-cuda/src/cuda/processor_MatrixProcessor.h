@@ -33,6 +33,38 @@ JNIEXPORT jint JNICALL Java_processor_MatrixProcessor_getDeviceCount
 
 /*
  * Class:     processor_MatrixProcessor
+ * Method:    createSparseMatrix
+ * Signature: (II)J
+ */
+JNIEXPORT jlong JNICALL Java_processor_MatrixProcessor_createSparseMatrix
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     processor_MatrixProcessor
+ * Method:    createDenseMatrix
+ * Signature: (II)J
+ */
+JNIEXPORT jlong JNICALL Java_processor_MatrixProcessor_createDenseMatrix
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     processor_MatrixProcessor
+ * Method:    deleteSparseMatrix
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_processor_MatrixProcessor_deleteSparseMatrix
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     processor_MatrixProcessor
+ * Method:    deleteDenseMatrix
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_processor_MatrixProcessor_deleteDenseMatrix
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     processor_MatrixProcessor
  * Method:    getSparseData
  * Signature: (J)[Lprocessor/Cell;
  */
@@ -41,42 +73,26 @@ JNIEXPORT jobjectArray JNICALL Java_processor_MatrixProcessor_getSparseData
 
 /*
  * Class:     processor_MatrixProcessor
- * Method:    getData
+ * Method:    getDenseData
  * Signature: (J[I[I)[Lprocessor/Cell;
  */
-JNIEXPORT jobjectArray JNICALL Java_processor_MatrixProcessor_getData
+JNIEXPORT jobjectArray JNICALL Java_processor_MatrixProcessor_getDenseData
   (JNIEnv *, jclass, jlong, jintArray, jintArray);
 
 /*
  * Class:     processor_MatrixProcessor
- * Method:    createMatrixData
- * Signature: (IIZ)J
- */
-JNIEXPORT jlong JNICALL Java_processor_MatrixProcessor_createMatrixData
-  (JNIEnv *, jclass, jint, jint, jboolean);
-
-/*
- * Class:     processor_MatrixProcessor
- * Method:    deleteMatrixData
- * Signature: (J)Z
- */
-JNIEXPORT jboolean JNICALL Java_processor_MatrixProcessor_deleteMatrixData
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     processor_MatrixProcessor
- * Method:    setData
+ * Method:    setSparseData
  * Signature: (J[I[I[F)V
  */
-JNIEXPORT void JNICALL Java_processor_MatrixProcessor_setData__J_3I_3I_3F
+JNIEXPORT void JNICALL Java_processor_MatrixProcessor_setSparseData
   (JNIEnv *, jclass, jlong, jintArray, jintArray, jfloatArray);
 
 /*
  * Class:     processor_MatrixProcessor
- * Method:    setData
+ * Method:    setDenseData
  * Signature: (J[F)V
  */
-JNIEXPORT void JNICALL Java_processor_MatrixProcessor_setData__J_3F
+JNIEXPORT void JNICALL Java_processor_MatrixProcessor_setDenseData
   (JNIEnv *, jclass, jlong, jfloatArray);
 
 /*
@@ -98,66 +114,18 @@ JNIEXPORT void JNICALL Java_processor_MatrixProcessor_sum
 /*
  * Class:     processor_MatrixProcessor
  * Method:    multiply
- * Signature: (JJJZ)V
+ * Signature: (JJJ)V
  */
 JNIEXPORT void JNICALL Java_processor_MatrixProcessor_multiply
-  (JNIEnv *, jclass, jlong, jlong, jlong, jboolean);
-
-/*
- * Class:     processor_MatrixProcessor
- * Method:    transpose
- * Signature: (JJ)V
- */
-JNIEXPORT void JNICALL Java_processor_MatrixProcessor_transpose
-  (JNIEnv *, jclass, jlong, jlong);
-
-/*
- * Class:     processor_MatrixProcessor
- * Method:    reduceDimension
- * Signature: (JJZ)V
- */
-JNIEXPORT void JNICALL Java_processor_MatrixProcessor_reduceDimension
-  (JNIEnv *, jclass, jlong, jlong, jboolean);
+  (JNIEnv *, jclass, jlong, jlong, jlong);
 
 /*
  * Class:     processor_MatrixProcessor
  * Method:    confidence
- * Signature: (JJZ)V
+ * Signature: (JJ)V
  */
 JNIEXPORT void JNICALL Java_processor_MatrixProcessor_confidence
-  (JNIEnv *, jclass, jlong, jlong, jboolean);
-
-/*
- * Class:     processor_MatrixProcessor
- * Method:    mean
- * Signature: (JJZ)V
- */
-JNIEXPORT void JNICALL Java_processor_MatrixProcessor_mean
-  (JNIEnv *, jclass, jlong, jlong, jboolean);
-
-/*
- * Class:     processor_MatrixProcessor
- * Method:    meanSD
- * Signature: (JJZ)V
- */
-JNIEXPORT void JNICALL Java_processor_MatrixProcessor_meanSD
-  (JNIEnv *, jclass, jlong, jlong, jboolean);
-
-/*
- * Class:     processor_MatrixProcessor
- * Method:    standardScore
- * Signature: (JJZ)V
- */
-JNIEXPORT void JNICALL Java_processor_MatrixProcessor_standardScore
-  (JNIEnv *, jclass, jlong, jlong, jboolean);
-
-/*
- * Class:     processor_MatrixProcessor
- * Method:    standardDeviation
- * Signature: (JJZ)V
- */
-JNIEXPORT void JNICALL Java_processor_MatrixProcessor_standardDeviation
-  (JNIEnv *, jclass, jlong, jlong, jboolean);
+  (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     processor_MatrixProcessor
@@ -181,6 +149,14 @@ JNIEXPORT jfloat JNICALL Java_processor_MatrixProcessor_getMax
  * Signature: (JJ)V
  */
 JNIEXPORT void JNICALL Java_processor_MatrixProcessor_binarize
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     processor_MatrixProcessor
+ * Method:    transpose
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_processor_MatrixProcessor_transpose
   (JNIEnv *, jclass, jlong, jlong);
 
 /*

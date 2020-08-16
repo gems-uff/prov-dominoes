@@ -10,10 +10,10 @@ public class MatrixOperationsFactory {
 	 * @return Access type
 	 * @throws Exception
 	 */
-	public static MatrixOperations getMatrix2D(boolean isGPU, MatrixDescriptor _matrixDescriptor, boolean isSparse)
+	public static MatrixOperations getMatrix2D(boolean isGPU, MatrixDescriptor _matrixDescriptor)
 			throws Exception {
 		if (isGPU) {
-			return new MatrixOperationsGPU(_matrixDescriptor, isSparse);
+			return new MatrixOperationsGPU(_matrixDescriptor);
 		} else {
 			return new MatrixOperationsCPU(_matrixDescriptor);
 		}

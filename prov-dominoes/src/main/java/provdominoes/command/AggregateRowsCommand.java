@@ -1,6 +1,7 @@
 package provdominoes.command;
 
 import javafx.scene.Group;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import provdominoes.boundary.App;
@@ -33,7 +34,7 @@ public class AggregateRowsCommand extends AbstractCommand {
 		Dominoes toReduce = App.getArea().getData().getDominoes().get(index);
 		boolean success = true;
 		try {
-			if (toReduce.getCrsMatrix().rows() > 1) {
+			if (toReduce.getDescriptor().getNumRows() > 1) {
 				Dominoes domino = provdominoes.control.Controller.aggregateDimension(toReduce);
 				App.getArea().getData().getDominoes().set(index, domino);
 
@@ -46,8 +47,8 @@ public class AggregateRowsCommand extends AbstractCommand {
 				}
 			} else {
 				success = false;
-				System.err.println("this domino is already aggregated by row ("
-						+ toReduce.getDescriptor().getRowType()+")");
+				App.alert(AlertType.WARNING, "Aggregate Domino Requirement", "Rows Required!", 
+						"More than 1 row (" + toReduce.getDescriptor().getRowType() + ") needed to aggregate!");
 			}
 		} catch (Exception e) {
 			success = false;
