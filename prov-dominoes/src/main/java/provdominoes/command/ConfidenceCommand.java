@@ -32,7 +32,7 @@ public class ConfidenceCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toConfidence = App.getArea().getData().getDominoes().get(index);
-			if (toConfidence.getCrsMatrix().rows() == toConfidence.getCrsMatrix().columns()) {
+			if (toConfidence.getType() == Dominoes.TYPE_SUPPORT) {
 				Dominoes domino = provdominoes.control.Controller.confidence(toConfidence);
 
 				App.getArea().remove(index);
@@ -42,7 +42,8 @@ public class ConfidenceCommand extends AbstractCommand {
 					App.getArea().saveAndSendToList(piece);
 				}
 			} else {
-				App.alert(AlertType.WARNING,"Piece Square Requirement" ,"Square Piece Required!", "This command is only possible for square pieces (same faces)!");
+				App.alert(AlertType.WARNING, "Support Domino Requirement", "Support Domino Required!",
+						"This command is only possible for support matrices!");
 				success = false;
 			}
 		} catch (Exception e) {

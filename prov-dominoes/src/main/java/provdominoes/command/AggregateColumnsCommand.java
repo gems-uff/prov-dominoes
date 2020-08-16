@@ -1,6 +1,7 @@
 package provdominoes.command;
 
 import javafx.scene.Group;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import provdominoes.boundary.App;
@@ -21,7 +22,7 @@ public class AggregateColumnsCommand extends AbstractCommand {
 
 	public AggregateColumnsCommand(int index) {
 		this();
-		this.index = index;		
+		this.index = index;
 	}
 
 	@Override
@@ -33,7 +34,7 @@ public class AggregateColumnsCommand extends AbstractCommand {
 		this.y = this.piece.getTranslateY();
 		Dominoes toReduce = App.getArea().getData().getDominoes().get(index);
 		try {
-			if (toReduce.getCrsMatrix().columns() > 1) {
+			if (toReduce.getDescriptor().getNumCols() > 1) {
 				toReduce.transpose();
 				Dominoes dominoes = provdominoes.control.Controller.aggregateDimension(toReduce);
 				dominoes.transpose();
@@ -50,8 +51,8 @@ public class AggregateColumnsCommand extends AbstractCommand {
 				}
 			} else {
 				success = false;
-				System.err.println("this domino is already aggregated by column ("
-						+ toReduce.getDescriptor().getColType()+")");
+				App.alert(AlertType.WARNING, "Aggregate Domino Requirement", "Columns Required!", 
+						"More than 1 column (" + toReduce.getDescriptor().getColType() + ") needed to aggregate!");
 			}
 		} catch (Exception e) {
 			success = false;
@@ -66,7 +67,7 @@ public class AggregateColumnsCommand extends AbstractCommand {
 		boolean result = false;
 		Group p = App.getArea().getData().getPieces().get(this.index);
 		App.getArea().closePiece(p);
-		App.getArea().add(this.oldDominoes, x, y, this.index);		
+		App.getArea().add(this.oldDominoes, x, y, this.index);
 		result = true;
 		return result;
 	}
@@ -75,7 +76,7 @@ public class AggregateColumnsCommand extends AbstractCommand {
 	public String getName() {
 		return AGGREGATE_COLUMNS_COMMAND + "(" + this.oldDominoes.getId() + ")";
 	}
-	
+
 	private String id;
 
 	@Override

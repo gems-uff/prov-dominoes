@@ -5,7 +5,7 @@ CLS
 IF "%1" EQU "eval:cpu" GOTO EVALCPU
 IF "%1" EQU "eval:gpu" GOTO EVALGPU
 
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar
 GOTO END
 
 :EVALCPU
@@ -17,7 +17,7 @@ SET TWEETS=%RESFIND:~74,3%
 
 ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-1\script2-user-types-mentions.ces >> performance-results-cpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=CPU --script=samples\twitter\subcollection-1\script2-user-types-mentions.eps >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
 ECHO.
@@ -27,7 +27,7 @@ SET TWEETS=%RESFIND:~74,3%
 
 ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-2\script2-user-types-mentions.ces >> performance-results-cpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=CPU --script=samples\twitter\subcollection-2\script2-user-types-mentions.eps >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
 ECHO.
@@ -37,7 +37,7 @@ SET TWEETS=%RESFIND:~74,3%
 
 ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-3\script2-user-types-mentions.ces >> performance-results-cpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=CPU --script=samples\twitter\subcollection-3\script2-user-types-mentions.eps >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
 ECHO.
@@ -47,7 +47,7 @@ SET TWEETS=%RESFIND:~74,3%
 
 ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-4\script2-user-types-mentions.ces >> performance-results-cpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=CPU --script=samples\twitter\subcollection-4\script2-user-types-mentions.eps >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
 ECHO.
@@ -57,7 +57,7 @@ SET TWEETS=%RESFIND:~74,4%
 
 ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-5\script2-user-types-mentions.ces >> performance-results-cpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=CPU --script=samples\twitter\subcollection-5\script2-user-types-mentions.eps >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
 ECHO.
@@ -67,7 +67,7 @@ SET TWEETS=%RESFIND:~74,4%
 
 ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-6\script2-user-types-mentions.ces >> performance-results-cpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=CPU --script=samples\twitter\subcollection-6\script2-user-types-mentions.eps >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
 ECHO.
@@ -77,7 +77,7 @@ SET TWEETS=%RESFIND:~74,4%
 
 ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\subcollection-7\script2-user-types-mentions.ces >> performance-results-cpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=CPU --script=samples\twitter\subcollection-7\script2-user-types-mentions.eps >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
 ECHO.
@@ -87,7 +87,7 @@ SET TWEETS=%RESFIND:~58,4%
 
 ECHO RUNNING CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== CPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-cpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=CPU --script=samples\twitter\script2-user-types-mentions.ces >> performance-results-cpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=CPU --script=samples\twitter\script2-user-types-mentions.eps >> performance-results-cpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-cpu.txt
 ECHO. >> performance-results-cpu.txt
 ECHO.
@@ -102,7 +102,7 @@ SET TWEETS=%RESFIND:~74,3%
 
 ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-1\script2-user-types-mentions.ces >> performance-results-gpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=GPU --script=samples\twitter\subcollection-1\script2-user-types-mentions.eps >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
 ECHO.
@@ -112,7 +112,7 @@ SET TWEETS=%RESFIND:~74,3%
 
 ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-2\script2-user-types-mentions.ces >> performance-results-gpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=GPU --script=samples\twitter\subcollection-2\script2-user-types-mentions.eps >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
 ECHO.
@@ -122,7 +122,7 @@ SET TWEETS=%RESFIND:~74,3%
 
 ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-3\script2-user-types-mentions.ces >> performance-results-gpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=GPU --script=samples\twitter\subcollection-3\script2-user-types-mentions.eps >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
 ECHO.
@@ -132,7 +132,7 @@ SET TWEETS=%RESFIND:~74,3%
 
 ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-4\script2-user-types-mentions.ces >> performance-results-gpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=GPU --script=samples\twitter\subcollection-4\script2-user-types-mentions.eps >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
 ECHO.
@@ -142,7 +142,7 @@ SET TWEETS=%RESFIND:~74,4%
 
 ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-5\script2-user-types-mentions.ces >> performance-results-gpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=GPU --script=samples\twitter\subcollection-5\script2-user-types-mentions.eps >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
 ECHO.
@@ -152,7 +152,7 @@ SET TWEETS=%RESFIND:~74,4%
 
 ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-6\script2-user-types-mentions.ces >> performance-results-gpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=GPU --script=samples\twitter\subcollection-6\script2-user-types-mentions.eps >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
 ECHO.
@@ -162,7 +162,7 @@ SET TWEETS=%RESFIND:~74,4%
 
 ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\subcollection-7\script2-user-types-mentions.ces >> performance-results-gpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=GPU --script=samples\twitter\subcollection-7\script2-user-types-mentions.eps >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO. >> performance-results-gpu.txt
 ECHO.
@@ -172,7 +172,7 @@ SET TWEETS=%RESFIND:~58,4%
 
 ECHO RUNNING GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION...
 ECHO ====== GPU PERFORMANCE ASSESSMENT FOR %TWEETS% TWEETS COLLECTION ====== >> performance-results-gpu.txt
-java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.6.jar --mode=GPU --script=samples\twitter\script2-user-types-mentions.ces >> performance-results-gpu.txt
+java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-v1.7.jar --mode=GPU --script=samples\twitter\script2-user-types-mentions.eps >> performance-results-gpu.txt
 ECHO ====== END OF RESULTS ====== >> performance-results-gpu.txt
 ECHO.
 GOTO TIMECALC

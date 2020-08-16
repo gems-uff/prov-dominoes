@@ -93,8 +93,8 @@ public class Dominoes {
 	public static final int TYPE_SORT_ROW_FIRST = 19;
 	public static final int TYPE_SORT_ROW_VALUES = 20;
 	public static final int TYPE_SORT_COLUMN_VALUES = 21;
-	public static final int TYPE_SORT_ROW_COUNT = 22;
-	public static final int TYPE_SORT_COLUMN_COUNT = 23;
+	public static final int TYPE_SORT_ROW_GROUP = 22;
+	public static final int TYPE_SORT_COLUMN_GROUP = 23;
 	public static final String TYPE_BASIC_CODE = "B";
 	public static final String TYPE_DERIVED_CODE = "D";
 	public static final String TYPE_SUPPORT_CODE = "S";
@@ -352,12 +352,12 @@ public class Dominoes {
 			z = 23;
 			break;
 		}
-		case Dominoes.TYPE_SORT_ROW_COUNT: {
+		case Dominoes.TYPE_SORT_ROW_GROUP: {
 			textType.setText(Dominoes.TYPE_ROW_COUNT_CODE);
 			z = 18;
 			break;
 		}
-		case Dominoes.TYPE_SORT_COLUMN_COUNT: {
+		case Dominoes.TYPE_SORT_COLUMN_GROUP: {
 			textType.setText(Dominoes.TYPE_COL_COUNT_CODE);
 			z = 18;
 			break;
@@ -523,10 +523,11 @@ public class Dominoes {
 	public void setMat(MatrixOperations mat) {
 		this.mat = mat;
 		if (mat != null) {
-			this.crsMatrix = Prov2DominoesUtil.cells2Matrix(mat.getData(), mat.getMatrixDescriptor().getNumRows(),
-					mat.getMatrixDescriptor().getNumCols());
 			this.descriptor = mat.getMatrixDescriptor();
 			if (mat instanceof MatrixOperationsCPU) {
+				this.crsMatrix = Prov2DominoesUtil.cells2Matrix(mat.getData(), mat.getMatrixDescriptor().getNumRows(),
+						mat.getMatrixDescriptor().getNumCols());
+
 				this.mat = (MatrixOperations) mat;
 				String[][] ue = ((MatrixOperationsCPU) mat).getUnderlyingElements();
 				if (ue != null) {
@@ -536,174 +537,214 @@ public class Dominoes {
 		}
 	}
 
-	public void setupOperation(boolean benefitFromSparseOperation) throws Exception {
-		this.mat = MatrixOperations.configureOperation(this.crsMatrix, descriptor, benefitFromSparseOperation);
-		if (this.underlyingElements != null && mat instanceof MatrixOperationsCPU) {
-			MatrixOperationsCPU _newMatCPU = (MatrixOperationsCPU) mat;
-			_newMatCPU.setUnderlyingElements(this.underlyingElements);
-			setMat(_newMatCPU);
-		}
-		if (currentProcessingMode.equalsIgnoreCase("GPU")) {
-			this.mat.setMatrix(this.crsMatrix);
-		}
-	}
-
-	public void transpose() throws Exception {
-		this.setupOperation(true);
-		this.getHistoric().reverse();
-		this.setIdRow(this.getHistoric().getFirstItem());
-		this.setIdCol(this.getHistoric().getLastItem());
-
-		MatrixOperations _newMat = mat.transpose();
-		this.cellParams = null;
-		setMat(_newMat);
-	}
-
 	public void standardScore() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.standardScoreSparse();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_ZSCORE;
+		this.cellParams = null;
 	}
 
 	public void confidence() throws Exception {
-		this.setupOperation(true);
-		MatrixOperations _newMat = mat.confidence(currentProcessingMode.equalsIgnoreCase("GPU"));
-		setMat(_newMat);
+		MatrixOperations _newMat = mat.confidence();
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_CONFIDENCE;
+		this.cellParams = null;
 	}
 
 	public void transitiveClosure() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.transitiveClosure();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
+		this.cellParams = null;
 		this.type = Dominoes.TYPE_TRANSITIVE_CLOSURE;
 	}
 
 	public void binarize() throws Exception {
-		this.setupOperation(true);
 		MatrixOperations _newMat = mat.binarize();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_BINARIZED;
 	}
 
 	public void invert() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.invert();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_INVERTED;
+		this.cellParams = null;
 	}
 
 	public void sortDefaultDimensionValues() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortDefaultDimensionValues();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_SORT_ROW_VALUES;
 		this.cellParams = null;
 	}
 
 	public void sortRows() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortRows();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_SORT_ROW_ASC;
 		this.cellParams = null;
 	}
 
 	public void sortCols() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortColumns();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_SORT_COL_ASC;
 		this.cellParams = null;
 	}
 
-	public void sortRowCount() throws Exception {
-		this.setupOperation(false);
+	public void sortByRowGroup() throws Exception {
 		MatrixOperations _newMat = mat.sortByRowGroup();
-		setMat(_newMat);
-		this.type = Dominoes.TYPE_SORT_ROW_COUNT;
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
+		this.type = Dominoes.TYPE_SORT_ROW_GROUP;
 		this.cellParams = null;
 	}
 
-	public void sortColumnCount() throws Exception {
-		this.setupOperation(false);
+	public void sortByColumnGroup() throws Exception {
 		MatrixOperations _newMat = mat.sortByColumnGroup();
-		setMat(_newMat);
-		this.type = Dominoes.TYPE_SORT_COLUMN_COUNT;
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
+		this.type = Dominoes.TYPE_SORT_COLUMN_GROUP;
 		this.cellParams = null;
 	}
 
 	public void sortColumnFirst() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.sortColumnFirst();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_SORT_COLUMN_FIRST;
 		this.cellParams = null;
 	}
 
 	public void sortRowFirst() throws Exception {
-		this.setupOperation(false);
-		MatrixOperations _newMat = null;
-		_newMat = mat.sortRowFirst();
-		setMat(_newMat);
+		MatrixOperations _newMat = mat.sortRowFirst();
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_SORT_ROW_FIRST;
 		this.cellParams = null;
 	}
 
 	public void highPassFilter(double d) throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.highPassFilter(d);
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_HPF;
 	}
 
 	public void lowPassFilter(double d) throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.lowPassFilter(d);
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_LPF;
 	}
 
 	public void filterColumnText(TextFilterData t) throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.filterColumnText(t);
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_TEXT;
 	}
 
 	public void filterRowText(TextFilterData t) throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.filterRowText(t);
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_TEXT;
 	}
 
 	public void diagonalize() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.diagonalize();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_DIAGONAL;
 	}
 
 	public void upperDiagonal() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.upperDiagonal();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_UPPER_DIAGONAL;
 	}
 
 	public void lowerDiagonal() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.lowerDiagonal();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_LOWER_DIAGONAL;
 	}
 
 	public void trim() throws Exception {
-		this.setupOperation(false);
 		MatrixOperations _newMat = mat.trim();
-		setMat(_newMat);
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.type = Dominoes.TYPE_TRIMMED;
 		this.cellParams = null;
 	}
@@ -715,8 +756,6 @@ public class Dominoes {
 	 * @throws Exception
 	 */
 	public boolean aggregateDimension() throws Exception {
-		this.setupOperation(true);
-
 		if (!(this.type == Dominoes.TYPE_BASIC)) {
 			this.type = Dominoes.TYPE_DERIVED;
 			if (this.getIdRow().equals(this.getIdCol())) {
@@ -726,27 +765,40 @@ public class Dominoes {
 		this.setIdRow(Dominoes.AGGREG_TEXT + idRow);
 		this.historic.reduceRow();
 
-		MatrixOperations _newMat = mat
-				.aggregateDimension(currentProcessingMode.equalsIgnoreCase(Configuration.GPU_PROCESSING));
-		setMat(_newMat);
+		MatrixOperations _newMat = mat.aggregateDimension();
+		this.mat = _newMat;
+		this.descriptor = this.mat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
 		this.cellParams = null;
 		return true;
 	}
 
-	public Dominoes multiply(Dominoes dom) throws Exception {
-		this.setupOperation(true);
-		dom.setupOperation(true);
-		Dominoes domResult = new Dominoes(dom.getDevice());
+	public void transpose() throws Exception {
+		this.getHistoric().reverse();
+		this.setIdRow(this.getHistoric().getFirstItem());
+		this.setIdCol(this.getHistoric().getLastItem());
 
+		MatrixOperations _newMat = mat.transpose();
+		this.cellParams = null;
+		this.mat = _newMat;
+		this.descriptor = _newMat.getMatrixDescriptor();
+		if (!Configuration.isGPUProcessing()) {
+			this.crsMatrix = _newMat.getMatrix();
+		}
+	}
+
+	public Dominoes multiply(Dominoes dom) throws Exception {
+		Dominoes domResult = new Dominoes(dom.getDevice());
 		domResult.type = Dominoes.TYPE_DERIVED;
 
 		if (idRow.equals(dom.getIdCol())) {
 			domResult.type = Dominoes.TYPE_SUPPORT;
 		}
-		MatrixOperations resultMat = getMat().multiply(dom.getMat(),
-				currentProcessingMode.equalsIgnoreCase(Configuration.GPU_PROCESSING));
+		MatrixOperations resultMat = getMat().multiply(dom.getMat());
 		String[][] resultUnderlying = null;
-		if (!currentProcessingMode.equalsIgnoreCase(Configuration.GPU_PROCESSING)) {
+		if (!Configuration.isGPUProcessing()) {
 			resultUnderlying = Prov2DominoesUtil
 					.cloneStringMatrix(((MatrixOperationsCPU) resultMat).getUnderlyingElements());
 		}
@@ -757,19 +809,17 @@ public class Dominoes {
 		domResult.setIdRow(getIdRow());
 		domResult.setIdCol(dom.getIdCol());
 
+		if (!Configuration.isGPUProcessing()) {
+			domResult.setCrsMatrix(resultMat.getMatrix());
+		}
 		return domResult;
 	}
 
 	public Dominoes sum(Dominoes dom) throws Exception {
-		this.setupOperation(false);
-		dom.setupOperation(false);
 		Dominoes domResult = new Dominoes(dom.getDevice());
 
 		domResult.type = Dominoes.TYPE_DERIVED;
 
-		if (idRow.equals(dom.getIdCol())) {
-			domResult.type = Dominoes.TYPE_SUPPORT;
-		}
 		MatrixOperations resultMat = getMat().sum(dom.getMat());
 		String[][] resultUnderlying = null;
 		if (currentProcessingMode.equalsIgnoreCase(Configuration.CPU_PROCESSING)) {
@@ -782,20 +832,17 @@ public class Dominoes {
 
 		domResult.setIdRow(getIdRow());
 		domResult.setIdCol(getIdCol());
-
+		if (!Configuration.isGPUProcessing()) {
+			domResult.setCrsMatrix(resultMat.getMatrix());
+		}
 		return domResult;
 	}
 
 	public Dominoes subtract(Dominoes dom) throws Exception {
-		this.setupOperation(false);
-		dom.setupOperation(false);
 		Dominoes domResult = new Dominoes(dom.getDevice());
 
 		domResult.type = Dominoes.TYPE_DERIVED;
 
-		if (idRow.equals(dom.getIdCol())) {
-			domResult.type = Dominoes.TYPE_SUPPORT;
-		}
 		MatrixOperations resultMat = getMat().subtract(dom.getMat());
 		String[][] resultUnderlying = null;
 		if (currentProcessingMode.equalsIgnoreCase(Configuration.CPU_PROCESSING)) {
@@ -808,7 +855,9 @@ public class Dominoes {
 
 		domResult.setIdRow(getIdRow());
 		domResult.setIdCol(getIdCol());
-
+		if (!Configuration.isGPUProcessing()) {
+			domResult.setCrsMatrix(resultMat.getMatrix());
+		}
 		return domResult;
 	}
 
@@ -833,7 +882,9 @@ public class Dominoes {
 			cloned.setHistoric(getHistoric().clone());
 		}
 		cloned.setId(this.id);
-		cloned.setCrsMatrix(new CRSMatrix(this.crsMatrix));
+		if (this.crsMatrix != null) {
+			cloned.setCrsMatrix(new CRSMatrix(this.crsMatrix));
+		}
 		cloned.setUnderlyingElements(Prov2DominoesUtil.cloneStringMatrix(this.underlyingElements));
 		if (cellParams != null) {
 			cloned.setCellParams((HashMap<String, String>) cellParams.clone());

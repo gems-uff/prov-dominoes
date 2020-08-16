@@ -196,12 +196,12 @@ public class Controller {
 	}
 	
 	public static Dominoes sortRowCount(Dominoes domino) throws Exception {
-		domino.sortRowCount();
+		domino.sortByRowGroup();
 		return domino;
 	}
 	
 	public static Dominoes sortColumnCount(Dominoes domino) throws Exception {
-		domino.sortColumnCount();
+		domino.sortByColumnGroup();
 		return domino;
 	}
 	

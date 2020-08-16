@@ -44,7 +44,7 @@ public class Visual extends BorderPane {
 	}
 
 	public void addTabCentralityGraph(Dominoes domino) {
-		if (domino.getCrsMatrix().rows() == domino.getCrsMatrix().columns()) {
+		if (domino.getDescriptor().getNumRows() == domino.getDescriptor().getNumCols()) {
 			Tab tab = new Tab("Centrality Graph: " + domino.getIdRow() + "x" + domino.getIdCol() + " "
 					+ this.tabPane.getTabs().size());
 			GraphCentralityPane graphCentralityPane = new GraphCentralityPane(domino);

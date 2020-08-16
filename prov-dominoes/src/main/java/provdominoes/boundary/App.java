@@ -120,8 +120,8 @@ public class App extends Application {
 					App.importScriptFromFile(new File(Configuration.autoOpen));
 				}
 			} else {
-				alertException(new Exception("Inexistent CES script for auto open!"),
-						"Inexistent CES script for auto open!");
+				alertException(new Exception("Inexistent EPS script for auto open!"),
+						"Inexistent EPS script for auto open!");
 			}
 		}
 		if (mode == null) {
@@ -475,7 +475,7 @@ public class App extends Application {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
 			fileChooser.getExtensionFilters()
-					.add(new FileChooser.ExtensionFilter("Command Evolution Script (*.ces)", "*.ces"));
+					.add(new FileChooser.ExtensionFilter("Exploration Provenance Script (*.eps)", "*.eps"));
 			fileChooser.setInitialFileName("commands");
 			File file = fileChooser.showSaveDialog(stage);
 			if (file != null) {
@@ -548,7 +548,7 @@ public class App extends Application {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setInitialDirectory(new File(Configuration.lastDirectory));
 		fileChooser.getExtensionFilters()
-				.add(new FileChooser.ExtensionFilter("Command Evolution Script (*.ces)", "*.ces"));
+				.add(new FileChooser.ExtensionFilter("Exploration Provenance Script (*.eps)", "*.eps"));
 		File file = fileChooser.showOpenDialog(stage);
 		importScriptFromFile(file);
 	}

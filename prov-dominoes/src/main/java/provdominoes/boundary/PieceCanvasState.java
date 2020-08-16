@@ -13,6 +13,7 @@ public class PieceCanvasState {
 	public static final int COMBINATION_SUM = 1;
 	public static final int COMBINATION_SUBTRACTION = 2;
 	public static final int COMBINATION_MULTIPLICATION = 3;
+	public static final int COMBINATION_TRANSPOSING = 4;
 
 	private ArrayList<Dominoes> dominoes;
 	private ArrayList<Group> pieces;

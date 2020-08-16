@@ -1,6 +1,7 @@
 package provdominoes.command;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import convertion.ProvMatrixDefaultFactory;
@@ -45,6 +46,12 @@ public class LoadCommand extends AbstractCommand {
 
 	@Override
 	protected boolean doIt() {
+		long startTime = 0;
+		long endTime = 0;
+
+		if (Configuration.telemetry) {
+			startTime = System.nanoTime();
+		}
 		boolean result = true;
 		try {
 			ProvMatrixFactory provFactory = null;
@@ -65,6 +72,14 @@ public class LoadCommand extends AbstractCommand {
 			e.printStackTrace();
 			result = false;
 			App.alertException(e, e.getMessage());
+		}
+		if (Configuration.telemetry) {
+			endTime = System.nanoTime();
+			long timeElapsed = endTime - startTime;
+			double d = timeElapsed / 1000000d;
+			DecimalFormat df = new DecimalFormat("#.##");
+			df = new DecimalFormat("#.##");
+			System.out.println("Time elapsed for loading the PROV-N file in ms: " + df.format(d));
 		}
 		return result;
 	}

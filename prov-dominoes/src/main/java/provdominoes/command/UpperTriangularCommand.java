@@ -33,7 +33,8 @@ public class UpperTriangularCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toUpperDiagonal = App.getArea().getData().getDominoes().get(index);
-			if (toUpperDiagonal.getCrsMatrix().rows() == toUpperDiagonal.getCrsMatrix().columns()) {
+			if (toUpperDiagonal.getMat().getMatrixDescriptor().getNumRows() == toUpperDiagonal.getMat()
+					.getMatrixDescriptor().getNumCols()) {
 				Dominoes domino = provdominoes.control.Controller.upperDiagonal(toUpperDiagonal);
 
 				App.getArea().remove(index);
