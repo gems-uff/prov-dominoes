@@ -1,0 +1,258 @@
+====== CPU PERFORMANCE ASSESSMENT FOR 100 TWEETS COLLECTION ====== 
+Telemetry is on...
+Time elapsed for loading the PROV-N file in ms: 671,99
+LOAD("twitter-governadores_en.provn")
+Time elapsed for adding WGB on Canvas in ms: 42,81
+P1 = ADD(WGB)
+Time elapsed for adding WAW on Canvas in ms: 6,21
+P2 = ADD(WAW)
+Time elapsed for multiplication in ms: 20,73
+P3 = MULTIPLY(P1, P2)
+Time elapsed for adding WAT on Canvas in ms: 5,84
+P4 = ADD(WAT)
+Time elapsed for transposition in ms: 0,33
+TRANSPOSE(P4)
+Time elapsed for multiplication in ms: 23,11
+P5 = MULTIPLY(P4, P3)
+Time elapsed for adding AgT on Canvas in ms: 4,37
+P6 = ADD(AgT)
+Time elapsed for multiplication in ms: 0,71
+P7 = MULTIPLY(P5, P6)
+Time elapsed for transposition in ms: 0,01
+TRANSPOSE(P7)
+Time elapsed for Word on Column Filter in ms: 6,72
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+# cells removed: 616. % cells removed: 98,72%
+Time elapsed for TRIM in ms: 1,49
+TRIM(P7)
+Time elapsed for Sort by Descending Column Group in ms: 0,06
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 914,04
+====== END OF RESULTS ====== 
+ 
+====== CPU PERFORMANCE ASSESSMENT FOR 200 TWEETS COLLECTION ====== 
+Telemetry is on...
+Time elapsed for loading the PROV-N file in ms: 787,76
+LOAD("twitter-governadores_en.provn")
+Time elapsed for adding WGB on Canvas in ms: 43,9
+P1 = ADD(WGB)
+Time elapsed for adding WAW on Canvas in ms: 7,8
+P2 = ADD(WAW)
+Time elapsed for multiplication in ms: 77,89
+P3 = MULTIPLY(P1, P2)
+Time elapsed for adding WAT on Canvas in ms: 6,23
+P4 = ADD(WAT)
+Time elapsed for transposition in ms: 0,78
+TRANSPOSE(P4)
+Time elapsed for multiplication in ms: 83,48
+P5 = MULTIPLY(P4, P3)
+Time elapsed for adding AgT on Canvas in ms: 7,38
+P6 = ADD(AgT)
+Time elapsed for multiplication in ms: 2,44
+P7 = MULTIPLY(P5, P6)
+Time elapsed for transposition in ms: 0,01
+TRANSPOSE(P7)
+Time elapsed for Word on Column Filter in ms: 9,58
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+# cells removed: 1204. % cells removed: 99,34%
+Time elapsed for TRIM in ms: 1,56
+TRIM(P7)
+Time elapsed for Sort by Descending Column Group in ms: 0,11
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 1152,69
+====== END OF RESULTS ====== 
+ 
+====== CPU PERFORMANCE ASSESSMENT FOR 300 TWEETS COLLECTION ====== 
+Telemetry is on...
+Time elapsed for loading the PROV-N file in ms: 797,69
+LOAD("twitter-governadores_en.provn")
+Time elapsed for adding WGB on Canvas in ms: 44,77
+P1 = ADD(WGB)
+Time elapsed for adding WAW on Canvas in ms: 8,32
+P2 = ADD(WAW)
+Time elapsed for multiplication in ms: 196,39
+P3 = MULTIPLY(P1, P2)
+Time elapsed for adding WAT on Canvas in ms: 6,41
+P4 = ADD(WAT)
+Time elapsed for transposition in ms: 0,32
+TRANSPOSE(P4)
+Time elapsed for multiplication in ms: 206,63
+P5 = MULTIPLY(P4, P3)
+Time elapsed for adding AgT on Canvas in ms: 5,93
+P6 = ADD(AgT)
+Time elapsed for multiplication in ms: 4,77
+P7 = MULTIPLY(P5, P6)
+Time elapsed for transposition in ms: 0,01
+TRANSPOSE(P7)
+Time elapsed for Word on Column Filter in ms: 13,28
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+# cells removed: 1742. % cells removed: 99,09%
+Time elapsed for TRIM in ms: 1,62
+TRIM(P7)
+Time elapsed for Sort by Descending Column Group in ms: 0,32
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 1435,31
+====== END OF RESULTS ====== 
+ 
+====== CPU PERFORMANCE ASSESSMENT FOR 500 TWEETS COLLECTION ====== 
+Telemetry is on...
+Time elapsed for loading the PROV-N file in ms: 903,07
+LOAD("twitter-governadores_en.provn")
+Time elapsed for adding WGB on Canvas in ms: 50,91
+P1 = ADD(WGB)
+Time elapsed for adding WAW on Canvas in ms: 8,72
+P2 = ADD(WAW)
+Time elapsed for multiplication in ms: 741,78
+P3 = MULTIPLY(P1, P2)
+Time elapsed for adding WAT on Canvas in ms: 6,68
+P4 = ADD(WAT)
+Time elapsed for transposition in ms: 0,69
+TRANSPOSE(P4)
+Time elapsed for multiplication in ms: 828,07
+P5 = MULTIPLY(P4, P3)
+Time elapsed for adding AgT on Canvas in ms: 7,52
+P6 = ADD(AgT)
+Time elapsed for multiplication in ms: 10,78
+P7 = MULTIPLY(P5, P6)
+Time elapsed for transposition in ms: 0,02
+TRANSPOSE(P7)
+Time elapsed for Word on Column Filter in ms: 12,78
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+# cells removed: 2843. % cells removed: 99,13%
+Time elapsed for TRIM in ms: 1,66
+TRIM(P7)
+Time elapsed for Sort by Descending Column Group in ms: 0,35
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 2696,45
+====== END OF RESULTS ====== 
+ 
+====== CPU PERFORMANCE ASSESSMENT FOR 1000 TWEETS COLLECTION ====== 
+Telemetry is on...
+Time elapsed for loading the PROV-N file in ms: 1245,92
+LOAD("twitter-governadores_en.provn")
+Time elapsed for adding WGB on Canvas in ms: 65,55
+P1 = ADD(WGB)
+Time elapsed for adding WAW on Canvas in ms: 22,25
+P2 = ADD(WAW)
+Time elapsed for multiplication in ms: 6919,46
+P3 = MULTIPLY(P1, P2)
+Time elapsed for adding WAT on Canvas in ms: 12,61
+P4 = ADD(WAT)
+Time elapsed for transposition in ms: 0,7
+TRANSPOSE(P4)
+Time elapsed for multiplication in ms: 6409,59
+P5 = MULTIPLY(P4, P3)
+Time elapsed for adding AgT on Canvas in ms: 8,29
+P6 = ADD(AgT)
+Time elapsed for multiplication in ms: 36,44
+P7 = MULTIPLY(P5, P6)
+Time elapsed for transposition in ms: 0,02
+TRANSPOSE(P7)
+Time elapsed for Word on Column Filter in ms: 28,91
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+# cells removed: 5466. % cells removed: 99,35%
+Time elapsed for TRIM in ms: 1,69
+TRIM(P7)
+Time elapsed for Sort by Descending Column Group in ms: 0,08
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 14921,95
+====== END OF RESULTS ====== 
+ 
+====== CPU PERFORMANCE ASSESSMENT FOR 2000 TWEETS COLLECTION ====== 
+Telemetry is on...
+Time elapsed for loading the PROV-N file in ms: 1956,22
+LOAD("twitter-governadores_en.provn")
+Time elapsed for adding WGB on Canvas in ms: 74,7
+P1 = ADD(WGB)
+Time elapsed for adding WAW on Canvas in ms: 25,63
+P2 = ADD(WAW)
+Time elapsed for multiplication in ms: 46462,89
+P3 = MULTIPLY(P1, P2)
+Time elapsed for adding WAT on Canvas in ms: 24,5
+P4 = ADD(WAT)
+Time elapsed for transposition in ms: 1,53
+TRANSPOSE(P4)
+Time elapsed for multiplication in ms: 48085,71
+P5 = MULTIPLY(P4, P3)
+Time elapsed for adding AgT on Canvas in ms: 9,53
+P6 = ADD(AgT)
+Time elapsed for multiplication in ms: 138,51
+P7 = MULTIPLY(P5, P6)
+Time elapsed for transposition in ms: 0,22
+TRANSPOSE(P7)
+Time elapsed for Word on Column Filter in ms: 35,81
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+# cells removed: 11927. % cells removed: 99,7%
+Time elapsed for TRIM in ms: 2,72
+TRIM(P7)
+Time elapsed for Sort by Descending Column Group in ms: 0,12
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 97034,75
+====== END OF RESULTS ====== 
+ 
+====== CPU PERFORMANCE ASSESSMENT FOR 3000 TWEETS COLLECTION ====== 
+Telemetry is on...
+Time elapsed for loading the PROV-N file in ms: 2871,72
+LOAD("twitter-governadores_en.provn")
+Time elapsed for adding WGB on Canvas in ms: 96,48
+P1 = ADD(WGB)
+Time elapsed for adding WAW on Canvas in ms: 43,8
+P2 = ADD(WAW)
+Time elapsed for multiplication in ms: 142364,14
+P3 = MULTIPLY(P1, P2)
+Time elapsed for adding WAT on Canvas in ms: 41,01
+P4 = ADD(WAT)
+Time elapsed for transposition in ms: 1,71
+TRANSPOSE(P4)
+Time elapsed for multiplication in ms: 154668,59
+P5 = MULTIPLY(P4, P3)
+Time elapsed for adding AgT on Canvas in ms: 10,03
+P6 = ADD(AgT)
+Time elapsed for multiplication in ms: 272,95
+P7 = MULTIPLY(P5, P6)
+Time elapsed for transposition in ms: 0,07
+TRANSPOSE(P7)
+Time elapsed for Word on Column Filter in ms: 34,96
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+# cells removed: 16946. % cells removed: 99,79%
+Time elapsed for TRIM in ms: 1,99
+TRIM(P7)
+Time elapsed for Sort by Descending Column Group in ms: 0,07
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 300897,05
+====== END OF RESULTS ====== 
+ 
+====== CPU PERFORMANCE ASSESSMENT FOR 4176 TWEETS COLLECTION ====== 
+Telemetry is on...
+Time elapsed for loading the PROV-N file in ms: 4699,98
+LOAD("twitter-governadores_en.provn")
+Time elapsed for adding WGB on Canvas in ms: 122,38
+P1 = ADD(WGB)
+Time elapsed for adding WAW on Canvas in ms: 65,83
+P2 = ADD(WAW)
+Time elapsed for multiplication in ms: 341936,83
+P3 = MULTIPLY(P1, P2)
+Time elapsed for adding WAT on Canvas in ms: 68,71
+P4 = ADD(WAT)
+Time elapsed for transposition in ms: 3,02
+TRANSPOSE(P4)
+Time elapsed for multiplication in ms: 323175,68
+P5 = MULTIPLY(P4, P3)
+Time elapsed for adding AgT on Canvas in ms: 13,35
+P6 = ADD(AgT)
+Time elapsed for multiplication in ms: 444,62
+P7 = MULTIPLY(P5, P6)
+Time elapsed for transposition in ms: 0,6
+TRANSPOSE(P7)
+Time elapsed for Word on Column Filter in ms: 61,73
+COLUMN_TEXT(P7, true, true, "jairbolsonaro|wilsonwitzel|jdoriajr|flaviodino|camilosantanace|romeuzema")
+# cells removed: 22169. % cells removed: 99,81%
+Time elapsed for TRIM in ms: 2,34
+TRIM(P7)
+Time elapsed for Sort by Descending Column Group in ms: 0,21
+SORT_COLUMN_GROUP(P7)
+Time elapsed for script execution in ms: 670823,08
+====== END OF RESULTS ====== 
+ 
+ 
+OVERALL TIME EXECUTION: 0:18:24.53 (1104.53s total) 
