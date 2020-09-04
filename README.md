@@ -53,7 +53,7 @@ Type the following in a command prompt (do not work on PowerShell!):
 ```
 > prov-dominoes.bat eval:gpu
 ```
-Estimated time for completion: ~5 minutes. In the end, a [performance-results-gpu.txt](https://github.com/gems-uff/prov-dominoes/blob/master/performance-assessment/performance-results-gpu.txt) file will be generated in the same directory of the batch script.
+Estimated time for completion: ~35 seconds. In the end, a [performance-results-gpu.txt](https://github.com/gems-uff/prov-dominoes/blob/master/performance-assessment/performance-results-gpu.txt) file will be generated in the same directory of the batch script.
 
 ## On other environments...
 
