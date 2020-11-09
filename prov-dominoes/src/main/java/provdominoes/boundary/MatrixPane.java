@@ -95,10 +95,8 @@ public class MatrixPane extends Pane {
 
 		double padding = 0;
 		double cellSpace = 20;
-		double charSpaceRow = (domino.getDescriptor().getRowsDesc().size() > 0
-				&& domino.getDescriptor().getRowAt(0).equals("SUM")) ? 13.5 : 7;
-		double charSpaceColumn = (domino.getDescriptor().getColumnsDesc().size() > 0
-				&& domino.getDescriptor().getColumnAt(0).equals("SUM")) ? 10 : 7;
+		double charSpaceRow = (domino.getDescriptor().getRowsDesc().size() > 0 && domino.getDescriptor().getRowAt(0).equals("SUM")) ? 13.5 : 7;
+		double charSpaceColumn = (domino.getDescriptor().getColumnsDesc().size() > 0 && domino.getDescriptor().getColumnAt(0).equals("SUM")) ? 10 : 7;
 		double largerSizeRow = 0;
 		double largerSizeColumn = 0;
 
@@ -126,7 +124,6 @@ public class MatrixPane extends Pane {
 		width = Math.abs(endRowHead - beginRowHead);
 		height = cellSpace;
 
-
 		drawRowLabels(domino, beginRowHead, width, height, padding, cellSpace, _nRows);
 		width = Math.abs(endColumnHead - beginColumnHead);
 		height = cellSpace;
@@ -134,8 +131,7 @@ public class MatrixPane extends Pane {
 		drawCells(domino, padding, cellSpace, _nRows, _nCols);
 	}
 
-	private void drawRowLabels(Dominoes domino, double beginRowHead, double width, double height, double padding,
-			double cellSpace, int _nRows) {
+	private void drawRowLabels(Dominoes domino, double beginRowHead, double width, double height, double padding, double cellSpace, int _nRows) {
 		for (int i = 0; i < _nRows; i++) {
 			Rectangle back = new Rectangle(width, height);
 			back.setFill(new Color(1, 1, 1, 1));
@@ -144,7 +140,11 @@ public class MatrixPane extends Pane {
 			back.toBack();
 
 			Rectangle front = new Rectangle(width, height);
-			front.setFill(new Color(0.0, 0.4, 0.0, 0.7 + (0.2 * ((-1) * i % 2))));
+			if (i % 2 == 0) {
+				front.setFill(new Color(226.0 / 255.0, 229.0 / 255.0, 222.0 / 255.0, 0.7));
+			} else {
+				front.setFill(new Color(178.0 / 255.0, 190.0 / 255.0, 181.0 / 255.0, 0.7));
+			}
 			front.setTranslateX(0);
 			front.setTranslateY(0);
 			front.toFront();
@@ -159,14 +159,13 @@ public class MatrixPane extends Pane {
 			text.setTranslateX(beginRowHead + 2);
 			text.setTranslateY(i * (cellSpace + padding) + padding + height - 3);
 			if (i % 2 == 0) {
-				text.setFill(Color.WHITE);
+				text.setFill(new Color(117.0 / 255.0, 58.0 / 255.0, 16.0 / 255.0, 1));
 			} else {
-				text.setFill(Color.BLACK);
+				text.setFill(Color.SADDLEBROWN);
 			}
 			text.toFront();
 			Group rowLabel = new Group(cell, text);
-			if (domino.getDescriptor().getRowsTooltips() != null
-					&& domino.getDescriptor().getRowsTooltips().size() > i) {
+			if (domino.getDescriptor().getRowsTooltips() != null && domino.getDescriptor().getRowsTooltips().size() > i) {
 				Tooltip.install(rowLabel, new Tooltip(domino.getDescriptor().getRowsTooltips().get(i)));
 			}
 
@@ -212,9 +211,8 @@ public class MatrixPane extends Pane {
 			matrixGroup.getChildren().add(rowLabel);
 		}
 	}
-	
-	private void drawColLabels(Dominoes domino, double endColumnHead, double width, double height, double padding,
-			double cellSpace, int _nCols) {
+
+	private void drawColLabels(Dominoes domino, double endColumnHead, double width, double height, double padding, double cellSpace, int _nCols) {
 		for (int i = 0; i < _nCols; i++) {
 			Rectangle back = new Rectangle(width, height);
 			back.setTranslateX(0);
@@ -224,7 +222,11 @@ public class MatrixPane extends Pane {
 			Rectangle front = new Rectangle(width, height);
 			front.setTranslateX(0);
 			front.setTranslateY(-1);
-			front.setFill(new Color(0.0, 0.4, 0.0, 0.7 + (0.2 * ((-1) * i % 2))));
+			if (i % 2 == 0) {
+				front.setFill(new Color(226.0 / 255.0, 229.0 / 255.0, 222.0 / 255.0, 0.7));
+			} else {
+				front.setFill(new Color(178.0 / 255.0, 190.0 / 255.0, 181.0 / 255.0, 0.7));
+			}
 
 			front.toFront();
 
@@ -238,9 +240,9 @@ public class MatrixPane extends Pane {
 			text.setTranslateY(height - 7.0);
 
 			if (i % 2 == 0) {
-				text.setFill(Color.WHITE);
+				text.setFill(new Color(117.0 / 255.0, 58.0 / 255.0, 16.0 / 255.0, 1));
 			} else {
-				text.setFill(Color.BLACK);
+				text.setFill(Color.SADDLEBROWN);
 			}
 			text.toFront();
 
@@ -249,8 +251,7 @@ public class MatrixPane extends Pane {
 			columnLabel.setTranslateY(((-1) * (cellSpace + padding)) - (width / 2 - height / 2));
 			columnLabel.getTransforms().add(new Rotate(-90, width / 2.0f, height / 2.0f, 1.0f, Rotate.Z_AXIS));
 
-			if (domino.getDescriptor().getColumnsTooltips() != null
-					&& domino.getDescriptor().getColumnsTooltips().size() > i) {
+			if (domino.getDescriptor().getColumnsTooltips() != null && domino.getDescriptor().getColumnsTooltips().size() > i) {
 				Tooltip.install(columnLabel, new Tooltip(domino.getDescriptor().getColumnsTooltips().get(i)));
 			}
 
@@ -300,8 +301,7 @@ public class MatrixPane extends Pane {
 		CRSMatrix matrix = domino.getCrsMatrix();
 		List<Cell> nonZeros = new ArrayList<>();
 		if (Configuration.isGPUProcessing()) {
-			matrix = new CRSMatrix(domino.getMat().getMatrixDescriptor().getNumRows(),
-					domino.getMat().getMatrixDescriptor().getNumCols());
+			matrix = new CRSMatrix(domino.getMat().getMatrixDescriptor().getNumRows(), domino.getMat().getMatrixDescriptor().getNumCols());
 			nonZeros = domino.getMat().getData();
 			for (Cell c : nonZeros) {
 				matrix.set(c.row, c.col, c.value);
@@ -310,8 +310,7 @@ public class MatrixPane extends Pane {
 		} else {
 			if (domino.getType() == Dominoes.TYPE_ZSCORE) {
 				Cell[] clls = new Cell[matrix.cardinality()];
-				List<Integer> range = IntStream.rangeClosed(0, matrix.cardinality() - 1).boxed()
-						.collect(Collectors.toList());
+				List<Integer> range = IntStream.rangeClosed(0, matrix.cardinality() - 1).boxed().collect(Collectors.toList());
 				final Stack<Integer> s = new Stack<>();
 				s.addAll(range);
 				matrix.eachNonZero(new MatrixProcedure() {
@@ -332,8 +331,7 @@ public class MatrixPane extends Pane {
 
 				final Cell _matCell = new Cell(i, j, new Double(matrix.get(i, j)).floatValue());
 
-				if ((domino.getType() == Dominoes.TYPE_ZSCORE
-						&& nonZeros.contains(new Cell(i, j, new Double(matrix.get(i, j)).floatValue())))
+				if ((domino.getType() == Dominoes.TYPE_ZSCORE && nonZeros.contains(new Cell(i, j, new Double(matrix.get(i, j)).floatValue())))
 						|| domino.getType() != Dominoes.TYPE_ZSCORE) {
 
 					Rectangle back = new Rectangle(cellSpace, cellSpace);
@@ -350,11 +348,9 @@ public class MatrixPane extends Pane {
 								cv = 0f;
 							} else {
 								if (cv > 0.0) {
-									front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(),
-											cellColor.getBlue(), (cv) / (max)));
+									front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(), (cv) / (max)));
 								} else {
-									front.setFill(new Color(cellColor.getBlue(), cellColor.getGreen(),
-											cellColor.getRed(), (cv) / (min)));
+									front.setFill(new Color(cellColor.getBlue(), cellColor.getGreen(), cellColor.getRed(), (cv) / (min)));
 								}
 							}
 						} else {
@@ -370,8 +366,7 @@ public class MatrixPane extends Pane {
 								front.setFill(new Color(1, 1, 1, 1));
 								cv = 0f;
 							} else {
-								front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
-										(cv - min) / (max - min)));
+								front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(), (cv - min) / (max - min)));
 							}
 						} else {
 							if (domino.getType() == Dominoes.TYPE_ZSCORE) {
@@ -392,23 +387,17 @@ public class MatrixPane extends Pane {
 					cell.setTranslateY(_matCell.row * (cellSpace + padding) + padding);
 					String cellParams = "";
 					if (domino.getCellParams() != null) {
-						String idx = domino.getRelation().getAbbreviate().replace(" ", "") + "(" + _matCell.row + ","
-								+ _matCell.col + ")";
+						String idx = domino.getRelation().getAbbreviate().replace(" ", "") + "(" + _matCell.row + "," + _matCell.col + ")";
 						if (domino.getCellParams().get(idx) != null) {
 							cellParams = domino.getCellParams().get(idx);
 						}
 					}
-					if (domino.getUnderlyingElements() != null
-							&& domino.getUnderlyingElements()[_matCell.row][_matCell.col] != null) {
-						Tooltip.install(cell, new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
-								+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = "
-								+ String.valueOf(cv) + " : "
-								+ domino.getUnderlyingElements()[_matCell.row][_matCell.col] + "\n" + cellParams));
+					if (domino.getUnderlyingElements() != null && domino.getUnderlyingElements()[_matCell.row][_matCell.col] != null) {
+						Tooltip.install(cell, new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", " + domino.getDescriptor().getColumnAt(_matCell.col) + ") = "
+								+ String.valueOf(cv) + " : " + domino.getUnderlyingElements()[_matCell.row][_matCell.col] + "\n" + cellParams));
 					} else {
-						Tooltip.install(cell,
-								new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
-										+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = "
-										+ String.valueOf(cv) + "\n" + cellParams));
+						Tooltip.install(cell, new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", " + domino.getDescriptor().getColumnAt(_matCell.col) + ") = "
+								+ String.valueOf(cv) + "\n" + cellParams));
 					}
 					// Show cell values...
 					if (Configuration.showCellValues && _matCell.value > 0) {
@@ -459,22 +448,20 @@ public class MatrixPane extends Pane {
 					matrixGroup.getChildren().add(cell);
 
 					block = new Rectangle(40, 30);
-					block.setFill(new Color(0.0, 0.4, 0.0, 0.5 + (0.2)));					
+					block.setFill(new Color(226.0 / 255.0, 229.0 / 255.0, 222.0 / 255.0, 0.7));
 					block.setX(-40);
 					block.setY(-30);
 					block.toFront();
-					Text text = new Text(
-							domino.getDescriptor().getRowType() + " | " + domino.getDescriptor().getColType());
+					Text text = new Text(domino.getDescriptor().getRowType() + " | " + domino.getDescriptor().getColType());
 
 					text.setFont(Font.font("Times", FontWeight.BOLD, 11));
 					text.setTranslateX(-38);
 					text.setTranslateY(-06);
-					text.setFill(Color.WHITE);
+					text.setFill(Color.BLACK);
 					text.toFront();
 
 					Group cellBlock = new Group(block, text);
-					String tooltip = domino.getDescriptor().getRowType() + " | " + domino.getDescriptor().getColType()
-							+ "\n";
+					String tooltip = domino.getDescriptor().getRowType() + " | " + domino.getDescriptor().getColType() + "\n";
 					int totalNonZero = Prov2DominoesUtil.getNonZeroTotal(domino.getCrsMatrix());
 					tooltip += "Total (non zero): " + totalNonZero + "\n";
 					double minNonZero = Prov2DominoesUtil.getNonZeroMin(domino.getCrsMatrix());
@@ -536,8 +523,7 @@ public class MatrixPane extends Pane {
 					boundMenu.getItems().addAll(hightlightCell, cellMenu, highlightHorizontal, highlightVertical);
 					removeHorizontal.getItems().addAll(removeTopRow, removeBottomRow);
 					removeVertical.getItems().addAll(removeLeftColumn, removeRightColumn);
-					unboundMenu.getItems().addAll(removeCellHighlight, removeCellMenu, removeHorizontal,
-							removeVertical);
+					unboundMenu.getItems().addAll(removeCellHighlight, removeCellMenu, removeHorizontal, removeVertical);
 
 					contextCell.getItems().addAll(boundMenu, unboundMenu, drawLine, undrawLine, exportPNG);
 					drawLine.setOnAction(new EventHandler<ActionEvent>() {
@@ -586,8 +572,7 @@ public class MatrixPane extends Pane {
 								topRowCell.setStrokeLineCap(StrokeLineCap.ROUND);
 								matrixGroup.getChildren().add(topRowCell);
 
-								Line bottomRowCell = new Line(x + 2, y + cellSpace - 2, x + cellSpace - 2,
-										y + cellSpace - 2);
+								Line bottomRowCell = new Line(x + 2, y + cellSpace - 2, x + cellSpace - 2, y + cellSpace - 2);
 								bottomRowCell.setId(cellGroup.getId() + "bottomRowCell");
 								bottomRowCell.setStrokeWidth(4);
 								bottomRowCell.setStrokeLineCap(StrokeLineCap.ROUND);
@@ -626,8 +611,7 @@ public class MatrixPane extends Pane {
 							Group matrix = (Group) cellGroup.getParent();
 							Line line = null;
 							for (Node matrixNode : matrix.getChildren()) {
-								if (matrixNode != null && matrixNode.getId() != null
-										&& matrixNode.getId().equals(nodeId)) {
+								if (matrixNode != null && matrixNode.getId() != null && matrixNode.getId().equals(nodeId)) {
 									line = (Line) matrixNode;
 									break;
 								}
@@ -643,8 +627,7 @@ public class MatrixPane extends Pane {
 						public void handle(ActionEvent event) {
 							double x = _matCell.col * (cellSpace + padding) + padding;
 							double y = _matCell.row * (cellSpace + padding) + padding;
-							Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-									.getOwnerNode();
+							Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 							if (((MenuItem) event.getTarget()).getText().equals(cellTop.getText())) {
 								Line topRowCell = new Line(x + 2, y, x + cellSpace - 2, y);
 								topRowCell.setId(cellGroup.getId() + "topCell");
@@ -652,8 +635,7 @@ public class MatrixPane extends Pane {
 								topRowCell.setStrokeLineCap(StrokeLineCap.ROUND);
 								matrixGroup.getChildren().add(topRowCell);
 							} else if (((MenuItem) event.getTarget()).getText().equals(cellBottom.getText())) {
-								Line bottomRowCell = new Line(x + 2, y + cellSpace - 2, x + cellSpace - 2,
-										y + cellSpace - 2);
+								Line bottomRowCell = new Line(x + 2, y + cellSpace - 2, x + cellSpace - 2, y + cellSpace - 2);
 								bottomRowCell.setId(cellGroup.getId() + "bottomCell");
 								bottomRowCell.setStrokeWidth(4);
 								bottomRowCell.setStrokeLineCap(StrokeLineCap.ROUND);
@@ -678,20 +660,16 @@ public class MatrixPane extends Pane {
 						@Override
 						public void handle(ActionEvent event) {
 							if (((MenuItem) event.getTarget()).getText().equals(removeCellTop.getText())) {
-								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								removeNode(nodeGroup, nodeGroup.getId() + "topCell");
 							} else if (((MenuItem) event.getTarget()).getText().equals(removeCellBottom.getText())) {
-								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								removeNode(nodeGroup, nodeGroup.getId() + "bottomCell");
 							} else if (((MenuItem) event.getTarget()).getText().equals(removeCellLeft.getText())) {
-								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								removeNode(nodeGroup, nodeGroup.getId() + "leftCell");
 							} else if (((MenuItem) event.getTarget()).getText().equals(removeCellRight.getText())) {
-								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								removeNode(nodeGroup, nodeGroup.getId() + "rightCell");
 							}
 						}
@@ -700,8 +678,7 @@ public class MatrixPane extends Pane {
 							Group matrix = (Group) cellGroup.getParent();
 							Line line = null;
 							for (Node matrixNode : matrix.getChildren()) {
-								if (matrixNode != null && matrixNode.getId() != null
-										&& matrixNode.getId().equals(nodeId)) {
+								if (matrixNode != null && matrixNode.getId() != null && matrixNode.getId().equals(nodeId)) {
 									line = (Line) matrixNode;
 									break;
 								}
@@ -718,17 +695,14 @@ public class MatrixPane extends Pane {
 							double y = _matCell.row * (cellSpace + padding) + padding;
 							if (((MenuItem) event.getTarget()).getText().equals(hightlightTopRow.getText())) {
 								Line topRow = new Line(2, y, (_nCols * (cellSpace + padding) + padding) - 2, y);
-								Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								topRow.setId(cellGroup.getId().split(",")[0] + "topRow");
 								topRow.setStrokeWidth(4);
 								topRow.setStrokeLineCap(StrokeLineCap.ROUND);
 								matrixGroup.getChildren().add(topRow);
 							} else if (((MenuItem) event.getTarget()).getText().equals(hightlightBottomRow.getText())) {
-								Line bottomRow = new Line(2, y + cellSpace,
-										(_nCols * (cellSpace + padding) + padding) - 2, y + cellSpace);
-								Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Line bottomRow = new Line(2, y + cellSpace, (_nCols * (cellSpace + padding) + padding) - 2, y + cellSpace);
+								Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								bottomRow.setId(cellGroup.getId().split(",")[0] + "bottomRow");
 								bottomRow.setStrokeWidth(4);
 								bottomRow.setStrokeLineCap(StrokeLineCap.ROUND);
@@ -742,12 +716,10 @@ public class MatrixPane extends Pane {
 						@Override
 						public void handle(ActionEvent event) {
 							if (((MenuItem) event.getTarget()).getText().equals(removeTopRow.getText())) {
-								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								removeNode(nodeGroup, nodeGroup.getId().split(",")[0] + "topRow");
 							} else if (((MenuItem) event.getTarget()).getText().equals(removeBottomRow.getText())) {
-								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								removeNode(nodeGroup, nodeGroup.getId().split(",")[0] + "bottomRow");
 							}
 						}
@@ -756,8 +728,7 @@ public class MatrixPane extends Pane {
 							Group matrix = (Group) cellGroup.getParent();
 							Line line = null;
 							for (Node matrixNode : matrix.getChildren()) {
-								if (matrixNode != null && matrixNode.getId() != null
-										&& matrixNode.getId().equals(nodeId)) {
+								if (matrixNode != null && matrixNode.getId() != null && matrixNode.getId().equals(nodeId)) {
 									line = (Line) matrixNode;
 									break;
 								}
@@ -774,19 +745,15 @@ public class MatrixPane extends Pane {
 							double x = _matCell.col * (cellSpace + padding) + padding;
 							if (((MenuItem) event.getTarget()).getText().equals(hightlightLeftColumn.getText())) {
 								Line leftColumn = new Line(x, 2, x, (_nRows * (cellSpace + padding) + padding) - 2);
-								Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								leftColumn.setId(cellGroup.getId().split(",")[1] + "leftColumn");
 								leftColumn.setStrokeWidth(4);
 								leftColumn.setStrokeLineCap(StrokeLineCap.ROUND);
 								matrixGroup.getChildren().add(leftColumn);
 
-							} else if (((MenuItem) event.getTarget()).getText()
-									.equals(hightlightRightColumn.getText())) {
-								Line rightColumn = new Line(x + cellSpace, 2, x + cellSpace,
-										(_nRows * (cellSpace + padding) + padding) - 2);
-								Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+							} else if (((MenuItem) event.getTarget()).getText().equals(hightlightRightColumn.getText())) {
+								Line rightColumn = new Line(x + cellSpace, 2, x + cellSpace, (_nRows * (cellSpace + padding) + padding) - 2);
+								Group cellGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								rightColumn.setId(cellGroup.getId().split(",")[1] + "rightColumn");
 								rightColumn.setStrokeWidth(4);
 								rightColumn.setStrokeLineCap(StrokeLineCap.ROUND);
@@ -799,12 +766,10 @@ public class MatrixPane extends Pane {
 						@Override
 						public void handle(ActionEvent event) {
 							if (((MenuItem) event.getTarget()).getText().equals(removeLeftColumn.getText())) {
-								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								removeNode(nodeGroup, nodeGroup.getId().split(",")[1] + "leftColumn");
 							} else if (((MenuItem) event.getTarget()).getText().equals(removeRightColumn.getText())) {
-								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup()
-										.getOwnerNode();
+								Group nodeGroup = (Group) ((Menu) event.getSource()).getParentMenu().getParentPopup().getOwnerNode();
 								removeNode(nodeGroup, nodeGroup.getId().split(",")[1] + "rightColumn");
 							}
 						}
@@ -813,8 +778,7 @@ public class MatrixPane extends Pane {
 							Group matrix = (Group) cellGroup.getParent();
 							Line line = null;
 							for (Node matrixNode : matrix.getChildren()) {
-								if (matrixNode != null && matrixNode.getId() != null
-										&& matrixNode.getId().equals(nodeId)) {
+								if (matrixNode != null && matrixNode.getId() != null && matrixNode.getId().equals(nodeId)) {
 									line = (Line) matrixNode;
 									break;
 								}
@@ -851,8 +815,7 @@ public class MatrixPane extends Pane {
 									double dstColCell = Double.valueOf(cell.getId().split(",")[1]);
 									if (source.getTranslateX() == cell.getTranslateX()) {
 										double diff = dstRowCell - srcRowCell;
-										line = new Line(x + 10, y + 9 + ((diff > 0 ? 2 : 0)), x + 10,
-												(y + (diff + 1) * cellSpace - 9) + (diff > 0 ? -2 : 0));
+										line = new Line(x + 10, y + 9 + ((diff > 0 ? 2 : 0)), x + 10, (y + (diff + 1) * cellSpace - 9) + (diff > 0 ? -2 : 0));
 
 									} else if (source.getTranslateY() == cell.getTranslateY()) {
 										double diff = dstColCell - srcColCell;
@@ -874,8 +837,7 @@ public class MatrixPane extends Pane {
 						@Override
 						public void handle(ActionEvent event) {
 							if (((MenuItem) event.getTarget()).getText().equals(undrawLine.getText())) {
-								Group nodeGroup = (Group) ((MenuItem) event.getSource()).getParentPopup()
-										.getOwnerNode();
+								Group nodeGroup = (Group) ((MenuItem) event.getSource()).getParentPopup().getOwnerNode();
 								removeNode(nodeGroup, nodeGroup.getId());
 							}
 						}
@@ -884,10 +846,8 @@ public class MatrixPane extends Pane {
 							Group matrix = (Group) cellGroup.getParent();
 							Line line = null;
 							for (Node matrixNode : matrix.getChildren()) {
-								if (matrixNode != null && matrixNode.getId() != null
-										&& matrixNode.getId().endsWith("line")
-										&& (matrixNode.getId().split("-")[0].equals(nodeId)
-												|| matrixNode.getId().split("-")[1].contains(nodeId))) {
+								if (matrixNode != null && matrixNode.getId() != null && matrixNode.getId().endsWith("line")
+										&& (matrixNode.getId().split("-")[0].equals(nodeId) || matrixNode.getId().split("-")[1].contains(nodeId))) {
 									line = (Line) matrixNode;
 									break;
 								}
