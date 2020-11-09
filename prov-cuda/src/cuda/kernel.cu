@@ -595,7 +595,7 @@ extern "C" {
 			transitiveClosureKernel<<<gridDim, blockDim>>>(d_values, k, v, d_result);
 		}
 		
-		rasterizeClosureKernel<<<gridDim, blockDim>>>(d_result, v);
+		//rasterizeClosureKernel<<<gridDim, blockDim>>>(d_result, v);
 	
 		checkCudaErrors(
 				cudaMemcpy(result, d_result, sizeof(float) * v*v,
