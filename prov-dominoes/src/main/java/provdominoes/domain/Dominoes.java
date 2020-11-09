@@ -131,6 +131,7 @@ public class Dominoes {
 	private int type;
 	private MatrixOperations mat = null;
 	private int sourceIndex;
+	private boolean hasTransitiveValues;
 	private String currentProcessingMode = Configuration.CPU_PROCESSING;
 	private CRSMatrix crsMatrix;
 	private MatrixDescriptor descriptor;
@@ -1008,6 +1009,14 @@ public class Dominoes {
 
 	public void setCellParams(HashMap<String, String> cellParams) {
 		this.cellParams = cellParams;
+	}
+
+	public boolean hasTransitiveValues() {
+		return hasTransitiveValues;
+	}
+
+	public void setHasTransitiveValues(boolean hasTransitiveValues) {
+		this.hasTransitiveValues = hasTransitiveValues;
 	}
 
 }

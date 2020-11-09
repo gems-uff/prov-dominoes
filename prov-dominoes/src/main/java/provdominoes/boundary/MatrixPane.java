@@ -52,6 +52,7 @@ import provdominoes.util.Prov2DominoesUtil;
 
 public class MatrixPane extends Pane {
 
+	private static final String URL_MATCHER = "(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})";
 	private double maxZoom = 2;
 	private double minZoom = 0.05;
 
@@ -125,9 +126,17 @@ public class MatrixPane extends Pane {
 		width = Math.abs(endRowHead - beginRowHead);
 		height = cellSpace;
 
-		// draw the label of the matrix row labels
+
+		drawRowLabels(domino, beginRowHead, width, height, padding, cellSpace, _nRows);
+		width = Math.abs(endColumnHead - beginColumnHead);
+		height = cellSpace;
+		drawColLabels(domino, endColumnHead, width, height, padding, cellSpace, _nCols);
+		drawCells(domino, padding, cellSpace, _nRows, _nCols);
+	}
+
+	private void drawRowLabels(Dominoes domino, double beginRowHead, double width, double height, double padding,
+			double cellSpace, int _nRows) {
 		for (int i = 0; i < _nRows; i++) {
-			largerSizeRow = domino.getDescriptor().getRowAt(i).length();
 			Rectangle back = new Rectangle(width, height);
 			back.setFill(new Color(1, 1, 1, 1));
 			back.setTranslateX(0);
@@ -135,7 +144,7 @@ public class MatrixPane extends Pane {
 			back.toBack();
 
 			Rectangle front = new Rectangle(width, height);
-			front.setFill(new Color(0, 0, 1, 0.5 + (0.2 * ((-1) * i % 2))));
+			front.setFill(new Color(0.0, 0.4, 0.0, 0.7 + (0.2 * ((-1) * i % 2))));
 			front.setTranslateX(0);
 			front.setTranslateY(0);
 			front.toFront();
@@ -202,10 +211,10 @@ public class MatrixPane extends Pane {
 			});
 			matrixGroup.getChildren().add(rowLabel);
 		}
-
-		width = Math.abs(endColumnHead - beginColumnHead);
-		height = cellSpace;
-		// draw the label of the matrix column labels
+	}
+	
+	private void drawColLabels(Dominoes domino, double endColumnHead, double width, double height, double padding,
+			double cellSpace, int _nCols) {
 		for (int i = 0; i < _nCols; i++) {
 			Rectangle back = new Rectangle(width, height);
 			back.setTranslateX(0);
@@ -215,7 +224,7 @@ public class MatrixPane extends Pane {
 			Rectangle front = new Rectangle(width, height);
 			front.setTranslateX(0);
 			front.setTranslateY(-1);
-			front.setFill(new Color(0, 0, 1, 0.5 + (0.2 * ((-1) * i % 2))));
+			front.setFill(new Color(0.0, 0.4, 0.0, 0.7 + (0.2 * ((-1) * i % 2))));
 
 			front.toFront();
 
@@ -248,9 +257,8 @@ public class MatrixPane extends Pane {
 			ContextMenu contextLabel = new ContextMenu();
 			MenuItem copyToClipboard = new MenuItem("Copy to Clipboard");
 			MenuItem gotoURL = new MenuItem("Go to URL");
-			String urlMatch = "(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})";
 			contextLabel.getItems().add(copyToClipboard);
-			if (text.getText().matches(urlMatch)) {
+			if (text.getText().matches(URL_MATCHER)) {
 				contextLabel.getItems().add(gotoURL);
 			}
 			columnLabel.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -286,7 +294,9 @@ public class MatrixPane extends Pane {
 			});
 			matrixGroup.getChildren().add(columnLabel);
 		}
+	}
 
+	private void drawCells(Dominoes domino, double padding, double cellSpace, int _nRows, int _nCols) {
 		CRSMatrix matrix = domino.getCrsMatrix();
 		List<Cell> nonZeros = new ArrayList<>();
 		if (Configuration.isGPUProcessing()) {
@@ -300,19 +310,22 @@ public class MatrixPane extends Pane {
 		} else {
 			if (domino.getType() == Dominoes.TYPE_ZSCORE) {
 				Cell[] clls = new Cell[matrix.cardinality()];
-				List<Integer> range = IntStream.rangeClosed(0, matrix.cardinality()-1)
-					    .boxed().collect(Collectors.toList());
+				List<Integer> range = IntStream.rangeClosed(0, matrix.cardinality() - 1).boxed()
+						.collect(Collectors.toList());
 				final Stack<Integer> s = new Stack<>();
 				s.addAll(range);
 				matrix.eachNonZero(new MatrixProcedure() {
 					@Override
 					public void apply(int row, int col, double value) {
-						clls[s.pop()] = new Cell(row, col,
-								new Double(value).floatValue());
+						clls[s.pop()] = new Cell(row, col, new Double(value).floatValue());
 					}
 				});
 				nonZeros = Arrays.asList(clls);
 			}
+		}
+		if (domino.hasTransitiveValues()) {
+			min = 1 / max;
+			max = 1;
 		}
 		for (int i = 0; i < matrix.rows(); i++) {
 			for (int j = 0; j < matrix.columns(); j++) {
@@ -326,19 +339,22 @@ public class MatrixPane extends Pane {
 					Rectangle back = new Rectangle(cellSpace, cellSpace);
 					Rectangle front = new Rectangle(cellSpace - 1, cellSpace - 1);
 					back.setFill(new Color(1, 1, 1, 1));
-
+					float cv = _matCell.value;
+					if (domino.hasTransitiveValues() && cv != 0) {
+						cv = 1 / cv;
+					}
 					if (min < 0) {
-						if (_matCell.value != 0.0) {
-							if (Float.isNaN(_matCell.value)) {
+						if (cv != 0.0) {
+							if (Float.isNaN(cv)) {
 								front.setFill(new Color(1, 1, 1, 1));
-								_matCell.value = 0f;
+								cv = 0f;
 							} else {
-								if (_matCell.value > 0.0) {
+								if (cv > 0.0) {
 									front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(),
-											cellColor.getBlue(), (_matCell.value) / (max)));
+											cellColor.getBlue(), (cv) / (max)));
 								} else {
 									front.setFill(new Color(cellColor.getBlue(), cellColor.getGreen(),
-											cellColor.getRed(), (_matCell.value) / (min)));
+											cellColor.getRed(), (cv) / (min)));
 								}
 							}
 						} else {
@@ -349,13 +365,13 @@ public class MatrixPane extends Pane {
 							}
 						}
 					} else {
-						if (_matCell.value != 0.0) {
-							if (Float.isNaN(_matCell.value)) {
+						if (cv != 0.0) {
+							if (Float.isNaN(cv)) {
 								front.setFill(new Color(1, 1, 1, 1));
-								_matCell.value = 0f;
+								cv = 0f;
 							} else {
 								front.setFill(new Color(cellColor.getRed(), cellColor.getGreen(), cellColor.getBlue(),
-										(_matCell.value - min) / (max - min)));
+										(cv - min) / (max - min)));
 							}
 						} else {
 							if (domino.getType() == Dominoes.TYPE_ZSCORE) {
@@ -367,7 +383,7 @@ public class MatrixPane extends Pane {
 					}
 					front.toFront();
 
-					this.cells.add(_matCell.value);
+					this.cells.add(cv);
 					this.recCells.add(front);
 
 					Group cell = new Group(back, front);
@@ -386,18 +402,22 @@ public class MatrixPane extends Pane {
 							&& domino.getUnderlyingElements()[_matCell.row][_matCell.col] != null) {
 						Tooltip.install(cell, new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
 								+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = "
-								+ String.valueOf(_matCell.value) + " : "
+								+ String.valueOf(cv) + " : "
 								+ domino.getUnderlyingElements()[_matCell.row][_matCell.col] + "\n" + cellParams));
 					} else {
 						Tooltip.install(cell,
 								new Tooltip("(" + domino.getDescriptor().getRowAt(_matCell.row) + ", "
 										+ domino.getDescriptor().getColumnAt(_matCell.col) + ") = "
-										+ String.valueOf(_matCell.value) + "\n" + cellParams));
+										+ String.valueOf(cv) + "\n" + cellParams));
 					}
 					// Show cell values...
 					if (Configuration.showCellValues && _matCell.value > 0) {
 						double average = (min + max) / 2;
-						Text textValue = new Text("" + new Double(_matCell.value).intValue());
+						String pre = "";
+						if (domino.hasTransitiveValues() && _matCell.value != 1) {
+							pre = "1/";
+						}
+						Text textValue = new Text(pre + new Double(_matCell.value).intValue());
 						if (_matCell.value >= 100) {
 							textValue.setFont(Font.font("Times", FontWeight.BOLD, 10));
 						}
@@ -420,10 +440,17 @@ public class MatrixPane extends Pane {
 							textValue.setTranslateX(-1.5);
 						}
 						textValue.setTranslateY(15);
+						if (domino.hasTransitiveValues() && _matCell.value != 1) {
+							textValue.setTranslateX(-0.3);
+							textValue.setFont(Font.font("Times", FontWeight.BOLD, 11));
+						}
 						textValue.toFront();
 						if (_matCell.value >= average) {
 							textValue.setFill(Color.WHITE);
 						} else {
+							textValue.setFill(Color.BLACK);
+						}
+						if (textValue.getText().contains("1/")) {
 							textValue.setFill(Color.BLACK);
 						}
 						cell.getChildren().add(textValue);
@@ -432,7 +459,7 @@ public class MatrixPane extends Pane {
 					matrixGroup.getChildren().add(cell);
 
 					block = new Rectangle(40, 30);
-					block.setFill(new Color(50 / 255.0, 75 / 255.0, 180.0 / 255.0, 0.5));
+					block.setFill(new Color(0.0, 0.4, 0.0, 0.5 + (0.2)));					
 					block.setX(-40);
 					block.setY(-30);
 					block.toFront();

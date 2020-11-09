@@ -35,7 +35,7 @@ public class TransitiveClosureCommand extends AbstractCommand {
 			Dominoes toClosure = App.getArea().getData().getDominoes().get(index);
 			if (toClosure.getDescriptor().getNumRows() == toClosure.getDescriptor().getNumCols()) {
 				Dominoes domino = provdominoes.control.Controller.transitiveClosure(toClosure);
-
+				domino.setHasTransitiveValues(true);
 				App.getArea().remove(index);
 				this.piece = App.getArea().add(domino, piece.getTranslateX(), piece.getTranslateY(), index);
 

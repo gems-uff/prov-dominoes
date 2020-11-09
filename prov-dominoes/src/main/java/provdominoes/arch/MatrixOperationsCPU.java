@@ -1093,7 +1093,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 						}
 					}
 					if (steps[i][j] > 0.00)
-						reach[i][j] = 1.00 / steps[i][j];
+						reach[i][j] = steps[i][j];
 				}
 			}
 		}
