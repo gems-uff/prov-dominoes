@@ -83,7 +83,7 @@ $ java -Xms4096m -Dfile.encoding=utf8 -jar prov-dominoes-vX.YY.jar --mode=GPU --
 # Documentation
 
 * [Prov-Dominoes Wiki](https://github.com/gems-uff/prov-dominoes/wiki)
-* [Prov-Dominoes Dissertation](https://www.repositorio.mar.mil.br/bitstream/ripcmb/844809/1/Dissertacao_CCVictorAlencar.pdf)
+* [Prov-Dominoes Dissertation](http://www.ic.uff.br/PosGraduacao/frontend-tesesdissertacoes/download.php?id=996.pdf&tipo=trabalho)
 
 # Development
 
