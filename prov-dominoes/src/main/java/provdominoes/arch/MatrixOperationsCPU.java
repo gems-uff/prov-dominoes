@@ -1253,7 +1253,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			int oldIndex = rowsDesc.indexOf(row);
 			for (int j = 0; j < data.columns(); j++) {
 				crsResult.set(index, j, data.get(oldIndex, j));
-				if (!Configuration.tuning) {
+				if (!Configuration.tuning && this.underlyingElements != null) {
 					updatedUnderlying[index][j] = this.underlyingElements[oldIndex][j];
 				}
 			}
@@ -1305,7 +1305,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 			int oldIndex = columnsDesc.indexOf(column);
 			for (int i = 0; i < data.rows(); i++) {
 				crsResult.set(i, index, data.get(i, oldIndex));
-				if (!Configuration.tuning) {
+				if (!Configuration.tuning && this.underlyingElements != null) {
 					updatedUnderlying[i][index] = this.underlyingElements[i][oldIndex];
 				}
 			}
@@ -1565,7 +1565,7 @@ public class MatrixOperationsCPU implements MatrixOperations {
 	@Override
 	public void updateMatrix(boolean denseToSparse) {
 		// TODO GPU only
-		
+
 	}
 
 	@Override

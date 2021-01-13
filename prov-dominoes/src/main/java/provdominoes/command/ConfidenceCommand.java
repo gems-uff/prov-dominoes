@@ -32,7 +32,7 @@ public class ConfidenceCommand extends AbstractCommand {
 		y = this.piece.getTranslateY();
 		try {
 			Dominoes toConfidence = App.getArea().getData().getDominoes().get(index);
-			if (toConfidence.getType() == Dominoes.TYPE_SUPPORT) {
+			if (toConfidence.getDescriptor().getNumRows() == toConfidence.getDescriptor().getNumCols()) {
 				Dominoes domino = provdominoes.control.Controller.confidence(toConfidence);
 
 				App.getArea().remove(index);
